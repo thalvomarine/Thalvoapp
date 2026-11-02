@@ -87,35 +87,46 @@ export function JobChat({ jobId, meId }: { jobId: string; meId: string }) {
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden">
-      <div className="px-4 py-2.5 bg-deep text-white flex items-center gap-2">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#071422] text-white">
+      <div className="flex items-center gap-2 bg-[#06101c] px-4 py-2.5 text-white">
         <ShieldCheck className="size-4 text-aqua" />
         <p className="text-sm font-bold">{t("chat.title")}</p>
       </div>
-      <p className="px-4 py-2 text-[11px] text-muted-foreground bg-muted/40">{t("chat.masked_notice")}</p>
+      <p className="bg-white/[0.04] px-4 py-2 text-[11px] text-white/55">{t("chat.masked_notice")}</p>
 
       {alert && (
-        <div className="mx-3 mt-3 rounded-xl border-2 border-destructive/70 bg-destructive/10 p-3 flex items-start gap-2">
-          <AlertTriangle className="size-4 text-destructive shrink-0 mt-0.5" />
-          <div className="text-xs font-semibold text-destructive">{t("chat.security_alert")}</div>
+        <div className="mx-3 mt-3 flex items-start gap-2 rounded-xl border-2 border-rose-400/50 bg-rose-500/10 p-3">
+          <AlertTriangle className="mt-0.5 size-4 shrink-0 text-rose-300" />
+          <div className="text-xs font-semibold text-rose-100">{t("chat.security_alert")}</div>
         </div>
       )}
 
-      <div ref={scrollRef} className="h-72 overflow-y-auto px-3 py-3 space-y-2 bg-background">
+      <div ref={scrollRef} className="h-72 space-y-2 overflow-y-auto bg-[#06101c] px-3 py-3">
         {messages.map((m) => {
           const mine = m.sender_id === meId;
           return (
             <div key={m.id} className={"flex " + (mine ? "justify-end" : "justify-start")}>
-              <div className={"max-w-[80%] px-3 py-2 rounded-2xl text-sm " + (mine ? "bg-deep text-white rounded-br-sm" : "bg-muted text-foreground rounded-bl-sm")}>
+              <div
+                className={
+                  "max-w-[80%] rounded-2xl px-3 py-2 text-sm " +
+                  (mine
+                    ? "rounded-br-sm bg-deep text-white"
+                    : "rounded-bl-sm border border-white/10 bg-white/[0.06] text-white/90")
+                }
+              >
                 {m.text}
-                {m.masked && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-destructive-foreground bg-destructive px-1.5 py-0.5 rounded">{t("chat.blocked")}</span>}
+                {m.masked && (
+                  <span className="ml-2 rounded bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                    {t("chat.blocked")}
+                  </span>
+                )}
               </div>
             </div>
           );
         })}
       </div>
 
-      <div className="p-2 border-t border-border">
+      <div className="border-t border-white/10 p-2">
         {preflight.risk !== "safe" && text.trim() && (
           <div className="mb-2">
             <SecurityWarningBanner
@@ -131,13 +142,13 @@ export function JobChat({ jobId, meId }: { jobId: string; meId: string }) {
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") send(); }}
             placeholder={t("chat.placeholder")}
-            className="flex-1 h-10 rounded-full border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            className="h-10 flex-1 rounded-full border border-white/15 bg-white/[0.04] px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-amber-400/50"
           />
           <button
             onClick={send}
             disabled={sending || blocked}
             title={blocked ? preflightCopy.body : undefined}
-            className="size-10 rounded-full marine-gradient text-white grid place-items-center disabled:opacity-50"
+            className="grid size-10 place-items-center rounded-full marine-gradient text-white disabled:opacity-50"
           >
             <Send className="size-4" />
           </button>

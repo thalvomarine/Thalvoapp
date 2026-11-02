@@ -135,7 +135,7 @@ function ProviderProfile({ profile }: { profile: Profile }) {
       <CockpitHeader
         eyebrow={t("profile.title")}
         title={profile.full_name}
-        subtitle={[companyName, baseLocation ? `📍 ${baseLocation}` : null].filter(Boolean).join(" · ") || undefined}
+        subtitle={[companyName, baseLocation || null].filter(Boolean).join(" · ") || undefined}
         actions={
           <button
             onClick={() => setIsAvailable(!isAvailable)}
@@ -201,7 +201,7 @@ function ProviderProfile({ profile }: { profile: Profile }) {
               <li key={j.id} className="glass-panel rounded-2xl px-4 py-3 flex items-center justify-between">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white truncate">{t(`problems.${j.problem_category}`, { defaultValue: j.problem_category })}</p>
-                  <p className="text-[11px] text-white/50">⚓ {j.profiles?.boat_name ?? "—"}</p>
+                  <p className="text-[11px] text-white/50">{j.profiles?.boat_name ?? "—"}</p>
                 </div>
                 <StatusBadge tone="info">{t(`status.${j.status}`)}</StatusBadge>
               </li>
@@ -222,7 +222,10 @@ function ProviderProfile({ profile }: { profile: Profile }) {
                   <p className="text-sm font-semibold text-white">{t(`problems.${j.problem_category}`, { defaultValue: j.problem_category })}</p>
                   <span className="text-[10px] uppercase tracking-[0.14em] text-white/40">{t("profile.review_pending", { defaultValue: "Review pending" })}</span>
                 </div>
-                <p className="text-[11px] text-white/50">⚓ {j.profiles?.boat_name ?? "—"}{j.marina ? ` · 📍 ${j.marina}` : ""}</p>
+                <p className="text-[11px] text-white/50">
+                  {j.profiles?.boat_name ?? "—"}
+                  {j.marina ? ` · ${j.marina}` : ""}
+                </p>
                 {j.service_type && <p className="text-[11px] text-white/40">{j.service_type}</p>}
               </li>
             ))}
@@ -516,9 +519,9 @@ function Field({ label, value, onChange, type = "text", placeholder }: {
 }) {
   return (
     <div>
-      <label className="text-xs font-bold text-muted-foreground">{label}</label>
+      <label className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200/70">{label}</label>
       <input type={type} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)}
-        className="mt-1 h-11 w-full rounded-xl border border-input bg-background px-3.5 text-sm text-foreground" />
+        className="mt-1.5 h-11 w-full rounded-xl border border-amber-400/25 bg-[#071422] px-3.5 text-sm text-white outline-none placeholder:text-white/35 focus:border-amber-300" />
     </div>
   );
 }

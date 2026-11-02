@@ -45,13 +45,16 @@ No component was migrated onto a stronger tone than it previously used.
 
 ## Not touched (intentional)
 
-- `/app/services`, `/app/shop`, `/app/profile`, `/app/supplier` still render
-  on the classic `AppShell` light surface. Converting these to dark cockpit
-  is a redesign, not a consistency pass, and is tracked in
-  `docs/TECHNICAL_DEBT.md` for a later phase.
-- No schema, RLS, RPC, auth or routing changes.
-- `AppShell` / `MissionShell` navigation, SOS dock and Thalvo AI fab
-  untouched.
+- No schema, RLS, RPC, auth or SOS payment-provider changes.
+- `MissionShell` navigation, SOS dock and Thalvo AI fab untouched.
+
+## Follow-up (cockpit surface polish)
+
+Authenticated routes already mount inside dark `MissionShell`. Remaining
+light-token islands (`PackageOffers` sheet, `JobChat`, `CheckoutModal`,
+profile `Field`) and the legacy `/app/shop` twin were cleaned up in a later
+pass: shop now redirects to `/app/marketplace`, and sheets use navy cockpit
+tokens.
 
 ## Verification
 
@@ -64,8 +67,7 @@ No component was migrated onto a stronger tone than it previously used.
 
 ## Remaining debt
 
-- Dark-cockpit migration for `/app/services`, `/app/shop`, `/app/profile`,
-  `/app/supplier` (tracked in `docs/TECHNICAL_DEBT.md`).
 - Retire `mission/StatusChip` in favour of `core/StatusBadge` opportunistically.
 - Retire ad-hoc `.text-white/…` chip markup inside `admin/*` panels once the
   admin tower gets its next data pass.
+- Delete unused `AppShell` compatibility wrapper when no route imports remain.

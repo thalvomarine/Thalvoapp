@@ -4,8 +4,7 @@
  */
 export const PLATFORM_ROUTES = [
   { path: "/app", label: "Live chart and cockpit" },
-  { path: "/app/marketplace", label: "Marketplace" },
-  { path: "/app/shop", label: "Spare parts shop" },
+  { path: "/app/marketplace", label: "Marketplace and spare parts" },
   { path: "/app/services", label: "Maintenance services" },
   { path: "/app/orders", label: "Orders and escrow" },
   { path: "/app/passport", label: "Vessel passport" },
@@ -27,8 +26,9 @@ const ALIASES: Record<string, AppPath> = {
   "/escrow": "/app/orders",
   "/support": "/app/report",
   "/help": "/app/report",
-  "/parts": "/app/shop",
-  "/shop": "/app/shop",
+  "/app/shop": "/app/marketplace",
+  "/parts": "/app/marketplace",
+  "/shop": "/app/marketplace",
   "/weather": "/app",
   "/map": "/app",
   "/passport": "/app/passport",

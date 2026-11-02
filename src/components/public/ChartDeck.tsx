@@ -8,13 +8,13 @@ import { fetchPublicPackages, fetchPublicParts, usePublicData } from "@/lib/publ
 import { formatDm, formatMoney } from "@/lib/formatters";
 import { getFix } from "@/lib/geolocation";
 import { sanitizeNext } from "@/lib/nav";
-import { Map as MapIcon, ShoppingBag, Wrench, X } from "lucide-react";
+import { Crosshair, Loader2, Map as MapIcon, ShoppingBag, Wrench, X } from "lucide-react";
 import { clearEmailUnconfirmed, isEmailUnconfirmed } from "@/lib/signup-welcome";
 
 export type ChartPanel = "parts" | "services";
 
 const BAYS: CoverageBayId[] = ["aegean", "mediterranean"];
-const NEXT_SHOP = sanitizeNext("/app/shop");
+const NEXT_SHOP = sanitizeNext("/app/marketplace");
 const NEXT_SERVICES = sanitizeNext("/app/services");
 
 const SHELVES = [
@@ -121,12 +121,17 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
             onClick={() => void locate()}
             disabled={locating}
             aria-label={t("chart.locate_me")}
+            title={t("chart.locate_me")}
             className={
-              "absolute right-3 z-[1100] grid size-11 place-items-center rounded-full border border-white/15 bg-[#071422]/92 text-[12px] text-amber-100 disabled:opacity-60 " +
+              "absolute right-3 z-[1100] grid size-11 place-items-center rounded-full border border-white/15 bg-[#071422]/92 text-amber-100 disabled:opacity-60 " +
               (unconfirmed ? "top-16" : "top-3")
             }
           >
-            {locating ? "…" : "◎"}
+            {locating ? (
+              <Loader2 className="size-[18px] animate-spin" />
+            ) : (
+              <Crosshair className="size-[18px]" />
+            )}
           </button>
         )}
         {!panel && locError && (
@@ -137,7 +142,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
 
         {!panel && (
           <div className="pointer-events-none absolute inset-x-2 bottom-2 z-[1100] flex max-w-full items-end justify-between gap-2">
-            {/* Paper chips so day-theme ink stays readable over the dark chart. */}
+            {/* Legend chips stay on dark glass so they read over the chart tiles. */}
             <ul className="flex max-w-full flex-wrap gap-x-2 gap-y-1 rounded-md bg-[#071422]/88 px-2 py-1 shadow-sm">
               {LEGEND.map((item) => (
                 <li key={item.id} className="flex items-center gap-1.5 text-[10px] text-white/75">
