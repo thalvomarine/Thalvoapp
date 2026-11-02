@@ -1400,6 +1400,8 @@
     "footer": "THALVO · Safe Voyage, Instant Response"
   },
   "pwa": {
+    "banner_offline": "Εκτός σύνδεσης · μόνο cache χάρτη",
+    "banner_online": "Συνδεθήκατε ξανά",
     "installed": {
       "title": "THALVO is installed",
       "hint": "Launch it from your home screen anytime."
@@ -1876,7 +1878,7 @@
     "nav_about": "Σχετικά",
     "nav_menu": "Μενού",
     "slogan": "Marine Operating System",
-    "lede": "Το λειτουργικό σύστημα για ασφαλή πλεύση στη θάλασσα.",
+    "lede": "Το λειτουργικό σύστημα για ασφαλή πλεύση στη θάλασσα — Αιγαίο και Μεσόγειος, SOS, τεχνικοί και ανταλλακτικά.",
     "coverage": "Αιγαίο και Μεσόγειος · SOS, τεχνικοί, ανταλλακτικά",
     "cta_chart": "Άνοιγμα χάρτη",
     "cta_partner": "Γίνετε συνεργάτης",

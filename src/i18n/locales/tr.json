@@ -1405,6 +1405,8 @@
     "footer": "THALVO · Güvenli Seyir, Anında Müdahale"
   },
   "pwa": {
+    "banner_offline": "Çevrimdışı · yalnızca harita önbelleği",
+    "banner_online": "Bağlantı geldi",
     "installed": {
       "title": "THALVO yüklendi",
       "hint": "Ana ekranından istediğin an başlat."
@@ -1875,7 +1877,7 @@
     "nav_about": "Hakkımızda",
     "nav_menu": "Menü",
     "slogan": "Marine Operating System",
-    "lede": "Denizde güvenli seyir işletim sistemi.",
+    "lede": "Denizde güvenli seyir işletim sistemi — Ege ve Akdeniz, SOS, teknisyen ve yedek parça.",
     "coverage": "Ege ve Akdeniz · SOS, teknisyen, yedek parça",
     "cta_chart": "Canlı haritayı aç",
     "cta_partner": "Partner ol",

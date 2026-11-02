@@ -1405,6 +1405,8 @@
     "footer": "THALVO · Safe Voyage, Instant Response"
   },
   "pwa": {
+    "banner_offline": "Offline · chart cache only",
+    "banner_online": "Back online",
     "installed": {
       "title": "THALVO is installed",
       "hint": "Launch it from your home screen anytime."
@@ -1875,7 +1877,7 @@
     "nav_about": "About",
     "nav_menu": "Menu",
     "slogan": "Marine Operating System",
-    "lede": "The operating system for safe passage at sea.",
+    "lede": "The operating system for safe passage at sea — Aegean and Mediterranean, SOS, technicians and spare parts.",
     "coverage": "Aegean and Mediterranean · SOS, technicians, spare parts",
     "cta_chart": "Open live chart",
     "cta_partner": "Become a partner",

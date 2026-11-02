@@ -124,6 +124,9 @@ export function BrandLanding() {
             <a href="#about" className="landing-nav-link">
               {t("landing.nav_about")}
             </a>
+            <button type="button" onClick={openPartner} className="landing-nav-link">
+              {t("landing.cta_partner")}
+            </button>
             <button type="button" onClick={() => setMenuOpen(true)} className="landing-nav-menu">
               {t("landing.nav_menu")}
               <LayoutGrid className="size-3.5" aria-hidden />
@@ -159,10 +162,9 @@ export function BrandLanding() {
               {t("landing.slogan")}
             </p>
             <div className="mx-auto mt-4 h-px w-16 bg-[#F5B942]/80" />
-            <p className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-white/78 sm:text-base">
+            <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-white/78 sm:text-base">
               {t("landing.lede")}
             </p>
-            <p className="mt-2 text-[13px] tracking-wide text-white/55">{t("landing.coverage")}</p>
           </div>
 
           <div className="landing-fade-up-delay mt-11 flex w-full max-w-lg flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center sm:gap-4">
@@ -180,7 +182,7 @@ export function BrandLanding() {
       </section>
 
       {/* ——— SOLUTIONS ——— */}
-      <section id="solutions" className="scroll-mt-24 border-t border-white/[0.07] px-5 py-20 sm:px-8 lg:px-12">
+      <section id="solutions" className="landing-reveal scroll-mt-24 border-t border-white/[0.07] px-5 py-20 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-5xl">
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#F5B942]/80">
             {t("landing.nav_solutions")}
