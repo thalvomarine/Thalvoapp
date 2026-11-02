@@ -37,7 +37,8 @@
     "remove": "Sil",
     "edit": "Düzenle",
     "refresh": "Yenile",
-    "retry": "Tekrar dene"
+    "retry": "Tekrar dene",
+    "open_settings": "Ayarları aç"
   },
   "auth": {
     "welcome": "THALVO'ya hoş geldiniz",

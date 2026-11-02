@@ -28,4 +28,5 @@ export async function initNativeShell(): Promise<void> {
 
   // Capgo notifyAppReady is owned by src/client.tsx (earliest possible).
   // Do not await it here — StatusBar latency must not delay the handshake.
+  // Android hardware back is wired from MissionShell via native-app.ts.
 }

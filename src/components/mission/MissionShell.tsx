@@ -50,6 +50,8 @@ import { useOpsAlerts } from "@/hooks/useOpsAlerts";
 import { useSessionUser, type Profile } from "@/lib/session";
 import { runWhenIdle } from "@/lib/schedule";
 import { consumeSignupWelcome } from "@/lib/signup-welcome";
+import { activateKeepAwake, releaseKeepAwake } from "@/lib/keep-awake";
+import { pushNativeBackHandler, wireNativeBackButton } from "@/lib/native-app";
 
 interface Props {
   profile: Profile;
@@ -147,6 +149,35 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
     setMapChromeOverlay("sos", sosOpen || svcOpen);
     return () => setMapChromeOverlay("sos", false);
   }, [sosOpen, svcOpen]);
+
+  useEffect(() => {
+    void wireNativeBackButton();
+  }, []);
+
+  useEffect(() => {
+    if (!sosOpen) return;
+    return pushNativeBackHandler(() => {
+      setSosOpen(false);
+      return true;
+    });
+  }, [sosOpen]);
+
+  useEffect(() => {
+    if (!svcOpen) return;
+    return pushNativeBackHandler(() => {
+      setSvcOpen(false);
+      return true;
+    });
+  }, [svcOpen]);
+
+  // Chartplotter / passage: keep the screen awake while the map owns the viewport.
+  useEffect(() => {
+    if (!fullBleed) return;
+    void activateKeepAwake();
+    return () => {
+      void releaseKeepAwake();
+    };
+  }, [fullBleed]);
 
   if (isSupplier && (path === "/app" || path === "/app/")) {
     return <Navigate to="/app/dealer" replace />;

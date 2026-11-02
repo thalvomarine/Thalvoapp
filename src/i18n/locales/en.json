@@ -37,7 +37,8 @@
     "remove": "Remove",
     "edit": "Edit",
     "refresh": "Refresh",
-    "retry": "Retry"
+    "retry": "Retry",
+    "open_settings": "Open settings"
   },
   "auth": {
     "welcome": "Welcome to THALVO",

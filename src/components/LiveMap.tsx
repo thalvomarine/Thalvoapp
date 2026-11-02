@@ -19,11 +19,13 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { isNativeWebView } from "@/lib/native-history";
+import { openNativeAppSettings } from "@/lib/native-app";
 import { useTranslation } from "react-i18next";
 import {
   Loader2,
   MapPinOff,
   RefreshCw,
+  Settings,
   X,
 } from "lucide-react";
 import {
@@ -1408,6 +1410,17 @@ function LiveMapCanvas({
                         <span className="min-w-0 flex-1 whitespace-normal">
                           {t(failure.messageKey, { defaultValue: failure.defaultMessage })}
                         </span>
+                        {failure.state === "denied" && isNativeWebView() && (
+                          <button
+                            type="button"
+                            onClick={() => void openNativeAppSettings()}
+                            aria-label={t("common.open_settings")}
+                            title={t("common.open_settings")}
+                            className="grid size-5 shrink-0 place-items-center rounded-full text-amber-100/70 hover:text-amber-50"
+                          >
+                            <Settings className="size-3" />
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() => void request()}

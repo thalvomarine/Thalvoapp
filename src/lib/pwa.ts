@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { isNativeWebView } from "@/lib/native-history";
 
 /**
  * PWA install-prompt architecture.
@@ -6,6 +7,9 @@ import { useEffect, useState } from "react";
  * Captures the browser's `beforeinstallprompt` event (Chromium-family) and
  * exposes a `promptInstall()` handler. Also detects iOS Safari — where the
  * event is unavailable — so the UI can render manual instructions instead.
+ *
+ * Capacitor shells already are the installed app — treat them as installed
+ * and never show Add-to-Home-Screen hints inside the native WebView.
  *
  * TODO(push-notifications): once we ship a messaging service worker
  * (Firebase Cloud Messaging or equivalent), add a companion hook here
@@ -36,11 +40,19 @@ export function isIos(): boolean {
 
 export function useInstallPrompt() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [installed, setInstalled] = useState<boolean>(() => isStandaloneDisplay());
+  const [installed, setInstalled] = useState<boolean>(
+    () => isNativeWebView() || isStandaloneDisplay(),
+  );
   const [iosHint, setIosHint] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isBrowser) return;
+    if (isNativeWebView()) {
+      setInstalled(true);
+      setIosHint(false);
+      setDeferred(null);
+      return;
+    }
     const onBip = (e: Event) => {
       e.preventDefault();
       setDeferred(e as BeforeInstallPromptEvent);

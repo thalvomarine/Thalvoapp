@@ -8,8 +8,10 @@ import { fetchPublicPackages, fetchPublicParts, usePublicData } from "@/lib/publ
 import { formatDm, formatMoney } from "@/lib/formatters";
 import { getFix } from "@/lib/geolocation";
 import { sanitizeNext } from "@/lib/nav";
-import { Crosshair, Loader2, Map as MapIcon, ShoppingBag, Wrench, X } from "lucide-react";
+import { Crosshair, Loader2, Map as MapIcon, Settings, ShoppingBag, Wrench, X } from "lucide-react";
 import { clearEmailUnconfirmed, isEmailUnconfirmed } from "@/lib/signup-welcome";
+import { isNativeWebView } from "@/lib/native-history";
+import { openNativeAppSettings } from "@/lib/native-app";
 
 export type ChartPanel = "parts" | "services";
 
@@ -37,6 +39,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
   const [own, setOwn] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState<string | null>(null);
+  const [locDenied, setLocDenied] = useState(false);
   const [unconfirmed, setUnconfirmed] = useState(isEmailUnconfirmed);
   const fix = own ?? COVERAGE_BAYS[bay];
   const position = formatDm(fix.lat, fix.lng);
@@ -44,12 +47,14 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
   const locate = async () => {
     setLocating(true);
     setLocError(null);
+    setLocDenied(false);
     const res = await getFix();
     setLocating(false);
     if (res.ok) {
       setOwn({ lat: res.fix.lat, lng: res.fix.lng });
       return;
     }
+    setLocDenied(res.failure.state === "denied");
     setLocError(t(res.failure.messageKey, { defaultValue: res.failure.defaultMessage }));
   };
 
@@ -135,9 +140,20 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
           </button>
         )}
         {!panel && locError && (
-          <p className="absolute left-3 right-16 top-3 z-[1100] rounded-md bg-[#071422]/92 px-3 py-2 text-[12px] text-amber-100">
-            {locError}
-          </p>
+          <div className="absolute left-3 right-16 top-3 z-[1100] flex items-start gap-2 rounded-md bg-[#071422]/92 px-3 py-2 text-[12px] text-amber-100">
+            <p className="min-w-0 flex-1">{locError}</p>
+            {locDenied && isNativeWebView() && (
+              <button
+                type="button"
+                onClick={() => void openNativeAppSettings()}
+                aria-label={t("common.open_settings")}
+                title={t("common.open_settings")}
+                className="grid size-7 shrink-0 place-items-center rounded-full text-amber-100/80 hover:text-amber-50"
+              >
+                <Settings className="size-3.5" />
+              </button>
+            )}
+          </div>
         )}
 
         {!panel && (

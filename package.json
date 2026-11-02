@@ -15,14 +15,16 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test --experimental-strip-types src/lib/geolocation.test.ts src/lib/nav.test.ts src/lib/payments.test.ts src/lib/sea-route.test.ts src/lib/tile-cache.test.ts src/lib/trust.test.ts src/lib/digit-format.test.ts src/lib/thalvo-ai/domain.test.ts",
     "cap:prepare": "node scripts/prepare-web-spa.mjs",
+    "cap:assets": "node scripts/generate-native-assets.mjs",
     "cap:sync": "npm run build && npx cap sync",
-    "build:mobile": "npm run cap:sync"
+    "build:mobile": "npm run cap:assets && npm run cap:sync"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^3.0.2",
     "@ai-sdk/react": "^4.0.121",
     "@capacitor-community/keep-awake": "^8.0.1",
     "@capacitor/android": "^8.5.1",
+    "@capacitor/app": "^8.1.2",
     "@capacitor/cli": "^8.5.1",
     "@capacitor/core": "^8.5.1",
     "@capacitor/ios": "^8.5.1",

@@ -111,12 +111,12 @@ const cssLinks = cssFiles
   .join("\n");
 
 const indexHtml = `<!doctype html>
-<html lang="tr" class="min-h-dvh w-full max-w-[100vw] bg-black" suppressHydrationWarning>
+<html lang="tr" class="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>THALVO MarineOS</title>
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#0A192F" />
     <meta name="color-scheme" content="dark" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
@@ -128,7 +128,7 @@ ${cssLinks}
          h-svh / fixed inset shells and do not need a locked root height.
          Prefer overflow-x: clip over hidden — hidden forces overflow-y:auto and
          traps scroll inside a viewport-tall box on WebKit. */
-      html, body { margin: 0; min-height: 100%; min-height: 100dvh; background: #000; overflow-x: clip; }
+      html, body { margin: 0; min-height: 100%; min-height: 100dvh; background: #0A192F; overflow-x: clip; }
       #thalvo-root { min-height: 100%; min-height: 100dvh; }
       /* Cold-boot splash — shown until the hashed React entry hydrates. */
       #thalvo-boot {
@@ -136,7 +136,7 @@ ${cssLinks}
         display: flex; align-items: center; justify-content: center;
         font-family: Montserrat, -apple-system, "Segoe UI", Roboto, sans-serif;
         color: #f8fafc; text-align: center; padding: 24px; box-sizing: border-box;
-        background: #000;
+        background: #0A192F;
       }
       #thalvo-boot .mark {
         width: min(42vw, 148px); height: min(42vw, 148px);
@@ -212,7 +212,7 @@ ${cssLinks}
       })();
     </script>
   </head>
-  <body class="min-h-dvh w-full max-w-[100vw] bg-black" suppressHydrationWarning>
+  <body class="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
     <div id="thalvo-root">
       <div id="thalvo-boot" role="status" aria-live="polite" aria-label="THALVO yükleniyor">
         <div>
