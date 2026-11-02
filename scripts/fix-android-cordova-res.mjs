@@ -1,20 +1,25 @@
 #!/usr/bin/env node
 /**
- * Capacitor writes `capacitor-cordova-android-plugins/src/main/res/.gitkeep`
- * so the empty folder exists after sync. AGP then treats `.gitkeep` as a
- * file-based resource with an empty/invalid name (apostrophe / quote error
- * in mergeResources). Delete invalid names after every `cap sync`.
+ * Remove illegal Android resource filenames that AGP 8+/9 reject.
  *
- * `android/build.gradle` also strips these before mergeResources so Android
- * Studio Run works even without re-running this script.
+ * Capacitor plugins (cordova bridge, keep-awake, Capgo updater, …) often ship
+ * `src/main/res/.gitkeep`. AAPT then fails with:
+ *   ' ' is not a valid file-based resource name character
+ *
+ * `android/build.gradle` also strips these in mergeResources doFirst so
+ * Android Studio Run works even after a fresh `npm ci`.
  */
 import { existsSync, readdirSync, statSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 
-const resRoot = join(
-  process.cwd(),
+const roots = [
   "android/capacitor-cordova-android-plugins/src/main/res",
-);
+  "node_modules/@capacitor-community/keep-awake/android/src/main/res",
+  "node_modules/@capgo/capacitor-updater/android/src/main/res",
+  "node_modules/@capacitor/app/android/src/main/res",
+  "node_modules/@capacitor/status-bar/android/src/main/res",
+  "node_modules/@capacitor/android/capacitor/src/main/res",
+];
 
 function walk(dir) {
   if (!existsSync(dir)) return;
@@ -27,9 +32,9 @@ function walk(dir) {
     const base = name.includes(".") ? name.slice(0, name.lastIndexOf(".")) : name;
     if (name === ".gitkeep" || !/^[a-z0-9_]+$/.test(base)) {
       unlinkSync(full);
-      console.log("[android] removed invalid cordova res file:", full);
+      console.log("[android] removed invalid res file:", full);
     }
   }
 }
 
-walk(resRoot);
+for (const rel of roots) walk(join(process.cwd(), rel));
