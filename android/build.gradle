@@ -27,3 +27,35 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+/**
+ * Capacitor leaves `capacitor-cordova-android-plugins/src/main/res/.gitkeep`
+ * after every `cap sync`. AGP 8+/9 treats that file as a resource whose name
+ * is empty/invalid ("' is not a valid file-based resource name character").
+ * Strip it before any module merges resources — including Android Studio Run.
+ */
+subprojects { sub ->
+    sub.tasks.configureEach { task ->
+        if (task.name.contains("merge") && task.name.toLowerCase().contains("resource")) {
+            task.doFirst {
+                def keep = rootProject.file("capacitor-cordova-android-plugins/src/main/res/.gitkeep")
+                if (keep.exists()) {
+                    keep.delete()
+                    logger.lifecycle("[thalvo] removed ${keep}")
+                }
+                // Also clear any other illegally named files Cap/sync may drop in that res tree.
+                def resDir = rootProject.file("capacitor-cordova-android-plugins/src/main/res")
+                if (resDir.exists()) {
+                    resDir.eachFileRecurse { f ->
+                        if (!f.isFile()) return
+                        def base = f.name.contains(".") ? f.name.substring(0, f.name.lastIndexOf(".")) : f.name
+                        if (!(base ==~ /^[a-z0-9_]+$/)) {
+                            f.delete()
+                            logger.lifecycle("[thalvo] removed invalid res file ${f}")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
