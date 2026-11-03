@@ -119,7 +119,15 @@ REVOKE ALL ON FUNCTION public.emit_platform_event(text, text, uuid, text, jsonb)
 GRANT EXECUTE ON FUNCTION public.emit_platform_event(text, text, uuid, text, jsonb)
   TO authenticated;
 
--- ---------- job_disputes resolve workflow ----------
+-- ---------- job_disputes (create if older leak_trust migration never ran) ----------
+CREATE TABLE IF NOT EXISTS public.job_disputes (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  job_id uuid NOT NULL REFERENCES public.jobs(id) ON DELETE CASCADE,
+  opened_by uuid NOT NULL REFERENCES public.profiles(id),
+  reason text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
 ALTER TABLE public.job_disputes
   ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'open',
   ADD COLUMN IF NOT EXISTS resolved_by uuid REFERENCES public.profiles(id),
@@ -137,13 +145,40 @@ BEGIN
   END IF;
 END $$;
 
+ALTER TABLE public.job_disputes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "job_disputes: parties read" ON public.job_disputes;
+CREATE POLICY "job_disputes: parties read"
+  ON public.job_disputes FOR SELECT TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.jobs j
+      WHERE j.id = job_id
+        AND (j.client_id = auth.uid() OR j.provider_id = auth.uid())
+    )
+    OR public.has_role(auth.uid(), 'admin')
+  );
+
+DROP POLICY IF EXISTS "job_disputes: parties insert" ON public.job_disputes;
+CREATE POLICY "job_disputes: parties insert"
+  ON public.job_disputes FOR INSERT TO authenticated
+  WITH CHECK (
+    opened_by = auth.uid()
+    AND EXISTS (
+      SELECT 1 FROM public.jobs j
+      WHERE j.id = job_id
+        AND (j.client_id = auth.uid() OR j.provider_id = auth.uid())
+    )
+  );
+
 DROP POLICY IF EXISTS "job_disputes: admin update" ON public.job_disputes;
 CREATE POLICY "job_disputes: admin update"
   ON public.job_disputes FOR UPDATE TO authenticated
   USING (public.has_role(auth.uid(), 'admin'))
   WITH CHECK (public.has_role(auth.uid(), 'admin'));
 
-GRANT UPDATE ON public.job_disputes TO authenticated;
+GRANT SELECT, INSERT, UPDATE ON public.job_disputes TO authenticated;
+GRANT ALL ON public.job_disputes TO service_role;
 
 CREATE OR REPLACE FUNCTION public.resolve_job_dispute(
   _dispute_id uuid,
