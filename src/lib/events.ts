@@ -61,6 +61,8 @@ export type EventType =
   | "admin.provider_unverified"
   | "admin.listing_deactivated"
   | "admin.listing_reactivated"
+  | "admin.mission_flagged"
+  | "admin.dispute_resolved"
   | "payment.intent_created"
   | "payment.secured"
   | "escrow.release_requested"
@@ -91,6 +93,8 @@ export const EVENT_LABEL_KEYS: Record<EventType, string> = {
   "admin.provider_unverified": "events.admin_provider_unverified",
   "admin.listing_deactivated": "events.admin_listing_deactivated",
   "admin.listing_reactivated": "events.admin_listing_reactivated",
+  "admin.mission_flagged": "events.admin_mission_flagged",
+  "admin.dispute_resolved": "events.admin_dispute_resolved",
   "payment.intent_created": "events.payment_intent_created",
   "payment.secured": "events.payment_secured",
   "escrow.release_requested": "events.escrow_release_requested",
@@ -118,6 +122,8 @@ export const EVENT_SEVERITY: Record<EventType, EventSeverity> = {
   "admin.provider_unverified": "warning",
   "admin.listing_deactivated": "warning",
   "admin.listing_reactivated": "info",
+  "admin.mission_flagged": "warning",
+  "admin.dispute_resolved": "success",
   "payment.intent_created": "info",
   "payment.secured": "success",
   "escrow.release_requested": "info",
@@ -192,16 +198,27 @@ export function emitEvent(input: EmitEventInput): void {
     metadata: input.metadata ?? {},
   };
 
-  // Resolve actor asynchronously; do not block caller.
+  // Prefer SECURITY DEFINER RPC so privileged server paths can share
+  // the same writer later. Fall back to direct insert if the RPC is
+  // not yet migrated on a given environment.
   void (async () => {
     try {
+      const { error: rpcError } = await supabase.rpc("emit_platform_event", {
+        _event_type: payload.event_type,
+        _subject_type: payload.subject_type,
+        _subject_id: payload.subject_id,
+        _severity: payload.severity,
+        _metadata: payload.metadata,
+      } as never);
+      if (!rpcError) return;
+
       const { data } = await supabase.auth.getUser();
       payload.actor_id = data.user?.id ?? null;
       const { error } = await supabase
         .from("platform_events")
         .insert({ ...payload, metadata: payload.metadata as never });
       if (error && typeof console !== "undefined") {
-        console.debug("[events] insert failed", input.type, error.message);
+        console.debug("[events] insert failed", input.type, error.message, rpcError.message);
       }
     } catch (e) {
       if (typeof console !== "undefined") {

@@ -16,6 +16,7 @@ import { setMapChromeOverlay } from "@/lib/map-chrome";
 import { fetchMetocean, compassLabel } from "@/lib/metocean";
 import { supabase } from "@/integrations/supabase/client";
 import type { CaptainAction, CaptainCockpitContext } from "@/lib/ai-captain-types";
+import { resolveAiLang } from "@/lib/ai-lang";
 
 interface Msg {
   role: "user" | "assistant";
@@ -92,7 +93,7 @@ async function hydrateCockpit(): Promise<CaptainCockpitContext> {
 
 export function ThalvoAiFab({ hideLauncher = false }: { hideLauncher?: boolean } = {}) {
   const { t, i18n } = useTranslation();
-  const lang: "en" | "tr" = i18n.language === "en" ? "en" : "tr";
+  const lang = resolveAiLang(i18n.language);
   const navigate = useNavigate();
   const ask = useServerFn(askThalvoAi);
   const [open, setOpen] = useState(false);

@@ -5,45 +5,59 @@ can pick them up without re-discovering.
 
 ## Security
 
-- **Server-side leak enforcement.** The chat leak guard is currently
-  client-side plus a DB masking trigger. High-risk classification MUST
-  also fail server-side via a Supabase RPC before we advertise the
-  guarantee. See `src/lib/security.ts` and `components/JobChat.tsx`.
-- **`security_events` audit table.** Blocked send attempts are not
-  persisted. Add a table + RLS + admin read policy in a future phase.
-- **`MaskedContact` reveal.** Currently UI-only; must be gated by a
-  server RPC that checks role and logs the reveal.
+- **Server-side leak enforcement.** DB `mask_job_message` rejects high-risk
+  chat. Client `recordSecurityEvent` now also writes `security_events` for
+  preflight blocks that never reach the table. AdminSecurityPanel merges both.
+- **`MaskedContact` reveal.** Still UI-only; must be gated by a server RPC
+  that checks role and logs the reveal.
 - **Simulated payments.** `record_payment_intent` still writes
   `status='secured'` with `provider='simulated'`. Acceptable for pilot
   while UI labels demo mode; replace with PSP webhook before real money.
   See migration `20261013213000_launch_security_hardening.sql`.
-- **CSP.** Vercel ships HSTS / frame / nosniff / Permissions-Policy;
-  Content-Security-Policy still deferred (Leaflet + Supabase + fonts).
+- **CSP.** Report-Only CSP ships on Vercel (`Content-Security-Policy-Report-Only`)
+  covering Leaflet tiles, Supabase, and self assets. Promote to enforcing
+  after a quiet report window.
 
 ## Reputation
 
-- **Event-sourced reputation.** `lib/trust.ts` derives scores from
-  ratings + volume only. Real event sources (arrival timestamps,
-  dispute log, KYC state, response speed) are marked `null` and
-  rendered as "Building score" placeholders.
+- **Event-sourced reputation.** `provider_trust_signals` RPC already feeds
+  arrival / response / dispute samples into `computeTrust`. Scores stay
+  "Building" until providers have timed arrivals and completed missions —
+  that is data, not a wiring gap. Cert action opens Vessel Passport.
 
 ## Orders / logistics
 
-- **Multi-dealer cart split.** `checkout_parts_cart` derives a single
-  dealer from cart contents; carts spanning multiple dealers are not
-  yet split into multiple orders.
+- **Multi-dealer cart.** `checkout_parts_cart` splits one order per dealer
+  (see `20261006152000_leak_trust_cart.sql`). Keep UI copy honest about the split.
 - **Payment + escrow.** No real payment capture. Escrow release on
   delivery is a UI state, not a ledger event.
 - **Courier / service-boat dispatch.** Delivery ETA is a heuristic;
   no dispatcher assignment or GPS tracking yet.
+- **Boat brokerage contact.** Marketplace listings no longer expose
+  WhatsApp/`tel:`; in-app inquire toast only. A real inquire/job thread
+  is the next vertical step.
 
 ## Admin
 
 - **Admin RLS override.** Cross-tenant visibility relies on existing
-  policies; dedicated `admin`-only override policies + `admin_events`
-  audit log are not yet in place.
-- **Destructive actions.** "Resolve dispute", "Flag for review", etc.
-  are disabled placeholders.
+  policies; dedicated `admin`-only override policies + richer
+  `admin_events` audit log can still deepen.
+- **Incident actions.** Flag for review (`flag_mission_for_review`) and
+  resolve dispute (`resolve_job_dispute`) are live from IncidentDetailPanel.
+  Provider profile deep-link uses `/app/reputation` when `provider_id` is set.
+
+## Platform events
+
+- Client `emitEvent` prefers `emit_platform_event` SECURITY DEFINER RPC
+  (migration `20261103040000_quality_pass_security_audit.sql`) with
+  direct-insert fallback. Privileged RPCs (`accept_offer`, checkout, etc.)
+  should call the same SQL function server-side and drop duplicate client emits.
+
+## Push
+
+- Foreground Web Notification + `useNotificationPermission` /
+  optional `subscribeWebPush` (VAPID via `VITE_VAPID_PUBLIC_KEY` only).
+  Background FCM/APNs still needs provider credentials outside the repo.
 
 ## Design system
 

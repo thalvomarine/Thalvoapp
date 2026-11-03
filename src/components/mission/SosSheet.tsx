@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { askThalvoAi } from "@/lib/thalvo-ai.functions";
 import { emitEvent } from "@/lib/events";
+import { resolveAiLang } from "@/lib/ai-lang";
 import { PROBLEM_KEYS } from "@/i18n";
 import { useOnlineStatus } from "@/lib/pwa";
 import { getFix, fixToJobFields, formatAccuracy, isStale, isLowAccuracy, readLastFix, type GeoFix } from "@/lib/geolocation";
@@ -64,7 +65,7 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
   const ask = useServerFn(askThalvoAi);
   const online = useOnlineStatus();
 
-  const isTr = i18n.language !== "en";
+  const isTr = i18n.language.toLowerCase().startsWith("tr");
 
   const [step, setStep] = useState<Step>(0);
   const [category, setCategory] = useState<Category>(initialCategory);
@@ -167,7 +168,7 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
       (photo ? `\n(Photo attached by captain — not visible to you here.)` : "") +
       `\n\nReturn: (1) one-line likely cause, (2) one immediate safety step the captain can take now, (3) what a responder will most likely need on arrival. No panic language.`;
     try {
-      const res = await ask({ data: { messages: [{ role: "user", content: prompt.slice(0, 4000) }], lang: (i18n.language === "en" ? "en" : "tr") } });
+      const res = await ask({ data: { messages: [{ role: "user", content: prompt.slice(0, 4000) }], lang: resolveAiLang(i18n.language) } });
       setAiText(res.text || t("sos_sheet.advice_offline"));
       setAiOk(Boolean(res.text));
     } catch (err: unknown) {

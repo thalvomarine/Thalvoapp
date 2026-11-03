@@ -3,9 +3,8 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { filterMessage } from "@/lib/filter";
 import { sanitizeMultiline } from "@/lib/sanitize";
-import { classifyLeakRisk, riskCopy } from "@/lib/security";
+import { classifyLeakRisk, recordSecurityEvent, riskCopy } from "@/lib/security";
 import { SecurityWarningBanner } from "@/components/security/SecurityWarningBanner";
-import { emitEvent } from "@/lib/events";
 import { AlertTriangle, Send, ShieldCheck } from "lucide-react";
 
 interface Message {
@@ -51,13 +50,7 @@ export function JobChat({ jobId, meId }: { jobId: string; meId: string }) {
     // even if this check is skipped.
     if (blocked) {
       setAlert(true);
-      // M7: log blocked send attempt as telemetry.
-      emitEvent({
-        type: "chat.high_risk_blocked",
-        subject_type: "chat",
-        subject_id: jobId,
-        metadata: { categories: preflight.categories, signal_count: preflight.signals.length },
-      });
+      recordSecurityEvent({ jobId, report: preflight, source: "preflight" });
       return;
     }
     const filtered = filterMessage(sanitizeMultiline(text, 2000));
@@ -74,12 +67,7 @@ export function JobChat({ jobId, meId }: { jobId: string; meId: string }) {
     if (error) {
       setAlert(true);
       if (/LEAK_BLOCKED/i.test(error.message)) {
-        emitEvent({
-          type: "chat.high_risk_blocked",
-          subject_type: "chat",
-          subject_id: jobId,
-          metadata: { categories: preflight.categories, signal_count: preflight.signals.length },
-        });
+        recordSecurityEvent({ jobId, report: preflight, source: "db" });
       }
       return;
     }

@@ -16,6 +16,7 @@ import { LiveOpsPanel } from "@/components/mission/LiveOpsPanel";
 import { MoneyAmount } from "@/components/core/MoneyAmount";
 import { EmptyState } from "@/components/core/EmptyState";
 import { SHEET_PANEL, SHEET_SCRIM, SheetHandle, useSheetChrome } from "@/lib/sheet-chrome";
+import { packageTitleLang } from "@/lib/ai-lang";
 
 export const Route = createFileRoute("/_authenticated/app/services")({
   ssr: false,
@@ -52,7 +53,7 @@ function Services() {
   }, []);
 
   const visible = useMemo(() => packages.filter((p) => p.category === filter), [packages, filter]);
-  const label = (p: Pkg) => (i18n.language === "en" ? p.title_en : p.title_tr);
+  const label = (p: Pkg) => (packageTitleLang(i18n.language) === "en" ? p.title_en : p.title_tr);
 
   return (
     <div className="space-y-6">
@@ -77,8 +78,8 @@ function Services() {
         <GlassPanel>
           <EmptyState
             icon={<Wrench className="size-4" />}
-            title="No packages yet"
-            body="Standard service packages will appear here."
+            title={t("services.empty_title")}
+            body={t("services.empty_body")}
           />
         </GlassPanel>
       ) : (
