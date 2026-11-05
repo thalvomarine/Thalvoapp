@@ -1579,12 +1579,23 @@ export type Database = {
           _delivery_location_label?: string
           _delivery_marina: string
           _delivery_method?: string
+          _demo_ack?: boolean
           _items: Json
           _notes?: string
           _vessel_id?: string
         }
         Returns: string[]
       }
+      confirm_payment_intent_from_provider: {
+        Args: {
+          _intent_id: string
+          _metadata?: Json
+          _provider: string
+          _provider_ref?: string
+        }
+        Returns: undefined
+      }
+      payment_mode: { Args: never; Returns: string }
       provider_trust_signals: { Args: { _provider: string }; Returns: Json }
       reveal_contact_allowed: { Args: never; Returns: boolean }
       complete_job: { Args: { _job_id: string }; Returns: Json }
@@ -1608,7 +1619,28 @@ export type Database = {
         Returns: boolean
       }
       record_payment_intent: {
-        Args: { _job_id: string; _offer_id: string }
+        Args: { _job_id: string; _offer_id: string; _demo_ack?: boolean }
+        Returns: string
+      }
+      record_security_event: {
+        Args: {
+          _job_id: string
+          _risk: string
+          _source: string
+          _categories?: string[]
+          _summary?: string
+          _metadata?: Json
+        }
+        Returns: string
+      }
+      emit_platform_event: {
+        Args: {
+          _event_type: string
+          _subject_type: string
+          _subject_id?: string
+          _severity?: string
+          _metadata?: Json
+        }
         Returns: string
       }
       reject_part: { Args: { _part_id: string }; Returns: undefined }

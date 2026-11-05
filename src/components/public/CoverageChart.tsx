@@ -16,6 +16,11 @@ import {
   type MarineZone,
   type MarineZoneKind,
 } from "@/lib/marine-data";
+import { createCachedTileLayer } from "@/lib/map/tileCache";
+import { useOnlineStatus } from "@/lib/pwa";
+
+/** Same OSM template the cockpit prefetches for the Aegean corridor. */
+const OSM_RASTER_TILE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 
 /** Coverage pins only. Live vessels and technicians stay off this chart. */
 const COVERAGE_KINDS = new Set<MarineZoneKind>(["marina", "anchorage", "fuel", "hazard"]);
@@ -93,10 +98,14 @@ function coveragePin(kind: ChartPinKind) {
   return icon;
 }
 
-function Seamarks() {
+function Seamarks({ enabled }: { enabled: boolean }) {
   const map = useMap();
   const [on, setOn] = useState(false);
   useEffect(() => {
+    if (!enabled) {
+      setOn(false);
+      return;
+    }
     const enable = () => {
       if (map.getZoom() >= 12) setOn(true);
     };
@@ -106,8 +115,8 @@ function Seamarks() {
       map.off("zoomend", enable);
       window.clearTimeout(later);
     };
-  }, [map]);
-  if (!on) return null;
+  }, [map, enabled]);
+  if (!enabled || !on) return null;
   return (
     <TileLayer
       url={MARINE_SEAMARK_TILE_URL}
@@ -122,6 +131,32 @@ function Seamarks() {
   );
 }
 
+/**
+ * Offline-only cached OSM layer. Prefetch from the cockpit corridor paints
+ * here when the radio drops. Never stack with seamarks (iOS WebKit blank).
+ */
+function OfflineCachedBasemap({ active }: { active: boolean }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!active) return;
+    const layer = createCachedTileLayer(OSM_RASTER_TILE, {
+      minZoom: 4,
+      maxZoom: 18,
+      maxNativeZoom: 19,
+      errorTileUrl: VOID_TILE,
+      updateWhenIdle: true,
+      updateWhenZooming: false,
+      keepBuffer: 1,
+      attribution: "© OpenStreetMap · offline cache",
+    });
+    map.addLayer(layer);
+    return () => {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+    };
+  }, [map, active]);
+  return null;
+}
+
 export function CoverageChart({
   bay,
   fill = false,
@@ -133,6 +168,8 @@ export function CoverageChart({
   own?: { lat: number; lng: number } | null;
 }) {
   const { t } = useTranslation();
+  const online = useOnlineStatus();
+  const offline = !online;
   const [mounted, setMounted] = useState(false);
   const [zones, setZones] = useState<MarineZone[]>([]);
   const center = COVERAGE_BAYS[bay];
@@ -196,18 +233,22 @@ export function CoverageChart({
         style={{ width: "100%", height: "100%", background: "#06101c" }}
       >
         <FitFrame />
-        <TileLayer
-          url={MARINE_PUBLIC_BASE_URL}
-          attribution="&copy; Esri"
-          minZoom={4}
-          maxZoom={18}
-          maxNativeZoom={MARINE_DARK_TILE_MAX_NATIVE_ZOOM}
-          errorTileUrl={VOID_TILE}
-          updateWhenIdle
-          updateWhenZooming={false}
-          keepBuffer={1}
-        />
-        <Seamarks />
+        {offline ? (
+          <OfflineCachedBasemap active />
+        ) : (
+          <TileLayer
+            url={MARINE_PUBLIC_BASE_URL}
+            attribution="&copy; Esri"
+            minZoom={4}
+            maxZoom={18}
+            maxNativeZoom={MARINE_DARK_TILE_MAX_NATIVE_ZOOM}
+            errorTileUrl={VOID_TILE}
+            updateWhenIdle
+            updateWhenZooming={false}
+            keepBuffer={1}
+          />
+        )}
+        <Seamarks enabled={!offline} />
         <GoTo
           lat={own?.lat ?? center.lat}
           lng={own?.lng ?? center.lng}

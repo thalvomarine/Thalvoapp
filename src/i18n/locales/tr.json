@@ -333,7 +333,10 @@
       "heating": "Isıtma",
       "teak_deck": "Tik güverte",
       "dinghy": "Şalupa"
-    }
+    },
+    "contact_in_app": "THALVO üzerinden iletişim iste",
+    "contact_in_app_toast": "İletişim THALVO içinde kalır — satıcı uygulama içinden yanıtlar. WhatsApp ve telefon kapalı.",
+    "seller_phone_masked": "Satıcı telefonu, uygulama içi konuşma açılana kadar maskeli."
   },
   "services": {
     "eyebrow": "THALVO · Kıyı destek",
@@ -343,7 +346,9 @@
     "filter_diver": "Dalgıçlar",
     "no_offers": "Bu paket için henüz teklif yok.",
     "book_now": "Hemen Rezerve Et",
-    "eta_short": "Süre"
+    "eta_short": "Süre",
+    "empty_title": "Henüz paket yok",
+    "empty_body": "Standart servis paketleri burada görünecek."
   },
   "shop": {
     "title": "Yedek Parça Pazaryeri",
@@ -516,7 +521,14 @@
     "sim_banner": "Güvenli demo ödeme modu — Bu işlem yalnızca test ortamında simüle edilir. Kart bilgileri kaydedilmez, gönderilmez ve gerçek para hareketi oluşmaz.",
     "field_required": "Simülasyon için tüm test kart alanları gereklidir.",
     "test_mode_badge": "TEST MODU — gerçek karttan ödeme alınmaz",
-    "test_mode_fields_note": "Herhangi bir değer girebilirsiniz — hiçbir bilgi gönderilmez."
+    "test_mode_fields_note": "Herhangi bir değer girebilirsiniz — hiçbir bilgi gönderilmez.",
+    "offline_error": "Çevrimdışısın. Simüle ödemeyi çalıştırmak için yeniden bağlan.",
+    "offline_banner": "Çevrimdışısın. Simüle ödemeyi çalıştırmak için bağlan — henüz hiçbir şey gönderilmedi.",
+    "generic_error": "Simüle ödeme tamamlanamadı.",
+    "test_amount": "Test tutarı · tahsil edilmez",
+    "retry": "Simüle ödemeyi yeniden dene",
+    "cancel": "İptal",
+    "close": "Kapat"
   },
   "admin": {
     "title": "THALVO Yönetim",
@@ -770,6 +782,21 @@
       "delete": "Sil",
       "sos": "Acil servis çağrıları",
       "saved": "Kaydedildi"
+    },
+    "incident": {
+      "select_title": "Bir görev seç",
+      "select_body": "Olay detayları burada görünür.",
+      "detail_eyebrow": "Olay detayı",
+      "open_cockpit": "Görev kokpitini aç",
+      "view_provider": "Sağlayıcı profilini gör",
+      "flag_review": "İnceleme için işaretle",
+      "flag_ok": "Görev incelemeye işaretlendi.",
+      "flag_fail": "Görev işaretlenemedi.",
+      "resolve_dispute": "Açık anlaşmazlığı çöz",
+      "resolve_ok": "Anlaşmazlık çözüldü olarak işaretlendi.",
+      "resolve_none": "Bu görevde açık anlaşmazlık yok.",
+      "resolve_fail": "Anlaşmazlık çözülemedi.",
+      "resolve_note": "Kontrol kulesinden çözüldü"
     }
   },
   "profile": {
@@ -922,7 +949,7 @@
     "no_parts_yet": "Henüz takılı parça yok. Görevlerde onaylanan parçalar burada listelenir.",
     "part_source_provider": "usta",
     "document_vault": "Belgeler",
-    "documents_coming_soon": "Güvenli yükleme · yakında",
+    "documents_coming_soon": "Güvenli yükleme · kasa açık",
     "doc_private": "Yalnızca size açık",
     "doc_upload": "Yükle",
     "doc_replace": "Değiştir",
@@ -956,7 +983,7 @@
     "completed_event": "Tamamlandı",
     "mission_fallback": "Görev",
     "part_installed": "Parça takıldı",
-    "footer_note": "Sigorta, transit log ve sörvey belge yüklemesi — yakında.",
+    "footer_note": "Sigorta, seyir defteri ve sörvey yüklemeleri belge kasasında canlı.",
     "health_timeline": "Sağlık Geçmişi",
     "timeline_empty": "Henüz kayıtlı olay yok. SOS çağrıları, tamamlanan görevler ve parça değişimleri burada görünecek.",
     "timeline_count_one": "{{count}} olay",
@@ -1308,7 +1335,8 @@
     },
     "toast": {
       "certs_coming_soon": "Güvenli sertifika yükleme bir sonraki sürümde geliyor.",
-      "eta_hint": "Görevlere zamanında çık — varış doğruluğu skorunu katlar."
+      "eta_hint": "Görevlere zamanında çık — varış doğruluğu skorunu katlar.",
+      "certs_open_passport": "Sertifikalar için Tekne Pasaportunu aç."
     },
     "footnote": "Yanıt hızı, varış doğruluğu ve itiraz oranı, olay kaydı devreye girdiğinde canlı sinyallere dönüşecek.",
     "sheet": {
@@ -1405,6 +1433,8 @@
     "footer": "THALVO · Güvenli Seyir, Anında Müdahale"
   },
   "pwa": {
+    "banner_offline": "Çevrimdışı · yalnızca harita önbelleği",
+    "banner_online": "Bağlantı geldi",
     "installed": {
       "title": "THALVO yüklendi",
       "hint": "Ana ekranından istediğin an başlat."
@@ -1605,7 +1635,9 @@
     "admin_provider_verified": "Sağlayıcı doğrulandı",
     "admin_provider_unverified": "Sağlayıcı doğrulaması kaldırıldı",
     "admin_listing_deactivated": "İlan yayından kaldırıldı",
-    "admin_listing_reactivated": "İlan yeniden yayınlandı"
+    "admin_listing_reactivated": "İlan yeniden yayınlandı",
+    "admin_mission_flagged": "Görev incelemeye işaretlendi",
+    "admin_dispute_resolved": "Anlaşmazlık çözüldü"
   },
   "supplier": {
     "redirect": "Bayi konsolu açılıyor…"
@@ -1750,7 +1782,9 @@
     "route_deck_add_via": "+ Ara Nokta",
     "route_deck_lock": "Seyre Başla",
     "route_deck_unlock": "Düzenle",
-    "route_deck_remove_point": "Bu noktayı sil"
+    "route_deck_remove_point": "Bu noktayı sil",
+    "crash_title": "Harita yüklenemedi. SOS kullanılabilir durumda.",
+    "crash_retry": "Haritayı yeniden dene"
   },
   "boatshow": {
     "kicker": "Boat show · Göcek–Marmaris pilot",
@@ -1875,7 +1909,7 @@
     "nav_about": "Hakkımızda",
     "nav_menu": "Menü",
     "slogan": "Marine Operating System",
-    "lede": "Denizde güvenli seyir işletim sistemi.",
+    "lede": "Denizde güvenli seyir işletim sistemi — Ege ve Akdeniz, SOS, teknisyen ve yedek parça.",
     "coverage": "Ege ve Akdeniz · SOS, teknisyen, yedek parça",
     "cta_chart": "Canlı haritayı aç",
     "cta_partner": "Partner ol",
@@ -1901,5 +1935,82 @@
     "partner_point_3": "Pilot ekip 24 saat içinde döner",
     "partner_thanks_title": "Teşekkürler",
     "partner_kind_hint": "Rolünüzü seçin — form buna göre kayda geçer."
+  },
+  "onboarding": {
+    "back": "Geri",
+    "skip": "Atla",
+    "step_of": "Adım {{current}} / {{total}}",
+    "continue": "Devam",
+    "get_started": "Başla",
+    "skip_for_now": "Şimdilik atla",
+    "not_now": "Şimdi değil",
+    "enable": "İzin ver",
+    "selected": "Seçildi",
+    "welcome_title": "THALVO'ya hoş geldin",
+    "welcome_subtitle": "Kaptanlar, deniz profesyonelleri ve güvenilir tedarikçiler için Marine Operating System.",
+    "welcome_b1": "Acil durumları tek dokunuşla bildir.",
+    "welcome_b2": "Sertifikalı profesyonelleri saniyeler içinde karşılaştır.",
+    "welcome_b3": "Tekneni yönet — parçalar, geçmiş, belgeler.",
+    "welcome_b4": "Her ödeme THALVO Escrow ile korunur.",
+    "role_eyebrow": "Adım 1",
+    "role_title": "Kimsin?",
+    "role_subtitle": "Ana rolünü seç. Sonra değiştirebilirsin.",
+    "role_captain": "Kaptan",
+    "role_captain_hint": "Tekne sahibi veya kaptan",
+    "role_mechanic": "Mekanik",
+    "role_mechanic_hint": "Sertifikalı deniz mekaniği",
+    "role_diver": "Dalgıç",
+    "role_diver_hint": "Profesyonel sualtı dalgıçı",
+    "role_dealer": "Bayi",
+    "role_dealer_hint": "Parça ve tedarik ortağı",
+    "role_admin": "Yönetici",
+    "role_admin_hint": "THALVO Kontrol Kulesi",
+    "lang_eyebrow": "Adım 2",
+    "lang_title": "Dilini seç",
+    "lang_subtitle": "Menüler, uyarılar ve görev brifinglerinde kullanılır.",
+    "lang_hint_tr": "Ege ve Akdeniz filosu",
+    "lang_hint_en": "Uluslararası ekipler",
+    "lang_hint_el": "Yunanca konuşan ekipler",
+    "lang_saved": "Tercih bu cihaza otomatik kaydedilir.",
+    "perm_eyebrow": "Adım 3",
+    "perm_title": "Birkaç izin",
+    "perm_subtitle": "THALVO yalnızca acil durum için gerekeni ister. Zorunlu değil.",
+    "perm_location": "Konum",
+    "perm_location_body": "Yakındaki sertifikalı profesyonelleri bulmak için.",
+    "perm_notifications": "Bildirimler",
+    "perm_notifications_body": "Teklif ve görev durumu güncellemeleri.",
+    "perm_camera": "Kamera",
+    "perm_camera_body": "SOS raporlarına fotoğraf ekle; ekip hazır gelsin.",
+    "hint_loc_unavailable": "Bu cihazda konum yok — yine de marina ile arayabilirsin.",
+    "hint_loc_ok": "Konum açık. THALVO daha yakın ekipleri eşleştirebilir.",
+    "hint_loc_denied": "Konum reddedildi — marina ile yardım isteyebilirsin, yanıt yavaşlayabilir.",
+    "hint_notif_unsupported": "Bildirim desteklenmiyor — uygulama içi gelen kutusu çalışır.",
+    "hint_notif_ok": "Bildirimler açık. Teklif geldiğinde THALVO seni uyarır.",
+    "hint_notif_denied": "Bildirimler kapalı — teklifler uygulama içinde görünür.",
+    "hint_notif_fail": "Bildirim kullanılamıyor — uygulama içi akış çalışır.",
+    "hint_cam_ok": "Kamera hazır — SOS raporlarına canlı fotoğraf ekleyebilirsin.",
+    "hint_cam_denied": "Kamera reddedildi — sorunu metinle anlatabilirsin.",
+    "captain_eyebrow": "Adım 4",
+    "captain_title": "Kayıtlı bir teknen var mı?",
+    "captain_subtitle": "Şimdi ekleyerek Tekne Pasaportunu aç — ya da sonra ekle.",
+    "captain_yes": "Evet — teknemi kur",
+    "captain_yes_hint": "Tekne Pasaportu kurulumuna götürür.",
+    "captain_skip": "Henüz yok — atla",
+    "captain_skip_hint": "Tekneyi sonra Profil’den ekle.",
+    "tour_eyebrow": "Adım 5",
+    "tour_title": "Görev Merkeziyle tanış",
+    "tour_subtitle": "İhtiyacın olan her şey bir dokunuş ötede.",
+    "tour_map": "Harita",
+    "tour_map_body": "Yakındaki ekipleri canlı gör.",
+    "tour_sos": "SOS",
+    "tour_sos_body": "Tek dokunuşla en yakın yardımı çağır.",
+    "tour_compass": "Pusula",
+    "tour_compass_body": "THALVO AI yardımcıın her yerde.",
+    "tour_market": "Pazar",
+    "tour_market_body": "Bayi parçaları ve uygulama içi sipariş.",
+    "tour_passport": "Pasaport",
+    "tour_passport_body": "Teknenin dosyası ve geçmişi.",
+    "tour_enter": "Görev Merkezine gir",
+    "tour_replay": "Bu turu istediğin zaman Profil’den tekrar oynatabilirsin."
   }
 }

@@ -16,16 +16,9 @@ declare global {
  * module, before React mounts. Capgo rolls the bundle back if this never
  * resolves within `appReadyTimeout` (see capacitor.config.ts).
  */
-void (async () => {
-  try {
-    const { Capacitor } = await import("@capacitor/core");
-    if (!Capacitor.isNativePlatform()) return;
-    const { CapacitorUpdater } = await import("@capgo/capacitor-updater");
-    await CapacitorUpdater.notifyAppReady();
-  } catch {
-    /* browser / plugin missing */
-  }
-})();
+// Dual handshake with the SPA boot script in prepare-web-spa.mjs is
+// intentional — Capgo rolls back if neither fires within appReadyTimeout.
+void import("@/lib/capgo").then((m) => m.notifyCapgoAppReady()).catch(() => {});
 
 /**
  * Static Vercel / Capacitor `index.html` is a CSR shell (`#thalvo-root`),

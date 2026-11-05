@@ -8,7 +8,6 @@ import {
   MessageCircle,
   Pause,
   Pencil,
-  Phone,
   Play,
   Search,
   Ship,
@@ -23,8 +22,6 @@ import {
   formatListingPrice,
   isLiveListing,
   isOwnListing,
-  telHref,
-  whatsappHref,
   type BoatListing,
   type HullType,
 } from "@/lib/boat-listings";
@@ -851,23 +848,16 @@ function BoatDetailSheet({
             </div>
           )}
           {!owned && (
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <a
-                href={whatsappHref(boat.sellerPhone)}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] text-[14px] font-semibold text-[#0a192f]"
+            <div className="grid gap-2">
+              <button
+                type="button"
+                onClick={() => toast.message(t("boats.contact_in_app_toast"))}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#F5B942] text-[14px] font-semibold text-[#1A1406]"
               >
                 <MessageCircle className="size-3.5" />
-                {t("boats.contact_whatsapp")}
-              </a>
-              <a
-                href={telHref(boat.sellerPhone)}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-[var(--desk-border)] bg-[var(--desk-input)] text-[14px] font-semibold text-[var(--desk-ink)]"
-              >
-                <Phone className="size-3.5" />
-                {t("boats.contact_phone")}
-              </a>
+                {t("boats.contact_in_app")}
+              </button>
+              <p className="text-center text-[11px] text-[var(--desk-muted)]">{t("boats.seller_phone_masked")}</p>
             </div>
           )}
           <button

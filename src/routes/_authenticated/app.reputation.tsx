@@ -101,8 +101,10 @@ function ReputationInner({ userId }: { userId: string }) {
         ]}
         onAction={(key) => {
           if (key === "profile") window.location.assign("/app/profile");
-          else if (key === "certs") toast(t("trust.toast.certs_coming_soon"));
-          else if (key === "missions") window.location.assign("/app");
+          else if (key === "certs") {
+            toast.message(t("trust.toast.certs_open_passport"));
+            window.location.assign("/app/passport");
+          } else if (key === "missions") window.location.assign("/app");
           else toast(t("trust.toast.eta_hint"));
         }}
       />
