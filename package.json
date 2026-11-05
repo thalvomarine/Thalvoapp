@@ -13,16 +13,20 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "test": "node --test --experimental-strip-types src/lib/geolocation.test.ts src/lib/nav.test.ts src/lib/payments.test.ts src/lib/sea-route.test.ts src/lib/tile-cache.test.ts src/lib/trust.test.ts src/lib/digit-format.test.ts src/lib/thalvo-ai/domain.test.ts",
+    "test": "node --test --experimental-strip-types src/lib/geolocation.test.ts src/lib/nav.test.ts src/lib/payments.test.ts src/lib/sea-route.test.ts src/lib/tile-cache.test.ts src/lib/trust.test.ts src/lib/digit-format.test.ts src/lib/thalvo-ai/domain.test.ts src/lib/capgo.test.ts src/lib/ai-lang.test.ts",
     "cap:prepare": "node scripts/prepare-web-spa.mjs",
-    "cap:sync": "npm run build && npx cap sync",
-    "build:mobile": "npm run cap:sync"
+    "cap:assets": "node scripts/generate-native-assets.mjs",
+    "cap:sync": "npm run build && npx cap sync && node scripts/fix-android-cordova-res.mjs",
+    "build:mobile": "npm run cap:assets && npm run cap:sync",
+    "ios:sync": "npm run build && npx cap sync ios",
+    "ios:preflight": "node scripts/ios-release-checklist.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^3.0.2",
     "@ai-sdk/react": "^4.0.121",
     "@capacitor-community/keep-awake": "^8.0.1",
     "@capacitor/android": "^8.5.1",
+    "@capacitor/app": "^8.1.2",
     "@capacitor/cli": "^8.5.1",
     "@capacitor/core": "^8.5.1",
     "@capacitor/ios": "^8.5.1",

@@ -1586,6 +1586,16 @@ export type Database = {
         }
         Returns: string[]
       }
+      confirm_payment_intent_from_provider: {
+        Args: {
+          _intent_id: string
+          _metadata?: Json
+          _provider: string
+          _provider_ref?: string
+        }
+        Returns: undefined
+      }
+      payment_mode: { Args: never; Returns: string }
       provider_trust_signals: { Args: { _provider: string }; Returns: Json }
       reveal_contact_allowed: { Args: never; Returns: boolean }
       complete_job: { Args: { _job_id: string }; Returns: Json }
@@ -1610,6 +1620,17 @@ export type Database = {
       }
       record_payment_intent: {
         Args: { _job_id: string; _offer_id: string; _demo_ack?: boolean }
+        Returns: string
+      }
+      record_security_event: {
+        Args: {
+          _job_id: string
+          _risk: string
+          _source: string
+          _categories?: string[]
+          _summary?: string
+          _metadata?: Json
+        }
         Returns: string
       }
       emit_platform_event: {

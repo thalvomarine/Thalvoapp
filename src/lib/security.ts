@@ -6,9 +6,11 @@
  * job_messages) for defense-in-depth: the trigger is the source of truth,
  * these helpers give the client instant feedback + blocking UX.
  *
- * TODO(security-events): once a `security_events` table exists, log every
- * `high` classification here and expose it via AdminSecurityPanel.
+ * High-risk blocks also land in `security_events` via `recordSecurityEvent`.
  */
+
+import { supabase } from "@/integrations/supabase/client";
+import { emitEvent } from "@/lib/events";
 
 export type LeakRisk = "safe" | "low" | "medium" | "high";
 export type LeakCategory =
@@ -144,4 +146,53 @@ export function riskCopy(risk: LeakRisk): { title: string; body: string } {
     default:
       return { title: "", body: "" };
   }
+}
+
+/**
+ * Persist a high-risk block for Control Tower. Best-effort — never throws.
+ * Also mirrors into platform_events for the existing feed.
+ */
+export function recordSecurityEvent(input: {
+  jobId: string;
+  report: LeakReport;
+  source: "preflight" | "db" | "admin";
+  summary?: string;
+}): void {
+  if (input.report.risk !== "high" && input.report.risk !== "medium") return;
+  const categories = input.report.categories;
+  const summary =
+    input.summary ??
+    `Blocked ${input.source} · ${categories.join(", ") || input.report.risk}`;
+
+  void (async () => {
+    try {
+      const { error } = await supabase.rpc("record_security_event", {
+        _job_id: input.jobId,
+        _risk: input.report.risk,
+        _source: input.source,
+        _categories: categories,
+        _summary: summary,
+        _metadata: {
+          signal_count: input.report.signals.length,
+          matches: input.report.signals.map((s) => s.match).slice(0, 8),
+        },
+      } as never);
+      if (error && typeof console !== "undefined") {
+        console.debug("[security] record_security_event failed", error.message);
+      }
+    } catch (e) {
+      if (typeof console !== "undefined") console.debug("[security] record threw", e);
+    }
+  })();
+
+  emitEvent({
+    type: "chat.high_risk_blocked",
+    subject_type: "chat",
+    subject_id: input.jobId,
+    metadata: {
+      categories,
+      signal_count: input.report.signals.length,
+      source: input.source,
+    },
+  });
 }

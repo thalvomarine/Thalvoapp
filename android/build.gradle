@@ -27,3 +27,47 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+/**
+ * Capacitor / Capgo / community plugins often ship `src/main/res/.gitkeep`.
+ * AGP 8+/9 treats that as a file-based resource with an empty/invalid name
+ * (error: "' ' is not a valid file-based resource name character").
+ *
+ * Strip at configuration time (not only task doFirst) so IDE sync and
+ * mergeResources both see a clean res tree.
+ */
+ext.thalvoStripInvalidAndroidRes = { File resDir ->
+    if (resDir == null || !resDir.exists()) return
+    resDir.eachFileRecurse { f ->
+        if (!f.isFile()) return
+        def name = f.name
+        def base = name.contains(".") ? name.substring(0, name.lastIndexOf(".")) : name
+        if (name == ".gitkeep" || !(base ==~ /^[a-z0-9_]+$/)) {
+            f.delete()
+            logger.lifecycle("[thalvo] removed invalid Android res file ${f}")
+        }
+    }
+}
+
+// Known plugin / cordova res roots (relative to android/)
+[
+    file("capacitor-cordova-android-plugins/src/main/res"),
+    file("../node_modules/@capacitor-community/keep-awake/android/src/main/res"),
+    file("../node_modules/@capgo/capacitor-updater/android/src/main/res"),
+    file("../node_modules/@capacitor/app/android/src/main/res"),
+    file("../node_modules/@capacitor/status-bar/android/src/main/res"),
+].each { thalvoStripInvalidAndroidRes(it) }
+
+subprojects { sub ->
+    // When each Android library is evaluated, clean its res again.
+    sub.afterEvaluate {
+        thalvoStripInvalidAndroidRes(sub.file("src/main/res"))
+    }
+    sub.tasks.configureEach { task ->
+        if (task.name.contains("merge") && task.name.toLowerCase().contains("resource")) {
+            task.doFirst {
+                thalvoStripInvalidAndroidRes(sub.file("src/main/res"))
+            }
+        }
+    }
+}

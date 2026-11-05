@@ -19,11 +19,13 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { isNativeWebView } from "@/lib/native-history";
+import { openNativeAppSettings } from "@/lib/native-app";
 import { useTranslation } from "react-i18next";
 import {
   Loader2,
   MapPinOff,
   RefreshCw,
+  Settings,
   X,
 } from "lucide-react";
 import {
@@ -90,10 +92,12 @@ import { MapPlaceholder } from "@/components/ClientOnly";
 import { createRealtimeBuffer, debounce, runWhenIdle } from "@/lib/schedule";
 import {
   AEGEAN_OFFLINE_BOUNDS,
+  createCachedTileLayer,
   downloadAreaTiles,
   type DownloadProgress,
   type PrefetchController,
 } from "@/lib/map/tileCache";
+import { useOnlineStatus } from "@/lib/pwa";
 
 export {
   MARINE_DARK_TILE_MAX_NATIVE_ZOOM,
@@ -357,25 +361,29 @@ function isCoarsePointer(): boolean {
 
 /**
  * Online cockpit rasters use stock Leaflet TileLayer (same path as the public
- * chart). createCachedTileLayer is only for offline prefetch — its custom
- * createTile path plus a second overlay has blanked the tile pane on iOS
- * WebKit when Fenerler/seamarks were stacked.
+ * chart). When offline, the sea basemap switches to createCachedTileLayer so
+ * prefetched corridor tiles paint. Custom createTile + seamarks stacked while
+ * online has blanked iOS WebKit — so cache layers stay offline-only and
+ * seamarks stay off when offline.
  */
 function ChartRasterLayers({
   basemap,
   showSeamarks,
+  offline,
 }: {
   basemap: BasemapId;
   showSeamarks: boolean;
+  offline: boolean;
 }) {
   const map = useMap();
   const layersRef = useRef<{
     sat: L.TileLayer | null;
     sea: L.TileLayer | null;
+    seaCached: L.TileLayer | null;
     dark: L.TileLayer | null;
     seamark: L.TileLayer | null;
     active: L.TileLayer | null;
-  }>({ sat: null, sea: null, dark: null, seamark: null, active: null });
+  }>({ sat: null, sea: null, seaCached: null, dark: null, seamark: null, active: null });
 
   useEffect(() => {
     const keepBuffer = 1;
@@ -429,6 +437,16 @@ function ChartRasterLayers({
         }
         return bag.dark;
       }
+      if (offline) {
+        if (!bag.seaCached) {
+          bag.seaCached = createCachedTileLayer(OSM_RASTER_TILE, {
+            ...raster,
+            maxNativeZoom: 19,
+            attribution: "© OpenStreetMap · offline cache",
+          });
+        }
+        return bag.seaCached;
+      }
       if (!bag.sea) {
         bag.sea = L.tileLayer(OSM_RASTER_TILE, {
           ...raster,
@@ -474,12 +492,15 @@ function ChartRasterLayers({
 
     const bag = layersRef.current;
     if (basemap !== "sat" && bag.sat) hide(bag.sat);
-    if (basemap !== "sea" && bag.sea) hide(bag.sea);
+    if ((!offline || basemap !== "sea") && bag.seaCached) hide(bag.seaCached);
+    if ((offline || basemap !== "sea") && bag.sea) hide(bag.sea);
     if (basemap !== "dark" && bag.dark) hide(bag.dark);
 
-    const seamark = showSeamarks ? ensureSeamark() : bag.seamark;
+    // Never stack seamarks while offline — cache path + overlays blanked iOS.
+    const wantSeamarks = showSeamarks && !offline;
+    const seamark = wantSeamarks ? ensureSeamark() : bag.seamark;
     if (seamark) hide(seamark);
-    if (showSeamarks && seamark && map.getZoom() >= 11) {
+    if (wantSeamarks && seamark && map.getZoom() >= 11) {
       map.addLayer(seamark);
     }
 
@@ -498,7 +519,7 @@ function ChartRasterLayers({
       cancelAnimationFrame(frame);
       window.clearTimeout(later);
     };
-  }, [map, basemap, showSeamarks]);
+  }, [map, basemap, showSeamarks, offline]);
 
   // If the captain zooms past the seamark min zoom while the layer is on,
   // attach/detach without waiting for a React toggle.
@@ -522,11 +543,18 @@ function ChartRasterLayers({
   useEffect(() => {
     return () => {
       const bag = layersRef.current;
-      for (const layer of [bag.sat, bag.sea, bag.dark, bag.seamark]) {
+      for (const layer of [bag.sat, bag.sea, bag.seaCached, bag.dark, bag.seamark]) {
         if (!layer) continue;
         if (map.hasLayer(layer)) map.removeLayer(layer);
       }
-      layersRef.current = { sat: null, sea: null, dark: null, seamark: null, active: null };
+      layersRef.current = {
+        sat: null,
+        sea: null,
+        seaCached: null,
+        dark: null,
+        seamark: null,
+        active: null,
+      };
     };
   }, [map]);
 
@@ -790,6 +818,8 @@ function LiveMapCanvas({
   scrollZoom = false,
 }: Props) {
   const { t } = useTranslation();
+  const online = useOnlineStatus();
+  const offline = !online;
   const [fix, setFix] = useState<GeoFix | null>(null);
   const [failure, setFailure] = useState<GeoFailure | null>(null);
   const [requesting, setRequesting] = useState(false);
@@ -814,28 +844,6 @@ function LiveMapCanvas({
 
   const [tileProgress, setTileProgress] = useState<DownloadProgress | null>(null);
   const prefetchRef = useRef<PrefetchController | null>(null);
-
-  const onDownloadOfflineTiles = useCallback(() => {
-    if (prefetchRef.current) {
-      prefetchRef.current.cancel();
-      prefetchRef.current = null;
-      setTileProgress(null);
-      return;
-    }
-    // Prefetch night/sea OSM basemap for the Göcek–Fethiye–Bozburun corridor.
-    const ctrl = downloadAreaTiles(
-      OSM_RASTER_TILE,
-      AEGEAN_OFFLINE_BOUNDS,
-      9,
-      15,
-      (p) => setTileProgress({ ...p }),
-    );
-    prefetchRef.current = ctrl;
-    void ctrl.promise.finally(() => {
-      prefetchRef.current = null;
-      setTimeout(() => setTileProgress(null), 2500);
-    });
-  }, []);
 
   useEffect(() => {
     if (!map) return;
@@ -877,6 +885,46 @@ function LiveMapCanvas({
   const [basemap, setBasemap] = useState<BasemapId>(() =>
     isCoarsePointer() ? "sat" : "dark",
   );
+  const [onlineBasemap, setOnlineBasemap] = useState<BasemapId | null>(null);
+
+  // When the link drops, fall back to the cached sea corridor and remember
+  // the previous basemap so we can restore it when the radio returns.
+  useEffect(() => {
+    if (offline) {
+      setOnlineBasemap((prev) => prev ?? basemap);
+      if (basemap !== "sea") setBasemap("sea");
+      return;
+    }
+    if (onlineBasemap) {
+      setBasemap(onlineBasemap);
+      setOnlineBasemap(null);
+    }
+  }, [offline]); // eslint-disable-line react-hooks/exhaustive-deps -- intentional radio edge
+
+  const onDownloadOfflineTiles = useCallback(() => {
+    if (prefetchRef.current) {
+      prefetchRef.current.cancel();
+      prefetchRef.current = null;
+      setTileProgress(null);
+      return;
+    }
+    // Prefetch sea OSM for the Göcek–Fethiye–Bozburun corridor — same layer
+    // the chart falls back to when offline.
+    const ctrl = downloadAreaTiles(
+      OSM_RASTER_TILE,
+      AEGEAN_OFFLINE_BOUNDS,
+      9,
+      15,
+      (p) => setTileProgress({ ...p }),
+    );
+    prefetchRef.current = ctrl;
+    void ctrl.promise.then((result) => {
+      if (!result.cancelled) setBasemap("sea");
+    }).finally(() => {
+      prefetchRef.current = null;
+      setTimeout(() => setTileProgress(null), 2500);
+    });
+  }, []);
 
   const [zones, setZones] = useState<MarineZone[]>([]);
   const [reports, setReports] = useState<CommunityReport[]>([]);
@@ -1313,8 +1361,9 @@ function LiveMapCanvas({
           <BootstrapGps fix={fix} />
         )}
         <ChartRasterLayers
-          basemap={basemap}
+          basemap={offline ? "sea" : basemap}
           showSeamarks={layers.seamarks}
+          offline={offline}
         />
         <MapBridge onTelemetry={onMapTelemetry} onClick={onMapClick} />
         <ChartOverlays
@@ -1408,6 +1457,17 @@ function LiveMapCanvas({
                         <span className="min-w-0 flex-1 whitespace-normal">
                           {t(failure.messageKey, { defaultValue: failure.defaultMessage })}
                         </span>
+                        {failure.state === "denied" && isNativeWebView() && (
+                          <button
+                            type="button"
+                            onClick={() => void openNativeAppSettings()}
+                            aria-label={t("common.open_settings")}
+                            title={t("common.open_settings")}
+                            className="grid size-5 shrink-0 place-items-center rounded-full text-amber-100/70 hover:text-amber-50"
+                          >
+                            <Settings className="size-3" />
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() => void request()}

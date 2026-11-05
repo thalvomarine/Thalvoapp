@@ -4,9 +4,10 @@
  * Best-effort event emitter. NEVER awaits — the caller keeps flowing even
  * if the insert fails. All events land in `public.platform_events`.
  *
- * Client emits go through `emit_platform_event` (allowlisted for non-admins).
- * Privileged financial events are written only inside SECURITY DEFINER RPCs.
- * Direct INSERT on `platform_events` is revoked on the live project.
+ * Client emits go through `emit_platform_event`, which allowlists
+ * non-admin event types. Privileged financial events
+ * (`payment.secured`, `escrow.released`, …) are written only inside
+ * SECURITY DEFINER RPCs. Direct INSERT on `platform_events` is revoked.
  */
 
 import { supabase } from "@/integrations/supabase/client";
@@ -54,6 +55,8 @@ export type EventType =
   | "admin.provider_unverified"
   | "admin.listing_deactivated"
   | "admin.listing_reactivated"
+  | "admin.mission_flagged"
+  | "admin.dispute_resolved"
   | "payment.intent_created"
   | "payment.secured"
   | "escrow.release_requested"
@@ -84,6 +87,8 @@ export const EVENT_LABEL_KEYS: Record<EventType, string> = {
   "admin.provider_unverified": "events.admin_provider_unverified",
   "admin.listing_deactivated": "events.admin_listing_deactivated",
   "admin.listing_reactivated": "events.admin_listing_reactivated",
+  "admin.mission_flagged": "events.admin_mission_flagged",
+  "admin.dispute_resolved": "events.admin_dispute_resolved",
   "payment.intent_created": "events.payment_intent_created",
   "payment.secured": "events.payment_secured",
   "escrow.release_requested": "events.escrow_release_requested",
@@ -111,6 +116,8 @@ export const EVENT_SEVERITY: Record<EventType, EventSeverity> = {
   "admin.provider_unverified": "warning",
   "admin.listing_deactivated": "warning",
   "admin.listing_reactivated": "info",
+  "admin.mission_flagged": "warning",
+  "admin.dispute_resolved": "success",
   "payment.intent_created": "info",
   "payment.secured": "success",
   "escrow.release_requested": "info",
@@ -185,6 +192,9 @@ export function emitEvent(input: EmitEventInput): void {
     metadata: input.metadata ?? {},
   };
 
+  // Single write path: emit_platform_event SECURITY DEFINER (client allowlist
+  // + admin/service bypass). Direct INSERT on platform_events is revoked so
+  // a hostile client cannot forge payment.secured / escrow.released etc.
   void (async () => {
     try {
       const { error: rpcError } = await supabase.rpc("emit_platform_event", {

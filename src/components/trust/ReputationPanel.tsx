@@ -28,7 +28,7 @@ export function ReputationPanel({ report, subject, verified, extraStats, onActio
 
   const actions: Action[] = [
     { key: "profile",  label: t("trust.action.profile_label"),  hint: t("trust.action.profile_hint"),  icon: <Compass className="size-4" /> },
-    { key: "certs",    label: t("trust.action.certs_label"),    hint: t("trust.action.certs_hint"),    icon: <Upload className="size-4" />, disabled: true },
+    { key: "certs",    label: t("trust.action.certs_label"),    hint: t("trust.action.certs_hint"),    icon: <Upload className="size-4" /> },
     { key: "missions", label: t("trust.action.missions_label"), hint: t("trust.action.missions_hint"), icon: <CheckCircle2 className="size-4" /> },
     { key: "eta",      label: t("trust.action.eta_label"),      hint: t("trust.action.eta_hint"),      icon: <ShieldCheck className="size-4" /> },
   ];

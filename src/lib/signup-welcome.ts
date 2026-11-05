@@ -58,8 +58,23 @@ export function isEmailNotConfirmedMessage(message: string): boolean {
 }
 
 export function confirmationRedirect(): string {
+  // Native WebViews use capacitor:// or https://localhost — Supabase allowlist
+  // and the hash router both expect the public https://thalvo.org origin.
   if (typeof window === "undefined") return "https://thalvo.org/auth?confirmed=1";
-  return `${window.location.origin}/auth?confirmed=1`;
+  try {
+    const Cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } })
+      .Capacitor;
+    if (Cap?.isNativePlatform?.()) {
+      return "https://thalvo.org/auth?confirmed=1";
+    }
+  } catch {
+    /* SSR / missing bridge */
+  }
+  const origin = window.location.origin;
+  if (/^(capacitor|ionic|file):/i.test(window.location.protocol) || /localhost$/i.test(window.location.hostname)) {
+    return "https://thalvo.org/auth?confirmed=1";
+  }
+  return `${origin}/auth?confirmed=1`;
 }
 
 export function urlLooksLikeEmailConfirm(): boolean {

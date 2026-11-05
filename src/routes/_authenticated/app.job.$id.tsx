@@ -488,7 +488,8 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
       setCompleting(false);
       return;
     }
-    // Escrow / commission / payout events are written server-side by complete_job.
+    // Idempotent RPC. Escrow / commission / payout events are written
+    // server-side by complete_job — the client must not forge them.
     const outcome = readCompleteJobResult(data);
     if (outcome === "unknown") {
       console.error("[job] complete_job returned an unexpected shape", data);
@@ -764,7 +765,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
                 _offer_id: offerId,
                 // Conscious demo ack from CheckoutModal — silent RPC cannot secure funds.
                 _demo_ack: true,
-              } as never,
+              },
             );
             if (intentErr) throw new Error(intentErr.message);
             emitEvent({
@@ -807,7 +808,8 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
               .eq("job_id", job.id)
               .order("created_at");
             if (freshParts) setParts(freshParts as never);
-            // Extra-part approve stays simulated until PSP; do not forge payment.secured.
+            // Extra-part approve stays simulated until PSP; do not forge payment.secured
+            // from the client (server allowlist rejects it for non-admins).
             emitEvent({
               type: "payment.intent_created",
               subject_type: "job",

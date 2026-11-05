@@ -10,6 +10,7 @@ import type { Profile } from "@/lib/session";
 import {
   RescueMark, PassportMark, MarketplaceMark, ControlTowerMark,
 } from "@/components/brand/ProductMarks";
+import { requestOpsNotificationPermission } from "@/lib/ops-alerts";
 
 interface Props {
   profile: Profile;
@@ -21,12 +22,7 @@ type RoleKey = "captain" | "mechanic" | "diver" | "dealer" | "admin";
 
 /**
  * OnboardingOverlay — full-screen MarineOS first-run experience.
- *
  * Six steps: Welcome → Role → Language → Permissions → Captain path → Mission Control tour.
- * Never mutates payments/escrow/mission/marketplace state. Persists language via i18n
- * (already backed by localStorage) and remembers role selection in localStorage only.
- *
- * Shown once per account (auth metadata + localStorage). Profile can replay.
  */
 export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
   const { t } = useTranslation();
@@ -43,7 +39,6 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
   const [permHint, setPermHint] = useState<string | null>(null);
 
   useEffect(() => {
-    // Lock background scroll while onboarding is open.
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = prev; };
@@ -57,7 +52,6 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
   };
 
   const steps = ["welcome", "role", "language", "permissions", "captain", "tour"] as const;
-  // Non-captains skip the captain-only step.
   const activeSteps = steps.filter((s) => s !== "captain" || role === "captain");
   const currentKey = activeSteps[step];
   const total = activeSteps.length;
@@ -82,24 +76,25 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
         paddingBottom: "max(env(safe-area-inset-bottom), 0px)",
       }}
     >
-      {/* Ambient glow */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-70"
         style={{ background: "radial-gradient(60% 40% at 50% 20%, rgba(0,180,216,0.18), transparent 70%)" }}
       />
 
-      {/* Top bar: skip + progress */}
       <div className="relative flex items-center justify-between px-5 pt-5">
         <button
           onClick={back}
           disabled={step === 0}
-          aria-label="Back"
+          aria-label={t("onboarding.back")}
           className="inline-flex items-center gap-1 text-xs font-semibold text-white/60 hover:text-white disabled:opacity-30"
         >
-          <ChevronLeft className="size-4" /> Back
+          <ChevronLeft className="size-4" /> {t("onboarding.back")}
         </button>
-        <div className="flex items-center gap-1.5" aria-label={`Step ${step + 1} of ${total}`}>
+        <div
+          className="flex items-center gap-1.5"
+          aria-label={t("onboarding.step_of", { current: step + 1, total })}
+        >
           {Array.from({ length: total }).map((_, i) => (
             <span
               key={i}
@@ -112,10 +107,10 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
         </div>
         <button
           onClick={finish}
-          aria-label="Skip onboarding"
+          aria-label={t("onboarding.skip")}
           className="inline-flex items-center gap-1 text-xs font-semibold text-white/60 hover:text-white"
         >
-          Skip <X className="size-4" />
+          {t("onboarding.skip")} <X className="size-4" />
         </button>
       </div>
 
@@ -123,97 +118,114 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
         {currentKey === "welcome" && (
           <StepShell
             eyebrow="THALVO"
-            title="Welcome to THALVO"
+            title={t("onboarding.welcome_title")}
             id="thalvo-onboarding-title"
-            subtitle="The Marine Operating System for captains, marine professionals and trusted suppliers."
+            subtitle={t("onboarding.welcome_subtitle")}
           >
             <ul className="mt-6 space-y-3 text-sm text-white/80">
-              <Bullet icon={<RescueMark size={18} />}>Report emergencies with a single tap.</Bullet>
-              <Bullet icon={<Compass className="size-4 text-amber-300" />}>Compare certified professionals in seconds.</Bullet>
-              <Bullet icon={<PassportMark size={18} />}>Manage your vessel — parts, history, documents.</Bullet>
-              <Bullet icon={<Sparkles className="size-4 text-amber-300" />}>Every payment stays protected by THALVO Escrow.</Bullet>
+              <Bullet icon={<RescueMark size={18} />}>{t("onboarding.welcome_b1")}</Bullet>
+              <Bullet icon={<Compass className="size-4 text-amber-300" />}>{t("onboarding.welcome_b2")}</Bullet>
+              <Bullet icon={<PassportMark size={18} />}>{t("onboarding.welcome_b3")}</Bullet>
+              <Bullet icon={<Sparkles className="size-4 text-amber-300" />}>{t("onboarding.welcome_b4")}</Bullet>
             </ul>
-            <PrimaryCta onClick={next}>Get Started</PrimaryCta>
-            <SecondaryCta onClick={finish}>Skip for now</SecondaryCta>
+            <PrimaryCta onClick={next}>{t("onboarding.get_started")}</PrimaryCta>
+            <SecondaryCta onClick={finish}>{t("onboarding.skip_for_now")}</SecondaryCta>
           </StepShell>
         )}
 
         {currentKey === "role" && (
-          <StepShell eyebrow="Step 1" title="Who are you?" subtitle="Pick your primary role. You can change this later.">
+          <StepShell
+            eyebrow={t("onboarding.role_eyebrow")}
+            title={t("onboarding.role_title")}
+            subtitle={t("onboarding.role_subtitle")}
+          >
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <RoleCard active={role === "captain"} onClick={() => setRole("captain")}
-                icon={<Ship className="size-5" />} label="Captain" hint="Own or skipper a vessel" />
+                icon={<Ship className="size-5" />} label={t("onboarding.role_captain")} hint={t("onboarding.role_captain_hint")} />
               <RoleCard active={role === "mechanic"} onClick={() => setRole("mechanic")}
-                icon={<Wrench className="size-5" />} label="Mechanic" hint="Certified marine mechanic" />
+                icon={<Wrench className="size-5" />} label={t("onboarding.role_mechanic")} hint={t("onboarding.role_mechanic_hint")} />
               <RoleCard active={role === "diver"} onClick={() => setRole("diver")}
-                icon={<Anchor className="size-5" />} label="Diver" hint="Professional underwater diver" />
+                icon={<Anchor className="size-5" />} label={t("onboarding.role_diver")} hint={t("onboarding.role_diver_hint")} />
               <RoleCard active={role === "dealer"} onClick={() => setRole("dealer")}
-                icon={<Store className="size-5" />} label="Dealer" hint="Parts & supply partner" />
+                icon={<Store className="size-5" />} label={t("onboarding.role_dealer")} hint={t("onboarding.role_dealer_hint")} />
               {isAdmin && (
                 <RoleCard active={role === "admin"} onClick={() => setRole("admin")}
-                  icon={<ControlTowerMark size={20} />} label="Administrator" hint="THALVO Control Tower" />
+                  icon={<ControlTowerMark size={20} />} label={t("onboarding.role_admin")} hint={t("onboarding.role_admin_hint")} />
               )}
             </div>
-            <PrimaryCta onClick={next}>Continue</PrimaryCta>
+            <PrimaryCta onClick={next}>{t("onboarding.continue")}</PrimaryCta>
           </StepShell>
         )}
 
         {currentKey === "language" && (
-          <StepShell eyebrow="Step 2" title="Choose your language" subtitle="Used across menus, alerts and mission briefings.">
+          <StepShell
+            eyebrow={t("onboarding.lang_eyebrow")}
+            title={t("onboarding.lang_title")}
+            subtitle={t("onboarding.lang_subtitle")}
+          >
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <LangCard active={lang === "tr"} onClick={() => changeLang("tr")} label="Türkçe" hint="Aegean & Mediterranean fleet" />
-              <LangCard active={lang === "en"} onClick={() => changeLang("en")} label="English" hint="International crews" />
-              <LangCard active={lang === "el"} onClick={() => changeLang("el")} label="Ελληνικά" hint="Ελληνικά πληρώματα" />
+              <LangCard active={lang === "tr"} onClick={() => changeLang("tr")} label="Türkçe" hint={t("onboarding.lang_hint_tr")} selectedLabel={t("onboarding.selected")} />
+              <LangCard active={lang === "en"} onClick={() => changeLang("en")} label="English" hint={t("onboarding.lang_hint_en")} selectedLabel={t("onboarding.selected")} />
+              <LangCard active={lang === "el"} onClick={() => changeLang("el")} label="Ελληνικά" hint={t("onboarding.lang_hint_el")} selectedLabel={t("onboarding.selected")} />
             </div>
             <p className="mt-4 flex items-center gap-2 text-[11px] text-white/50">
-              <Globe2 className="size-3.5" /> Preference is saved to this device automatically.
+              <Globe2 className="size-3.5" /> {t("onboarding.lang_saved")}
             </p>
-            <PrimaryCta onClick={next}>Continue</PrimaryCta>
+            <PrimaryCta onClick={next}>{t("onboarding.continue")}</PrimaryCta>
           </StepShell>
         )}
 
         {currentKey === "permissions" && (
-          <StepShell eyebrow="Step 3" title="A few permissions" subtitle="THALVO only asks for what an emergency needs. Nothing is forced.">
+          <StepShell
+            eyebrow={t("onboarding.perm_eyebrow")}
+            title={t("onboarding.perm_title")}
+            subtitle={t("onboarding.perm_subtitle")}
+          >
             <div className="mt-6 space-y-3">
               <PermCard
                 icon={<MapPin className="size-4" />}
-                label="Location"
-                body="Used to find nearby certified professionals."
+                label={t("onboarding.perm_location")}
+                body={t("onboarding.perm_location_body")}
+                enableLabel={t("onboarding.enable")}
                 onEnable={async () => {
-                  if (!("geolocation" in navigator)) return setPermHint("Location isn't available on this device — you can still search by marina.");
+                  if (!("geolocation" in navigator)) return setPermHint(t("onboarding.hint_loc_unavailable"));
                   navigator.geolocation.getCurrentPosition(
-                    () => setPermHint("Location enabled. THALVO can now match closer responders."),
-                    () => setPermHint("Location denied — you can still request help by marina, response may be slower."),
+                    () => setPermHint(t("onboarding.hint_loc_ok")),
+                    () => setPermHint(t("onboarding.hint_loc_denied")),
                     { timeout: 8000 },
                   );
                 }}
               />
               <PermCard
                 icon={<Bell className="size-4" />}
-                label="Notifications"
-                body="Receive offers and mission status updates."
+                label={t("onboarding.perm_notifications")}
+                body={t("onboarding.perm_notifications_body")}
+                enableLabel={t("onboarding.enable")}
                 onEnable={async () => {
-                  if (typeof Notification === "undefined") return setPermHint("Notifications aren't supported here — the in-app inbox still works.");
+                  if (typeof Notification === "undefined") return setPermHint(t("onboarding.hint_notif_unsupported"));
                   try {
-                    const res = await Notification.requestPermission();
+                    await requestOpsNotificationPermission();
+                    const res = Notification.permission;
                     setPermHint(res === "granted"
-                      ? "Notifications enabled. You'll hear from THALVO the moment an offer arrives."
-                      : "Notifications off — offers will still surface inside the app.");
-                  } catch { setPermHint("Notifications unavailable — the in-app feed still works."); }
+                      ? t("onboarding.hint_notif_ok")
+                      : t("onboarding.hint_notif_denied"));
+                  } catch {
+                    setPermHint(t("onboarding.hint_notif_fail"));
+                  }
                 }}
               />
               <PermCard
                 icon={<Camera className="size-4" />}
-                label="Camera"
-                body="Attach photos to SOS reports so responders arrive prepared."
+                label={t("onboarding.perm_camera")}
+                body={t("onboarding.perm_camera_body")}
+                enableLabel={t("onboarding.enable")}
                 onEnable={async () => {
                   try {
-                    // Some browsers require getUserMedia to trigger the prompt.
                     const stream = await navigator.mediaDevices?.getUserMedia({ video: true });
                     stream?.getTracks().forEach((tr) => tr.stop());
-                    setPermHint("Camera ready — you can attach live photos to SOS reports.");
+                    setPermHint(t("onboarding.hint_cam_ok"));
                   } catch {
-                    setPermHint("Camera denied — you can still describe the issue in text.");
+                    setPermHint(t("onboarding.hint_cam_denied"));
                   }
                 }}
               />
@@ -221,48 +233,56 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
                 <p className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white/70">{permHint}</p>
               )}
             </div>
-            <PrimaryCta onClick={next}>Continue</PrimaryCta>
-            <SecondaryCta onClick={next}>Not now</SecondaryCta>
+            <PrimaryCta onClick={next}>{t("onboarding.continue")}</PrimaryCta>
+            <SecondaryCta onClick={next}>{t("onboarding.not_now")}</SecondaryCta>
           </StepShell>
         )}
 
         {currentKey === "captain" && (
-          <StepShell eyebrow="Step 4" title="Do you already have a vessel?" subtitle="Add it now to unlock Boat Passport — or skip and add it later.">
+          <StepShell
+            eyebrow={t("onboarding.captain_eyebrow")}
+            title={t("onboarding.captain_title")}
+            subtitle={t("onboarding.captain_subtitle")}
+          >
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 onClick={() => { finish(); navigate({ to: "/app/profile" }); }}
                 className="rounded-2xl border border-amber-400/40 bg-amber-500/10 p-5 text-left hover:bg-amber-500/15 transition-colors"
               >
                 <Ship className="size-5 text-amber-300" />
-                <p className="mt-3 text-sm font-semibold">Yes — set up my vessel</p>
-                <p className="mt-1 text-xs text-white/60">Guides you to Boat Passport setup.</p>
+                <p className="mt-3 text-sm font-semibold">{t("onboarding.captain_yes")}</p>
+                <p className="mt-1 text-xs text-white/60">{t("onboarding.captain_yes_hint")}</p>
               </button>
               <button
                 onClick={next}
                 className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-left hover:bg-white/[0.08] transition-colors"
               >
                 <PassportMark size={20} />
-                <p className="mt-3 text-sm font-semibold">Not yet — skip</p>
-                <p className="mt-1 text-xs text-white/60">Add a vessel later from Profile.</p>
+                <p className="mt-3 text-sm font-semibold">{t("onboarding.captain_skip")}</p>
+                <p className="mt-1 text-xs text-white/60">{t("onboarding.captain_skip_hint")}</p>
               </button>
             </div>
           </StepShell>
         )}
 
         {currentKey === "tour" && (
-          <StepShell eyebrow="Step 5" title="Meet Mission Control" subtitle="Everything you need lives one tap away.">
+          <StepShell
+            eyebrow={t("onboarding.tour_eyebrow")}
+            title={t("onboarding.tour_title")}
+            subtitle={t("onboarding.tour_subtitle")}
+          >
             <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <TourItem icon={<MapPin className="size-4 text-amber-300" />} title="Map" body="See responders live around you." />
-              <TourItem icon={<RescueMark size={18} />} title="SOS" body="One tap dispatches the nearest help." />
-              <TourItem icon={<Compass className="size-4 text-amber-300" />} title="Compass" body="Your THALVO AI copilot, anywhere." />
-              <TourItem icon={<MarketplaceMark size={18} />} title="Marketplace" body="Dealer parts and in-app order flow." />
-              <TourItem icon={<PassportMark size={18} />} title="Passport" body="Your vessel's dossier and history." />
+              <TourItem icon={<MapPin className="size-4 text-amber-300" />} title={t("onboarding.tour_map")} body={t("onboarding.tour_map_body")} />
+              <TourItem icon={<RescueMark size={18} />} title={t("onboarding.tour_sos")} body={t("onboarding.tour_sos_body")} />
+              <TourItem icon={<Compass className="size-4 text-amber-300" />} title={t("onboarding.tour_compass")} body={t("onboarding.tour_compass_body")} />
+              <TourItem icon={<MarketplaceMark size={18} />} title={t("onboarding.tour_market")} body={t("onboarding.tour_market_body")} />
+              <TourItem icon={<PassportMark size={18} />} title={t("onboarding.tour_passport")} body={t("onboarding.tour_passport_body")} />
             </ul>
             <PrimaryCta onClick={finish}>
-              <Check className="size-4" /> Enter Mission Control
+              <Check className="size-4" /> {t("onboarding.tour_enter")}
             </PrimaryCta>
             <p className="mt-3 text-center text-[11px] text-white/40">
-              You can replay this tour anytime from Profile.
+              {t("onboarding.tour_replay")}
             </p>
           </StepShell>
         )}
@@ -270,8 +290,6 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
     </div>
   );
 }
-
-/* ─── primitives ─────────────────────────────────────────────── */
 
 function StepShell({
   eyebrow, title, subtitle, id, children,
@@ -321,8 +339,8 @@ function RoleCard({ active, onClick, icon, label, hint }: {
   );
 }
 
-function LangCard({ active, onClick, label, hint }: {
-  active: boolean; onClick: () => void; label: string; hint: string;
+function LangCard({ active, onClick, label, hint, selectedLabel }: {
+  active: boolean; onClick: () => void; label: string; hint: string; selectedLabel: string;
 }) {
   return (
     <button
@@ -337,13 +355,17 @@ function LangCard({ active, onClick, label, hint }: {
     >
       <p className="text-lg font-bold">{label}</p>
       <p className="mt-1 text-xs text-white/60">{hint}</p>
-      {active && <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-300"><Check className="size-3" /> Selected</span>}
+      {active && (
+        <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-300">
+          <Check className="size-3" /> {selectedLabel}
+        </span>
+      )}
     </button>
   );
 }
 
-function PermCard({ icon, label, body, onEnable }: {
-  icon: ReactNode; label: string; body: string; onEnable: () => void | Promise<void>;
+function PermCard({ icon, label, body, enableLabel, onEnable }: {
+  icon: ReactNode; label: string; body: string; enableLabel: string; onEnable: () => void | Promise<void>;
 }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
@@ -356,7 +378,7 @@ function PermCard({ icon, label, body, onEnable }: {
         onClick={() => void onEnable()}
         className="shrink-0 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/85 hover:bg-white/10"
       >
-        Enable
+        {enableLabel}
       </button>
     </div>
   );
@@ -378,7 +400,7 @@ function PrimaryCta({ children, onClick }: { children: ReactNode; onClick: () =>
   return (
     <button
       onClick={onClick}
-      className="mt-8 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full amber-gradient text-warning-foreground font-black uppercase tracking-[0.18em] px-8 h-12 min-w-[220px] shadow-[0_18px_50px_-12px_rgba(255,176,32,0.55)]"
+      className="mt-8 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#F5B942] text-[#1A1406] font-bold tracking-wide px-8 h-12 min-w-[220px]"
     >
       {children}
       <ChevronRight className="size-4" />
