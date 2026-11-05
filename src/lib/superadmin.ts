@@ -7,10 +7,20 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const OPS_CONTACT_EMAIL = "support@thalvo.org";
 
-/** Platform operator identity for `/admin` route lock — not shown on public forms. */
-export const SUPERADMIN_EMAIL = "ismailtolgasler@gmail.com";
+/**
+ * Platform operator identity for `/admin` route lock.
+ * Set `VITE_SUPERADMIN_EMAIL` in the deploy env — never hardcode a personal
+ * address into the public client bundle.
+ */
+export const SUPERADMIN_EMAIL = (
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_SUPERADMIN_EMAIL) ||
+  ""
+)
+  .trim()
+  .toLowerCase();
 
 export function isSuperAdminEmail(email: string | null | undefined): boolean {
+  if (!SUPERADMIN_EMAIL) return false;
   return (email ?? "").trim().toLowerCase() === SUPERADMIN_EMAIL;
 }
 

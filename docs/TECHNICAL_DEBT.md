@@ -6,20 +6,23 @@ can pick them up without re-discovering.
 ## Security
 
 - **Server-side leak enforcement.** DB `mask_job_message` rejects high-risk
-  chat. Client `recordSecurityEvent` now also writes `security_events` for
-  preflight blocks that never reach the table. AdminSecurityPanel merges both.
+  chat. Client `recordSecurityEvent` also writes `security_events` for
+  preflight blocks. AdminSecurityPanel merges both.
 - **`MaskedContact` reveal.** Still UI-only; must be gated by a server RPC
   that checks role and logs the reveal.
-- **Simulated payments (gated).** Mode lives in `platform_settings.payments.mode`
-  (`simulated` default). Client must pass `_demo_ack=true` from CheckoutModal;
-  silent RPC calls raise `DEMO_ACK_REQUIRED`. Live mode only creates `pending`
-  intents; `confirm_payment_intent_from_provider` (service_role) secures funds.
-  Marketplace `checkout_parts_cart` also requires `_demo_ack` and refuses live
-  mode until PSP (`LIVE_CHECKOUT_REQUIRES_PSP`). See
+- **Simulated payments (gated).** Mode in `platform_settings.payments.mode`
+  (`simulated` default). Client must pass `_demo_ack` from CheckoutModal.
+  Live mode stays `pending` until a PSP webhook. See
   `20261103053000_payment_security_gates.sql`.
-- **CSP.** Report-Only CSP ships on Vercel (`Content-Security-Policy-Report-Only`)
-  covering Leaflet tiles, Supabase, and self assets. Promote to enforcing
-  after a quiet report window.
+- **CSP.** Report-Only CSP ships on Vercel (`Content-Security-Policy-Report-Only`).
+  Promote to enforcing after a quiet report window.
+- **Auth leaked-password protection.** Enable HaveIBeenPwned in Supabase Auth
+  dashboard (not controllable from app migrations).
+- **Deploy env.** Set `VITE_SUPERADMIN_EMAIL` on Vercel for `/admin` lock
+  (personal email no longer shipped in the client bundle).
+- **Admin job status shortcut.** Control Tower can still `UPDATE jobs.status`
+  directly (trigger allows admin). Prefer `admin_close_job` / ledger RPCs
+  before treating completion as financial truth.
 
 ## Reputation
 
