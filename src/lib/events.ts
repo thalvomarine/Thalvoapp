@@ -4,16 +4,10 @@
  * Best-effort event emitter. NEVER awaits — the caller keeps flowing even
  * if the insert fails. All events land in `public.platform_events`.
  *
- * TODO(M7-server-writes): today many events are emitted from the client
- * for pragmatic reasons (existing RPCs like `accept_offer` and
- * `checkout_parts_cart` do not yet emit their own events). Once the
- * server-side event writer is in place, remove the corresponding client
- * `emitEvent` call and add a server-side insert inside the RPC. Client
- * inserts of privileged events (offer.accepted, order.status_advanced)
- * are advisory — the RLS `actor_id = auth.uid()` check prevents forgery
- * of another user's identity but does not prevent a hostile client from
- * lying about `event_type` or `metadata`. Treat client-emitted events as
- * telemetry, not as trust primitives, until the server writer ships.
+ * Client emits go through `emit_platform_event`, which allowlists
+ * non-admin event types. Privileged financial events
+ * (`payment.secured`, `escrow.released`, …) are written only inside
+ * SECURITY DEFINER RPCs. Direct INSERT on `platform_events` is revoked.
  */
 
 import { supabase } from "@/integrations/supabase/client";
@@ -198,9 +192,9 @@ export function emitEvent(input: EmitEventInput): void {
     metadata: input.metadata ?? {},
   };
 
-  // Prefer SECURITY DEFINER RPC so privileged server paths can share
-  // the same writer later. Fall back to direct insert if the RPC is
-  // not yet migrated on a given environment.
+  // Single write path: emit_platform_event SECURITY DEFINER (client allowlist
+  // + admin/service bypass). Direct INSERT on platform_events is revoked so
+  // a hostile client cannot forge payment.secured / escrow.released etc.
   void (async () => {
     try {
       const { error: rpcError } = await supabase.rpc("emit_platform_event", {
@@ -210,15 +204,8 @@ export function emitEvent(input: EmitEventInput): void {
         _severity: payload.severity,
         _metadata: payload.metadata,
       } as never);
-      if (!rpcError) return;
-
-      const { data } = await supabase.auth.getUser();
-      payload.actor_id = data.user?.id ?? null;
-      const { error } = await supabase
-        .from("platform_events")
-        .insert({ ...payload, metadata: payload.metadata as never });
-      if (error && typeof console !== "undefined") {
-        console.debug("[events] insert failed", input.type, error.message, rpcError.message);
+      if (rpcError && typeof console !== "undefined") {
+        console.debug("[events] emit_platform_event failed", input.type, rpcError.message);
       }
     } catch (e) {
       if (typeof console !== "undefined") {

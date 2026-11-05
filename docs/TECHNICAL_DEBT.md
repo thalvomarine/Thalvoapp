@@ -10,10 +10,13 @@ can pick them up without re-discovering.
   preflight blocks that never reach the table. AdminSecurityPanel merges both.
 - **`MaskedContact` reveal.** Still UI-only; must be gated by a server RPC
   that checks role and logs the reveal.
-- **Simulated payments.** `record_payment_intent` still writes
-  `status='secured'` with `provider='simulated'`. Acceptable for pilot
-  while UI labels demo mode; replace with PSP webhook before real money.
-  See migration `20261013213000_launch_security_hardening.sql`.
+- **Simulated payments (gated).** Mode lives in `platform_settings.payments.mode`
+  (`simulated` default). Client must pass `_demo_ack=true` from CheckoutModal;
+  silent RPC calls raise `DEMO_ACK_REQUIRED`. Live mode only creates `pending`
+  intents; `confirm_payment_intent_from_provider` (service_role) secures funds.
+  Marketplace `checkout_parts_cart` also requires `_demo_ack` and refuses live
+  mode until PSP (`LIVE_CHECKOUT_REQUIRES_PSP`). See
+  `20261103053000_payment_security_gates.sql`.
 - **CSP.** Report-Only CSP ships on Vercel (`Content-Security-Policy-Report-Only`)
   covering Leaflet tiles, Supabase, and self assets. Promote to enforcing
   after a quiet report window.
@@ -48,10 +51,11 @@ can pick them up without re-discovering.
 
 ## Platform events
 
-- Client `emitEvent` prefers `emit_platform_event` SECURITY DEFINER RPC
-  (migration `20261103040000_quality_pass_security_audit.sql`) with
-  direct-insert fallback. Privileged RPCs (`accept_offer`, checkout, etc.)
-  should call the same SQL function server-side and drop duplicate client emits.
+- Client `emitEvent` only calls `emit_platform_event` (allowlisted types for
+  non-admins). Direct `INSERT` on `platform_events` is revoked for
+  `authenticated` (`20261103053000_payment_security_gates.sql`). Privileged
+  financial events are written inside `record_payment_intent` /
+  `confirm_payment_intent_from_provider` / `complete_job`.
 
 ## Push
 

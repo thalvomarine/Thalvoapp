@@ -60,6 +60,8 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
       _delivery_eta_minutes: etaMinutes,
       _delivery_location_label: sanitizePlainText(dropOff, 120) || undefined,
       _notes: sanitizeMultiline(notes, 500) || undefined,
+      // Conscious demo ack from CheckoutModal — server rejects silent RPC calls.
+      _demo_ack: true,
     });
     if (error) {
       if (/OUT_OF_STOCK/i.test(error.message)) {
