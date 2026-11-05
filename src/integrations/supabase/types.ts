@@ -1579,6 +1579,7 @@ export type Database = {
           _delivery_location_label?: string
           _delivery_marina: string
           _delivery_method?: string
+          _demo_ack?: boolean
           _items: Json
           _notes?: string
           _vessel_id?: string
@@ -1608,7 +1609,17 @@ export type Database = {
         Returns: boolean
       }
       record_payment_intent: {
-        Args: { _job_id: string; _offer_id: string }
+        Args: { _job_id: string; _offer_id: string; _demo_ack?: boolean }
+        Returns: string
+      }
+      emit_platform_event: {
+        Args: {
+          _event_type: string
+          _subject_type: string
+          _subject_id?: string
+          _severity?: string
+          _metadata?: Json
+        }
         Returns: string
       }
       reject_part: { Args: { _part_id: string }; Returns: undefined }

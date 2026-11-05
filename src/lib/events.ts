@@ -4,16 +4,9 @@
  * Best-effort event emitter. NEVER awaits — the caller keeps flowing even
  * if the insert fails. All events land in `public.platform_events`.
  *
- * TODO(M7-server-writes): today many events are emitted from the client
- * for pragmatic reasons (existing RPCs like `accept_offer` and
- * `checkout_parts_cart` do not yet emit their own events). Once the
- * server-side event writer is in place, remove the corresponding client
- * `emitEvent` call and add a server-side insert inside the RPC. Client
- * inserts of privileged events (offer.accepted, order.status_advanced)
- * are advisory — the RLS `actor_id = auth.uid()` check prevents forgery
- * of another user's identity but does not prevent a hostile client from
- * lying about `event_type` or `metadata`. Treat client-emitted events as
- * telemetry, not as trust primitives, until the server writer ships.
+ * Client emits go through `emit_platform_event` (allowlisted for non-admins).
+ * Privileged financial events are written only inside SECURITY DEFINER RPCs.
+ * Direct INSERT on `platform_events` is revoked on the live project.
  */
 
 import { supabase } from "@/integrations/supabase/client";
@@ -192,16 +185,17 @@ export function emitEvent(input: EmitEventInput): void {
     metadata: input.metadata ?? {},
   };
 
-  // Resolve actor asynchronously; do not block caller.
   void (async () => {
     try {
-      const { data } = await supabase.auth.getUser();
-      payload.actor_id = data.user?.id ?? null;
-      const { error } = await supabase
-        .from("platform_events")
-        .insert({ ...payload, metadata: payload.metadata as never });
-      if (error && typeof console !== "undefined") {
-        console.debug("[events] insert failed", input.type, error.message);
+      const { error: rpcError } = await supabase.rpc("emit_platform_event", {
+        _event_type: payload.event_type,
+        _subject_type: payload.subject_type,
+        _subject_id: payload.subject_id,
+        _severity: payload.severity,
+        _metadata: payload.metadata,
+      } as never);
+      if (rpcError && typeof console !== "undefined") {
+        console.debug("[events] emit_platform_event failed", input.type, rpcError.message);
       }
     } catch (e) {
       if (typeof console !== "undefined") {

@@ -57,7 +57,9 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
       _delivery_eta_minutes: etaMinutes,
       _delivery_location_label: sanitizePlainText(dropOff, 120) || undefined,
       _notes: sanitizeMultiline(notes, 500) || undefined,
-    });
+      // Conscious demo ack from CheckoutModal — live DB rejects silent RPC.
+      _demo_ack: true,
+    } as never);
     if (error) {
       if (/OUT_OF_STOCK/i.test(error.message)) {
         toast.error(t("shop.out_of_stock_toast"));
