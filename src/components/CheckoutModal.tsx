@@ -97,7 +97,7 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full sm:max-w-md bg-card rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden">
+      <div className="w-full overflow-hidden rounded-t-3xl border border-white/10 bg-[#071422] text-white shadow-2xl sm:max-w-md sm:rounded-3xl">
         <div className={"p-5 " + grad}>
           <div className="flex items-start justify-between">
             <div>
@@ -119,39 +119,39 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
 
         {phase === "done" ? (
           <div className="p-8 text-center">
-            <div className="mx-auto size-16 rounded-full bg-success/20 grid place-items-center">
-              <CheckCircle2 className="size-9 text-success" />
+            <div className="mx-auto grid size-16 place-items-center rounded-full bg-emerald-400/15">
+              <CheckCircle2 className="size-9 text-emerald-300" />
             </div>
-            <p className="mt-4 font-bold text-lg">{t("checkout.secured")}</p>
-            <p className="text-sm text-muted-foreground mt-1">{t("checkout.secured_sub")}</p>
+            <p className="mt-4 text-lg font-bold text-white">{t("checkout.secured")}</p>
+            <p className="mt-1 text-sm text-white/55">{t("checkout.secured_sub")}</p>
           </div>
         ) : (
-          <div className="p-5 space-y-3">
-            <div className="rounded-xl border-2 border-amber-400/60 bg-amber-400/[0.14] px-3 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-amber-100 inline-flex items-center gap-2 w-full">
+          <div className="space-y-3 p-5">
+            <div className="inline-flex w-full items-center gap-2 rounded-xl border-2 border-amber-400/60 bg-amber-400/[0.14] px-3 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-amber-100">
               <FlaskConical className="size-3.5 shrink-0" />
               <span>{t("checkout.test_mode_badge")}</span>
             </div>
-            <div className="rounded-xl border border-amber-400/30 bg-amber-400/[0.1] px-3 py-2 text-[11px] text-amber-200 leading-relaxed">
+            <div className="rounded-xl border border-amber-400/30 bg-amber-400/[0.1] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
               {t("checkout.sim_banner")}
             </div>
             {!online && (
-              <div className="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100 inline-flex items-start gap-2">
-                <WifiOff className="size-3.5 mt-0.5 shrink-0" />
+              <div className="inline-flex items-start gap-2 rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100">
+                <WifiOff className="mt-0.5 size-3.5 shrink-0" />
                 You are offline. Reconnect to run the simulated payment — nothing has been sent.
               </div>
             )}
             {phase === "error" && errMsg && (
-              <div role="alert" className="rounded-xl border border-rose-400/40 bg-rose-500/10 px-3 py-2 text-[11px] text-rose-100 inline-flex items-start gap-2">
-                <AlertTriangle className="size-3.5 mt-0.5 shrink-0" />
+              <div role="alert" className="inline-flex items-start gap-2 rounded-xl border border-rose-400/40 bg-rose-500/10 px-3 py-2 text-[11px] text-rose-100">
+                <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
                 <span>{errMsg}</span>
               </div>
             )}
-            <div className="relative rounded-2xl border-2 border-dashed border-amber-400/40 bg-muted/20 p-3 space-y-3">
-              <div className="absolute -top-2 left-3 px-1.5 py-0.5 rounded-md bg-amber-400/90 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-900 inline-flex items-center gap-1">
+            <div className="relative space-y-3 rounded-2xl border-2 border-dashed border-amber-400/40 bg-white/[0.03] p-3">
+              <div className="absolute -top-2 left-3 inline-flex items-center gap-1 rounded-md bg-amber-400/90 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-900">
                 <FlaskConical className="size-2.5" /> {t("checkout.test_mode_badge")}
               </div>
-              <div className="rounded-xl border border-border p-3 bg-muted/30">
-                <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+              <div className="rounded-xl border border-white/10 bg-[#06101c] p-3">
+                <div className="flex items-center gap-2 text-xs font-semibold text-white/55">
                   <CreditCard className="size-4" /> {t("checkout.card")}
                 </div>
                 <input
@@ -167,23 +167,23 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
                   autoComplete="off"
                   inputMode="numeric"
                   maxLength={23}
-                  className="mt-1 w-full bg-transparent text-lg font-semibold tracking-widest tabular-nums focus:outline-none placeholder:text-white/20"
+                  className="mt-1 w-full bg-transparent text-lg font-semibold tracking-widest tabular-nums text-white focus:outline-none placeholder:text-white/20"
                 />
               </div>
-              <div className="rounded-xl border border-border p-3 bg-muted/30">
-                <p className="text-xs font-semibold text-muted-foreground">{t("checkout.name")}</p>
+              <div className="rounded-xl border border-white/10 bg-[#06101c] p-3">
+                <p className="text-xs font-semibold text-white/55">{t("checkout.name")}</p>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Test Captain"
                   autoComplete="off"
                   maxLength={64}
-                  className="mt-1 w-full bg-transparent text-lg font-semibold focus:outline-none placeholder:text-white/20"
+                  className="mt-1 w-full bg-transparent text-lg font-semibold text-white focus:outline-none placeholder:text-white/20"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-border p-3 bg-muted/30">
-                  <p className="text-xs font-semibold text-muted-foreground">{t("checkout.exp")}</p>
+                <div className="rounded-xl border border-white/10 bg-[#06101c] p-3">
+                  <p className="text-xs font-semibold text-white/55">{t("checkout.exp")}</p>
                   <input
                     value={exp}
                     onChange={(e) => {
@@ -197,11 +197,11 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
                     autoComplete="off"
                     inputMode="numeric"
                     maxLength={5}
-                    className="mt-1 w-full bg-transparent text-lg font-semibold tabular-nums focus:outline-none placeholder:text-white/20"
+                    className="mt-1 w-full bg-transparent text-lg font-semibold tabular-nums text-white focus:outline-none placeholder:text-white/20"
                   />
                 </div>
-                <div className="rounded-xl border border-border p-3 bg-muted/30">
-                  <p className="text-xs font-semibold text-muted-foreground">{t("checkout.cvc")}</p>
+                <div className="rounded-xl border border-white/10 bg-[#06101c] p-3">
+                  <p className="text-xs font-semibold text-white/55">{t("checkout.cvc")}</p>
                   <input
                     value={cvc}
                     onChange={(e) => setCvc(digitsOnly(e.target.value, 4))}
@@ -209,11 +209,11 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
                     autoComplete="off"
                     maxLength={4}
                     inputMode="numeric"
-                    className="mt-1 w-full bg-transparent text-lg font-semibold focus:outline-none placeholder:text-white/20"
+                    className="mt-1 w-full bg-transparent text-lg font-semibold text-white focus:outline-none placeholder:text-white/20"
                   />
                 </div>
               </div>
-              <p className="text-[10px] text-amber-200/80 text-center italic">
+              <p className="text-center text-[10px] italic text-amber-200/80">
                 {t("checkout.test_mode_fields_note")}
               </p>
             </div>

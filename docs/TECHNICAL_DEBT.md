@@ -13,12 +13,18 @@ can pick them up without re-discovering.
   persisted. Add a table + RLS + admin read policy in a future phase.
 - **`MaskedContact` reveal.** Currently UI-only; must be gated by a
   server RPC that checks role and logs the reveal.
-- **Simulated payments.** `record_payment_intent` still writes
-  `status='secured'` with `provider='simulated'`. Acceptable for pilot
-  while UI labels demo mode; replace with PSP webhook before real money.
-  See migration `20261013213000_launch_security_hardening.sql`.
-- **CSP.** Vercel ships HSTS / frame / nosniff / Permissions-Policy;
-  Content-Security-Policy still deferred (Leaflet + Supabase + fonts).
+- **Simulated payments (gated).** Mode in `platform_settings.payments.mode`
+  (`simulated` default). Client must pass `_demo_ack` from CheckoutModal.
+  Live mode stays `pending` until a PSP webhook. No real money movement yet.
+- **CSP.** Report-Only CSP ships on Vercel (`Content-Security-Policy-Report-Only`).
+  Promote to enforcing after a quiet report window.
+- **Auth leaked-password protection.** Enable HaveIBeenPwned in Supabase Auth
+  dashboard (not controllable from app migrations).
+- **Deploy env.** Set `VITE_SUPERADMIN_EMAIL` on Vercel for `/admin` lock
+  (personal email no longer shipped in the client bundle).
+- **Admin job status shortcut.** Control Tower can still `UPDATE jobs.status`
+  directly (trigger allows admin). Prefer `admin_close_job` / ledger RPCs
+  before treating completion as financial truth.
 
 ## Reputation
 

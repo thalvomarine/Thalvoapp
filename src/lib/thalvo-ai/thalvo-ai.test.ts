@@ -19,8 +19,9 @@ test("classifySeaState uses gale, caution, and calm bands", () => {
 test("resolvePlatformRoute accepts product aliases and rejects off-site targets", () => {
   assert.equal(resolvePlatformRoute("/escrow"), "/app/orders");
   assert.equal(resolvePlatformRoute("/support"), "/app/report");
-  assert.equal(resolvePlatformRoute("/app/shop"), "/app/shop");
-  assert.equal(resolvePlatformRoute("/app/shop/"), "/app/shop");
+  assert.equal(resolvePlatformRoute("/app/shop"), "/app/marketplace");
+  assert.equal(resolvePlatformRoute("/app/shop/"), "/app/marketplace");
+  assert.equal(resolvePlatformRoute("/parts"), "/app/marketplace");
   assert.equal(resolvePlatformRoute("https://evil.example/app/shop"), null);
   assert.equal(resolvePlatformRoute("//evil.example"), null);
   assert.equal(resolvePlatformRoute("/app/job/../../admin"), null);

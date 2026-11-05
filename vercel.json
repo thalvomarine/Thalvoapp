@@ -19,6 +19,10 @@
         {
           "key": "Strict-Transport-Security",
           "value": "max-age=31536000; includeSubDomains"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.openstreetmap.org https://*.openseamap.org https://server.arcgisonline.com https://*.arcgisonline.com https://*.supabase.co; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.openstreetmap.org https://server.arcgisonline.com https://*.arcgisonline.com https://*.openseamap.org; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         }
       ]
     }
