@@ -15,6 +15,8 @@ import { GlassPanel } from "@/components/mission/GlassPanel";
 import { LiveOpsPanel } from "@/components/mission/LiveOpsPanel";
 import { MoneyAmount } from "@/components/core/MoneyAmount";
 import { EmptyState } from "@/components/core/EmptyState";
+import { SHEET_PANEL, SHEET_SCRIM, SheetHandle, useSheetChrome } from "@/lib/sheet-chrome";
+import { packageTitleLang } from "@/lib/ai-lang";
 
 export const Route = createFileRoute("/_authenticated/app/services")({
   ssr: false,
@@ -51,7 +53,7 @@ function Services() {
   }, []);
 
   const visible = useMemo(() => packages.filter((p) => p.category === filter), [packages, filter]);
-  const label = (p: Pkg) => (i18n.language === "en" ? p.title_en : p.title_tr);
+  const label = (p: Pkg) => (packageTitleLang(i18n.language) === "en" ? p.title_en : p.title_tr);
 
   return (
     <div className="space-y-6">
@@ -76,8 +78,8 @@ function Services() {
         <GlassPanel>
           <EmptyState
             icon={<Wrench className="size-4" />}
-            title="No packages yet"
-            body="Standard service packages will appear here."
+            title={t("services.empty_title")}
+            body={t("services.empty_body")}
           />
         </GlassPanel>
       ) : (
@@ -108,6 +110,8 @@ function PackageOffers({ pkg, label, onClose }: { pkg: Pkg; label: string; onClo
   const navigate = useNavigate();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [booking, setBooking] = useState<Offer | null>(null);
+
+  useSheetChrome(onClose);
 
   useEffect(() => {
     supabase.from("provider_service_packages")
@@ -155,68 +159,71 @@ function PackageOffers({ pkg, label, onClose }: { pkg: Pkg; label: string; onClo
 
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/60 backdrop-blur-sm" onClick={onClose}>
+    <div className={SHEET_SCRIM} onClick={onClose}>
       <div
-        className="mx-auto max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-t-3xl border border-white/10 bg-[#071422] p-5 pb-[max(2rem,env(safe-area-inset-bottom))] text-white"
+        className={SHEET_PANEL + " sm:max-w-xl"}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-3 flex items-center justify-between">
-          <p className="font-black uppercase tracking-tight text-white">{label}</p>
+        <SheetHandle />
+        <div className="flex items-center justify-between border-b border-white/10 px-5 pb-3 pt-2 sm:pt-5">
+          <p className="font-semibold uppercase tracking-tight text-white">{label}</p>
           <button onClick={onClose} className="text-xs text-white/50 hover:text-white/80">
             {t("common.close")}
           </button>
         </div>
-        {offers.length === 0 ? (
-          <p className="py-8 text-center text-sm text-white/50">{t("services.no_offers")}</p>
-        ) : (
-          <ul className="space-y-2">
-            {offers.map((o) => (
-              <li
-                key={o.id}
-                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3"
-              >
-                <div
-                  className={
-                    "grid size-11 place-items-center rounded-xl text-white " +
-                    (o.provider_details?.service_type === "Underwater Diver"
-                      ? "aqua-gradient"
-                      : "marine-gradient")
-                  }
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-[max(2rem,env(safe-area-inset-bottom))]">
+          {offers.length === 0 ? (
+            <p className="py-8 text-center text-sm text-white/50">{t("services.no_offers")}</p>
+          ) : (
+            <ul className="space-y-2">
+              {offers.map((o) => (
+                <li
+                  key={o.id}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3"
                 >
-                  {o.provider_details?.service_type === "Underwater Diver" ? (
-                    <Anchor className="size-5" />
-                  ) : (
-                    <Wrench className="size-5" />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold text-white">
-                    {o.profiles?.company_name || o.profiles?.full_name}
-                  </p>
-                  <div className="flex items-center gap-2 text-[11px] text-white/50">
-                    <span className="inline-flex items-center gap-0.5">
-                      <Star className="size-3 fill-amber text-amber" />{" "}
-                      {(o.provider_details?.rating ?? 5).toFixed(1)}
-                    </span>
-                    <span>·</span>
-                    <span>
-                      {o.eta_minutes} {t("common.min")}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <MoneyAmount value={Number(o.price)} className="text-base" />
-                  <button
-                    onClick={() => setBooking(o)}
-                    className="ml-auto mt-1 block rounded-full amber-gradient px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-warning-foreground"
+                  <div
+                    className={
+                      "grid size-11 place-items-center rounded-xl text-white " +
+                      (o.provider_details?.service_type === "Underwater Diver"
+                        ? "aqua-gradient"
+                        : "marine-gradient")
+                    }
                   >
-                    {t("services.book_now")}
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+                    {o.provider_details?.service_type === "Underwater Diver" ? (
+                      <Anchor className="size-5" />
+                    ) : (
+                      <Wrench className="size-5" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold text-white">
+                      {o.profiles?.company_name || o.profiles?.full_name}
+                    </p>
+                    <div className="flex items-center gap-2 text-[11px] text-white/50">
+                      <span className="inline-flex items-center gap-0.5">
+                        <Star className="size-3 fill-amber text-amber" />{" "}
+                        {(o.provider_details?.rating ?? 5).toFixed(1)}
+                      </span>
+                      <span>·</span>
+                      <span>
+                        {o.eta_minutes} {t("common.min")}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <MoneyAmount value={Number(o.price)} className="text-base" />
+                    <button
+                      onClick={() => setBooking(o)}
+                      className="ml-auto mt-1.5 block rounded-md bg-[#F5B942] px-3 py-1.5 text-[11px] font-bold tracking-wide text-[#1A1406] transition hover:bg-[#ffc857]"
+                    >
+                      {t("services.book_now")}
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         {booking && (
           <CheckoutModal
             open

@@ -172,7 +172,12 @@
     "sos_burst_title": "{{count}} κλήσεις SOS στο δίκτυο",
     "sos_body": "Το {{vessel}} ζήτησε έκτακτη υπηρεσία.",
     "sos_burst_body": "Έφτασαν πολλαπλές κλήσεις SOS. Ανοίξτε το ραντάρ για διαλογή.",
-    "unknown_job": "Κλήση υπηρεσίας"
+    "unknown_job": "Κλήση υπηρεσίας",
+    "sos_body_at": "{{vessel}} · {{position}}",
+    "fault_title": "Νέα αναφορά βλάβης",
+    "fault_burst_title": "{{count}} νέες αναφορές βλάβης",
+    "fault_body_at": "{{category}} · {{position}}",
+    "location_not_shared": "Η αναφορά αποθηκεύτηκε, αλλά η θέση δεν έφτασε στους χάρτες των παρόχων."
   },
   "ops": {
     "eyebrow": "THALVO · Live Ops",
@@ -328,7 +333,10 @@
       "heating": "Θέρμανση",
       "teak_deck": "Κατάστρωμα teak",
       "dinghy": "Βοηθητική βάρκα"
-    }
+    },
+    "contact_in_app": "Αίτημα επικοινωνίας μέσω THALVO",
+    "contact_in_app_toast": "Η επικοινωνία μένει στο THALVO — ο πωλητής απαντά εντός εφαρμογής. WhatsApp και τηλέφωνο αποκλείονται.",
+    "seller_phone_masked": "Το τηλέφωνο του πωλητή παραμένει κρυφό μέχρι να ανοίξει in-app νήμα."
   },
   "services": {
     "eyebrow": "THALVO · Υποστήριξη ακτής",
@@ -338,7 +346,9 @@
     "filter_diver": "Δύτες",
     "no_offers": "Δεν υπάρχουν ακόμη συνεργεία για αυτό το πακέτο.",
     "book_now": "Κράτηση τώρα",
-    "eta_short": "ETA"
+    "eta_short": "ETA",
+    "empty_title": "Δεν υπάρχουν πακέτα ακόμη",
+    "empty_body": "Τα τυπικά πακέτα υπηρεσιών θα εμφανιστούν εδώ."
   },
   "shop": {
     "title": "Spare Parts Marketplace",
@@ -511,7 +521,14 @@
     "sim_banner": "Secure demo payment mode — This transaction is simulated for testing only. Card details are not stored, sent, or charged.",
     "field_required": "All test-card fields are required to simulate a payment.",
     "test_mode_badge": "TEST MODE — no real card will be charged",
-    "test_mode_fields_note": "Any values work — nothing is sent."
+    "test_mode_fields_note": "Any values work — nothing is sent.",
+    "offline_error": "Είσαι εκτός σύνδεσης. Επανασυνδέσου για την προσομοιωμένη πληρωμή.",
+    "offline_banner": "Εκτός σύνδεσης. Επανασυνδέσου για την προσομοιωμένη πληρωμή — τίποτα δεν στάλθηκε.",
+    "generic_error": "Η προσομοιωμένη πληρωμή απέτυχε.",
+    "test_amount": "Δοκιμαστικό ποσό · χωρίς χρέωση",
+    "retry": "Επανάληψη προσομοίωσης",
+    "cancel": "Ακύρωση",
+    "close": "Κλείσιμο"
   },
   "admin": {
     "title": "THALVO Admin",
@@ -765,6 +782,21 @@
       "delete": "Delete",
       "sos": "Emergency service requests",
       "saved": "Saved"
+    },
+    "incident": {
+      "select_title": "Επίλεξε αποστολή",
+      "select_body": "Οι λεπτομέρειες συμβάντος εμφανίζονται εδώ.",
+      "detail_eyebrow": "Λεπτομέρεια συμβάντος",
+      "open_cockpit": "Άνοιγμα cockpit αποστολής",
+      "view_provider": "Προφίλ παρόχου",
+      "flag_review": "Σήμανση για έλεγχο",
+      "flag_ok": "Η αποστολή σημάνθηκε για έλεγχο.",
+      "flag_fail": "Αδυναμία σήμανσης.",
+      "resolve_dispute": "Επίλυση ανοιχτής διαφωνίας",
+      "resolve_ok": "Η διαφωνία επιλύθηκε.",
+      "resolve_none": "Δεν υπάρχει ανοιχτή διαφωνία.",
+      "resolve_fail": "Αδυναμία επίλυσης.",
+      "resolve_note": "Επιλύθηκε από τον πύργο ελέγχου"
     }
   },
   "profile": {
@@ -917,7 +949,7 @@
     "no_parts_yet": "No parts installed yet. Parts approved during missions will be listed here.",
     "part_source_provider": "provider",
     "document_vault": "Document vault",
-    "documents_coming_soon": "Secure uploads · coming soon",
+    "documents_coming_soon": "Ασφαλείς μεταφορτώσεις · το vault είναι ενεργό",
     "doc_private": "Ορατό μόνο σε εσάς",
     "doc_upload": "Μεταφόρτωση",
     "doc_replace": "Αντικατάσταση",
@@ -951,7 +983,7 @@
     "completed_event": "Completed",
     "mission_fallback": "Mission",
     "part_installed": "Part installed",
-    "footer_note": "Insurance, transit log and survey document intake — coming soon.",
+    "footer_note": "Ασφάλεια, ημερολόγιο πλεύσης και επιθεώρηση ανεβαίνουν στο θησαυροφυλάκιο εγγράφων.",
     "health_timeline": "Health Timeline",
     "timeline_empty": "No events logged yet. SOS calls, completed missions and part replacements will appear here.",
     "timeline_count_one": "{{count}} event",
@@ -1303,7 +1335,8 @@
     },
     "toast": {
       "certs_coming_soon": "Secure certificate upload ships in the next release.",
-      "eta_hint": "Keep dispatching on time — arrival accuracy compounds your score."
+      "eta_hint": "Keep dispatching on time — arrival accuracy compounds your score.",
+      "certs_open_passport": "Άνοιξε το Vessel Passport για πιστοποιήσεις."
     },
     "footnote": "Response speed, arrival accuracy and dispute rate become live signals once event logging ships.",
     "sheet": {
@@ -1400,6 +1433,8 @@
     "footer": "THALVO · Safe Voyage, Instant Response"
   },
   "pwa": {
+    "banner_offline": "Εκτός σύνδεσης · μόνο cache χάρτη",
+    "banner_online": "Συνδεθήκατε ξανά",
     "installed": {
       "title": "THALVO is installed",
       "hint": "Launch it from your home screen anytime."
@@ -1602,7 +1637,9 @@
     "admin_provider_verified": "Provider verified",
     "admin_provider_unverified": "Provider verification removed",
     "admin_listing_deactivated": "Listing deactivated",
-    "admin_listing_reactivated": "Listing reactivated"
+    "admin_listing_reactivated": "Listing reactivated",
+    "admin_mission_flagged": "Αποστολή σημάνθηκε για έλεγχο",
+    "admin_dispute_resolved": "Η διαφωνία επιλύθηκε"
   },
   "supplier": {
     "redirect": "Opening dealer console…"
@@ -1751,7 +1788,9 @@
     "layers": "Στρώματα",
     "basemap": "Υπόβαθρο",
     "north_up": "Βορράς επάνω",
-    "my_location": "Η θέση μου"
+    "my_location": "Η θέση μου",
+    "crash_title": "Ο χάρτης δεν φόρτωσε. Το SOS παραμένει διαθέσιμο.",
+    "crash_retry": "Επανάληψη χάρτη"
   },
   "boatshow": {
     "kicker": "Boat show · Göcek–Marmaris pilot",
@@ -1876,7 +1915,7 @@
     "nav_about": "Σχετικά",
     "nav_menu": "Μενού",
     "slogan": "Marine Operating System",
-    "lede": "Το λειτουργικό σύστημα για ασφαλή πλεύση στη θάλασσα.",
+    "lede": "Το λειτουργικό σύστημα για ασφαλή πλεύση στη θάλασσα — Αιγαίο και Μεσόγειος, SOS, τεχνικοί και ανταλλακτικά.",
     "coverage": "Αιγαίο και Μεσόγειος · SOS, τεχνικοί, ανταλλακτικά",
     "cta_chart": "Άνοιγμα χάρτη",
     "cta_partner": "Γίνετε συνεργάτης",
@@ -1902,5 +1941,82 @@
     "partner_point_3": "Απάντηση εντός 24 ωρών",
     "partner_thanks_title": "Ευχαριστούμε",
     "partner_kind_hint": "Επιλέξτε ρόλο — το lead καταγράφεται ανάλογα."
+  },
+  "onboarding": {
+    "back": "Πίσω",
+    "skip": "Παράλειψη",
+    "step_of": "Βήμα {{current}} από {{total}}",
+    "continue": "Συνέχεια",
+    "get_started": "Ξεκίνα",
+    "skip_for_now": "Παράλειψη προς το παρόν",
+    "not_now": "Όχι τώρα",
+    "enable": "Ενεργοποίηση",
+    "selected": "Επιλέχθηκε",
+    "welcome_title": "Καλώς ήρθες στο THALVO",
+    "welcome_subtitle": "Το Marine Operating System για καπετάνιους, επαγγελματίες και αξιόπιστους προμηθευτές.",
+    "welcome_b1": "Αναφορά έκτακτης ανάγκης με ένα πάτημα.",
+    "welcome_b2": "Σύγκρινε πιστοποιημένους επαγγελματίες σε δευτερόλεπτα.",
+    "welcome_b3": "Διαχείρισε το σκάφος — ανταλλακτικά, ιστορικό, έγγραφα.",
+    "welcome_b4": "Κάθε πληρωμή προστατεύεται από THALVO Escrow.",
+    "role_eyebrow": "Βήμα 1",
+    "role_title": "Ποιος είσαι;",
+    "role_subtitle": "Επίλεξε τον κύριο ρόλο. Μπορείς να τον αλλάξεις αργότερα.",
+    "role_captain": "Καπετάνιος",
+    "role_captain_hint": "Ιδιοκτήτης ή κυβερνήτης σκάφους",
+    "role_mechanic": "Μηχανικός",
+    "role_mechanic_hint": "Πιστοποιημένος ναυτικός μηχανικός",
+    "role_diver": "Δύτης",
+    "role_diver_hint": "Επαγγελματίας δύτης",
+    "role_dealer": "Έμπορος",
+    "role_dealer_hint": "Συνεργάτης ανταλλακτικών",
+    "role_admin": "Διαχειριστής",
+    "role_admin_hint": "THALVO Control Tower",
+    "lang_eyebrow": "Βήμα 2",
+    "lang_title": "Επίλεξε γλώσσα",
+    "lang_subtitle": "Χρησιμοποιείται σε μενού, ειδοποιήσεις και briefings.",
+    "lang_hint_tr": "Στόλος Αιγαίου και Μεσογείου",
+    "lang_hint_en": "Διεθνή πληρώματα",
+    "lang_hint_el": "Ελληνόφωνα πληρώματα",
+    "lang_saved": "Η προτίμηση αποθηκεύεται αυτόματα σε αυτή τη συσκευή.",
+    "perm_eyebrow": "Βήμα 3",
+    "perm_title": "Μερικά δικαιώματα",
+    "perm_subtitle": "Το THALVO ζητά μόνο ό,τι χρειάζεται μια έκτακτη ανάγκη.",
+    "perm_location": "Τοποθεσία",
+    "perm_location_body": "Για εύρεση κοντινών πιστοποιημένων επαγγελματιών.",
+    "perm_notifications": "Ειδοποιήσεις",
+    "perm_notifications_body": "Προσφορές και ενημερώσεις κατάστασης αποστολής.",
+    "perm_camera": "Κάμερα",
+    "perm_camera_body": "Πρόσθεσε φωτογραφίες σε αναφορές SOS.",
+    "hint_loc_unavailable": "Η τοποθεσία δεν είναι διαθέσιμη — μπορείς να αναζητήσεις με μαρίνα.",
+    "hint_loc_ok": "Η τοποθεσία ενεργοποιήθηκε. Το THALVO βρίσκει πιο κοντινούς responders.",
+    "hint_loc_denied": "Η τοποθεσία απορρίφθηκε — μπορείς να ζητήσεις βοήθεια με μαρίνα.",
+    "hint_notif_unsupported": "Οι ειδοποιήσεις δεν υποστηρίζονται — το in-app inbox λειτουργεί.",
+    "hint_notif_ok": "Ειδοποιήσεις ενεργές. Θα ενημερωθείς όταν έρθει προσφορά.",
+    "hint_notif_denied": "Ειδοποιήσεις off — οι προσφορές εμφανίζονται στην εφαρμογή.",
+    "hint_notif_fail": "Ειδοποιήσεις μη διαθέσιμες — το in-app feed λειτουργεί.",
+    "hint_cam_ok": "Η κάμερα είναι έτοιμη για φωτογραφίες SOS.",
+    "hint_cam_denied": "Η κάμερα απορρίφθηκε — μπορείς να περιγράψεις το πρόβλημα.",
+    "captain_eyebrow": "Βήμα 4",
+    "captain_title": "Έχεις ήδη σκάφος;",
+    "captain_subtitle": "Πρόσθεσέ το τώρα για Boat Passport — ή αργότερα.",
+    "captain_yes": "Ναι — ρύθμιση σκάφους",
+    "captain_yes_hint": "Σε οδηγεί στη ρύθμιση Boat Passport.",
+    "captain_skip": "Όχι ακόμη — παράλειψη",
+    "captain_skip_hint": "Πρόσθεσε σκάφος αργότερα από το Προφίλ.",
+    "tour_eyebrow": "Βήμα 5",
+    "tour_title": "Γνώρισε το Mission Control",
+    "tour_subtitle": "Ό,τι χρειάζεσαι είναι ένα πάτημα μακριά.",
+    "tour_map": "Χάρτης",
+    "tour_map_body": "Δες responders ζωντανά γύρω σου.",
+    "tour_sos": "SOS",
+    "tour_sos_body": "Ένα πάτημα στέλνει την πλησιέστερη βοήθεια.",
+    "tour_compass": "Πυξίδα",
+    "tour_compass_body": "Ο THALVO AI βοηθός σου παντού.",
+    "tour_market": "Αγορά",
+    "tour_market_body": "Ανταλλακτικά εμπόρων και in-app παραγγελία.",
+    "tour_passport": "Διαβατήριο",
+    "tour_passport_body": "Ο φάκελος και το ιστορικό του σκάφους σου.",
+    "tour_enter": "Είσοδος στο Mission Control",
+    "tour_replay": "Μπορείς να ξαναδείς αυτή την περιήγηση από το Προφίλ."
   }
 }

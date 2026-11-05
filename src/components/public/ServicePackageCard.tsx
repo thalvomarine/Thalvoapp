@@ -15,7 +15,7 @@ export function ServicePackageCard({
   actionSlot?: ReactNode;
 }) {
   const { t, i18n } = useTranslation();
-  const isTr = i18n.language === "tr";
+  const isTr = i18n.language.toLowerCase().startsWith("tr");
   const isDiver = pkg.category === "diver";
 
   return (

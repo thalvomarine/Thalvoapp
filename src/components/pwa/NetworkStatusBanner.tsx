@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { WifiOff, Wifi } from "lucide-react";
 import { useOnlineStatus } from "@/lib/pwa";
 
@@ -7,6 +8,7 @@ import { useOnlineStatus } from "@/lib/pwa";
  * Sits above every route. Auto-hides ~2.5s after reconnect. SSR-safe.
  */
 export function NetworkStatusBanner() {
+  const { t } = useTranslation();
   const online = useOnlineStatus();
   const [everOffline, setEverOffline] = useState(false);
   const [showReconnected, setShowReconnected] = useState(false);
@@ -19,8 +21,8 @@ export function NetworkStatusBanner() {
     }
     if (everOffline) {
       setShowReconnected(true);
-      const t = setTimeout(() => setShowReconnected(false), 2500);
-      return () => clearTimeout(t);
+      const timer = setTimeout(() => setShowReconnected(false), 2500);
+      return () => clearTimeout(timer);
     }
   }, [online, everOffline]);
 
@@ -30,20 +32,19 @@ export function NetworkStatusBanner() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed inset-x-0 z-[90] flex justify-center pointer-events-none"
+      className="pointer-events-none fixed inset-x-0 z-[90] flex justify-center"
       style={{ top: "max(env(safe-area-inset-top), 0px)" }}
     >
       <div
         className={
-          "pointer-events-auto mt-2 mx-3 rounded-full px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] " +
-          "backdrop-blur-md border shadow-lg inline-flex items-center gap-2 " +
+          "pointer-events-auto mx-3 mt-2 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-lg backdrop-blur-md " +
           (online
-            ? "bg-emerald-500/15 border-emerald-400/40 text-emerald-100"
-            : "bg-amber-500/15 border-amber-400/40 text-amber-100")
+            ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-100"
+            : "border-amber-400/40 bg-amber-500/15 text-amber-100")
         }
       >
         {online ? <Wifi className="size-3.5" /> : <WifiOff className="size-3.5" />}
-        {online ? "Back online" : "Offline · working in view-only mode"}
+        {online ? t("pwa.banner_online") : t("pwa.banner_offline")}
       </div>
     </div>
   );
