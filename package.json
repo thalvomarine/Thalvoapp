@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "test": "node --test --experimental-strip-types src/lib/geolocation.test.ts src/lib/nav.test.ts src/lib/payments.test.ts src/lib/sea-route.test.ts src/lib/tile-cache.test.ts src/lib/trust.test.ts src/lib/digit-format.test.ts src/lib/thalvo-ai/domain.test.ts src/lib/capgo.test.ts",
+    "test": "node --test --experimental-strip-types src/lib/geolocation.test.ts src/lib/nav.test.ts src/lib/payments.test.ts src/lib/sea-route.test.ts src/lib/tile-cache.test.ts src/lib/trust.test.ts src/lib/digit-format.test.ts src/lib/thalvo-ai/domain.test.ts src/lib/capgo.test.ts src/lib/ai-lang.test.ts",
     "cap:prepare": "node scripts/prepare-web-spa.mjs",
     "cap:assets": "node scripts/generate-native-assets.mjs",
     "cap:sync": "npm run build && npx cap sync && node scripts/fix-android-cordova-res.mjs",

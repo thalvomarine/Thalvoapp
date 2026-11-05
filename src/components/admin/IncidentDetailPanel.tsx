@@ -1,9 +1,14 @@
+import { useState } from "react";
 import { GlassPanel } from "@/components/mission/GlassPanel";
 import { StatusChip } from "@/components/mission/StatusChip";
 import { AlertTriangle, ExternalLink, Flag, LifeBuoy, MapPin, Ship, Wallet } from "lucide-react";
 import type { MissionRow } from "./MissionCommandBoard";
 import { Link } from "@tanstack/react-router";
 import { formatTL } from "@/lib/filter";
+import { supabase } from "@/integrations/supabase/client";
+import { emitEvent } from "@/lib/events";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   mission: MissionRow | null;
@@ -12,18 +17,19 @@ interface Props {
 
 /**
  * IncidentDetailPanel — right rail focus view for the selected mission.
- * Actions are UI placeholders wired to real routes where possible.
- * TODO(admin-actions): flagging, dispute resolution, contact team require
- *   dedicated tables + admin permissions before going live.
+ * Flag + dispute resolve call SECURITY DEFINER RPCs (admin-only).
  */
 export function IncidentDetailPanel({ mission, offersCount }: Props) {
+  const { t } = useTranslation();
+  const [busy, setBusy] = useState<"flag" | "dispute" | null>(null);
+
   if (!mission) {
     return (
       <GlassPanel className="min-h-[320px] grid place-items-center text-center">
         <div className="text-white/50">
           <LifeBuoy className="size-6 mx-auto mb-2 text-white/30" />
-          <p className="text-xs uppercase tracking-[0.2em]">Select a mission</p>
-          <p className="text-[11px] mt-1">Incident details will appear here.</p>
+          <p className="text-xs uppercase tracking-[0.2em]">{t("admin.incident.select_title")}</p>
+          <p className="text-[11px] mt-1">{t("admin.incident.select_body")}</p>
         </div>
       </GlassPanel>
     );
@@ -31,16 +37,79 @@ export function IncidentDetailPanel({ mission, offersCount }: Props) {
 
   const isSos = mission.status === "Requested" || mission.sos;
 
+  const flagMission = async () => {
+    if (busy) return;
+    setBusy("flag");
+    try {
+      const { error } = await supabase.rpc("flag_mission_for_review", {
+        _job_id: mission.id,
+        _note: "Flagged from Control Tower",
+      } as never);
+      if (error) throw error;
+      emitEvent({
+        type: "admin.mission_flagged",
+        subject_type: "mission",
+        subject_id: mission.id,
+      });
+      toast.success(t("admin.incident.flag_ok"));
+    } catch (err) {
+      console.error(err);
+      toast.error(t("admin.incident.flag_fail"));
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const resolveDispute = async () => {
+    if (busy) return;
+    setBusy("dispute");
+    try {
+      const { data, error } = await supabase
+        .from("job_disputes")
+        .select("id")
+        .eq("job_id", mission.id)
+        .eq("status", "open")
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (error) throw error;
+      const disputeId = (data as { id: string }[] | null)?.[0]?.id;
+      if (!disputeId) {
+        toast.message(t("admin.incident.resolve_none"));
+        return;
+      }
+      const { error: resolveError } = await supabase.rpc("resolve_job_dispute", {
+        _dispute_id: disputeId,
+        _resolution: t("admin.incident.resolve_note"),
+        _status: "resolved",
+      } as never);
+      if (resolveError) throw resolveError;
+      emitEvent({
+        type: "admin.dispute_resolved",
+        subject_type: "mission",
+        subject_id: mission.id,
+        metadata: { dispute_id: disputeId },
+      });
+      toast.success(t("admin.incident.resolve_ok"));
+    } catch (err) {
+      console.error(err);
+      toast.error(t("admin.incident.resolve_fail"));
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
     <GlassPanel padded={false} className="overflow-hidden">
-      <div className={
-        "p-4 border-b border-white/[0.06] " +
-        (isSos ? "bg-gradient-to-br from-rose-500/15 via-transparent to-transparent" : "")
-      }>
+      <div
+        className={
+          "p-4 border-b border-white/[0.06] " +
+          (isSos ? "bg-gradient-to-br from-rose-500/15 via-transparent to-transparent" : "")
+        }
+      >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/45">
-              Incident detail
+              {t("admin.incident.detail_eyebrow")}
             </p>
             <p className="text-base font-semibold text-white mt-0.5 truncate">
               {mission.problem_category}
@@ -53,12 +122,18 @@ export function IncidentDetailPanel({ mission, offersCount }: Props) {
       </div>
 
       <dl className="p-4 space-y-3 text-[12px]">
-        <Row icon={<Ship className="size-3.5" />} label="Service">{mission.service_type ?? "—"}</Row>
-        <Row icon={<MapPin className="size-3.5" />} label="Marina">{mission.marina ?? "Unknown"}</Row>
+        <Row icon={<Ship className="size-3.5" />} label="Service">
+          {mission.service_type ?? "—"}
+        </Row>
+        <Row icon={<MapPin className="size-3.5" />} label="Marina">
+          {mission.marina ?? "Unknown"}
+        </Row>
         <Row icon={<Wallet className="size-3.5" />} label="Escrow">
           {mission.total_escrow_pool ? formatTL(Math.round(Number(mission.total_escrow_pool))) : "—"}
         </Row>
-        <Row icon={<LifeBuoy className="size-3.5" />} label="Offers">{offersCount ?? 0}</Row>
+        <Row icon={<LifeBuoy className="size-3.5" />} label="Offers">
+          {offersCount ?? 0}
+        </Row>
       </dl>
 
       <div className="p-4 border-t border-white/[0.06] space-y-2">
@@ -67,31 +142,34 @@ export function IncidentDetailPanel({ mission, offersCount }: Props) {
           params={{ id: mission.id }}
           className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[12px] font-semibold"
         >
-          <span>Open mission cockpit</span>
+          <span>{t("admin.incident.open_cockpit")}</span>
           <ExternalLink className="size-3.5" />
         </Link>
+        {mission.provider_id ? (
+          <Link
+            to="/app/reputation"
+            className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[12px] font-semibold"
+          >
+            <span>{t("admin.incident.view_provider")}</span>
+            <ExternalLink className="size-3.5" />
+          </Link>
+        ) : null}
         <button
-          disabled
-          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white/40 text-[12px] font-semibold cursor-not-allowed"
-          title="Provider profile view — coming with operator role"
+          type="button"
+          disabled={busy !== null}
+          onClick={() => void flagMission()}
+          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-100 text-[12px] font-semibold hover:bg-amber-400/15 disabled:opacity-50"
         >
-          <span>View provider profile</span>
-          <ExternalLink className="size-3.5" />
-        </button>
-        <button
-          disabled
-          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-400/5 border border-amber-400/20 text-amber-300/60 text-[12px] font-semibold cursor-not-allowed"
-          title="Requires admin_flags table + audit log"
-        >
-          <span>Flag for review</span>
+          <span>{t("admin.incident.flag_review")}</span>
           <Flag className="size-3.5" />
         </button>
         <button
-          disabled
-          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-rose-500/5 border border-rose-500/20 text-rose-300/60 text-[12px] font-semibold cursor-not-allowed"
-          title="Requires disputes workflow"
+          type="button"
+          disabled={busy !== null}
+          onClick={() => void resolveDispute()}
+          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-100 text-[12px] font-semibold hover:bg-rose-500/15 disabled:opacity-50"
         >
-          <span>Resolve dispute</span>
+          <span>{t("admin.incident.resolve_dispute")}</span>
           <LifeBuoy className="size-3.5" />
         </button>
       </div>

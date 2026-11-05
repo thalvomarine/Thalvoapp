@@ -333,7 +333,10 @@
       "heating": "Heating",
       "teak_deck": "Teak deck",
       "dinghy": "Dinghy"
-    }
+    },
+    "contact_in_app": "Request contact via THALVO",
+    "contact_in_app_toast": "Contact stays inside THALVO — the seller will reply in-app. Off-platform WhatsApp and phone are blocked.",
+    "seller_phone_masked": "Seller phone is masked until an in-app thread opens."
   },
   "services": {
     "eyebrow": "THALVO · Shore support",
@@ -343,7 +346,9 @@
     "filter_diver": "Divers",
     "no_offers": "No workshops offering this package yet.",
     "book_now": "Book Now",
-    "eta_short": "ETA"
+    "eta_short": "ETA",
+    "empty_title": "No packages yet",
+    "empty_body": "Standard service packages will appear here."
   },
   "shop": {
     "title": "Spare Parts Marketplace",
@@ -516,7 +521,14 @@
     "sim_banner": "Secure demo payment mode — This transaction is simulated for testing only. Card details are not stored, sent, or charged.",
     "field_required": "All test-card fields are required to simulate a payment.",
     "test_mode_badge": "TEST MODE — no real card will be charged",
-    "test_mode_fields_note": "Any values work — nothing is sent."
+    "test_mode_fields_note": "Any values work — nothing is sent.",
+    "offline_error": "You appear to be offline. Reconnect to run the simulated payment.",
+    "offline_banner": "You are offline. Reconnect to run the simulated payment — nothing has been sent.",
+    "generic_error": "Simulated payment could not complete.",
+    "test_amount": "Test amount · not charged",
+    "retry": "Retry simulated payment",
+    "cancel": "Cancel",
+    "close": "Close"
   },
   "admin": {
     "title": "THALVO Admin",
@@ -770,6 +782,21 @@
       "delete": "Delete",
       "sos": "Emergency service requests",
       "saved": "Saved"
+    },
+    "incident": {
+      "select_title": "Select a mission",
+      "select_body": "Incident details will appear here.",
+      "detail_eyebrow": "Incident detail",
+      "open_cockpit": "Open mission cockpit",
+      "view_provider": "View provider profile",
+      "flag_review": "Flag for review",
+      "flag_ok": "Mission flagged for review.",
+      "flag_fail": "Could not flag this mission.",
+      "resolve_dispute": "Resolve open dispute",
+      "resolve_ok": "Dispute marked resolved.",
+      "resolve_none": "No open dispute on this mission.",
+      "resolve_fail": "Could not resolve the dispute.",
+      "resolve_note": "Resolved from Control Tower"
     }
   },
   "profile": {
@@ -922,7 +949,7 @@
     "no_parts_yet": "No parts installed yet. Parts approved during missions will be listed here.",
     "part_source_provider": "provider",
     "document_vault": "Document vault",
-    "documents_coming_soon": "Secure uploads · coming soon",
+    "documents_coming_soon": "Secure uploads · vault online",
     "doc_private": "Visible only to you",
     "doc_upload": "Upload",
     "doc_replace": "Replace",
@@ -956,7 +983,7 @@
     "completed_event": "Completed",
     "mission_fallback": "Mission",
     "part_installed": "Part installed",
-    "footer_note": "Insurance, transit log and survey document intake — coming soon.",
+    "footer_note": "Insurance, transit log and survey uploads are live in the document vault.",
     "health_timeline": "Health Timeline",
     "timeline_empty": "No events logged yet. SOS calls, completed missions and part replacements will appear here.",
     "timeline_count_one": "{{count}} event",
@@ -1308,7 +1335,8 @@
     },
     "toast": {
       "certs_coming_soon": "Secure certificate upload ships in the next release.",
-      "eta_hint": "Keep dispatching on time — arrival accuracy compounds your score."
+      "eta_hint": "Keep dispatching on time — arrival accuracy compounds your score.",
+      "certs_open_passport": "Open Vessel Passport to manage certifications."
     },
     "footnote": "Response speed, arrival accuracy and dispute rate become live signals once event logging ships.",
     "sheet": {
@@ -1607,7 +1635,9 @@
     "admin_provider_verified": "Provider verified",
     "admin_provider_unverified": "Provider verification removed",
     "admin_listing_deactivated": "Listing deactivated",
-    "admin_listing_reactivated": "Listing reactivated"
+    "admin_listing_reactivated": "Listing reactivated",
+    "admin_mission_flagged": "Mission flagged for review",
+    "admin_dispute_resolved": "Dispute resolved"
   },
   "supplier": {
     "redirect": "Opening dealer console…"
@@ -1752,7 +1782,9 @@
     "route_deck_add_via": "+ Via",
     "route_deck_lock": "Under way",
     "route_deck_unlock": "Edit",
-    "route_deck_remove_point": "Remove point"
+    "route_deck_remove_point": "Remove point",
+    "crash_title": "Chart could not load. SOS remains available.",
+    "crash_retry": "Retry chart"
   },
   "boatshow": {
     "kicker": "Boat show · Göcek–Marmaris pilot",
@@ -1903,5 +1935,82 @@
     "partner_point_3": "Pilot team replies within 24 hours",
     "partner_thanks_title": "Thank you",
     "partner_kind_hint": "Choose your role — the lead is tagged accordingly."
+  },
+  "onboarding": {
+    "back": "Back",
+    "skip": "Skip",
+    "step_of": "Step {{current}} of {{total}}",
+    "continue": "Continue",
+    "get_started": "Get Started",
+    "skip_for_now": "Skip for now",
+    "not_now": "Not now",
+    "enable": "Enable",
+    "selected": "Selected",
+    "welcome_title": "Welcome to THALVO",
+    "welcome_subtitle": "The Marine Operating System for captains, marine professionals and trusted suppliers.",
+    "welcome_b1": "Report emergencies with a single tap.",
+    "welcome_b2": "Compare certified professionals in seconds.",
+    "welcome_b3": "Manage your vessel — parts, history, documents.",
+    "welcome_b4": "Every payment stays protected by THALVO Escrow.",
+    "role_eyebrow": "Step 1",
+    "role_title": "Who are you?",
+    "role_subtitle": "Pick your primary role. You can change this later.",
+    "role_captain": "Captain",
+    "role_captain_hint": "Own or skipper a vessel",
+    "role_mechanic": "Mechanic",
+    "role_mechanic_hint": "Certified marine mechanic",
+    "role_diver": "Diver",
+    "role_diver_hint": "Professional underwater diver",
+    "role_dealer": "Dealer",
+    "role_dealer_hint": "Parts & supply partner",
+    "role_admin": "Administrator",
+    "role_admin_hint": "THALVO Control Tower",
+    "lang_eyebrow": "Step 2",
+    "lang_title": "Choose your language",
+    "lang_subtitle": "Used across menus, alerts and mission briefings.",
+    "lang_hint_tr": "Aegean & Mediterranean fleet",
+    "lang_hint_en": "International crews",
+    "lang_hint_el": "Greek-speaking crews",
+    "lang_saved": "Preference is saved to this device automatically.",
+    "perm_eyebrow": "Step 3",
+    "perm_title": "A few permissions",
+    "perm_subtitle": "THALVO only asks for what an emergency needs. Nothing is forced.",
+    "perm_location": "Location",
+    "perm_location_body": "Used to find nearby certified professionals.",
+    "perm_notifications": "Notifications",
+    "perm_notifications_body": "Receive offers and mission status updates.",
+    "perm_camera": "Camera",
+    "perm_camera_body": "Attach photos to SOS reports so responders arrive prepared.",
+    "hint_loc_unavailable": "Location isn't available on this device — you can still search by marina.",
+    "hint_loc_ok": "Location enabled. THALVO can now match closer responders.",
+    "hint_loc_denied": "Location denied — you can still request help by marina, response may be slower.",
+    "hint_notif_unsupported": "Notifications aren't supported here — the in-app inbox still works.",
+    "hint_notif_ok": "Notifications enabled. You'll hear from THALVO the moment an offer arrives.",
+    "hint_notif_denied": "Notifications off — offers will still surface inside the app.",
+    "hint_notif_fail": "Notifications unavailable — the in-app feed still works.",
+    "hint_cam_ok": "Camera ready — you can attach live photos to SOS reports.",
+    "hint_cam_denied": "Camera denied — you can still describe the issue in text.",
+    "captain_eyebrow": "Step 4",
+    "captain_title": "Do you already have a vessel?",
+    "captain_subtitle": "Add it now to unlock Boat Passport — or skip and add it later.",
+    "captain_yes": "Yes — set up my vessel",
+    "captain_yes_hint": "Guides you to Boat Passport setup.",
+    "captain_skip": "Not yet — skip",
+    "captain_skip_hint": "Add a vessel later from Profile.",
+    "tour_eyebrow": "Step 5",
+    "tour_title": "Meet Mission Control",
+    "tour_subtitle": "Everything you need lives one tap away.",
+    "tour_map": "Map",
+    "tour_map_body": "See responders live around you.",
+    "tour_sos": "SOS",
+    "tour_sos_body": "One tap dispatches the nearest help.",
+    "tour_compass": "Compass",
+    "tour_compass_body": "Your THALVO AI copilot, anywhere.",
+    "tour_market": "Marketplace",
+    "tour_market_body": "Dealer parts and in-app order flow.",
+    "tour_passport": "Passport",
+    "tour_passport_body": "Your vessel's dossier and history.",
+    "tour_enter": "Enter Mission Control",
+    "tour_replay": "You can replay this tour anytime from Profile."
   }
 }

@@ -16,6 +16,7 @@ import { openThalvoSos } from "@/lib/sos-bus";
 import { THALVO_AI_OPEN_EVENT } from "@/lib/thalvo-ai-bus";
 import { askThalvoChat, loadThalvoChat } from "@/lib/thalvo-chat.functions";
 import { answerFromTraining } from "@/lib/thalvo-ai/domain";
+import { resolveAiLang } from "@/lib/ai-lang";
 
 const SESSION_KEY = "thalvo-ai-session";
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -50,7 +51,8 @@ export function ThalvoChat({ showLauncher = true }: { showLauncher?: boolean }) 
 
 function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
   const { t, i18n } = useTranslation();
-  const lang: "en" | "tr" = i18n.language === "en" ? "en" : "tr";
+  // Greek UI uses EN AI copy — never silently fall through to Turkish.
+  const lang = resolveAiLang(i18n.language);
   const navigate = useNavigate();
   const ask = useServerFn(askThalvoChat);
   const loadHistory = useServerFn(loadThalvoChat);

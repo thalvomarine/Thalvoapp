@@ -68,7 +68,7 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
     if (phase === "processing") return; // duplicate-submit guard
     if (!online) {
       setPhase("error");
-      setErrMsg("You appear to be offline. Reconnect to run the simulated payment.");
+      setErrMsg(t("checkout.offline_error"));
       return;
     }
     const invalid = validate();
@@ -86,7 +86,7 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
       await new Promise((r) => setTimeout(r, 900));
       onClose();
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Simulated payment could not complete.";
+      const msg = e instanceof Error ? e.message : t("checkout.generic_error");
       setPhase("error");
       setErrMsg(msg);
     }
@@ -108,13 +108,13 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
               {subtitle && <p className="text-sm opacity-90 mt-0.5">{subtitle}</p>}
             </div>
             {!busy && (
-              <button onClick={onClose} aria-label="Close" className="size-9 grid place-items-center rounded-full bg-black/20 hover:bg-black/30">
+              <button onClick={onClose} aria-label={t("checkout.close")} className="size-9 grid place-items-center rounded-full bg-black/20 hover:bg-black/30">
                 <X className="size-4" />
               </button>
             )}
           </div>
           <p className="mt-4 text-4xl font-black tabular-nums">{formatTL(amount)}</p>
-          <p className="mt-1 text-[10px] uppercase tracking-[0.22em] opacity-80">Test amount · not charged</p>
+          <p className="mt-1 text-[10px] uppercase tracking-[0.22em] opacity-80">{t("checkout.test_amount")}</p>
         </div>
 
         {phase === "done" ? (
@@ -137,7 +137,7 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
             {!online && (
               <div className="inline-flex items-start gap-2 rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100">
                 <WifiOff className="mt-0.5 size-3.5 shrink-0" />
-                You are offline. Reconnect to run the simulated payment — nothing has been sent.
+                {t("checkout.offline_banner")}
               </div>
             )}
             {phase === "error" && errMsg && (
@@ -225,7 +225,7 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
               {busy ? (
                 <><Loader2 className="size-5 animate-spin" /> {t("checkout.processing")}</>
               ) : phase === "error" ? (
-                <><Lock className="size-5" /> Retry simulated payment</>
+                <><Lock className="size-5" /> {t("checkout.retry")}</>
               ) : (
                 <><Lock className="size-5" /> {cta ?? t("checkout.labor_pay")}</>
               )}
@@ -235,7 +235,7 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
                 onClick={onClose}
                 className="w-full h-10 rounded-xl border border-white/10 text-white/70 text-sm hover:bg-white/5"
               >
-                Cancel
+                {t("checkout.cancel")}
               </button>
             )}
           </div>
