@@ -298,6 +298,17 @@ export async function loadSharedBoatListings(ownerId: string): Promise<BoatListi
   } catch (error) {
     console.warn("[market] local boat import skipped", error);
   }
+  // Prefer masked feed (seller_phone null for non-owners). Fall back to base
+  // table when the view is not yet migrated on an environment.
+  const feed = await supabase
+    .from("boat_listings_feed" as never)
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (!feed.error) {
+    return ((feed.data ?? []) as BoatListingRow[]).map((row) =>
+      rowToListing({ ...row, seller_phone: row.seller_phone ?? "" }),
+    );
+  }
   const { data, error } = await supabase
     .from("boat_listings")
     .select("*")

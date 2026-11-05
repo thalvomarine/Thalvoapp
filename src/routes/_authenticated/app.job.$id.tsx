@@ -481,9 +481,6 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
   const navigate = useNavigate();
   const complete = async () => {
     setCompleting(true);
-    const amount = Number(job.total_escrow_pool);
-    const commissionAmount = Math.round(amount * 0.1);
-    const netAmount = amount - commissionAmount;
     const { data, error } = await supabase.rpc("complete_job", { _job_id: job.id });
     if (error) {
       console.error("[job] complete_job failed", error);
@@ -491,43 +488,13 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
       setCompleting(false);
       return;
     }
-    // The RPC is idempotent and reports which path it took. Financial telemetry
-    // is emitted ONLY on the first real completion so repeat calls cannot
-    // duplicate escrow / commission / payout events.
+    // Escrow / commission / payout events are written server-side by complete_job.
     const outcome = readCompleteJobResult(data);
     if (outcome === "unknown") {
       console.error("[job] complete_job returned an unexpected shape", data);
       toast.error(t("owner.complete_failed"));
       setCompleting(false);
       return;
-    }
-    if (outcome === "completed") {
-      // TODO(payments-provider): remove client emissions once webhook-driven events land.
-      emitEvent({
-        type: "escrow.release_requested",
-        subject_type: "escrow",
-        subject_id: job.id,
-        metadata: { amount },
-      });
-      emitEvent({
-        type: "escrow.released",
-        subject_type: "escrow",
-        subject_id: job.id,
-        metadata: { amount },
-        severity: "success",
-      });
-      emitEvent({
-        type: "commission.recorded",
-        subject_type: "job",
-        subject_id: job.id,
-        metadata: { fee: commissionAmount, net: netAmount },
-      });
-      emitEvent({
-        type: "payout.requested",
-        subject_type: "job",
-        subject_id: job.id,
-        metadata: { amount: netAmount },
-      });
     }
     setCompleting(false);
     navigate({ to: "/app" });
@@ -795,7 +762,9 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
               {
                 _job_id: job.id,
                 _offer_id: offerId,
-              },
+                // Conscious demo ack from CheckoutModal — silent RPC cannot secure funds.
+                _demo_ack: true,
+              } as never,
             );
             if (intentErr) throw new Error(intentErr.message);
             emitEvent({
@@ -805,24 +774,13 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
               metadata: { job_id: job.id, price, simulated: true },
               severity: "success",
             });
+            // payment.secured / escrow.secured are written server-side by
+            // record_payment_intent (or the PSP webhook in live mode).
             emitEvent({
               type: "payment.intent_created",
               subject_type: "job",
               subject_id: job.id,
               metadata: { intent_id: intentId, amount: price, provider: "simulated" },
-            });
-            emitEvent({
-              type: "payment.secured",
-              subject_type: "job",
-              subject_id: job.id,
-              metadata: { amount: price, simulated: true },
-              severity: "success",
-            });
-            emitEvent({
-              type: "escrow.secured",
-              subject_type: "escrow",
-              subject_id: job.id,
-              metadata: { amount: price, simulated: true },
             });
           }}
         />
@@ -849,8 +807,9 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
               .eq("job_id", job.id)
               .order("created_at");
             if (freshParts) setParts(freshParts as never);
+            // Extra-part approve stays simulated until PSP; do not forge payment.secured.
             emitEvent({
-              type: "payment.secured",
+              type: "payment.intent_created",
               subject_type: "job",
               subject_id: job.id,
               metadata: {
@@ -858,7 +817,6 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
                 kind: "extra_part",
                 simulated: true,
               },
-              severity: "success",
             });
           }}
         />
