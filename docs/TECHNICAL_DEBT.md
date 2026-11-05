@@ -20,6 +20,11 @@ can pick them up without re-discovering.
   Promote to enforcing after a quiet report window.
 - **Auth leaked-password protection.** Enable HaveIBeenPwned in Supabase Auth
   dashboard (not controllable from app migrations).
+- **Deploy env.** Set `VITE_SUPERADMIN_EMAIL` on Vercel for `/admin` lock
+  (personal email no longer shipped in the client bundle).
+- **Admin job status shortcut.** Control Tower can still `UPDATE jobs.status`
+  directly (trigger allows admin). Prefer `admin_close_job` / ledger RPCs
+  before treating completion as financial truth.
 
 ## Reputation
 
