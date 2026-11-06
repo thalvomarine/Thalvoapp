@@ -1,3 +1,5 @@
+import { resolveNamedPlace } from "./places.ts";
+
 export type MarineDomain = "weather" | "machinery" | "seamanship" | "outside";
 
 const LEXICON: Record<Exclude<MarineDomain, "outside">, string[]> = {
@@ -24,6 +26,10 @@ const LEXICON: Record<Exclude<MarineDomain, "outside">, string[]> = {
     "barometer",
     "basınç",
     "basinc",
+    "şiş",
+    "sis",
+    "etezyen",
+    "etesian",
   ],
   machinery: [
     "motor",
@@ -47,7 +53,6 @@ const LEXICON: Record<Exclude<MarineDomain, "outside">, string[]> = {
     "marş",
     "mars",
     "egzoz",
-    "egzoz",
     "duman",
     "kayış",
     "kayis",
@@ -67,7 +72,18 @@ const LEXICON: Record<Exclude<MarineDomain, "outside">, string[]> = {
     "engine",
     "diesel",
     "oil pressure",
-    "impeller",
+    "akü",
+    "aku",
+    "battery",
+    "şarj",
+    "sarj",
+    "sintine",
+    "bilge",
+    "pompa",
+    "dümen",
+    "dumen",
+    "steering",
+    "hidrolik",
   ],
   seamanship: [
     "demir",
@@ -88,10 +104,18 @@ const LEXICON: Record<Exclude<MarineDomain, "outside">, string[]> = {
     "gocek",
     "marmaris",
     "bodrum",
+    "fethiye",
+    "kaş",
+    "kas",
+    "datça",
+    "datca",
+    "didim",
+    "finike",
+    "kemer",
+    "antalya",
     "adam denize",
     "man overboard",
     "can yeleği",
-    "sis",
     "fog",
     "iskele",
     "sancak",
@@ -101,6 +125,19 @@ const LEXICON: Record<Exclude<MarineDomain, "outside">, string[]> = {
     "under keel",
     "dip payı",
     "dip payi",
+    "yangın",
+    "yangin",
+    "fire",
+    "karaya oturma",
+    "grounding",
+    "vhf",
+    "mayday",
+    "pan-pan",
+    "su alma",
+    "flooding",
+    "sis işareti",
+    "sis isareti",
+    "fog signal",
   ],
 };
 
@@ -251,12 +288,98 @@ const NOTES: Note[] = [
 - Poyraz is northeasterly, lodos southwesterly. A bay is chosen by whether that wind blows into the mouth or over the hill behind it.
 - A speed needs a live weather reading. This note does not invent one.`,
   },
-];
-
-const WATERS = [
-  { keys: ["göcek", "gocek"], name: "Göcek", lat: 36.7525, lng: 28.9428 },
-  { keys: ["marmaris"], name: "Marmaris", lat: 36.8525, lng: 28.278 },
-  { keys: ["bodrum"], name: "Bodrum", lat: 37.034, lng: 27.43 },
+  {
+    domain: "machinery",
+    keys: ["akü", "aku", "battery", "şarj etmiyor", "sarj etmiyor", "voltaj düşük", "12v"],
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Elektrik sistemi gerilim tutmuyor veya marş için yeterli güç vermiyor.
+- Neden olabilir: Akü yaşlanmış; kutup başı oksitli; alternatör kayışı gevşek; kaçak yük (buzdolabı, inverter) geceyi boşaltmış.
+- Şimdi ne yap: Voltajı ölç (motor kapalı ~12,4 V ve üstü iyi). Kutupları temizle. Motor çalışırken şarj ~13,5–14,5 V bandında olmalı — kesin sayı plakaya ve regülatöre bağlıdır, uydurma.
+- Ne zaman usta çağır: Motor çalışırken gerilim yükselmiyorsa veya akü şişmiş/kokuyorsa.
+- Marka notu: AGM / jel / ıslak tip farklı şarj ister. Tip plakasız tahmin edilmez.`,
+    en: `## Plain-language report
+- What is happening: The electrical system will not hold voltage, or it will not crank.
+- What can cause it: An aged battery, oxidised terminals, a loose alternator belt, or a parasitic load overnight.
+- What to do now: Measure voltage (engine off, about 12.4 V and up is healthy). Clean the posts. Running charge is often ~13.5–14.5 V — exact band depends on the regulator; do not invent a figure.
+- When to call a mechanic: Voltage does not rise with the engine, or the battery is swollen or smells.
+- Brand note: AGM, gel, and flooded need different charge profiles. Do not guess the type off the plate.`,
+  },
+  {
+    domain: "machinery",
+    keys: ["sintine", "bilge", "su alma", "flooding", "tekne su alıyor", "tekne su aliyor"],
+    emergency: true,
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Gövdeye veya sintineye su giriyor. Bu makine arızasından önce emniyet işidir.
+- Neden olabilir: Sintine pompası çalışmıyor; hortum/kelepçe kaçırıyor; shaft packing / stuffing box; açık deniz suyu vanası; gövde çatlağı.
+- Şimdi ne yap: Pompayı aç, yedek pompa varsa kullan. Deniz suyu vanalarını bilinen sızıntı hattında kapat. Can yeleği hazır tut. Su yükseliyorsa VHF / telefon ile yardım iste.
+- Ne zaman usta çağır: Pompa yetişmiyorsa veya kaynak bulunamıyorsa — şimdi.
+- Marka notu: Kaçak yeri görmeden parça uydurma.`,
+    en: `## Plain-language report
+- What is happening: Water is entering the hull or bilge. Safety before diagnosis.
+- What can cause it: A dead bilge pump, a hose clamp, stuffing box, an open seacock, or a hull breach.
+- What to do now: Run the pump and any spare. Close seacocks on the known leak line. Keep lifejackets ready. Call for help if the water is winning.
+- When to call a mechanic: The pump cannot keep up, or you cannot find the source — now.
+- Brand note: Do not invent a part before you see the leak.`,
+  },
+  {
+    domain: "seamanship",
+    keys: ["yangın", "yangin", "fire", "alev", "duman kokusu"],
+    emergency: true,
+    tr: `## Seyir notu
+- Önce insanlar: herkes can yeleği, yangın battaniyesi / CO₂ / köpük — yakıt tipine uygun söndürücü.
+- Elektrik yangınında akü şalterini kes (güvenliyse). Yakıt yangınında su ile büyütme.
+- Motor odası kapalıysa kapağı açıp oksijen verme; sabit söndürme varsa onu kullan.
+- Duman veya alev kontrol altına alınmıyorsa tekneyi terk planı hazır olsun; VHF Mayday.`,
+    en: `## Seamanship note
+- People first: lifejackets on, then the right extinguisher for the fuel type.
+- For electrical fire, kill the battery switch if safe. Do not fight a fuel fire with water.
+- Do not feed a closed engine-room fire with oxygen; use fixed extinguishing if fitted.
+- If smoke or flame is not controlled, prepare to abandon and call Mayday on VHF.`,
+  },
+  {
+    domain: "seamanship",
+    keys: ["karaya oturma", "grounding", "oturduk", "sığlıkta kaldık", "siglikta kaldik"],
+    emergency: true,
+    tr: `## Seyir notu
+- Motoru zorlama: pervane ve soğutma suyu hasar riski. Durumu sakin değerlendir.
+- Gelgit / rüzgâr yönü tekneyi daha mı batırıyor yoksa kaldırıyor mu bak.
+- Su alma kontrolü yap. Yaralı yoksa önce tekne bütünlüğü.
+- Kendi gücünle çıkamıyorsan çekici / yardım çağır; yanlış çekiş omurgayı yorar.`,
+    en: `## Seamanship note
+- Do not thrash the engine: prop and cooling intake can be damaged. Assess calmly.
+- Check whether tide or wind is setting you harder on, or lifting you off.
+- Check for flooding. If no injuries, hull integrity comes next.
+- If you cannot free yourself, call a tow; a bad pull can stress the keel.`,
+  },
+  {
+    domain: "seamanship",
+    keys: ["vhf", "mayday", "pan-pan", "secürite", "securite", "kanal 16"],
+    tr: `## Seyir notu
+- Kanal 16 dinlenir. Mayday: can tehlikesi. Pan-Pan: acil ama can tehlikesi yok. Sécurité: seyir uyarısı.
+- Mesaj: kimlik, konum (enlem/boylam veya bilinen nokta), ne oldu, kaç kişi, ne yardım.
+- Konum uydurma. Bilmiyorsan en yakın bilinen koy / marina adını söyle.`,
+    en: `## Seamanship note
+- Guard channel 16. Mayday: grave danger. Pan-Pan: urgent, no immediate life threat. Sécurité: safety warning.
+- Message: who you are, where (lat/lng or a known place), what happened, how many souls, what help.
+- Do not invent a position. If unsure, name the nearest known bay or marina.`,
+  },
+  {
+    domain: "machinery",
+    keys: ["dümen", "dumen", "steering", "direksiyon boş", "hidrolik dümen"],
+    emergency: true,
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Dümen cevapsız veya aşırı boş. Trafikte bu acildir.
+- Neden olabilir: Hidrolik kaçak / seviye düşük; kablo kopuk; otolota / autopilot kavraması; dümen yekesi / quadrant.
+- Şimdi ne yap: Sürati düşür. Trafikten uzaklaş. Yedek dümen (tiller / emergency steering) varsa hazırla. Yakıt kaçağı gibi hidrolik yağı varsa kıvılcım yok.
+- Ne zaman usta çağır: Yedek dümenle limana dönemiyorsan — şimdi yardım iste.
+- Marka notu: Hidrolik yağ tipi plakasız söylenmez.`,
+    en: `## Plain-language report
+- What is happening: Steering is dead or dangerously loose. In traffic this is an emergency.
+- What can cause it: Hydraulic leak or low fluid, a parted cable, autopilot clutch, or quadrant failure.
+- What to do now: Slow down. Get clear of traffic. Rig emergency steering if fitted. No sparks near hydraulic oil mistreated as a fuel hazard.
+- When to call a mechanic: If you cannot make harbour on emergency steering — call help now.
+- Brand note: Do not invent the hydraulic fluid type off the plate.`,
+  },
 ];
 
 export function classifyMarineDomain(text: string): MarineDomain {
@@ -301,12 +424,13 @@ export async function answerFromTraining(input: {
     return { text: offTopicReply(input.lang), domain, emergency: false, confident: true, weather: null };
   }
   if (domain === "weather") {
-    const place = namedWater(input.text) ?? input.position;
+    const named = resolveNamedPlace(input.text);
+    const place = named ?? (input.position ? { ...input.position, name: null as string | null } : null);
     if (!place) {
       const text =
         input.lang === "tr"
-          ? "Hava için bir yer lazım. Göcek, Marmaris, Bodrum diyebilirsin veya haritada konumunu aç."
-          : "Weather needs a place. Name Göcek, Marmaris, or Bodrum, or turn on your position.";
+          ? "Hava için bir yer lazım. Göcek, Bodrum, Marmaris, Fethiye, Kaş veya Ege / Akdeniz diyebilirsin; ya da haritada konumunu aç."
+          : "Weather needs a place. Name Göcek, Bodrum, Marmaris, Fethiye, Kaş, or Aegean / Mediterranean — or turn on your position.";
       return { text, domain, emergency: false, confident: true, weather: null };
     }
     try {
@@ -323,8 +447,8 @@ export async function answerFromTraining(input: {
     } catch {
       const text =
         input.lang === "tr"
-          ? "Canlı hava ölçümü şu an gelmedi. Dalga yüksekliği uydurmam. Biraz sonra aynı yeri tekrar sor."
-          : "The live weather reading did not arrive. I will not invent a wave height. Ask the same place again shortly.";
+          ? "Canlı hava ölçümü şu an gelmedi (Open-Meteo). Dalga yüksekliği uydurmam. Biraz sonra aynı yeri tekrar sor."
+          : "The live weather reading did not arrive (Open-Meteo). I will not invent a wave height. Ask the same place again shortly.";
       return { text, domain, emergency: false, confident: true, weather: null };
     }
   }
@@ -333,11 +457,11 @@ export async function answerFromTraining(input: {
     const text =
       domain === "machinery"
         ? input.lang === "tr"
-          ? "Makine için belirtiyi yaz: hararet, yağ basıncı, marş, su atmama veya duman rengi. Plakadaki marka ve modeli ekle. Parça kodu uydurmam."
-          : "For machinery, name the symptom: overheating, oil pressure, no start, no tell-tale, or smoke colour. Add the brand and model from the plate. I will not invent a part number."
+          ? "Makine için belirtiyi yaz: hararet, yağ basıncı, marş, su atmama, duman rengi, akü veya sintine. Plakadaki marka ve modeli ekle. Parça kodu uydurmam."
+          : "For machinery, name the symptom: overheating, oil pressure, no start, no tell-tale, smoke colour, battery, or bilge. Add the brand and model from the plate. I will not invent a part number."
         : input.lang === "tr"
-          ? "Seyir için ne yapmak istediğini yaz: demir, çatışma kuralları veya denize adam düşmesi. Rüzgâr hızı ancak canlı ölçüden gelir."
-          : "For seamanship, say what you need: anchoring, collision rules, or man overboard. A wind speed comes only from a live reading.";
+          ? "Seyir için ne yapmak istediğini yaz: demir, çatışma kuralları, denize adam, yangın, karaya oturma veya VHF. Rüzgâr hızı ancak canlı ölçüden gelir."
+          : "For seamanship, say what you need: anchoring, collision rules, man overboard, fire, grounding, or VHF. A wind speed comes only from a live reading.";
     return { text, domain, emergency: false, confident: false, weather: null };
   }
   return {
@@ -363,11 +487,6 @@ function matchNote(text: string): Note | null {
   return best;
 }
 
-function namedWater(text: string): { name: string; lat: number; lng: number } | null {
-  const q = text.toLocaleLowerCase("tr");
-  return WATERS.find((water) => water.keys.some((key) => q.includes(key))) ?? null;
-}
-
 function formatWeather(
   report: {
     summaryTr: string;
@@ -383,6 +502,9 @@ function formatWeather(
         ? "Bulunduğun nokta"
         : "Your position"
       : label;
-  const source = lang === "tr" ? "Kaynak: Open-Meteo canlı ölçü." : "Source: Open-Meteo live reading.";
+  const source =
+    lang === "tr"
+      ? "Kaynak: Open-Meteo canlı ölçü (resmî MGİM bülteni değil)."
+      : "Source: Open-Meteo live reading (not an official national bulletin).";
   return `${where}. ${body} ${source}`;
 }
