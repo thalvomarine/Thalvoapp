@@ -21,6 +21,8 @@ import { emitEvent } from "@/lib/events";
 import { caretAfterGrouping, groupThousands, parseGrouped } from "@/lib/digit-format";
 import { createRealtimeBuffer, runWhenIdle } from "@/lib/schedule";
 import { noteSchemaMiss, skipMissing } from "@/lib/schema-gap";
+import { getFix, readLastFix } from "@/lib/geolocation";
+import { autoEtaMinutesBetween, calculateMarineEta } from "@/lib/geo-eta";
 import { Anchor, Wrench, Radio, Gauge, Activity, Loader2, Send, ChevronRight } from "lucide-react";
 import { TrustMark } from "@/components/brand/ProductMarks";
 
@@ -203,6 +205,8 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
       description: string;
       marina: string;
       service_type: string;
+      lat: number | null;
+      lng: number | null;
       profiles: { full_name: string; boat_name: string | null } | null;
     }>
   >([]);
@@ -546,6 +550,8 @@ function RequestCard({
     description: string;
     marina: string;
     service_type: string;
+    lat: number | null;
+    lng: number | null;
     profiles: { full_name: string; boat_name: string | null } | null;
   };
 }) {
@@ -554,10 +560,53 @@ function RequestCard({
   const [open, setOpen] = useState(false);
   const [price, setPrice] = useState("");
   const [eta, setEta] = useState("");
+  const [etaHint, setEtaHint] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [available, setAvailable] = useState<"available" | "standby">("available");
   const [busy, setBusy] = useState(false);
   const isDiver = request.service_type === "Underwater Diver";
+
+  const openOffer = async () => {
+    setOpen(true);
+    setEtaHint(null);
+    const jobLat = asCoordinate(request.lat);
+    const jobLng = asCoordinate(request.lng);
+    if (jobLat == null || jobLng == null) return;
+
+    let from = readLastFix();
+    if (!from) {
+      const res = await getFix();
+      if (res.ok) from = res.fix;
+    }
+    if (!from && user) {
+      const { data } = await supabase
+        .from("provider_details")
+        .select("lat, lng")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (data?.lat != null && data?.lng != null) {
+        from = {
+          lat: Number(data.lat),
+          lng: Number(data.lng),
+          accuracy: Number.NaN,
+          capturedAt: Date.now(),
+        };
+      }
+    }
+    const mins = autoEtaMinutesBetween(from, { lat: jobLat, lng: jobLng });
+    if (mins == null || !from) return;
+    setEta(String(mins));
+    const marine = calculateMarineEta(from, { lat: jobLat, lng: jobLng });
+    setEtaHint(marine.label);
+    // Publish live fix so the captain can see the responder base as soon as an offer lands.
+    if (user && Number.isFinite(from.lat)) {
+      void supabase.rpc("refresh_own_provider_position", {
+        _lat: from.lat,
+        _lng: from.lng,
+        _accuracy_m: Number.isFinite(from.accuracy) ? Math.round(from.accuracy) : undefined,
+      });
+    }
+  };
 
   const submit = async () => {
     if (!user || !price || !eta) return;
@@ -585,6 +634,7 @@ function RequestCard({
     setOpen(false);
     setPrice("");
     setEta("");
+    setEtaHint(null);
     setNote("");
   };
 
@@ -627,7 +677,7 @@ function RequestCard({
       </div>
       {!open ? (
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => void openOffer()}
           className="mt-3 w-full h-10 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-sm font-semibold"
         >
           {t("provider.submit_offer")}
@@ -654,6 +704,7 @@ function RequestCard({
                 const el = e.target;
                 const next = groupThousands(el.value);
                 setEta(next);
+                setEtaHint(null);
                 const caret = caretAfterGrouping(el.value, next, el.selectionStart);
                 requestAnimationFrame(() => el.setSelectionRange(caret, caret));
               }}
@@ -662,6 +713,11 @@ function RequestCard({
               className="h-10 rounded-xl border border-white/15 bg-white/5 text-white placeholder:text-white/40 px-3 text-sm outline-none focus:border-amber-400/60"
             />
           </div>
+          {etaHint && (
+            <p className="text-[10px] text-amber-200/80 tracking-wide">
+              {t("provider.eta_auto_hint", { defaultValue: "Otomatik ETA" })} · {etaHint}
+            </p>
+          )}
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}

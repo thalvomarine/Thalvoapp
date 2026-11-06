@@ -1520,6 +1520,14 @@ export type Database = {
         Args: { _job_id: string; _lat: number; _lng: number; _accuracy_m?: number }
         Returns: undefined
       }
+      refresh_own_provider_position: {
+        Args: { _lat: number; _lng: number; _accuracy_m?: number }
+        Returns: undefined
+      }
+      thalvo_haversine_nm: {
+        Args: { lat1: number; lng1: number; lat2: number; lng2: number }
+        Returns: number
+      }
       consume_captain_ai_quota: {
         Args: never
         Returns: undefined

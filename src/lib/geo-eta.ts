@@ -65,6 +65,30 @@ export function etaMinutes(distanceNm: number, speedKts: number): number | null 
   return (distanceNm / speedKts) * 60;
 }
 
+/**
+ * Whole-minute ETA for a dispatch offer / set-sail fallback.
+ * Floors at 1 minute, caps at 24 h so a bad fix cannot invent a multi-day ETA.
+ */
+export function suggestDispatchEtaMinutes(rawMinutes: number | null | undefined): number {
+  if (rawMinutes == null || !Number.isFinite(rawMinutes) || rawMinutes <= 0) return 1;
+  return Math.min(1440, Math.max(1, Math.ceil(rawMinutes)));
+}
+
+/**
+ * Auto ETA from provider fix → job fix at the default service-boat speed.
+ * Returns null when either coordinate is missing (caller keeps manual entry).
+ */
+export function autoEtaMinutesBetween(
+  from: { lat: number; lng: number } | null | undefined,
+  to: { lat: number; lng: number } | null | undefined,
+  speedKts = DEFAULT_SERVICE_BOAT_KTS,
+): number | null {
+  if (!from || !to) return null;
+  if (![from.lat, from.lng, to.lat, to.lng].every(Number.isFinite)) return null;
+  const raw = etaMinutes(haversineNm(from.lat, from.lng, to.lat, to.lng), speedKts);
+  return raw == null ? null : suggestDispatchEtaMinutes(raw);
+}
+
 export interface RouteEta {
   distanceNm: number;
   speedKts: number;
