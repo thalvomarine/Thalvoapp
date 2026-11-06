@@ -119,6 +119,132 @@ export type Database = {
         }
         Relationships: []
       }
+      dealer_applications: {
+        Row: {
+          activity_certificate_path: string | null
+          authorized_name: string
+          authorized_title: string | null
+          billing_address: string
+          brands_carried: string | null
+          created_at: string
+          delivery_mode: string
+          entity_type: string
+          estimated_sku_count: number | null
+          finance_contact_name: string | null
+          finance_contact_phone: string | null
+          home_marina: string
+          iban: string
+          iban_account_name: string
+          id: string
+          invoice_type: string
+          kep_address: string
+          legal_name: string
+          mersis_number: string | null
+          ops_contact_name: string | null
+          ops_contact_phone: string | null
+          partner_terms_accepted_at: string | null
+          product_focus: string
+          registered_address: string
+          return_address: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          ship_from_address: string
+          signature_doc_path: string | null
+          status: string
+          store_name: string
+          submitted_at: string | null
+          tax_id: string
+          tax_office: string
+          tax_plate_path: string | null
+          trade_registry_path: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_certificate_path?: string | null
+          authorized_name: string
+          authorized_title?: string | null
+          billing_address: string
+          brands_carried?: string | null
+          created_at?: string
+          delivery_mode?: string
+          entity_type: string
+          estimated_sku_count?: number | null
+          finance_contact_name?: string | null
+          finance_contact_phone?: string | null
+          home_marina: string
+          iban: string
+          iban_account_name: string
+          id?: string
+          invoice_type?: string
+          kep_address: string
+          legal_name: string
+          mersis_number?: string | null
+          ops_contact_name?: string | null
+          ops_contact_phone?: string | null
+          partner_terms_accepted_at?: string | null
+          product_focus: string
+          registered_address: string
+          return_address: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          ship_from_address: string
+          signature_doc_path?: string | null
+          status?: string
+          store_name: string
+          submitted_at?: string | null
+          tax_id: string
+          tax_office: string
+          tax_plate_path?: string | null
+          trade_registry_path?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_certificate_path?: string | null
+          authorized_name?: string
+          authorized_title?: string | null
+          billing_address?: string
+          brands_carried?: string | null
+          created_at?: string
+          delivery_mode?: string
+          entity_type?: string
+          estimated_sku_count?: number | null
+          finance_contact_name?: string | null
+          finance_contact_phone?: string | null
+          home_marina?: string
+          iban?: string
+          iban_account_name?: string
+          id?: string
+          invoice_type?: string
+          kep_address?: string
+          legal_name?: string
+          mersis_number?: string | null
+          ops_contact_name?: string | null
+          ops_contact_phone?: string | null
+          partner_terms_accepted_at?: string | null
+          product_focus?: string
+          registered_address?: string
+          return_address?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          ship_from_address?: string
+          signature_doc_path?: string | null
+          status?: string
+          store_name?: string
+          submitted_at?: string | null
+          tax_id?: string
+          tax_office?: string
+          tax_plate_path?: string | null
+          trade_registry_path?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       emergency_service_requests: {
         Row: {
           assigned_provider_id: string | null
