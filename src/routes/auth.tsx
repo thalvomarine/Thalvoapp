@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,7 +18,18 @@ import {
 } from "@/lib/signup-welcome";
 import { normalizeAppLng } from "@/i18n";
 import { AuthPassageBackdrop } from "@/components/brand/AuthPassageBackdrop";
+import {
+  DealerApplicationWizard,
+  createEmptyDealerDocs,
+  resetDealerDraft,
+  type DealerDocsState,
+} from "@/components/auth/DealerApplicationWizard";
 import { ENGINE_BRANDS } from "@/lib/marine-catalog";
+import {
+  dealerDraftToRow,
+  type DealerApplicationDraft,
+  type DealerDocSlot,
+} from "@/lib/dealer-application";
 
 type AuthIntent = "captain" | "dealer" | "provider";
 
@@ -91,10 +102,49 @@ function AuthPage() {
   const [accountType, setAccountType] = useState(ACCOUNT_TYPES[0]);
   const [certUrl, setCertUrl] = useState("");
   const [brands, setBrands] = useState<string[]>([]);
-  const [businessName, setBusinessName] = useState("");
-  const [homeMarina, setHomeMarina] = useState("Göcek");
+  const [dealerDraft, setDealerDraft] = useState<DealerApplicationDraft>(() => resetDealerDraft());
+  const [dealerDocs, setDealerDocs] = useState<DealerDocsState>(() => createEmptyDealerDocs());
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  const uploadDealerDocs = async (userId: string) => {
+    const paths: Partial<Record<DealerDocSlot, string>> = {};
+    for (const [slot, file] of Object.entries(dealerDocs) as Array<[DealerDocSlot, File | null | undefined]>) {
+      if (!file) continue;
+      const mime = file.type === "image/jpg" ? "image/jpeg" : file.type;
+      const ext =
+        mime === "application/pdf"
+          ? "pdf"
+          : mime === "image/png"
+            ? "png"
+            : mime === "image/webp"
+              ? "webp"
+              : "jpg";
+      const path = `${userId}/${slot}/${crypto.randomUUID()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("dealer-documents").upload(path, file, {
+        contentType: mime,
+        upsert: false,
+      });
+      if (uploadError) throw uploadError;
+      paths[slot] = path;
+    }
+    return paths;
+  };
+
+  const persistDealerApplication = async (userId: string) => {
+    const paths = await uploadDealerDocs(userId);
+    const row = dealerDraftToRow(userId, dealerDraft, paths);
+    const { error } = await supabase.from("dealer_applications").upsert(row, { onConflict: "user_id" });
+    if (error) throw error;
+    await supabase
+      .from("profiles")
+      .update({
+        business_name: dealerDraft.legalName.trim() || dealerDraft.storeName.trim(),
+        home_marina: dealerDraft.homeMarina,
+        full_name: dealerDraft.authorizedName.trim(),
+      })
+      .eq("id", userId);
+  };
 
   useEffect(() => {
     if (confirmed !== "1") return;
@@ -111,8 +161,8 @@ function AuthPage() {
   const toggleBrand = (b: string) =>
     setBrands((prev) => (prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]));
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const submit = async (e?: FormEvent) => {
+    e?.preventDefault();
     setErr(null);
     setBusy(true);
     try {
@@ -123,12 +173,18 @@ function AuthPage() {
           options: {
             emailRedirectTo: confirmationRedirect(),
             data: {
-              full_name: fullName,
+              full_name: role === "Supplier" ? dealerDraft.authorizedName.trim() : fullName,
               boat_name: role === "Client" ? boatName : null,
               role,
-              business_name: role === "Supplier" ? businessName || fullName : null,
-              home_marina: role === "Supplier" ? homeMarina : null,
-              phone: phone.trim() || null,
+              business_name:
+                role === "Supplier"
+                  ? dealerDraft.legalName.trim() || dealerDraft.storeName.trim()
+                  : null,
+              home_marina: role === "Supplier" ? dealerDraft.homeMarina : null,
+              phone:
+                role === "Supplier"
+                  ? dealerDraft.phone.trim() || null
+                  : phone.trim() || null,
               account_type: role === "Client" ? accountType : null,
               preferred_language: normalizeAppLng(i18n.resolvedLanguage) === "en" ? "en" : "tr",
             },
@@ -143,6 +199,8 @@ function AuthPage() {
           if (siErr && isEmailNotConfirmedMessage(siErr.message)) {
             markEmailUnconfirmed();
             toast.warning(t("auth.email_unconfirmed_banner"), { duration: 8000 });
+            // Dealer docs need a session; without one we still recorded requested_role
+            // via signup metadata and leave the visitor on the public chart.
             navigate({ to: "/chart" });
             return;
           }
@@ -164,14 +222,7 @@ function AuthPage() {
           });
         }
         if (role === "Supplier" && userId) {
-          // Marina is a label only — never derive or fabricate coordinates from it.
-          await supabase
-            .from("profiles")
-            .update({
-              business_name: businessName || fullName,
-              home_marina: homeMarina,
-            })
-            .eq("id", userId);
+          await persistDealerApplication(userId);
         }
 
         markSignupWelcome();
@@ -249,7 +300,13 @@ function AuthPage() {
           </p>
         </section>
 
-        <section className="auth-rise auth-desk w-full max-w-md justify-self-center overflow-hidden rounded-[28px] text-white lg:justify-self-end" style={{ animationDelay: "80ms" }}>
+        <section
+          className={
+            "auth-rise auth-desk w-full justify-self-center overflow-hidden rounded-[28px] text-white lg:justify-self-end " +
+            (mode === "signup" && role === "Supplier" && roleReady ? "max-w-lg" : "max-w-md")
+          }
+          style={{ animationDelay: "80ms" }}
+        >
           <div className="space-y-5 p-5 sm:p-6">
             <div className="auth-mode" role="tablist" aria-label={t("auth.welcome")}>
               <button
@@ -313,6 +370,22 @@ function AuthPage() {
                 </div>
               </div>
             ) : (
+              mode === "signup" && role === "Supplier" ? (
+                <DealerApplicationWizard
+                  draft={dealerDraft}
+                  docs={dealerDocs}
+                  email={email}
+                  password={password}
+                  busy={busy}
+                  err={err}
+                  onDraftChange={setDealerDraft}
+                  onDocsChange={setDealerDocs}
+                  onEmailChange={setEmail}
+                  onPasswordChange={setPassword}
+                  onChangeRole={() => setRoleReady(false)}
+                  onSubmit={() => void submit()}
+                />
+              ) : (
               <form onSubmit={submit} className="space-y-3.5">
                 {mode === "signup" && (
                   <>
@@ -326,9 +399,7 @@ function AuthPage() {
                       {t("auth.change_role")}
                     </button>
 
-                    {role !== "Supplier" && (
-                      <Field label={t("auth.full_name")} value={fullName} onChange={setFullName} required />
-                    )}
+                    <Field label={t("auth.full_name")} value={fullName} onChange={setFullName} required />
 
                     {role === "Client" && (
                       <>
@@ -413,63 +484,12 @@ function AuthPage() {
                       </>
                     )}
 
-                    {role === "Supplier" && (
-                      <>
-                        <p className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-[12px] leading-snug text-white/70">
-                          {t("auth.supplier_kicker")}
-                        </p>
-                        <Field
-                          label={t("auth.contact_name")}
-                          value={fullName}
-                          onChange={setFullName}
-                          required
-                          autoComplete="name"
-                        />
-                        <Field
-                          label={t("auth.business_name")}
-                          value={businessName}
-                          onChange={setBusinessName}
-                          required
-                          autoComplete="organization"
-                          placeholder={t("auth.business_placeholder")}
-                        />
-                        <div>
-                          <label className="auth-label">{t("auth.home_marina")}</label>
-                          <select
-                            value={homeMarina}
-                            onChange={(e) => setHomeMarina(e.target.value)}
-                            className="auth-field"
-                          >
-                            {[
-                              "Didim",
-                              "Bodrum",
-                              "Datça",
-                              "Marmaris",
-                              "Göcek",
-                              "Fethiye",
-                              "Kaş",
-                              "Finike",
-                              "Kemer",
-                              "Antalya",
-                            ].map((m) => (
-                              <option key={m}>{m}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </>
-                    )}
-
                     <Field
-                      label={
-                        role === "Supplier"
-                          ? t("auth.phone")
-                          : `${t("auth.phone")} (${t("common.optional")})`
-                      }
+                      label={`${t("auth.phone")} (${t("common.optional")})`}
                       value={phone}
                       onChange={setPhone}
                       type="tel"
                       autoComplete="tel"
-                      required={role === "Supplier"}
                       placeholder="+90…"
                     />
                     <p className="-mt-1 text-[11px] leading-snug text-white/40">
@@ -537,6 +557,7 @@ function AuthPage() {
                   {mode === "signup" ? t("auth.submit_signup") : t("auth.submit_signin")}
                 </button>
               </form>
+              )
             )}
           </div>
         </section>
