@@ -11,10 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BoatshowRouteImport } from './routes/boatshow'
 import { Route as ChartRouteImport } from './routes/chart'
 import { Route as CoverageRouteImport } from './routes/coverage'
+import { Route as DeliveryReturnsRouteImport } from './routes/delivery-returns'
+import { Route as DistanceSalesRouteImport } from './routes/distance-sales'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as MarketplacePreviewRouteImport } from './routes/marketplace-preview'
 import { Route as OfflineRouteImport } from './routes/offline'
@@ -46,6 +49,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -64,6 +72,16 @@ const ChartRoute = ChartRouteImport.update({
 const CoverageRoute = CoverageRouteImport.update({
   id: '/coverage',
   path: '/coverage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeliveryReturnsRoute = DeliveryReturnsRouteImport.update({
+  id: '/delivery-returns',
+  path: '/delivery-returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DistanceSalesRoute = DistanceSalesRouteImport.update({
+  id: '/distance-sales',
+  path: '/distance-sales',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -180,10 +198,13 @@ const AuthenticatedAppJobIdRoute = AuthenticatedAppJobIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
   '/coverage': typeof CoverageRoute
+  '/delivery-returns': typeof DeliveryReturnsRoute
+  '/distance-sales': typeof DistanceSalesRoute
   '/marketplace': typeof MarketplaceRoute
   '/marketplace-preview': typeof MarketplacePreviewRoute
   '/offline': typeof OfflineRoute
@@ -208,10 +229,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
   '/coverage': typeof CoverageRoute
+  '/delivery-returns': typeof DeliveryReturnsRoute
+  '/distance-sales': typeof DistanceSalesRoute
   '/marketplace': typeof MarketplaceRoute
   '/marketplace-preview': typeof MarketplacePreviewRoute
   '/offline': typeof OfflineRoute
@@ -238,10 +262,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
   '/coverage': typeof CoverageRoute
+  '/delivery-returns': typeof DeliveryReturnsRoute
+  '/distance-sales': typeof DistanceSalesRoute
   '/marketplace': typeof MarketplaceRoute
   '/marketplace-preview': typeof MarketplacePreviewRoute
   '/offline': typeof OfflineRoute
@@ -268,10 +295,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/auth'
     | '/boatshow'
     | '/chart'
     | '/coverage'
+    | '/delivery-returns'
+    | '/distance-sales'
     | '/marketplace'
     | '/marketplace-preview'
     | '/offline'
@@ -296,10 +326,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/auth'
     | '/boatshow'
     | '/chart'
     | '/coverage'
+    | '/delivery-returns'
+    | '/distance-sales'
     | '/marketplace'
     | '/marketplace-preview'
     | '/offline'
@@ -325,10 +358,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/about'
     | '/auth'
     | '/boatshow'
     | '/chart'
     | '/coverage'
+    | '/delivery-returns'
+    | '/distance-sales'
     | '/marketplace'
     | '/marketplace-preview'
     | '/offline'
@@ -355,10 +391,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   BoatshowRoute: typeof BoatshowRoute
   ChartRoute: typeof ChartRoute
   CoverageRoute: typeof CoverageRoute
+  DeliveryReturnsRoute: typeof DeliveryReturnsRoute
+  DistanceSalesRoute: typeof DistanceSalesRoute
   MarketplaceRoute: typeof MarketplaceRoute
   MarketplacePreviewRoute: typeof MarketplacePreviewRoute
   OfflineRoute: typeof OfflineRoute
@@ -381,6 +420,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -409,6 +455,20 @@ declare module '@tanstack/react-router' {
       path: '/coverage'
       fullPath: '/coverage'
       preLoaderRoute: typeof CoverageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delivery-returns': {
+      id: '/delivery-returns'
+      path: '/delivery-returns'
+      fullPath: '/delivery-returns'
+      preLoaderRoute: typeof DeliveryReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/distance-sales': {
+      id: '/distance-sales'
+      path: '/distance-sales'
+      fullPath: '/distance-sales'
+      preLoaderRoute: typeof DistanceSalesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketplace': {
@@ -603,10 +663,13 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   BoatshowRoute: BoatshowRoute,
   ChartRoute: ChartRoute,
   CoverageRoute: CoverageRoute,
+  DeliveryReturnsRoute: DeliveryReturnsRoute,
+  DistanceSalesRoute: DistanceSalesRoute,
   MarketplaceRoute: MarketplaceRoute,
   MarketplacePreviewRoute: MarketplacePreviewRoute,
   OfflineRoute: OfflineRoute,

@@ -439,6 +439,13 @@ export function BrandLanding() {
               </Link>
               <div className="my-3 h-px bg-white/10" />
               <Link
+                to="/about"
+                onClick={() => setMenuOpen(false)}
+                className="rounded-md px-3 py-3 text-sm text-white/50 hover:bg-white/[0.04]"
+              >
+                {t("public.footer_about")}
+              </Link>
+              <Link
                 to="/privacy"
                 onClick={() => setMenuOpen(false)}
                 className="rounded-md px-3 py-3 text-sm text-white/50 hover:bg-white/[0.04]"
@@ -451,6 +458,20 @@ export function BrandLanding() {
                 className="rounded-md px-3 py-3 text-sm text-white/50 hover:bg-white/[0.04]"
               >
                 {t("public.footer_terms")}
+              </Link>
+              <Link
+                to="/distance-sales"
+                onClick={() => setMenuOpen(false)}
+                className="rounded-md px-3 py-3 text-sm text-white/50 hover:bg-white/[0.04]"
+              >
+                {t("public.footer_distance")}
+              </Link>
+              <Link
+                to="/delivery-returns"
+                onClick={() => setMenuOpen(false)}
+                className="rounded-md px-3 py-3 text-sm text-white/50 hover:bg-white/[0.04]"
+              >
+                {t("public.footer_delivery")}
               </Link>
             </nav>
           </aside>

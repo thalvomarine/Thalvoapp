@@ -4,6 +4,7 @@ import { CreditCard, Loader2, ShieldCheck, Lock, CheckCircle2, X, AlertTriangle,
 import { formatTL } from "@/lib/filter";
 import { useOnlineStatus } from "@/lib/pwa";
 import { caretAfterGrouping, digitsOnly, groupCard, groupExpiry } from "@/lib/digit-format";
+import { PaymentMarks } from "@/components/payments/PaymentMarks";
 
 interface Props {
   open: boolean;
@@ -230,6 +231,8 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
                 <><Lock className="size-5" /> {cta ?? t("checkout.labor_pay")}</>
               )}
             </button>
+            <PaymentMarks className="pt-1" />
+            <p className="text-center text-[10px] text-white/40">{t("public.payment_marks_note")}</p>
             {phase === "error" && (
               <button
                 onClick={onClose}
