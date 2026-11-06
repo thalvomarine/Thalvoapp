@@ -336,10 +336,7 @@
       "heating": "Heating",
       "teak_deck": "Teak deck",
       "dinghy": "Dinghy"
-    },
-    "contact_in_app": "Request contact via THALVO",
-    "contact_in_app_toast": "Contact stays inside THALVO — the seller will reply in-app. Off-platform WhatsApp and phone are blocked.",
-    "seller_phone_masked": "Seller phone is masked until an in-app thread opens."
+    }
   },
   "services": {
     "eyebrow": "THALVO · Shore support",
@@ -1559,18 +1556,116 @@
     "privacy_account_body": "Your name, email, phone number, vessel details and related job records are linked to your account.",
     "privacy_account_note": "Orders, service calls, job chat, the boat passport and payment account features require sign-in. Your phone number is not shown openly to other users.",
     "privacy_payment_title": "Payments",
-    "privacy_payment_body": "At this stage Thalvo keeps transaction records in a payment ledger. Payment-provider integration for real card collection is not complete yet. Amounts shown are for simulation and do not mean a real charge was made.",
+    "privacy_payment_body": "At this stage Thalvo keeps transaction records in a payment ledger. Until a payment institution (e.g. iyzico) is live, amounts shown are simulated and do not mean a real charge. When live, card data is processed in the payment provider’s secure rails; Thalvo does not store card numbers.",
     "privacy_data_title": "About your data",
-    "privacy_data_body": "Details on processing, storage and protection of personal data should be set out in the relevant privacy notices. Data practices, including cookies and technical usage data, should be assessed in line with applicable law.",
-    "privacy_updated": "Last updated: 10/10/2026",
+    "privacy_data_body": "Details on processing, storage and protection of personal data will be completed in KVKK-compliant notices. Cookies and technical usage data are included. Contact support@thalvo.org for requests.",
+    "privacy_updated": "Last updated: 06/11/2026",
     "terms_title": "Terms of use",
-    "terms_intro": "At Thalvo, privacy, transparency and user control come first. You can explore public areas without an account; sign in for actions that need one.",
-    "terms_browse_title": "Without an account",
-    "terms_browse_body": "Product, marina, stock and coverage information is public. Live positions are not shared.",
-    "terms_account_title": "When you create an account",
-    "terms_account_body": "Orders, service calls, job chat, the boat passport and payment require sign-in.",
-    "terms_payment_title": "Payments",
-    "terms_payment_body": "Amounts shown are for simulation; real card collection is not connected yet."
+    "terms_intro": "By using Thalvo you accept these terms. Browsing is open; orders, calls and payment require an account.",
+    "footer_about": "About",
+    "footer_distance": "Distance sales",
+    "footer_delivery": "Delivery & returns",
+    "payment_marks_note": "Visa, Mastercard and Pay with iyzico — payments stay simulated until live collection is connected.",
+    "legal_updated": "Last updated: 06/11/2026 · Legal entity name, address and tax details will be completed by the seller.",
+    "about_title": "About",
+    "about_intro": "THALVO MarineOS is a marine operating platform for Aegean and Mediterranean coasts: navigation, marina/anchorage guidance and on-demand emergency matching.",
+    "about_sections": [
+      {
+        "title": "What we do",
+        "paragraphs": [
+          "Thalvo was built by a professional team with years of maritime knowledge and field experience.",
+          "Captains get a coast chart, SOS calling, verified technician matching and a spare-parts catalogue. Approved dealers and providers run stock and jobs from their desks."
+        ]
+      },
+      {
+        "title": "Coverage",
+        "body": "Coverage is the Aegean and Mediterranean coastline. Marina names are real places. Live vessel or technician pins are not shown on the public chart."
+      }
+    ],
+    "about_contact_title": "Contact and seller details",
+    "about_contact_body": "Support: {{email}}",
+    "about_placeholder_legal_name": "Legal name: [Company name — to be completed]",
+    "about_placeholder_address": "Address: [Full address — to be completed]",
+    "about_placeholder_tax": "Tax office / ID: [To be completed]",
+    "terms_sections": [
+      {
+        "title": "Without an account",
+        "body": "Product, marina, stock and coverage information is public. Live positions are not shared."
+      },
+      {
+        "title": "When you create an account",
+        "body": "Orders, service calls, job chat, the boat passport and payment require sign-in. You are responsible for the accuracy of your account details."
+      },
+      {
+        "title": "Payments",
+        "body": "Amounts shown are for simulation; real card collection is not connected yet. When live, charges run through iyzico or an equivalent licensed payment institution."
+      },
+      {
+        "title": "Nature of the service",
+        "body": "Thalvo provides chart, matching and marketplace infrastructure. On-water technical work and parts fulfilment are performed by approved providers or dealers."
+      }
+    ],
+    "delivery_title": "Delivery and returns",
+    "delivery_intro": "This page explains delivery / performance and return rules for spare-part orders and on-demand service calls on Thalvo. Exact timelines will be confirmed by the seller.",
+    "delivery_sections": [
+      {
+        "title": "Spare-part delivery",
+        "paragraphs": [
+          "Part orders are planned from stock status and the chosen marina / hand-off point.",
+          "Estimated delivery appears on the order summary; weather, harbour access or stock delays are noted on the order record."
+        ],
+        "items": [
+          "Hand-off: marina office, berth point or agreed courier",
+          "Identity / vessel details may be checked at delivery",
+          "Damaged or incomplete delivery must be reported the same day"
+        ]
+      },
+      {
+        "title": "Service performance",
+        "body": "Technician / SOS calls are not parcel deliveries. Performance completes when the job is done and the captain confirms. Cancel and live-position rules follow the in-app job flow."
+      },
+      {
+        "title": "Returns and withdrawal",
+        "paragraphs": [
+          "Unused, sealed, resaleable spare parts may be returned within 14 days of delivery via support@thalvo.org.",
+          "Custom orders, cut hose/cable, opened sealants and safety-critical open goods may have limited withdrawal rights.",
+          "Completed service jobs follow distance-selling exceptions for performed services; disputes are reviewed on the job record."
+        ]
+      },
+      {
+        "title": "Refunds",
+        "body": "Once live collection is connected, approved refunds follow the payment institution (iyzico) and bank timelines. No real charge is taken in simulation mode."
+      }
+    ],
+    "distance_title": "Distance sales agreement",
+    "distance_intro": "This draft covers distance sales formed electronically on Thalvo. It is not final until the seller identity is complete and legal review is done.",
+    "distance_seller_title": "Seller / platform intermediary",
+    "distance_sections": [
+      {
+        "title": "Subject",
+        "body": "The agreement covers spare parts ordered and/or marine technical services requested electronically through Thalvo."
+      },
+      {
+        "title": "Formation",
+        "body": "The agreement is formed when the buyer confirms the order and completes payment (via iyzico when live). In simulation mode no real payment is taken; records are for testing."
+      },
+      {
+        "title": "Price and payment",
+        "body": "Product/service price, taxes and any delivery fee appear on the order summary. Card payments accept Visa and Mastercard via a licensed payment institution."
+      },
+      {
+        "title": "Delivery and performance",
+        "body": "Details for parts delivery and service performance are on the Delivery & returns page."
+      },
+      {
+        "title": "Right of withdrawal",
+        "body": "Withdrawal rights under Turkish consumer distance-selling rules are reserved; statutory exceptions apply. See Delivery & returns."
+      },
+      {
+        "title": "Disputes",
+        "body": "Complaints: support@thalvo.org. Consumer disputes may go to the competent consumer arbitration committee or court."
+      }
+    ]
   },
   "uploader": {
     "server_rejected_type": "Server rejected this file: only JPG, PNG or WEBP images are allowed.",
