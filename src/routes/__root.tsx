@@ -5,6 +5,7 @@ import {
   createRootRouteWithContext,
   redirect,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -25,6 +26,7 @@ import { NetworkStatusBanner } from "@/components/pwa/NetworkStatusBanner";
 import { initNativeShell } from "@/lib/native";
 import { registerPwa } from "@/lib/pwa-register";
 import { applyThalvoTheme, readThalvoTheme } from "@/lib/theme";
+import { initGoogleAds, trackGoogleAdsConversion, trackGoogleAdsPageView } from "@/lib/google-ads";
 
 function NotFoundComponent() {
   const { t } = useTranslation();
@@ -168,10 +170,7 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body
-        className="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]"
-        suppressHydrationWarning
-      >
+      <body className="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -181,9 +180,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
   useEffect(() => {
     applyPreferredLanguage();
     applyThalvoTheme(readThalvoTheme());
+    initGoogleAds();
     const showConfirmed = () => {
       try {
         if (sessionStorage.getItem("thalvo:confirmed-shown") === "1") return;
@@ -192,6 +194,7 @@ function RootComponent() {
         /* private mode */
       }
       clearEmailUnconfirmed();
+      trackGoogleAdsConversion("email_confirmed");
       toast.success(i18n.t("auth.email_confirmed"));
     };
     const { data: authSub } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -203,7 +206,8 @@ function RootComponent() {
       const link = document.createElement("link");
       link.id = fontId;
       link.rel = "stylesheet";
-      link.href = "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap";
       document.head.appendChild(link);
     }
     void initNativeShell();
@@ -212,6 +216,11 @@ function RootComponent() {
     document.getElementById("thalvo-sos-fallback")?.remove();
     return () => authSub.subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    trackGoogleAdsPageView(pathname);
+  }, [pathname]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <NetworkStatusBanner />

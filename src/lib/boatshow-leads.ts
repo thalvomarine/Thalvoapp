@@ -1,13 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
+import { trackGoogleAdsConversion } from "@/lib/google-ads";
 import { OPS_CONTACT_EMAIL } from "@/lib/superadmin";
 
-export type BoatshowLeadKind =
-  | "brand"
-  | "dealer"
-  | "marina"
-  | "captain"
-  | "technician"
-  | "other";
+export type BoatshowLeadKind = "brand" | "dealer" | "marina" | "captain" | "technician" | "other";
 
 export interface BoatshowLeadInput {
   name: string;
@@ -19,9 +14,7 @@ export interface BoatshowLeadInput {
   source: string;
 }
 
-export type BoatshowLeadResult =
-  | { stored: "db" }
-  | { stored: "mailto"; mailto: string };
+export type BoatshowLeadResult = { stored: "db" } | { stored: "mailto"; mailto: string };
 
 /** Persist a show-floor lead. Prefer Supabase; fall back to mailto if the table is not live yet. */
 export async function submitBoatshowLead(input: BoatshowLeadInput): Promise<BoatshowLeadResult> {
@@ -38,7 +31,12 @@ export async function submitBoatshowLead(input: BoatshowLeadInput): Promise<Boat
   // Table lands via migration; generated Database types may lag until regen.
   const { error } = await supabase.from("boatshow_leads" as never).insert(row as never);
 
-  if (!error) return { stored: "db" };
+  if (!error) {
+    trackGoogleAdsConversion("boatshow_lead", {
+      transactionId: `lead:${input.source}:${input.phone}`.slice(0, 64),
+    });
+    return { stored: "db" };
+  }
 
   // Table missing / RLS — still give the booth a reliable handoff.
   const subject = encodeURIComponent(`THALVO boat show · ${input.kind} · ${input.name}`);
@@ -53,6 +51,9 @@ export async function submitBoatshowLead(input: BoatshowLeadInput): Promise<Boat
       `Source: ${input.source}`,
     ].join("\n"),
   );
+  trackGoogleAdsConversion("boatshow_lead", {
+    transactionId: `lead:${input.source}:${input.phone}`.slice(0, 64),
+  });
   return {
     stored: "mailto",
     mailto: `mailto:${OPS_CONTACT_EMAIL}?subject=${subject}&body=${body}`,
