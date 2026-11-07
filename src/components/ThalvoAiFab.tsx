@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { askThalvoAi } from "@/lib/thalvo-ai.functions";
+import { askAssistantHttp } from "@/lib/thalvo-ai/browser-client";
 import { answerFromTraining } from "@/lib/thalvo-ai/domain";
 import { X, Send, Loader2, AlertOctagon } from "lucide-react";
 import { CompassMark } from "@/components/brand/CompassMark";
@@ -175,18 +176,34 @@ export function ThalvoAiFab({ hideLauncher = false }: { hideLauncher?: boolean }
     setBusy(true);
     try {
       const context = await hydrateCockpit();
-      const res = await ask({
-        data: {
-          messages: next.slice(-12).map((m) => ({ role: m.role, content: m.content.slice(0, 4000) })),
+      const position = context.position;
+      let textOut = "";
+      let emergency = false;
+      let actions: CaptainAction[] = [];
+      try {
+        const http = await askAssistantHttp({
+          sessionId: crypto.randomUUID(),
           lang,
-          context,
-        },
-      });
-      setMsgs((prev) => [
-        ...prev,
-        { role: "assistant", content: res.text, emergency: res.emergency },
-      ]);
-      runActions(res.actions ?? []);
+          position: position ? { lat: position.lat, lng: position.lng } : null,
+          messages: next.slice(-12).map((m) => ({ role: m.role, content: m.content.slice(0, 4000) })),
+        });
+        textOut = http.text;
+        emergency = http.emergency;
+        actions = http.actions ?? [];
+      } catch {
+        const res = await ask({
+          data: {
+            messages: next.slice(-12).map((m) => ({ role: m.role, content: m.content.slice(0, 4000) })),
+            lang,
+            context,
+          },
+        });
+        textOut = res.text;
+        emergency = Boolean(res.emergency);
+        actions = res.actions ?? [];
+      }
+      setMsgs((prev) => [...prev, { role: "assistant", content: textOut, emergency }]);
+      runActions(actions);
     } catch (err: unknown) {
       const raw = err instanceof Error ? err.message : String(err);
       const limited = raw.includes("ai_rate_limited");

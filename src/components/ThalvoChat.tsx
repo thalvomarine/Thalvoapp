@@ -15,6 +15,7 @@ import { resolvePlatformRoute } from "@/lib/thalvo-ai/platform-routes";
 import { openThalvoSos } from "@/lib/sos-bus";
 import { THALVO_AI_OPEN_EVENT } from "@/lib/thalvo-ai-bus";
 import { askThalvoChat, loadThalvoChat } from "@/lib/thalvo-chat.functions";
+import { askAssistantHttp, loadChatHttp } from "@/lib/thalvo-ai/browser-client";
 import { answerFromTraining } from "@/lib/thalvo-ai/domain";
 
 const SESSION_KEY = "thalvo-ai-session";
@@ -105,11 +106,17 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
     loadedSession.current = sessionId;
     void (async () => {
       try {
-        const body = await loadHistory({ data: { sessionId } });
-        if (cancel || body.messages.length === 0) return;
+        let lines: Array<{ id: string; role: "user" | "assistant"; content: string }> = [];
+        try {
+          lines = await loadChatHttp(sessionId);
+        } catch {
+          const body = await loadHistory({ data: { sessionId } });
+          lines = body.messages;
+        }
+        if (cancel || lines.length === 0) return;
         setMessages((current) =>
           current.length === 0
-            ? body.messages.map((line) => ({ id: line.id, role: line.role, content: line.content }))
+            ? lines.map((line) => ({ id: line.id, role: line.role, content: line.content }))
             : current,
         );
       } catch {
@@ -119,7 +126,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
     return () => {
       cancel = true;
     };
-  }, [open, sessionId]);
+  }, [open, sessionId, loadHistory]);
 
   const pills = lang === "en" ? PILLS_EN : PILLS_TR;
 
@@ -158,15 +165,24 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
     setBusy(true);
     try {
       const position = getCockpitContext().position;
-      const reply = await ask({
-        data: {
-          sessionId,
-          lang,
-          position: position ? { lat: position.lat, lng: position.lng } : null,
-          messages: next.slice(-12).map((line) => ({ role: line.role, content: line.content.slice(0, 4000) })),
-          image,
-        },
-      });
+      const payload = {
+        sessionId,
+        lang,
+        position: position ? { lat: position.lat, lng: position.lng } : null,
+        messages: next.slice(-12).map((line) => ({ role: line.role, content: line.content.slice(0, 4000) })),
+        image,
+      };
+      let reply: Awaited<ReturnType<typeof askAssistantHttp>>;
+      try {
+        reply = await askAssistantHttp(payload);
+      } catch (httpError) {
+        // Local `vite dev` / Nitro can still serve createServerFn.
+        try {
+          reply = await ask({ data: payload });
+        } catch {
+          throw httpError;
+        }
+      }
       const id = crypto.randomUUID();
       applyReply(id, reply.route, reply.actions ?? []);
       const summary = reply.weather ? (lang === "en" ? reply.weather.summaryEn : reply.weather.summaryTr) : undefined;

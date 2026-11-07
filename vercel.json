@@ -2,8 +2,21 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/chat.ts": {
+      "maxDuration": 60,
+      "includeFiles": "src/**"
+    },
+    "api/assistant.ts": {
+      "maxDuration": 60,
+      "includeFiles": "src/**"
+    }
+  },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {

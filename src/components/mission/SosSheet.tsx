@@ -5,6 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { askThalvoAi } from "@/lib/thalvo-ai.functions";
+import { askAssistantHttp } from "@/lib/thalvo-ai/browser-client";
 import { emitEvent } from "@/lib/events";
 import { PROBLEM_KEYS } from "@/i18n";
 import { useOnlineStatus } from "@/lib/pwa";
@@ -167,9 +168,23 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
       (photo ? `\n(Photo attached by captain — not visible to you here.)` : "") +
       `\n\nReturn: (1) one-line likely cause, (2) one immediate safety step the captain can take now, (3) what a responder will most likely need on arrival. No panic language.`;
     try {
-      const res = await ask({ data: { messages: [{ role: "user", content: prompt.slice(0, 4000) }], lang: (i18n.language === "en" ? "en" : "tr") } });
-      setAiText(res.text || t("sos_sheet.advice_offline"));
-      setAiOk(Boolean(res.text));
+      const lang = i18n.language === "en" ? "en" : "tr";
+      const messages = [{ role: "user" as const, content: prompt.slice(0, 4000) }];
+      let text = "";
+      try {
+        const http = await askAssistantHttp({
+          sessionId: crypto.randomUUID(),
+          lang,
+          position: coords ? { lat: coords.lat, lng: coords.lng } : null,
+          messages,
+        });
+        text = http.text;
+      } catch {
+        const res = await ask({ data: { messages, lang } });
+        text = res.text;
+      }
+      setAiText(text || t("sos_sheet.advice_offline"));
+      setAiOk(Boolean(text));
     } catch (err: unknown) {
       const raw = err instanceof Error ? err.message : String(err);
       setAiOk(false);
