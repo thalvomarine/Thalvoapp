@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>THALVO — e-posta onayı</title>
+  </head>
+  <body style="margin:0;padding:0;background:#07111f;color:#f5f7fa;font-family:Georgia,'Times New Roman',serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#07111f;padding:32px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:520px;background:#0A192F;border:1px solid rgba(245,185,66,0.28);border-radius:18px;overflow:hidden;">
+            <tr>
+              <td style="padding:28px 28px 8px;text-align:center;">
+                <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:0.28em;color:#F5B942;font-weight:700;">
+                  THALVO · MarineOS
+                </p>
+                <h1 style="margin:14px 0 0;font-size:28px;line-height:1.15;letter-spacing:0.04em;color:#ffffff;">
+                  E-postanı onayla
+                </h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:12px 28px 8px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.55;color:rgba(255,255,255,0.72);">
+                Merhaba{{ if .Data.full_name }} {{ .Data.full_name }}{{ end }}.
+                Hesabını açmak için aşağıdaki düğmeye bas — seni thalvo.org kokpitine götürür.
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:22px 28px 8px;">
+                <a
+                  href="{{ .ConfirmationURL }}"
+                  style="display:inline-block;background:#F5B942;color:#0A192F;text-decoration:none;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;letter-spacing:0.06em;padding:14px 28px;border-radius:999px;"
+                >
+                  E-postamı onayla
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:18px 28px 28px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:rgba(255,255,255,0.45);">
+                Bu maili sen istemediysen yok say.
+                <br />
+                Destek: support@thalvo.org
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
