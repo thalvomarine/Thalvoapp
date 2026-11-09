@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { Loader2, Radio, Ship } from "lucide-react";
+import { Send, Ship } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { VesselRange } from "@/components/mission/VesselRange";
 import {
@@ -21,14 +21,13 @@ interface Props {
 }
 
 /**
- * Provider Missions radar — realtime pending calls + accept → en_route + chart route.
+ * Provider SOS radar — shows linked missions; bidding happens on the job, not via free accept.
  */
 export function EmergencyCallRadar({ userId, hideChart = false }: Props) {
   const { t } = useTranslation();
   const [pending, setPending] = useState<EmergencyServiceRequest[]>([]);
   const [mine, setMine] = useState<EmergencyServiceRequest[]>([]);
   const [origin, setOrigin] = useState<{ lat: number; lng: number } | null>(null);
-  const [acceptingId, setAcceptingId] = useState<string | null>(null);
   const [flash, setFlash] = useState(false);
   const knownIds = useRef<Set<string>>(new Set());
   const primed = useRef(false);
@@ -87,24 +86,7 @@ export function EmergencyCallRadar({ userId, hideChart = false }: Props) {
     };
   }, [userId, load, locate]);
 
-  const accept = async (row: EmergencyServiceRequest) => {
-    if (acceptingId) return;
-    setAcceptingId(row.id);
-    const { error } = await supabase.rpc("accept_emergency_request", { _id: row.id });
-    setAcceptingId(null);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-    if (!origin) await locate();
-    const lat = asCoordinate(row.lat);
-    const lng = asCoordinate(row.lng);
-    if (lat != null && lng != null) {
-      requestMapFocus({ lat, lng, zoom: 14, label: row.vessel_name || row.bay_name || undefined });
-    }
-    toast.success(t("esvc.accepted"));
-    void load();
-  };
+  void hideChart;
 
   const active = mine[0] ?? null;
   const activeLat = active ? asCoordinate(active.lat) : null;
@@ -130,6 +112,9 @@ export function EmergencyCallRadar({ userId, hideChart = false }: Props) {
           <h2 className="text-sm font-semibold" style={{ color: "var(--sheet-ink)" }}>
             {t("esvc.radar_title")}
           </h2>
+          <p className="mt-1 text-[11px]" style={{ color: "var(--sheet-muted)" }}>
+            {t("esvc.radar_bid_hint")}
+          </p>
         </div>
         <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-400">
           <span className="relative flex size-1.5">
@@ -159,24 +144,12 @@ export function EmergencyCallRadar({ userId, hideChart = false }: Props) {
         <ul className="space-y-2">
           {mine.map((row) => (
             <li key={row.id}>
-              <CallCard
-                row={row}
-                origin={origin}
-                assigned
-                busy={false}
-                onAccept={() => undefined}
-              />
+              <CallCard row={row} origin={origin} assigned />
             </li>
           ))}
           {pending.map((row) => (
             <li key={row.id}>
-              <CallCard
-                row={row}
-                origin={origin}
-                assigned={false}
-                busy={acceptingId === row.id}
-                onAccept={() => void accept(row)}
-              />
+              <CallCard row={row} origin={origin} assigned={false} />
             </li>
           ))}
         </ul>
@@ -189,14 +162,10 @@ function CallCard({
   row,
   origin,
   assigned,
-  busy,
-  onAccept,
 }: {
   row: EmergencyServiceRequest;
   origin: { lat: number; lng: number } | null;
   assigned: boolean;
-  busy: boolean;
-  onAccept: () => void;
 }) {
   const { t } = useTranslation();
   const lat = asCoordinate(row.lat);
@@ -206,6 +175,7 @@ function CallCard({
     origin && lat != null && lng != null
       ? calculateMarineEta({ lat, lng }, origin)
       : null;
+  const jobId = row.job_id;
 
   return (
     <article
@@ -258,20 +228,34 @@ function CallCard({
           {eta?.label ?? t("esvc.eta_waiting_fix")}
         </p>
         {assigned ? (
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-300">
-            <Ship className="size-3.5" />
-            {t("esvc.status_en_route")}
-          </span>
-        ) : (
-          <button
-            type="button"
-            onClick={onAccept}
-            disabled={busy}
-            className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-amber-400 px-3 text-[11px] font-black uppercase tracking-wider text-[#0A192F] disabled:opacity-50"
+          jobId ? (
+            <Link
+              to="/app/job/$id"
+              params={{ id: jobId }}
+              className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-300"
+            >
+              <Ship className="size-3.5" />
+              {t("esvc.open_mission")}
+            </Link>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-300">
+              <Ship className="size-3.5" />
+              {t("esvc.status_en_route")}
+            </span>
+          )
+        ) : jobId ? (
+          <Link
+            to="/app/job/$id"
+            params={{ id: jobId }}
+            className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-amber-400 px-3 text-[11px] font-black uppercase tracking-wider text-[#0A192F]"
           >
-            {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Radio className="size-3.5" />}
-            {t("esvc.accept")}
-          </button>
+            <Send className="size-3.5" />
+            {t("esvc.bid")}
+          </Link>
+        ) : (
+          <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/50">
+            {t("esvc.awaiting_mission_link")}
+          </span>
         )}
       </div>
       {row.description ? (

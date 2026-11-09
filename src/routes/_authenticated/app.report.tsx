@@ -89,6 +89,7 @@ function ReportPage() {
     if (!error && data) {
       const placed = await publishLocatedCall({
         userId: user.id,
+        jobId: data.id,
         category: cat === "diver" ? "diver" : "mechanic",
         lat: coords.lat,
         lng: coords.lng,

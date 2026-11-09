@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { Loader2, MapPin, Radio, Radar } from "lucide-react";
+import { MapPin, Radar, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDegrees } from "@/lib/marine-data";
 import { createRealtimeBuffer, runWhenIdle } from "@/lib/schedule";
@@ -15,6 +14,7 @@ interface OpenJob {
   lat: number;
   lng: number;
   service_type: string;
+  status: string;
   total_escrow_pool: number | null;
   profiles: { full_name: string; boat_name: string | null } | null;
 }
@@ -23,19 +23,18 @@ interface Props {
   userId: string;
 }
 
-/** Pending job pool for divers / technicians — realtime + claim. */
+/** Open mission pool — providers bid; no unpaid claim shortcut. */
 export function ActiveJobPool({ userId }: Props) {
   const { t } = useTranslation();
   const [jobs, setJobs] = useState<OpenJob[]>([]);
-  const [busyId, setBusyId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const { data, error } = await supabase
       .from("jobs")
       .select(
-        "id, problem_category, description, marina, lat, lng, service_type, total_escrow_pool, profiles!jobs_client_id_fkey(full_name, boat_name)",
+        "id, problem_category, description, marina, lat, lng, service_type, status, total_escrow_pool, profiles!jobs_client_id_fkey(full_name, boat_name)",
       )
-      .eq("status", "Pending")
+      .in("status", ["Pending", "Offered"])
       .is("provider_id", null)
       .order("created_at", { ascending: false })
       .limit(40);
@@ -65,18 +64,6 @@ export function ActiveJobPool({ userId }: Props) {
     };
   }, [userId, load]);
 
-  const claim = async (id: string) => {
-    setBusyId(id);
-    const { error } = await supabase.rpc("claim_open_job", { _job_id: id });
-    setBusyId(null);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-    toast.success(t("ops_alerts.claimed"));
-    void load();
-  };
-
   return (
     <section className="thalvo-chart-sheet space-y-3 overflow-hidden rounded-2xl border p-3 shadow-lg">
       <div className="flex items-start justify-between gap-2">
@@ -89,9 +76,7 @@ export function ActiveJobPool({ userId }: Props) {
             {t("ops_alerts.pool_title")}
           </p>
           <p className="mt-1 text-[12px] leading-snug" style={{ color: "var(--sheet-muted)" }}>
-            {jobs.length > 0
-              ? `${jobs.length}`
-              : t("ops_alerts.pool_empty")}
+            {jobs.length > 0 ? t("ops_alerts.pool_bid_hint") : t("ops_alerts.pool_empty")}
           </p>
         </div>
         <span
@@ -150,31 +135,21 @@ export function ActiveJobPool({ userId }: Props) {
                   {formatDegrees(Number(job.lat), Number(job.lng))}
                 </p>
                 <div className="mt-3 flex items-center justify-between gap-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em]" style={{ color: "var(--sheet-muted)" }}>
+                    {t(`status.${job.status}`, { defaultValue: job.status })}
+                  </p>
                   <Link
                     to="/app/job/$id"
                     params={{ id: job.id }}
-                    className="text-[11px] font-semibold uppercase tracking-[0.12em]"
-                    style={{ color: "var(--sheet-active-ink)" }}
-                  >
-                    {t("ops_alerts.open")}
-                  </Link>
-                  <button
-                    type="button"
-                    disabled={busyId === job.id}
-                    onClick={() => void claim(job.id)}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-xl px-3 text-[11px] font-black uppercase tracking-wider disabled:opacity-50"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-xl px-3 text-[11px] font-black uppercase tracking-wider"
                     style={{
                       background: "#f5b942",
                       color: "#0a192f",
                     }}
                   >
-                    {busyId === job.id ? (
-                      <Loader2 className="size-3.5 animate-spin" />
-                    ) : (
-                      <Radio className="size-3.5" />
-                    )}
-                    {t("ops_alerts.accept")}
-                  </button>
+                    <Send className="size-3.5" />
+                    {t("ops_alerts.bid")}
+                  </Link>
                 </div>
               </article>
             </li>
