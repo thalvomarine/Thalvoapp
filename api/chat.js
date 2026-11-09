@@ -5,11 +5,20 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+var __esm = (fn, res, err) => function __init() {
+  if (err) throw err[0];
+  try {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  } catch (e) {
+    throw err = [e], e;
+  }
 };
 var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  try {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  } catch (e) {
+    throw mod = 0, e;
+  }
 };
 var __export = (target, all) => {
   for (var name30 in all)
@@ -61,7 +70,7 @@ var require_get_context = __commonJS({
       getContext: () => getContext3
     });
     module2.exports = __toCommonJS2(get_context_exports);
-    var SYMBOL_FOR_REQ_CONTEXT = Symbol.for("@vercel/request-context");
+    var SYMBOL_FOR_REQ_CONTEXT = /* @__PURE__ */ Symbol.for("@vercel/request-context");
     function getContext3() {
       const fromSymbol = globalThis;
       return fromSymbol[SYMBOL_FOR_REQ_CONTEXT]?.get?.() ?? {};
@@ -6469,7 +6478,7 @@ var require_helpers = __commonJS({
       return timeNow + expiresIn;
     }
     function generateCallbackId() {
-      return Symbol("auth-callback");
+      return /* @__PURE__ */ Symbol("auth-callback");
     }
     var isBrowser = () => typeof window !== "undefined" && typeof document !== "undefined";
     exports2.isBrowser = isBrowser;
@@ -27357,8 +27366,8 @@ function registry() {
 var globalRegistry = globalThis.__zod_globalRegistry;
 
 // node_modules/zod/v4/core/compile.js
-var INVALID = Symbol.for("zod.compile.invalid");
-var FALLBACK_FLAG = Symbol.for("zod.compile.fallback");
+var INVALID = /* @__PURE__ */ Symbol.for("zod.compile.invalid");
+var FALLBACK_FLAG = /* @__PURE__ */ Symbol.for("zod.compile.fallback");
 var ZodCompileAsyncError = class extends Error {
   constructor(message = "z.compile does not support async refinements, transforms, or checks") {
     super(message);
@@ -30987,7 +30996,7 @@ var nonoptionalProcessor = (schema, ctx, _json, params) => {
   const seen = ctx.seen.get(schema);
   seen.ref = def.innerType;
 };
-var UNREPRESENTABLE_DEFAULT = Symbol();
+var UNREPRESENTABLE_DEFAULT = /* @__PURE__ */ Symbol();
 function serializeDefaultValue(value, schema, ctx, json3, params) {
   let unrepresentable = false;
   const serialized = JSON.stringify(value, (_, val) => {
@@ -33500,7 +33509,7 @@ function fromJSONSchema(schema, params) {
 }
 
 // node_modules/zod/v4/core/visit.js
-var RESOLVING = Symbol("z.visit/resolving");
+var RESOLVING = /* @__PURE__ */ Symbol("z.visit/resolving");
 function visit(schema, fnOrHandlers) {
   const fn = typeof fnOrHandlers === "function" ? fnOrHandlers : (node2, rewritten) => {
     const h = fnOrHandlers[node2._zod.def.type];
@@ -33923,8 +33932,8 @@ var EventSourceParserStream = class extends TransformStream {
 };
 
 // node_modules/@workflow/serde/dist/index.js
-var WORKFLOW_SERIALIZE = Symbol.for("workflow-serialize");
-var WORKFLOW_DESERIALIZE = Symbol.for("workflow-deserialize");
+var WORKFLOW_SERIALIZE = /* @__PURE__ */ Symbol.for("workflow-serialize");
+var WORKFLOW_DESERIALIZE = /* @__PURE__ */ Symbol.for("workflow-deserialize");
 
 // node_modules/@ai-sdk/gateway/node_modules/@ai-sdk/provider-utils/dist/index.js
 function combineHeaders(...headers) {
@@ -59621,7 +59630,7 @@ __export(dist_exports, {
 });
 
 // node_modules/@supabase/supabase-js/dist/tracingRegistry.mjs
-var EXTRACTOR_KEY = Symbol.for("@supabase/supabase-js.traceContextExtractor");
+var EXTRACTOR_KEY = /* @__PURE__ */ Symbol.for("@supabase/supabase-js.traceContextExtractor");
 function getTraceContextExtractor() {
   return globalThis[EXTRACTOR_KEY];
 }
