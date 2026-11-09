@@ -8,6 +8,9 @@ export const PUBLIC_AUTH_ORIGIN = "https://thalvo.org";
 /** Canonical post-confirm landing on the live site. */
 export const PUBLIC_CONFIRM_REDIRECT = `${PUBLIC_AUTH_ORIGIN}/auth?confirmed=1`;
 
+/** Password-recovery email lands on the reset form. */
+export const PUBLIC_RECOVERY_REDIRECT = `${PUBLIC_AUTH_ORIGIN}/auth/reset`;
+
 /** Mark a fresh signup so MissionShell can show a soft email-confirm banner. */
 export function markSignupWelcome(): void {
   try {
@@ -74,11 +77,19 @@ export function confirmationRedirect(): string {
   return PUBLIC_CONFIRM_REDIRECT;
 }
 
+export function recoveryRedirect(): string {
+  return PUBLIC_RECOVERY_REDIRECT;
+}
+
 export function urlLooksLikeEmailConfirm(): boolean {
   if (typeof window === "undefined") return false;
   const search = window.location.search;
   const hash = window.location.hash;
-  return search.includes("confirmed=1") || /type=(signup|email|magiclink|invite)/.test(hash);
+  return (
+    search.includes("confirmed=1") ||
+    /type=(signup|email|magiclink|invite|recovery)/.test(hash) ||
+    /type=(signup|email|magiclink|invite|recovery)/.test(search)
+  );
 }
 
 export function consumeSignupWelcome(): boolean {
