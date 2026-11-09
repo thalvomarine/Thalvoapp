@@ -8,7 +8,8 @@ import { CheckoutModal } from "@/components/CheckoutModal";
 import { JobChat } from "@/components/JobChat";
 import { useProfile, useSessionUser } from "@/lib/session";
 import { formatTL, harborDistanceKm, kmToNm } from "@/lib/filter";
-import { getFix } from "@/lib/geolocation";
+import { getFix, watchFix } from "@/lib/geolocation";
+import { autoEtaMinutesBetween } from "@/lib/geo-eta";
 import { noteSchemaMiss, skipMissing } from "@/lib/schema-gap";
 import { VesselRange } from "@/components/mission/VesselRange";
 import { caretAfterGrouping, groupThousands, parseGrouped } from "@/lib/digit-format";
@@ -419,46 +420,111 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
   }, [job.id]);
 
   const [providerPos, setProviderPos] = useState<MapPin | null>(null);
+  const [providerLiveAt, setProviderLiveAt] = useState<number | null>(null);
+
   useEffect(() => {
     if (!job.provider_id) return;
-    supabase
+    const apply = (data: {
+      id: string;
+      service_type: string;
+      lat: number | null;
+      lng: number | null;
+      updated_at?: string | null;
+      profiles: { full_name: string } | null;
+    } | null) => {
+      if (!data || data.lat == null || data.lng == null) {
+        setProviderPos(null);
+        setProviderLiveAt(null);
+        return;
+      }
+      setProviderPos({
+        id: data.id,
+        name: data.profiles?.full_name ?? t("mission.provider_fallback"),
+        lat: Number(data.lat),
+        lng: Number(data.lng),
+        kind: data.service_type === "Underwater Diver" ? "diver" : "mechanic",
+        highlighted: true,
+      });
+      setProviderLiveAt(data.updated_at ? new Date(data.updated_at).getTime() : Date.now());
+    };
+
+    void supabase
       .from("provider_details")
-      .select("id, service_type, lat, lng, profiles(full_name)")
+      .select("id, service_type, lat, lng, updated_at, profiles(full_name)")
       .eq("id", job.provider_id)
       .maybeSingle()
-      .then(({ data }) => {
-        if (!data) return;
-        // Provider has no verified position yet — never invent one.
-        if (data.lat == null || data.lng == null) {
-          setProviderPos(null);
-          return;
-        }
-        setProviderPos({
-          id: data.id,
-          name:
-            (data as { profiles: { full_name: string } | null }).profiles?.full_name ??
-            t("mission.provider_fallback"),
-          lat: data.lat,
-          lng: data.lng,
-          kind: data.service_type === "Underwater Diver" ? "diver" : "mechanic",
-          highlighted: true,
-        });
-      });
-  }, [job.provider_id]);
+      .then(({ data }) => apply(data as never));
+
+    const ch = supabase
+      .channel(`provider-live:${job.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "provider_details",
+          filter: `id=eq.${job.provider_id}`,
+        },
+        (payload) => {
+          const row = payload.new as {
+            id: string;
+            service_type: string;
+            lat: number | null;
+            lng: number | null;
+            updated_at?: string | null;
+          };
+          setProviderPos((prev) => {
+            if (row.lat == null || row.lng == null) return null;
+            return {
+              id: row.id,
+              name: prev?.name ?? t("mission.provider_fallback"),
+              lat: Number(row.lat),
+              lng: Number(row.lng),
+              kind: row.service_type === "Underwater Diver" ? "diver" : "mechanic",
+              highlighted: true,
+            };
+          });
+          setProviderLiveAt(row.updated_at ? new Date(row.updated_at).getTime() : Date.now());
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [job.provider_id, job.id, t]);
+
+  const liveProviderFresh =
+    providerLiveAt != null && Date.now() - providerLiveAt < 120_000;
 
   const enRouteEta = useMemo(() => {
+    if (job.status !== "EnRoute") return null;
+    // Prefer remaining time from live range when the responder fix is fresh.
+    if (liveProviderFresh && providerPos && Number.isFinite(job.lat) && Number.isFinite(job.lng)) {
+      return autoEtaMinutesBetween(providerPos, { lat: job.lat, lng: job.lng });
+    }
     if (!job.dispatched_at || !job.eta_minutes) return null;
-    const remaining = Math.max(
+    return Math.max(
       0,
       job.eta_minutes - Math.floor((Date.now() - new Date(job.dispatched_at).getTime()) / 60000),
     );
-    return remaining;
-  }, [job.dispatched_at, job.eta_minutes, tick]);
+  }, [
+    job.status,
+    job.dispatched_at,
+    job.eta_minutes,
+    job.lat,
+    job.lng,
+    providerPos,
+    liveProviderFresh,
+    tick,
+  ]);
 
+  // Live GPS pin wins; only interpolate when the last provider fix is stale.
   const overridePos = useMemo(() => {
-    if (!providerPos || !job.dispatched_at || !job.eta_minutes) return undefined;
-    // M9.3 — if providerPos and job use different coordinate formats (legacy
-    // normalized vs real degrees), interpolation is meaningless. Snap to job.
+    if (!providerPos) return undefined;
+    if (liveProviderFresh) {
+      return { [providerPos.id]: { lat: providerPos.lat, lng: providerPos.lng } };
+    }
+    if (!job.dispatched_at || !job.eta_minutes) return undefined;
     const providerLegacy = Math.abs(providerPos.lat) < 1 && Math.abs(providerPos.lng) < 1;
     const jobLegacy = Math.abs(job.lat) < 1 && Math.abs(job.lng) < 1;
     if (providerLegacy !== jobLegacy) {
@@ -474,7 +540,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
         lng: providerPos.lng + (job.lng - providerPos.lng) * elapsed,
       },
     };
-  }, [providerPos, job.dispatched_at, job.eta_minutes, job.lat, job.lng, tick]);
+  }, [providerPos, liveProviderFresh, job.dispatched_at, job.eta_minutes, job.lat, job.lng, tick]);
 
   const pendingPart = parts.find((p) => p.payment_status === "Pending");
 
@@ -847,6 +913,9 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   const [partPhoto, setPartPhoto] = useState("");
   const [source, setSource] = useState("Tedarikçi Firma (Local Supplier)");
   const [busy, setBusy] = useState(false);
+  const tracking =
+    job.provider_id === meId &&
+    ["Accepted", "EnRoute", "OnSite", "InProgress", "PartsPending"].includes(job.status);
 
   useEffect(() => {
     const load = () =>
@@ -869,6 +938,27 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
       supabase.removeChannel(ch);
     };
   }, [job.id]);
+
+  // Broadcast a live device fix while the mission is active so the captain
+  // chart shows the real responder, not a straight-line interpolation.
+  useEffect(() => {
+    if (!tracking) return;
+    let lastSent = 0;
+    const publish = (lat: number, lng: number, accuracy: number) => {
+      const now = Date.now();
+      if (now - lastSent < 8_000) return;
+      lastSent = now;
+      void supabase.rpc("refresh_own_provider_position", {
+        _lat: lat,
+        _lng: lng,
+        _accuracy_m: Number.isFinite(accuracy) ? Math.round(accuracy) : undefined,
+      });
+    };
+    void getFix().then((res) => {
+      if (res.ok) publish(res.fix.lat, res.fix.lng, res.fix.accuracy);
+    });
+    return watchFix((fix) => publish(fix.lat, fix.lng, fix.accuracy));
+  }, [tracking, job.id]);
 
   // M9 provider payout view.
   const [payout, setPayout] = useState<ProviderPayoutRow | null>(null);
@@ -899,6 +989,15 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   const providerCommission = computeCommission(Number(job.total_escrow_pool));
 
   const setSail = async () => {
+    // Seed provider_details with a fresh fix so set_sail can auto-fill ETA.
+    const res = await getFix();
+    if (res.ok) {
+      await supabase.rpc("refresh_own_provider_position", {
+        _lat: res.fix.lat,
+        _lng: res.fix.lng,
+        _accuracy_m: Number.isFinite(res.fix.accuracy) ? Math.round(res.fix.accuracy) : undefined,
+      });
+    }
     await supabase.rpc("set_sail", { _job_id: job.id });
   };
   const arrived = async () => {
