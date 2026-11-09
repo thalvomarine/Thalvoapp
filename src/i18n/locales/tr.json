@@ -1544,7 +1544,7 @@
     "footer_delivery": "Teslimat ve iade",
     "payment_marks_note": "Visa, Mastercard ve iyzico ile Öde — canlı tahsilat bağlanana kadar ödemeler simülasyondur.",
     "legal_review": "Bu metin, Thalvo’nun mevcut ürün davranışını açıklamak amacıyla hazırlanmıştır. Yayımlanmadan önce KVKK ve ilgili mevzuat kapsamında hukuki incelemeden geçirilmelidir.",
-    "legal_updated": "Son güncelleme: 06/11/2026 · Şirket unvanı, adres ve vergi bilgileri satıcı tarafından tamamlanacaktır.",
+    "legal_updated": "Son güncelleme: 09/11/2026 · Satıcı künyesi vergi levhasına göre tamamlanmıştır. Ödemeler canlı tahsilat bağlanana kadar simülasyondur.",
     "about_title": "Hakkımızda",
     "about_intro": "THALVO MarineOS; Ege ve Akdeniz kıyılarında seyir, marina/demirleme rehberi ve talep üzerine acil müdahale eşleştirmesi sunan bir deniz işletim platformudur.",
     "about_sections": [
@@ -1562,9 +1562,9 @@
     ],
     "about_contact_title": "İletişim ve satıcı bilgileri",
     "about_contact_body": "Destek: {{email}}",
-    "about_placeholder_legal_name": "Ticari unvan: [Şirket unvanı — doldurulacak]",
-    "about_placeholder_address": "Adres: [Açık adres — doldurulacak]",
-    "about_placeholder_tax": "Vergi dairesi / no: [Doldurulacak]",
+    "about_placeholder_legal_name": "Ticari unvan: İsmail Tolga İşler (şahıs işletmesi) · Marka: Thalvo Marine",
+    "about_placeholder_address": "Adres: Dalyan Mah. Dönmez Sk. No: 28 Ortaca / Muğla",
+    "about_placeholder_tax": "Vergi dairesi / no: Ortaca Vergi Dairesi Müd. / 4820664465",
     "privacy_title": "Gizlilik",
     "privacy_intro": "Thalvo’da gizlilik, şeffaflık ve kullanıcı kontrolü önceliklidir. Platformun herkese açık alanlarını hesap oluşturmadan keşfedebilir, hesap gerektiren işlemler için giriş yapabilirsiniz.",
     "privacy_browse_title": "Hesap açmadan",
@@ -1638,7 +1638,7 @@
       }
     ],
     "distance_title": "Mesafeli satış sözleşmesi",
-    "distance_intro": "İşbu metin, Thalvo üzerinden elektronik ortamda kurulan mesafeli satışlara ilişkin ön bilgilendirme ve sözleşme taslağıdır. Şirket künyesi tamamlanıp hukuki inceleme bitmeden kesin sözleşme sayılmaz.",
+    "distance_intro": "İşbu metin, Thalvo üzerinden elektronik ortamda kurulan mesafeli satışlara ilişkin ön bilgilendirme ve sözleşme taslağıdır. Satıcı künyesi aşağıda yer alır; hukuki inceleme tamamlanmadan ve canlı tahsilat bağlanmadan kesin sözleşme sayılmaz.",
     "distance_seller_title": "Satıcı / aracı platform",
     "distance_sections": [
       {

@@ -1566,7 +1566,7 @@
     "footer_distance": "Distance sales",
     "footer_delivery": "Delivery & returns",
     "payment_marks_note": "Visa, Mastercard and Pay with iyzico — payments stay simulated until live collection is connected.",
-    "legal_updated": "Last updated: 06/11/2026 · Legal entity name, address and tax details will be completed by the seller.",
+    "legal_updated": "Last updated: 09/11/2026 · Seller identity completed from the tax plate. Payments remain simulated until live collection is connected.",
     "about_title": "About",
     "about_intro": "THALVO MarineOS is a marine operating platform for Aegean and Mediterranean coasts: navigation, marina/anchorage guidance and on-demand emergency matching.",
     "about_sections": [
@@ -1584,9 +1584,9 @@
     ],
     "about_contact_title": "Contact and seller details",
     "about_contact_body": "Support: {{email}}",
-    "about_placeholder_legal_name": "Legal name: [Company name — to be completed]",
-    "about_placeholder_address": "Address: [Full address — to be completed]",
-    "about_placeholder_tax": "Tax office / ID: [To be completed]",
+    "about_placeholder_legal_name": "Legal name: İsmail Tolga İşler (sole proprietorship) · Brand: Thalvo Marine",
+    "about_placeholder_address": "Address: Dalyan Mah. Dönmez Sk. No: 28 Ortaca / Muğla",
+    "about_placeholder_tax": "Tax office / ID: Ortaca Tax Office / 4820664465",
     "terms_sections": [
       {
         "title": "Without an account",
@@ -1638,7 +1638,7 @@
       }
     ],
     "distance_title": "Distance sales agreement",
-    "distance_intro": "This draft covers distance sales formed electronically on Thalvo. It is not final until the seller identity is complete and legal review is done.",
+    "distance_intro": "This draft covers distance sales formed electronically on Thalvo. Seller identity is listed below; it is not final until legal review is complete and live collection is connected.",
     "distance_seller_title": "Seller / platform intermediary",
     "distance_sections": [
       {
