@@ -17,10 +17,14 @@
     "cap:prepare": "node scripts/prepare-web-spa.mjs",
     "cap:assets": "node scripts/generate-native-assets.mjs",
     "cap:sync": "npm run build && npx cap sync && node scripts/fix-android-cordova-res.mjs",
-    "build:mobile": "npm run cap:assets && npm run cap:sync",
+    "build:mobile": "npm run cap:assets && npm run store:assets && npm run cap:sync",
     "ios:sync": "npm run build && npx cap sync ios",
     "ios:preflight": "node scripts/ios-release-checklist.mjs",
-    "bundle:api": "node scripts/bundle-api.mjs"
+    "bundle:api": "node scripts/bundle-api.mjs",
+    "android:preflight": "node scripts/android-release-checklist.mjs",
+    "android:bundle": "node scripts/fix-android-cordova-res.mjs && cd android && ./gradlew bundleRelease",
+    "store:assets": "node scripts/generate-store-assets.mjs",
+    "store:preflight": "node scripts/store-release-preflight.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^3.0.2",

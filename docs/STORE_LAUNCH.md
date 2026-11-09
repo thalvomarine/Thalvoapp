@@ -1,0 +1,98 @@
+# Thalvo MarineOS — App Store & Google Play launch
+
+Bundle ID / applicationId: `com.thalvo.marineos`  
+Current native version: **1.0.5** (build / versionCode **6**)  
+Privacy: https://thalvo.org/privacy  
+Terms: https://thalvo.org/terms  
+Support: https://thalvo.org · support@thalvo.org  
+Marketing: https://thalvo.org
+
+Paste-ready listing copy, privacy answers, and review notes live under `store/`.
+
+## Blockers (human / console — not fixable in this repo alone)
+
+| Gate | Status to reach before submit |
+| --- | --- |
+| Apple Developer Program | Membership **Active** (Enrollment Pending → wait; then App Store Connect opens) |
+| Google Play Console | Developer account paid + identity verified |
+| iOS signing team | Xcode → Signing & Capabilities → your **Individual** team (replace any old `DEVELOPMENT_TEAM`) |
+| Android upload key | Create once, back up; see `android/keystore.properties.example` |
+| Store screenshots | Capture on real device / simulator; drop into `store/assets/screenshots/` |
+| Legal | Privacy/terms say they need KVKK legal review before treating copy as final |
+
+Payments in-app remain **simulated** — say so in App Review notes and Play “About this app” / review reply. Do not claim real card charging until a PSP is live.
+
+## Shared prep (run on your machine)
+
+```bash
+git pull
+npm ci
+npm run store:preflight
+npm run build:mobile
+```
+
+- `store:preflight` checks iOS + Android ids, Capgo `autoUpdate=false`, privacy URLs, and store asset files.
+- `build:mobile` regenerates branded icons/splash and syncs Capacitor `dist/` into both shells.
+
+Keep Capgo `autoUpdate: false` until a production OTA bundle is verified (see `scripts/ios-release-checklist.mjs`).
+
+## Apple App Store / TestFlight
+
+1. Wait until [developer.apple.com/account](https://developer.apple.com/account) shows **Active**.
+2. App Store Connect → My Apps → **+** → iOS app  
+   - Name: Thalvo MarineOS  
+   - Bundle ID: `com.thalvo.marineos` (register in Certificates, Identifiers & Profiles if missing)  
+   - SKU: `thalvo-marineos` (or similar, immutable)
+3. On a Mac: `npm run build:mobile && npx cap open ios`
+4. Select your Individual team → Any iOS Device → **Product → Archive** → Distribute → **App Store Connect** / TestFlight.
+5. Fill listing from `store/listing.tr.md` / `store/listing.en.md`.
+6. App Privacy: follow `store/apple-app-privacy.md`.
+7. Export compliance: app uses only standard HTTPS — Info.plist sets `ITSAppUsesNonExemptEncryption=false`.
+8. Review notes: paste `store/review-notes.md`.
+9. Submit TestFlight internal → external → **Submit for Review**.
+
+Primary category: **Navigation** (secondary: Lifestyle or Utilities).  
+Age rating: 4+ / no unrestricted web, no gambling.
+
+## Google Play
+
+1. Play Console → Create app → Thalvo MarineOS → Free → declarations.
+2. Generate upload keystore (once):
+
+```bash
+keytool -genkeypair -v -keystore thalvo-upload.jks -keyalg RSA -keysize 2048 -validity 10000 -alias thalvo
+```
+
+Copy `android/keystore.properties.example` → `android/keystore.properties` (gitignored) and point `storeFile` at the `.jks`.
+
+3. Build AAB:
+
+```bash
+npm run build:mobile
+npm run android:bundle
+```
+
+Output: `android/app/build/outputs/bundle/release/app-release.aab`
+
+4. Play Console → Production (or Closed testing first) → upload AAB.
+5. Store listing: `store/listing.tr.md` / `store/listing.en.md`.
+6. Data safety: `store/google-data-safety.md`.
+7. Content rating questionnaire: answer for navigation / lifestyle; no user-generated dating, no violence focus.
+8. Target audience: 18+ recommended (boat ops) even if content is low maturity.
+9. Privacy policy URL: https://thalvo.org/privacy
+
+## Asset checklist
+
+| Asset | Spec | Path / action |
+| --- | --- | --- |
+| App icon (Play) | 512×512 PNG | `npm run cap:assets` → `store/assets/icon-512.png` |
+| App icon (Apple) | 1024×1024 in AppIcon set | generated into iOS AppIcon catalog |
+| Feature graphic (Play) | 1024×500 | `store/assets/feature-graphic.png` |
+| Phone screenshots | Apple 6.7" + 6.1"; Play phone | `store/assets/screenshots/` (capture manually) |
+| Tablet (optional) | iPad 13" | optional for first submit |
+
+## After both stores are live
+
+- Prefer closed testing (Play) + TestFlight before production.
+- Bump `versionName` / `MARKETING_VERSION` and `versionCode` / `CURRENT_PROJECT_VERSION` together on every store upload.
+- Only then consider Capgo `autoUpdate: true` for JS-only hotfixes.
