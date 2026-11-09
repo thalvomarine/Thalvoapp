@@ -26,6 +26,8 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Thalvo MarineOS, açık denizde teknenizin konumunu harita üzerinde göstermek ve seyir güvenliği sağlamak için konumunuza ihtiyaç duyar.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>Thalvo MarineOS, SOS ve teknik destek için hasar veya arıza fotoğrafı çekmek üzere kameranıza ihtiyaç duyar.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -22,3 +22,4 @@ description: >-
 - Do not commit route-drawing leftovers, `print/`, whitepaper drafts, or local config copies. Do not print Supabase keys. Payments stay simulated and labelled.
 - `routeTree.gen.ts` is generated. Do not hand-edit it.
 - Live site: push `main`. GitHub deploys thalvo.org. Do not redeploy an old TanStack Start build.
+- App Store / Play launch package: `docs/STORE_LAUNCH.md` and `store/`. Bundle id `com.thalvo.marineos`. Keep Capgo `autoUpdate` false until a production OTA is verified. Payments stay simulated in review notes.
