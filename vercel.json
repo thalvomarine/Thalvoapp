@@ -3,13 +3,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "api/chat.ts": {
+    "api/chat.js": {
       "maxDuration": 60,
-      "includeFiles": "src/**"
+      "memory": 1024
     },
-    "api/assistant.ts": {
+    "api/assistant.js": {
       "maxDuration": 60,
-      "includeFiles": "src/**"
+      "memory": 1024
     }
   },
   "rewrites": [

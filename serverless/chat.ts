@@ -48,15 +48,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    const nodeStream = Readable.fromWeb(
-      response.body as import("node:stream/web").ReadableStream,
-    );
-    nodeStream.on("error", (error) => {
-      console.error("[api/chat] stream", error instanceof Error ? error.name : "error");
-      if (!res.headersSent) res.status(500).json({ error: "chat_unavailable" });
-      else res.end();
-    });
-    nodeStream.pipe(res);
+    // Prefer pipe when Readable.fromWeb is available; otherwise buffer (Node <18 edge cases).
+    try {
+      const nodeStream = Readable.fromWeb(
+        response.body as import("node:stream/web").ReadableStream,
+      );
+      nodeStream.on("error", (error) => {
+        console.error("[api/chat] stream", error instanceof Error ? error.name : "error");
+        if (!res.headersSent) res.status(500).json({ error: "chat_unavailable" });
+        else res.end();
+      });
+      nodeStream.pipe(res);
+    } catch {
+      const text = await response.text();
+      res.end(text);
+    }
   } catch (error) {
     console.error("[api/chat]", error instanceof Error ? error.name : "error");
     if (!res.headersSent) res.status(500).json({ error: "chat_unavailable" });
