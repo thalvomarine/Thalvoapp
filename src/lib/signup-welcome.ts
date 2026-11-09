@@ -2,6 +2,12 @@ const FLAG = "thalvo:signup-welcome";
 const UNCONFIRMED = "thalvo:email-unconfirmed";
 const SHOW_CONFIRMED = "thalvo:show-confirmed";
 
+/** Live site origin used for every auth email redirect (confirm / recover). */
+export const PUBLIC_AUTH_ORIGIN = "https://thalvo.org";
+
+/** Canonical post-confirm landing on the live site. */
+export const PUBLIC_CONFIRM_REDIRECT = `${PUBLIC_AUTH_ORIGIN}/auth?confirmed=1`;
+
 /** Mark a fresh signup so MissionShell can show a soft email-confirm banner. */
 export function markSignupWelcome(): void {
   try {
@@ -57,24 +63,15 @@ export function isEmailNotConfirmedMessage(message: string): boolean {
   return /email not confirmed/i.test(message);
 }
 
+/**
+ * Redirect target embedded in Supabase confirmation emails.
+ *
+ * Always use the live thalvo.org URL. If Site URL in the Supabase dashboard
+ * is still localhost, GoTrue falls back there whenever redirectTo is missing
+ * or not on the allow list — so clients must never send a local origin here.
+ */
 export function confirmationRedirect(): string {
-  // Native WebViews use capacitor:// or https://localhost — Supabase allowlist
-  // and the hash router both expect the public https://thalvo.org origin.
-  if (typeof window === "undefined") return "https://thalvo.org/auth?confirmed=1";
-  try {
-    const Cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } })
-      .Capacitor;
-    if (Cap?.isNativePlatform?.()) {
-      return "https://thalvo.org/auth?confirmed=1";
-    }
-  } catch {
-    /* SSR / missing bridge */
-  }
-  const origin = window.location.origin;
-  if (/^(capacitor|ionic|file):/i.test(window.location.protocol) || /localhost$/i.test(window.location.hostname)) {
-    return "https://thalvo.org/auth?confirmed=1";
-  }
-  return `${origin}/auth?confirmed=1`;
+  return PUBLIC_CONFIRM_REDIRECT;
 }
 
 export function urlLooksLikeEmailConfirm(): boolean {

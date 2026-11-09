@@ -1,1 +1,33 @@
+# Thalvo MarineOS — local CLI defaults.
+# Hosted Auth URL Configuration is the source of truth for production
+# (Site URL must be https://thalvo.org — not localhost). Apply with:
+#   SUPABASE_ACCESS_TOKEN=… node scripts/apply-auth-url-config.mjs
+
 project_id = "vofjektddsxmavghlerj"
+
+[auth]
+enabled = true
+# Local Mailpit / CLI only. Production Site URL is set on the hosted project.
+site_url = "http://127.0.0.1:8080"
+additional_redirect_urls = [
+  "https://thalvo.org",
+  "https://thalvo.org/**",
+  "https://www.thalvo.org/**",
+  "http://localhost:8080/**",
+  "http://127.0.0.1:8080/**",
+]
+enable_signup = true
+enable_confirmations = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+
+[auth.email.template.confirmation]
+subject = "THALVO — e-postanı onayla"
+content_path = "./templates/confirm.html"
+
+[auth.email.template.recovery]
+subject = "THALVO — şifreni yenile"
+content_path = "./templates/recovery.html"
