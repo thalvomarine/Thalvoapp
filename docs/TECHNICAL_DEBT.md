@@ -21,7 +21,8 @@ can pick them up without re-discovering.
 - **Deploy env.** Set `VITE_SUPERADMIN_EMAIL` on Vercel for `/admin` lock
   (personal email no longer shipped in the client bundle).
 - **THALVO AI on Vercel.** Static `dist/` SPA cannot run TanStack server
-  functions. Live chat uses `api/chat.ts` + `api/assistant.ts`. Set
+  functions. Live chat uses bundled `api/chat.js` + `api/assistant.js`
+  (from `serverless/*.ts` via `scripts/bundle-api.mjs`). Set
   `THALVO_AI_API_KEY` (and Supabase URL/anon) on the Vercel project or the
   endpoints return training-only / `ai_not_configured`.
 - **Admin job status shortcut.** Control Tower can still `UPDATE jobs.status`

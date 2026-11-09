@@ -2,7 +2,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "api/**/*.ts",
+    "serverless/**/*.ts",
     "vite.config.ts",
     "eslint.config.js",
     "capacitor.config.ts",
@@ -14,14 +14,11 @@
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
-
-    /* Bundler mode */
+    "baseUrl": ".",
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": false,
     "noEmit": true,
-
-    /* Linting */
     "skipLibCheck": true,
     "strict": true,
     "noUnusedLocals": false,

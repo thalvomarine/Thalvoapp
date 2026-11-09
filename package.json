@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "prebuild": "node scripts/assert-tanstack-start.mjs",
     "build": "vite build",
-    "postbuild": "node scripts/prepare-web-spa.mjs",
+    "postbuild": "node scripts/prepare-web-spa.mjs && node scripts/bundle-api.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -19,7 +19,8 @@
     "cap:sync": "npm run build && npx cap sync && node scripts/fix-android-cordova-res.mjs",
     "build:mobile": "npm run cap:assets && npm run cap:sync",
     "ios:sync": "npm run build && npx cap sync ios",
-    "ios:preflight": "node scripts/ios-release-checklist.mjs"
+    "ios:preflight": "node scripts/ios-release-checklist.mjs",
+    "bundle:api": "node scripts/bundle-api.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^3.0.2",
@@ -106,6 +107,7 @@
     "@types/react-dom": "^19.2.0",
     "@vercel/node": "^5.10.2",
     "@vitejs/plugin-react": "^5.2.0",
+    "esbuild": "^0.25.12",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.6",
