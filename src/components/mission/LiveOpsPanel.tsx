@@ -66,6 +66,26 @@ export function LiveOpsPanel() {
       <CaptainEmergencyCalls />
 
       <Link
+        to="/app/charter"
+        className="block overflow-hidden rounded-2xl border border-cyan-400/30 bg-cyan-500/[0.08] px-4 py-3 transition-colors hover:border-cyan-300/50"
+      >
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl border border-cyan-400/30 bg-cyan-500/15 text-cyan-100">
+            <Ship className="size-4" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-300/80">
+              {t("charter.entry_eyebrow")}
+            </p>
+            <p className="mt-1 text-[14px] font-semibold text-white">{t("charter.entry_title")}</p>
+            <p className="mt-1 text-[12px] leading-snug text-white/60">
+              {t("charter.entry_body")}
+            </p>
+          </div>
+        </div>
+      </Link>
+
+      <Link
         to="/app/transfer-captain"
         className="block overflow-hidden rounded-2xl border border-rose-400/30 bg-rose-500/[0.08] px-4 py-3 transition-colors hover:border-rose-300/50"
       >

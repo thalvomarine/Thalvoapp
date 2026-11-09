@@ -12,6 +12,7 @@ export const PLATFORM_ROUTES = [
   { path: "/app/report", label: "Support and problem report" },
   { path: "/app/supplier", label: "Supplier desk" },
   { path: "/app/dealer", label: "Dealer desk" },
+  { path: "/app/charter", label: "Charter operations desk" },
   { path: "/app/reputation", label: "Reputation" },
   { path: "/marketplace", label: "Public parts catalog" },
   { path: "/services", label: "Public services" },
@@ -35,6 +36,8 @@ const ALIASES: Record<string, AppPath> = {
   "/orders": "/app/orders",
   "/profile": "/app/profile",
   "/services/book": "/app/services",
+  "/charter": "/app/charter",
+  "/cove": "/app/charter",
 };
 
 export function resolvePlatformRoute(raw: string): AppPath | null {
