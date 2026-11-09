@@ -49,7 +49,14 @@ export function ImageUploader({ value, onChange, userId, compact = false }: Prop
     setBusy(false);
     if (error) {
       const msg = error.message.toLowerCase();
-      if (msg.includes("mime") || msg.includes("content type")) {
+      if (msg.includes("bucket") && msg.includes("not found")) {
+        toast.error(
+          t(
+            "uploader.bucket_missing",
+            "Image storage is not ready. Try again in a moment or contact support.",
+          ),
+        );
+      } else if (msg.includes("mime") || msg.includes("content type")) {
         toast.error(
           t(
             "uploader.server_rejected_type",
