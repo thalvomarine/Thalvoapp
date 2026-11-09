@@ -1490,6 +1490,7 @@
       "title": "Rota dışına çıktık",
       "body": "THALVO bu ekranı çizerken takıldı. Verilerin güvende. Tekrar dene — kesintilerin çoğu bir sonraki denemede açılır.",
       "retry": "Tekrar dene",
+      "reload": "Sayfayı yenile",
       "return_map": "Haritaya dön",
       "footer": "THALVO · Görev Merkezi · Arıza kontrol altında"
     }
@@ -1954,7 +1955,8 @@
     "route_deck_unlock": "Düzenle",
     "route_deck_remove_point": "Bu noktayı sil",
     "crash_title": "Harita yüklenemedi. SOS kullanılabilir durumda.",
-    "crash_retry": "Haritayı yeniden dene"
+    "crash_retry": "Haritayı yeniden dene",
+    "crash_reload": "Sayfayı yenile"
   },
   "boatshow": {
     "kicker": "Boat show · Göcek–Marmaris pilot",

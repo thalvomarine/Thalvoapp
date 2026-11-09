@@ -6,6 +6,11 @@ import { getValidUser } from "@/lib/auth-guard";
 import { sanitizeNext } from "@/lib/nav";
 import { MissionShell } from "@/components/mission/MissionShell";
 import {
+  forceAppReload,
+  isStaleChunkError,
+  reloadForStaleChunk,
+} from "@/lib/stale-chunk";
+import {
   cockpitFallbackProfile,
   recalledCockpitRole,
   useProfile,
@@ -62,11 +67,14 @@ function AuthenticatedLayout() {
  * Offers Retry (re-run loaders + reset boundary) and Return to Map so a
  * pilot user is never stranded on a raw stack trace.
  */
-function AuthErrorBoundary({ error, reset }: { error: Error; reset: () => void }) {
+function AuthErrorBoundary({ error, reset }: { error: unknown; reset: () => void }) {
   const router = useRouter();
   const { t } = useTranslation();
+  const staleChunk = isStaleChunkError(error);
+
   useEffect(() => {
     console.error(error);
+    if (reloadForStaleChunk(error)) return;
   }, [error]);
 
   return (
@@ -101,12 +109,17 @@ function AuthErrorBoundary({ error, reset }: { error: Error; reset: () => void }
           <button
             type="button"
             onClick={() => {
+              if (staleChunk) {
+                forceAppReload();
+                return;
+              }
               router.invalidate();
               reset();
             }}
             className="amber-gradient inline-flex h-11 items-center gap-2 rounded-full px-6 font-black uppercase tracking-[0.18em] text-warning-foreground"
           >
-            <RefreshCcw className="size-4" /> {t("shell.auth_error.retry")}
+            <RefreshCcw className="size-4" />{" "}
+            {staleChunk ? t("shell.auth_error.reload") : t("shell.auth_error.retry")}
           </button>
           <Link
             to="/app"
