@@ -167,12 +167,21 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
                 </li>
               ))}
             </ul>
-            <div className="hidden shrink-0 gap-3 rounded-md bg-[#071422]/88 px-2 py-1 text-[11px] shadow-sm sm:flex">
+            <div className="hidden max-w-[min(100%,22rem)] shrink-0 flex-wrap gap-x-3 gap-y-1 rounded-md bg-[#071422]/88 px-2 py-1 text-[11px] shadow-sm sm:flex">
+              <Link to="/about" className="pointer-events-auto text-white/70 hover:text-white">
+                {t("public.footer_about")}
+              </Link>
               <Link to="/privacy" className="pointer-events-auto text-white/70 hover:text-white">
                 {t("public.footer_privacy")}
               </Link>
               <Link to="/terms" className="pointer-events-auto text-white/70 hover:text-white">
                 {t("public.footer_terms")}
+              </Link>
+              <Link to="/distance-sales" className="pointer-events-auto text-white/70 hover:text-white">
+                {t("public.footer_distance")}
+              </Link>
+              <Link to="/delivery-returns" className="pointer-events-auto text-white/70 hover:text-white">
+                {t("public.footer_delivery")}
               </Link>
             </div>
           </div>
