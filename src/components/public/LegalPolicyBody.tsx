@@ -43,6 +43,10 @@ export function LegalPolicyBody() {
           {t("public.privacy_data_body")}
         </p>
       </section>
+      <section>
+        <h2 className="text-base font-bold">{t("public.privacy_ads_title")}</h2>
+        <p className="mt-2 text-sm leading-relaxed text-white/70">{t("public.privacy_ads_body")}</p>
+      </section>
       <p className="text-xs text-white/45">{t("public.privacy_updated")}</p>
     </>
   );

@@ -30,6 +30,7 @@ import {
   type DealerApplicationDraft,
   type DealerDocSlot,
 } from "@/lib/dealer-application";
+import { trackGoogleAdsConversion } from "@/lib/google-ads";
 
 type AuthIntent = "captain" | "dealer" | "provider";
 
@@ -198,6 +199,9 @@ function AuthPage() {
           const { error: siErr } = await supabase.auth.signInWithPassword({ email, password });
           if (siErr && isEmailNotConfirmedMessage(siErr.message)) {
             markEmailUnconfirmed();
+            trackGoogleAdsConversion("sign_up", {
+              transactionId: data.user?.id ? `signup:${data.user.id}` : undefined,
+            });
             toast.warning(t("auth.email_unconfirmed_banner"), { duration: 8000 });
             // Dealer docs need a session; without one we still recorded requested_role
             // via signup metadata and leave the visitor on the public chart.
@@ -226,6 +230,9 @@ function AuthPage() {
         }
 
         markSignupWelcome();
+        trackGoogleAdsConversion("sign_up", {
+          transactionId: userId ? `signup:${userId}` : undefined,
+        });
         if (role === "Provider" || role === "Supplier") {
           toast.message(t("auth.verification_pending_title"), {
             description: t("auth.verification_pending_body"),
