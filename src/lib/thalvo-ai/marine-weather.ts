@@ -1,11 +1,13 @@
 import { compassLabel } from "@/lib/metocean";
-import { classifySeaState, type SeaAlert } from "@/lib/thalvo-ai/sea-state";
+import { lookupPlaceByName } from "./places.ts";
+import { classifySeaState, type SeaAlert } from "./sea-state.ts";
 
 export type { SeaAlert };
 
 export interface MarineWeatherReport {
   ok: true;
   source: "open-meteo";
+  placeName: string | null;
   latitude: number;
   longitude: number;
   observedAt: string;
@@ -21,6 +23,20 @@ export interface MarineWeatherReport {
   alert: SeaAlert;
   summaryTr: string;
   summaryEn: string;
+}
+
+/** Resolve optional place name, then fetch live Open-Meteo marine weather. */
+export async function fetchMarineWeatherAt(input: {
+  lat?: number;
+  lng?: number;
+  placeName?: string | null;
+}): Promise<MarineWeatherReport> {
+  const named = input.placeName ? lookupPlaceByName(input.placeName) : null;
+  const lat = named?.lat ?? input.lat;
+  const lng = named?.lng ?? input.lng;
+  if (lat == null || lng == null) throw new Error("weather_place_required");
+  const report = await fetchMarineWeather(lat, lng);
+  return { ...report, placeName: named?.name ?? (input.placeName?.trim() || null) };
 }
 
 const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
@@ -83,6 +99,7 @@ export async function fetchMarineWeather(lat: number, lng: number): Promise<Mari
   return {
     ok: true,
     source: "open-meteo",
+    placeName: null,
     latitude,
     longitude,
     observedAt,

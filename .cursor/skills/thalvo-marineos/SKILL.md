@@ -18,7 +18,7 @@ description: >-
 - Captain signup stays the boat flow. Dealer/provider signup is a company or technician form (contact, legal name, home marina, phone) that stores `requested_role` and stays `Client` until an admin approves via `approve_role_request` — then the dealer desk (`/app/dealer`) or provider cockpit opens. Never auto-insert into `verified_dealers` / `verified_providers` on signup.
 - Supabase email confirmation stays on. After signup the visitor enters the public chart with an unverified-email warning. The cockpit opens after the confirmation link.
 - An empty catalogue is an empty state, not a load error.
-- THALVO AI answers seamanship, machinery, and weather without inventing wave heights. If the server function fails, the client still answers from `answerFromTraining`.
+- THALVO AI answers seamanship, machinery, and weather without inventing wave heights. Live weather is Open-Meteo (not an official MGİM bulletin). If the server function fails, the client still answers from `answerFromTraining`.
 - Do not commit route-drawing leftovers, `print/`, whitepaper drafts, or local config copies. Do not print Supabase keys. Payments stay simulated and labelled.
 - `routeTree.gen.ts` is generated. Do not hand-edit it.
 - Live site: push `main`. GitHub deploys thalvo.org. Do not redeploy an old TanStack Start build.

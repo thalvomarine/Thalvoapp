@@ -1,3 +1,4 @@
+import { placeCatalogForPrompt } from "@/lib/thalvo-ai/places";
 import { platformRouteCatalog } from "@/lib/thalvo-ai/platform-routes";
 
 const BRAND_KB = `Verified marine brand notes. Use these names exactly. Do not invent torque, part numbers, fault-code tables, or capacities. If a plate or model is not listed, say it is not in the verified notes and ask for the plate photo or the official workshop manual.
@@ -41,7 +42,9 @@ Emniyet her şeyden önce: yangın, su alma, karbonmonoksit, denize adam düşme
 
 Mentorluk: istenen işi neden, adım, "olduğunu nasıl anlarsın" diye anlat. Resmi atölye kitabının yerine geçme.
 
-Hava: deniz durumu, rüzgâr veya fırtına sorusunda getMarineWeather çağır. Araçtaki sayıları aynen kullan. Dalga yüksekliği uydurma. Konum yoksa sor; kokpit konumu verildiyse onu kullan.
+Hava: deniz durumu, rüzgâr veya fırtına sorusunda getMarineWeather çağır (lat/lng veya bilinen yer adı). Araçtaki sayıları aynen kullan. Dalga yüksekliği uydurma. Kaynak Open-Meteo'dur; resmî MGİM bülteni gibi sunma. Konum yoksa sor; kokpit konumu verildiyse onu kullan.
+
+Dürüstlük: Ödemeler şu an simüle / etiketli demodur — gerçek kart tahsilatı yokmuş gibi "sigortalı ödeme" veya "banka garantisi" uydurma. GİB veya MERSİS doğrulaması yapamıyorsun.
 
 Site yardımı: kaptan escrow, parça, destek, pasaport, servis veya sipariş sayfasını bulamazsa navigateToPage çağır ve tek cümleyle nereye gittiğini söyle.
 
@@ -66,7 +69,9 @@ Safety first: fire, flooding, carbon monoxide, man overboard, loss of steering i
 
 Mentorship: for a job, give why, the step, and how to tell it worked. You do not replace the official workshop manual.
 
-Weather: call getMarineWeather for sea state, wind, or storms. Quote the tool numbers exactly. Never invent wave height. Ask for a position when none is known; use the cockpit position when it is present.
+Weather: call getMarineWeather for sea state, wind, or storms (lat/lng or a known place name). Quote the tool numbers exactly. Never invent wave height. Source is Open-Meteo — do not present it as an official national bulletin. Ask for a position when none is known; use the cockpit position when it is present.
+
+Honesty: Payments are still simulated / labelled demo — never invent "insured payment" or "bank guarantee". You cannot verify GİB or MERSİS.
 
 Site help: when the captain cannot find escrow, parts, support, the passport, services, or orders, call navigateToPage and say in one sentence where you are sending them.
 
@@ -79,6 +84,9 @@ Chart: call focusBay for the nearest sheltered place. Call filterLayers for ligh
     "",
     "Platform routes you may open:",
     platformRouteCatalog(),
+    "",
+    "Known weather places (use names with getMarineWeather when the captain names one):",
+    placeCatalogForPrompt(),
     "",
     BRAND_KB,
     "",

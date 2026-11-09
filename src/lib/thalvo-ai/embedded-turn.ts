@@ -11,7 +11,7 @@ import {
 } from "@/lib/aiCaptainService";
 import type { CaptainAction, CaptainCockpitContext, NearbyChartPoint } from "@/lib/ai-captain-types";
 import { answerFromTraining, retrieveMarineNotes } from "@/lib/thalvo-ai/domain";
-import { fetchMarineWeather } from "@/lib/thalvo-ai/marine-weather";
+import { fetchMarineWeatherAt } from "@/lib/thalvo-ai/marine-weather";
 import { loadMemoryBlock, rememberFact, saveChatLine } from "@/lib/thalvo-ai/memory-store";
 import { platformRouteCatalog, resolvePlatformRoute, type AppPath } from "@/lib/thalvo-ai/platform-routes";
 import { buildChiefEngineerPrompt } from "@/lib/thalvo-ai/system-prompt";
@@ -152,14 +152,15 @@ function createEmbeddedTools(supabase: Client, userId: string, nearby: NearbyCha
   return {
     getMarineWeather: tool({
       description:
-        "Live marine weather and sea state for one position. Returns wind knots, gusts, wave height, swell, and a storm band. Quote these numbers. Do not invent weather.",
+        "Live marine weather and sea state from Open-Meteo. Pass lat/lng and/or a known Turkish-coast place name (Göcek, Bodrum, Marmaris, Fethiye, Kaş, Ege, Akdeniz…). Returns wind knots, gusts, wave height, swell, and a storm band. Quote these numbers. Do not invent weather. Not an official national bulletin.",
       inputSchema: z.object({
-        lat: z.number().min(-90).max(90),
-        lng: z.number().min(-180).max(180),
+        lat: z.number().min(-90).max(90).optional(),
+        lng: z.number().min(-180).max(180).optional(),
+        placeName: z.string().min(2).max(80).optional(),
       }),
-      execute: async ({ lat, lng }) => {
+      execute: async ({ lat, lng, placeName }) => {
         try {
-          return await fetchMarineWeather(lat, lng);
+          return await fetchMarineWeatherAt({ lat, lng, placeName });
         } catch (error) {
           console.error("[thalvo-ai] weather", error instanceof Error ? error.name : "error");
           return { ok: false as const, error: "weather_unavailable" };
