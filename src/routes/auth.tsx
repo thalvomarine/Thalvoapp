@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -522,6 +522,16 @@ function AuthPage() {
                   minLength={mode === "signup" ? 10 : undefined}
                   autoComplete={mode === "signup" ? "new-password" : "current-password"}
                 />
+                {mode === "signin" && (
+                  <div className="-mt-1 flex justify-end">
+                    <Link
+                      to="/auth/forgot"
+                      className="text-[11px] font-semibold text-white/45 underline underline-offset-2 hover:text-[color:var(--pm-gold)]"
+                    >
+                      {t("auth.forgot_link")}
+                    </Link>
+                  </div>
+                )}
                 {mode === "signup" && (
                   <p className="-mt-1 text-[11px] text-white/40">{t("auth.password_hint")}</p>
                 )}
