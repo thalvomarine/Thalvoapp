@@ -22,6 +22,8 @@ test("resolvePlatformRoute accepts product aliases and rejects off-site targets"
   assert.equal(resolvePlatformRoute("/app/shop"), "/app/marketplace");
   assert.equal(resolvePlatformRoute("/app/shop/"), "/app/marketplace");
   assert.equal(resolvePlatformRoute("/parts"), "/app/marketplace");
+  assert.equal(resolvePlatformRoute("/charter"), "/app/charter");
+  assert.equal(resolvePlatformRoute("/cove"), "/app/charter");
   assert.equal(resolvePlatformRoute("https://evil.example/app/shop"), null);
   assert.equal(resolvePlatformRoute("//evil.example"), null);
   assert.equal(resolvePlatformRoute("/app/job/../../admin"), null);

@@ -15,6 +15,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BoatshowRouteImport } from './routes/boatshow'
 import { Route as ChartRouteImport } from './routes/chart'
+import { Route as CharterPreviewRouteImport } from './routes/charter-preview'
 import { Route as CoverageRouteImport } from './routes/coverage'
 import { Route as DeliveryReturnsRouteImport } from './routes/delivery-returns'
 import { Route as DistanceSalesRouteImport } from './routes/distance-sales'
@@ -27,6 +28,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
+import { Route as AuthenticatedAppCharterRouteImport } from './routes/_authenticated/app.charter'
 import { Route as AuthenticatedAppDealerRouteImport } from './routes/_authenticated/app.dealer'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppOrdersRouteImport } from './routes/_authenticated/app.orders'
@@ -67,6 +69,11 @@ const BoatshowRoute = BoatshowRouteImport.update({
 const ChartRoute = ChartRouteImport.update({
   id: '/chart',
   path: '/chart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CharterPreviewRoute = CharterPreviewRouteImport.update({
+  id: '/charter-preview',
+  path: '/charter-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoverageRoute = CoverageRouteImport.update({
@@ -127,6 +134,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
 const AuthenticatedAppAdminRoute = AuthenticatedAppAdminRouteImport.update({
   id: '/app/admin',
   path: '/app/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppCharterRoute = AuthenticatedAppCharterRouteImport.update({
+  id: '/app/charter',
+  path: '/app/charter',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAppDealerRoute = AuthenticatedAppDealerRouteImport.update({
@@ -202,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
+  '/charter-preview': typeof CharterPreviewRoute
   '/coverage': typeof CoverageRoute
   '/delivery-returns': typeof DeliveryReturnsRoute
   '/distance-sales': typeof DistanceSalesRoute
@@ -213,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
+  '/app/charter': typeof AuthenticatedAppCharterRoute
   '/app/dealer': typeof AuthenticatedAppDealerRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
   '/app/orders': typeof AuthenticatedAppOrdersRoute
@@ -233,6 +247,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
+  '/charter-preview': typeof CharterPreviewRoute
   '/coverage': typeof CoverageRoute
   '/delivery-returns': typeof DeliveryReturnsRoute
   '/distance-sales': typeof DistanceSalesRoute
@@ -244,6 +259,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
+  '/app/charter': typeof AuthenticatedAppCharterRoute
   '/app/dealer': typeof AuthenticatedAppDealerRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
   '/app/orders': typeof AuthenticatedAppOrdersRoute
@@ -266,6 +282,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
+  '/charter-preview': typeof CharterPreviewRoute
   '/coverage': typeof CoverageRoute
   '/delivery-returns': typeof DeliveryReturnsRoute
   '/distance-sales': typeof DistanceSalesRoute
@@ -277,6 +294,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
+  '/_authenticated/app/charter': typeof AuthenticatedAppCharterRoute
   '/_authenticated/app/dealer': typeof AuthenticatedAppDealerRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
   '/_authenticated/app/orders': typeof AuthenticatedAppOrdersRoute
@@ -299,6 +317,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boatshow'
     | '/chart'
+    | '/charter-preview'
     | '/coverage'
     | '/delivery-returns'
     | '/distance-sales'
@@ -310,6 +329,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin'
     | '/app/admin'
+    | '/app/charter'
     | '/app/dealer'
     | '/app/marketplace'
     | '/app/orders'
@@ -330,6 +350,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boatshow'
     | '/chart'
+    | '/charter-preview'
     | '/coverage'
     | '/delivery-returns'
     | '/distance-sales'
@@ -341,6 +362,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin'
     | '/app/admin'
+    | '/app/charter'
     | '/app/dealer'
     | '/app/marketplace'
     | '/app/orders'
@@ -362,6 +384,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boatshow'
     | '/chart'
+    | '/charter-preview'
     | '/coverage'
     | '/delivery-returns'
     | '/distance-sales'
@@ -373,6 +396,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/admin'
     | '/_authenticated/app/admin'
+    | '/_authenticated/app/charter'
     | '/_authenticated/app/dealer'
     | '/_authenticated/app/marketplace'
     | '/_authenticated/app/orders'
@@ -395,6 +419,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BoatshowRoute: typeof BoatshowRoute
   ChartRoute: typeof ChartRoute
+  CharterPreviewRoute: typeof CharterPreviewRoute
   CoverageRoute: typeof CoverageRoute
   DeliveryReturnsRoute: typeof DeliveryReturnsRoute
   DistanceSalesRoute: typeof DistanceSalesRoute
@@ -448,6 +473,13 @@ declare module '@tanstack/react-router' {
       path: '/chart'
       fullPath: '/chart'
       preLoaderRoute: typeof ChartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/charter-preview': {
+      id: '/charter-preview'
+      path: '/charter-preview'
+      fullPath: '/charter-preview'
+      preLoaderRoute: typeof CharterPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/coverage': {
@@ -532,6 +564,13 @@ declare module '@tanstack/react-router' {
       path: '/app/admin'
       fullPath: '/app/admin'
       preLoaderRoute: typeof AuthenticatedAppAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/charter': {
+      id: '/_authenticated/app/charter'
+      path: '/app/charter'
+      fullPath: '/app/charter'
+      preLoaderRoute: typeof AuthenticatedAppCharterRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/app/dealer': {
@@ -624,6 +663,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
+  AuthenticatedAppCharterRoute: typeof AuthenticatedAppCharterRoute
   AuthenticatedAppDealerRoute: typeof AuthenticatedAppDealerRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRoute
   AuthenticatedAppOrdersRoute: typeof AuthenticatedAppOrdersRoute
@@ -642,6 +682,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAppAdminRoute: AuthenticatedAppAdminRoute,
+  AuthenticatedAppCharterRoute: AuthenticatedAppCharterRoute,
   AuthenticatedAppDealerRoute: AuthenticatedAppDealerRoute,
   AuthenticatedAppMarketplaceRoute: AuthenticatedAppMarketplaceRoute,
   AuthenticatedAppOrdersRoute: AuthenticatedAppOrdersRoute,
@@ -667,6 +708,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BoatshowRoute: BoatshowRoute,
   ChartRoute: ChartRoute,
+  CharterPreviewRoute: CharterPreviewRoute,
   CoverageRoute: CoverageRoute,
   DeliveryReturnsRoute: DeliveryReturnsRoute,
   DistanceSalesRoute: DistanceSalesRoute,
