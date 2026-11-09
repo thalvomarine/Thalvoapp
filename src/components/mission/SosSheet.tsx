@@ -302,6 +302,7 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
       if (liveFix) {
         const placed = await publishLocatedCall({
           userId: user.id,
+          jobId: data.id,
           category,
           lat: liveFix.lat,
           lng: liveFix.lng,
