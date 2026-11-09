@@ -4,12 +4,36 @@ import { StatusChip } from "@/components/mission/StatusChip";
 import { EmptyState } from "@/components/core/EmptyState";
 import { UserCheck } from "lucide-react";
 
+export interface DealerApplicationSummary {
+  legal_name: string;
+  store_name: string;
+  entity_type: string;
+  tax_id: string;
+  tax_office: string;
+  mersis_number: string | null;
+  kep_address: string;
+  iban: string;
+  iban_account_name: string;
+  home_marina: string;
+  product_focus: string;
+  delivery_mode: string;
+  status: string;
+  tax_plate_path: string | null;
+  signature_doc_path: string | null;
+  trade_registry_path: string | null;
+  activity_certificate_path: string | null;
+  submitted_at: string | null;
+}
+
 export interface RoleRequestRow {
   id: string;
   full_name: string | null;
   boat_name: string | null;
+  business_name: string | null;
+  home_marina: string | null;
   requested_role: string;
   created_at: string;
+  dealer_application?: DealerApplicationSummary | null;
 }
 
 interface Props {
@@ -18,6 +42,12 @@ interface Props {
   busyId: string | null;
   onApprove: (row: RoleRequestRow) => void;
   onReject: (row: RoleRequestRow) => void;
+}
+
+function maskIban(iban: string): string {
+  const clean = iban.replace(/\s+/g, "");
+  if (clean.length < 10) return clean;
+  return `${clean.slice(0, 4)} ··· ${clean.slice(-4)}`;
 }
 
 /** PendingRoleRequests — operators approve or clear pending role upgrades. */
@@ -48,22 +78,84 @@ export function PendingRoleRequests({ requests, busyId, onApprove, onReject }: P
           body={t("admin.requests.empty_body")}
         />
       ) : (
-        <ul className="divide-y divide-white/[0.05] max-h-[320px] overflow-y-auto">
+        <ul className="divide-y divide-white/[0.05] max-h-[480px] overflow-y-auto">
           {requests.map((r) => {
             const busy = busyId === r.id;
+            const dealer = r.requested_role === "Supplier" ? r.dealer_application : null;
             return (
               <li key={r.id} className="px-4 py-3">
                 <div className="flex items-start gap-2">
                   <div className="min-w-0 flex-1">
                     <p className="text-[12px] font-semibold text-white truncate">
-                      {r.full_name ?? t("admin.requests.unnamed")}
+                      {dealer?.legal_name ??
+                        r.business_name ??
+                        r.full_name ??
+                        t("admin.requests.unnamed")}
                     </p>
                     <p className="text-[10px] text-white/60 truncate">
-                      {r.boat_name ?? t("admin.requests.no_boat")} · {fmt.format(new Date(r.created_at))}
+                      {dealer
+                        ? `${dealer.store_name} · ${dealer.home_marina}`
+                        : `${r.boat_name ?? r.home_marina ?? t("admin.requests.no_boat")} · ${fmt.format(new Date(r.created_at))}`}
                     </p>
                   </div>
                   <StatusChip tone="info">{r.requested_role}</StatusChip>
                 </div>
+
+                {dealer && (
+                  <dl className="mt-2.5 space-y-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-2.5 py-2 text-[10px] leading-snug text-white/65">
+                    <div className="flex justify-between gap-2">
+                      <dt>{t("admin.requests.dealer_entity")}</dt>
+                      <dd className="text-white/85">
+                        {t(`auth.dealer.entity_${dealer.entity_type}`, dealer.entity_type)}
+                      </dd>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <dt>{t("admin.requests.dealer_tax")}</dt>
+                      <dd className="font-mono text-white/85">
+                        {dealer.tax_id} · {dealer.tax_office}
+                      </dd>
+                    </div>
+                    {dealer.mersis_number && (
+                      <div className="flex justify-between gap-2">
+                        <dt>MERSİS</dt>
+                        <dd className="font-mono text-white/85">{dealer.mersis_number}</dd>
+                      </div>
+                    )}
+                    <div className="flex justify-between gap-2">
+                      <dt>KEP</dt>
+                      <dd className="truncate text-white/85">{dealer.kep_address}</dd>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <dt>IBAN</dt>
+                      <dd className="font-mono text-white/85">{maskIban(dealer.iban)}</dd>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <dt>{t("admin.requests.dealer_focus")}</dt>
+                      <dd className="truncate text-right text-white/85">{dealer.product_focus}</dd>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <dt>{t("admin.requests.dealer_docs")}</dt>
+                      <dd className="text-white/85">
+                        {[
+                          dealer.tax_plate_path && t("auth.dealer.doc_tax_plate"),
+                          dealer.signature_doc_path && t("auth.dealer.doc_signature_doc"),
+                          dealer.trade_registry_path && t("auth.dealer.doc_trade_registry"),
+                          dealer.activity_certificate_path &&
+                            t("auth.dealer.doc_activity_certificate"),
+                        ]
+                          .filter(Boolean)
+                          .join(" · ") || t("admin.requests.dealer_docs_none")}
+                      </dd>
+                    </div>
+                    {dealer.submitted_at && (
+                      <div className="flex justify-between gap-2">
+                        <dt>{t("admin.requests.dealer_submitted")}</dt>
+                        <dd>{fmt.format(new Date(dealer.submitted_at))}</dd>
+                      </div>
+                    )}
+                  </dl>
+                )}
+
                 <div className="mt-2.5 flex gap-2">
                   <button
                     type="button"

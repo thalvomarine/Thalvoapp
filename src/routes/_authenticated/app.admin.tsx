@@ -341,20 +341,49 @@ function ControlTower() {
     mark("requests", "loading");
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, full_name, boat_name, requested_role, created_at")
+      .select("id, full_name, boat_name, business_name, home_marina, requested_role, created_at")
       .not("requested_role", "is", null)
       .order("created_at", { ascending: true });
     if (error) return mark("requests", "error");
+
+    const base = (
+      (data ?? []) as Array<{
+        id: string;
+        full_name: string | null;
+        boat_name: string | null;
+        business_name: string | null;
+        home_marina: string | null;
+        requested_role: string | null;
+        created_at: string;
+      }>
+    ).filter((r): r is Omit<RoleRequestRow, "dealer_application"> & { requested_role: string } =>
+      r.requested_role !== null,
+    );
+
+    const supplierIds = base.filter((r) => r.requested_role === "Supplier").map((r) => r.id);
+    let byUser = new Map<string, RoleRequestRow["dealer_application"]>();
+    if (supplierIds.length > 0) {
+      const { data: apps } = await supabase
+        .from("dealer_applications")
+        .select(
+          "user_id, legal_name, store_name, entity_type, tax_id, tax_office, mersis_number, kep_address, iban, iban_account_name, home_marina, product_focus, delivery_mode, status, tax_plate_path, signature_doc_path, trade_registry_path, activity_certificate_path, submitted_at",
+        )
+        .in("user_id", supplierIds);
+      byUser = new Map(
+        ((apps ?? []) as Array<NonNullable<RoleRequestRow["dealer_application"]> & { user_id: string }>).map(
+          (a) => {
+            const { user_id, ...rest } = a;
+            return [user_id, rest];
+          },
+        ),
+      );
+    }
+
     setRoleRequests(
-      (
-        (data ?? []) as Array<{
-          id: string;
-          full_name: string | null;
-          boat_name: string | null;
-          requested_role: string | null;
-          created_at: string;
-        }>
-      ).filter((r): r is RoleRequestRow => r.requested_role !== null),
+      base.map((r) => ({
+        ...r,
+        dealer_application: r.requested_role === "Supplier" ? (byUser.get(r.id) ?? null) : null,
+      })),
     );
     mark("requests", "ok");
   }, [mark]);
