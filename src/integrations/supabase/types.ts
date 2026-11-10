@@ -1642,6 +1642,7 @@ export type Database = {
         Returns: Database["public"]["Enums"]["user_role"]
       }
       cancel_own_call: { Args: { _job_id: string }; Returns: undefined }
+      delete_own_account: { Args: never; Returns: undefined }
       refresh_own_call_position: {
         Args: { _job_id: string; _lat: number; _lng: number; _accuracy_m?: number }
         Returns: undefined
