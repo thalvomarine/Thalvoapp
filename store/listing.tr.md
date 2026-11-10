@@ -1,7 +1,8 @@
 # Mağaza metinleri — Türkçe
 
 App name (≤30): `Thalvo MarineOS`  
-Subtitle / short description (≤80): `Ege ve Akdeniz için deniz haritası, cockpit ve tekne desteği`
+Apple subtitle (≤30): `Ege ve Akdeniz deniz haritası`  
+Play short description (≤80): `Ege ve Akdeniz için deniz haritası, cockpit ve tekne desteği`
 
 ## Kısa açıklama (Play, ≤80)
 

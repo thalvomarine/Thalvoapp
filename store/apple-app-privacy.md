@@ -24,6 +24,8 @@ Public chart / landing does not request location and does not share live boat or
 - Camera — SOS / support damage photos  
 - Photo Library — attach boat / fault photos  
 
+Account deletion is offered in Profile → Account settings and removes the account plus linked personal data.
+
 ## Export compliance
 
 Uses only standard HTTPS / OS cryptography → answer **No** to non-exempt encryption (plist key set).

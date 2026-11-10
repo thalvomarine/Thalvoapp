@@ -6,18 +6,24 @@ Thalvo MarineOS is a maritime chart and boat-ops cockpit for the Turkish Aegean 
 
 ## Demo / test account
 
-Provide a captain test login in App Store Connect / Play Console when you create one, for example:
+Create a captain login, confirm the email in Supabase Auth, add one vessel, and paste it here before submit:
 
 - Email: _(fill before submit)_
 - Password: _(fill before submit)_
 
-Pre-seed the account with a boat profile so reviewers reach the cockpit after email confirmation.
+Signed-out review still reaches the public chart at the first screen. The cockpit, boat passport and account deletion need this login.
 
-Email confirmation is required (Supabase). If the review build cannot receive mail, temporarily confirm the reviewer account in Supabase Auth before submit.
+## Account deletion (Guideline 5.1.1)
+
+Signed in → account menu → Profile → Account settings → Delete account. The reviewer types the account email and confirms. The account, profile, vessels, opened calls and uploaded files for that account are removed. No card number is stored.
 
 ## Important — payments
 
 In-app amounts and payment ledger entries are **simulated**. No live card processor is connected. UI that shows money is labelled as simulation. There are no consumable IAP digital goods in this release; marina parts / service flows are ops tooling, not App Store digital content unlocks.
+
+## Messages
+
+Job chat is only between the captain and the assigned technician on that call. Phone numbers, payment asks and off-platform contact are filtered. Passage notes on the chart stay hidden until an admin approves them. Abuse reports: support@thalvo.org.
 
 ## Location & camera
 
