@@ -22,9 +22,11 @@ can pick them up without re-discovering.
 - **Deploy env.** `/admin` uses `is_platform_operator()` RPC (operator `user_id`
   in `platform_settings`). Remove obsolete `VITE_SUPERADMIN_EMAIL` from Vercel
   if still set — it must not appear in the client bundle.
-- **SPA HTTP status.** Unknown paths still rewrite to `index.html` (200) for
-  client routing; the in-app 404 sets `noindex,nofollow`. True HTTP 404 needs
-  SSR or a path allowlist middleware.
+- **SPA HTTP status.** `vercel.json` rewrites only known public routes + `/app/:path*`.
+  Unknown root paths (e.g. random UUIDs) hit `dist/404.html` with HTTP 404.
+  Nested junk under `/app/...` still hydrates the SPA (client notFound + noindex).
+- **Vercel env hygiene.** Remove obsolete `VITE_SUPERADMIN_EMAIL` from the Vercel
+  project env if still present (operator gate is DB RPC only).
 - **THALVO AI on Vercel.** Static `dist/` SPA cannot run TanStack server
   functions. Live chat uses bundled `api/chat.js` + `api/assistant.js`
   (from `serverless/*.ts` via `scripts/bundle-api.mjs`). Set

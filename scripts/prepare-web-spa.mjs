@@ -243,7 +243,42 @@ ${cssLinks}
 `;
 
 writeFileSync(join(distDir, "index.html"), indexHtml);
+
+// Vercel serves this file with HTTP 404 for paths outside the SPA allowlist
+// in vercel.json (no catch-all rewrite). Keep it script-free for CSP.
+const notFoundHtml = `<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0A192F" />
+    <title>404 | THALVO</title>
+    <style>
+      html, body { margin: 0; min-height: 100%; min-height: 100dvh; background: #0A192F; color: #f8fafc;
+        font-family: Montserrat, -apple-system, "Segoe UI", Roboto, sans-serif; }
+      main { min-height: 100dvh; display: grid; place-items: center; padding: 24px; text-align: center; box-sizing: border-box; }
+      h1 { margin: 0; font-size: clamp(3rem, 12vw, 4.5rem); font-weight: 900; letter-spacing: -0.04em; }
+      p { margin: 16px 0 0; opacity: 0.8; }
+      a { display: inline-flex; margin-top: 24px; padding: 12px 24px; border-radius: 999px; text-decoration: none;
+        font-weight: 700; color: #0A192F; background: #F5B942; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div>
+        <h1>404</h1>
+        <p>That page drifted away.</p>
+        <a href="/">THALVO</a>
+      </div>
+    </main>
+  </body>
+</html>
+`;
+writeFileSync(join(distDir, "404.html"), notFoundHtml);
+
 console.log(`[spa] dist ready at ${distDir}`);
 console.log(`[spa] assets from ${sourceDir}`);
 console.log(`[spa] client entry /assets/${entry}`);
 console.log(`[spa] boot script /thalvo-boot.js`);
+console.log(`[spa] not-found /404.html`);
