@@ -7,23 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const OPS_CONTACT_EMAIL = "support@thalvo.org";
 
-/**
- * Platform operator identity for `/admin` route lock.
- * Set `VITE_SUPERADMIN_EMAIL` in the deploy env — never hardcode a personal
- * address into the public client bundle.
- */
-export const SUPERADMIN_EMAIL = (
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_SUPERADMIN_EMAIL) ||
-  ""
-)
-  .trim()
-  .toLowerCase();
-
-export function isSuperAdminEmail(email: string | null | undefined): boolean {
-  if (!SUPERADMIN_EMAIL) return false;
-  return (email ?? "").trim().toLowerCase() === SUPERADMIN_EMAIL;
-}
-
 export async function userHasAdminRole(userId: string): Promise<boolean> {
   const { data } = await supabase
     .from("user_roles")
@@ -43,11 +26,25 @@ export async function ensureAdminAccess(user: Pick<User, "id" | "email">): Promi
 }
 
 /**
- * `/admin` stays locked to the platform operator email AND an admin role row.
+ * Platform operator desk (`/admin`) — server RPC only.
+ * Never compare a personal email in the public client bundle.
+ */
+export async function isPlatformOperator(): Promise<boolean> {
+  const { data, error } = await supabase.rpc("is_platform_operator");
+  if (error) {
+    console.warn("[superadmin] is_platform_operator", error.message);
+    return false;
+  }
+  return data === true;
+}
+
+/**
+ * `/admin` stays locked to the platform operator identity AND an admin role row.
+ * Operator identity is resolved in Postgres (`is_platform_operator`), not via VITE_*.
  */
 export async function ensureSuperadminRouteAccess(
   user: Pick<User, "id" | "email">,
 ): Promise<boolean> {
-  if (!isSuperAdminEmail(user.email)) return false;
-  return userHasAdminRole(user.id);
+  if (!(await userHasAdminRole(user.id))) return false;
+  return isPlatformOperator();
 }
