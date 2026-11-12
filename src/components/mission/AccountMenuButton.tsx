@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -13,7 +14,7 @@ import { RescueMark, ControlTowerMark } from "@/components/brand/ProductMarks";
 import type { Profile } from "@/lib/session";
 import { useSessionUser } from "@/lib/session";
 import { setMapChromeOverlay } from "@/lib/map-chrome";
-import { isSuperAdminEmail } from "@/lib/superadmin";
+import { isPlatformOperator } from "@/lib/superadmin";
 import { useTranslation } from "react-i18next";
 
 interface Props {
@@ -33,7 +34,21 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
   const { user } = useSessionUser();
   const isSupplier = profile.role === "Supplier";
   const isProvider = profile.role === "Provider";
-  const isSuper = isSuperAdminEmail(user?.email);
+  const [isSuper, setIsSuper] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!user?.id) {
+      setIsSuper(false);
+      return;
+    }
+    void isPlatformOperator().then((ok) => {
+      if (!cancelled) setIsSuper(ok);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
 
   const signOut = async () => {
     await supabase.auth.signOut();

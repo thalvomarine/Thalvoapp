@@ -14,12 +14,17 @@ can pick them up without re-discovering.
   (`simulated` default). Client must pass `_demo_ack` from CheckoutModal.
   Live mode stays `pending` until a PSP webhook. See
   `20261103053000_payment_security_gates.sql`.
-- **CSP.** Report-Only CSP ships on Vercel (`Content-Security-Policy-Report-Only`).
-  Promote to enforcing after a quiet report window.
+- **CSP.** Enforcing CSP ships on Vercel (`Content-Security-Policy`). Inline boot
+  scripts live in `/thalvo-boot.js` so `script-src` can omit `'unsafe-inline'`.
+  Re-check Google Ads / map tile hosts if a new third-party script is added.
 - **Auth leaked-password protection.** Enable HaveIBeenPwned in Supabase Auth
   dashboard (not controllable from app migrations).
-- **Deploy env.** Set `VITE_SUPERADMIN_EMAIL` on Vercel for `/admin` lock
-  (personal email no longer shipped in the client bundle).
+- **Deploy env.** `/admin` uses `is_platform_operator()` RPC (operator `user_id`
+  in `platform_settings`). Remove obsolete `VITE_SUPERADMIN_EMAIL` from Vercel
+  if still set — it must not appear in the client bundle.
+- **SPA HTTP status.** Unknown paths still rewrite to `index.html` (200) for
+  client routing; the in-app 404 sets `noindex,nofollow`. True HTTP 404 needs
+  SSR or a path allowlist middleware.
 - **THALVO AI on Vercel.** Static `dist/` SPA cannot run TanStack server
   functions. Live chat uses bundled `api/chat.js` + `api/assistant.js`
   (from `serverless/*.ts` via `scripts/bundle-api.mjs`). Set

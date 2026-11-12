@@ -8,6 +8,24 @@ import { nitro } from "nitro/vite";
 
 const rootDir = fileURLToPath(new URL(".", import.meta.url));
 
+/** Drop build-host meta and secrets that must never land in the browser bundle. */
+function stripSensitiveClientEnv() {
+  return {
+    name: "thalvo-strip-sensitive-client-env",
+    configResolved(config: { env: Record<string, string> }) {
+      for (const key of Object.keys(config.env)) {
+        if (
+          key === "VITE_SUPERADMIN_EMAIL" ||
+          key.startsWith("VITE_VERCEL") ||
+          key.startsWith("VERCEL_")
+        ) {
+          delete config.env[key];
+        }
+      }
+    },
+  };
+}
+
 export default defineConfig({
   server: {
     host: "::",
@@ -47,6 +65,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    stripSensitiveClientEnv(),
     tailwindcss(),
     tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({

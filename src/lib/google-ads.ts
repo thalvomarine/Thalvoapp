@@ -26,13 +26,37 @@ function stripEnv(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function readViteEnv(key: string): string {
+/**
+ * Static `import.meta.env.VITE_*` property reads only — never index the whole
+ * env object. Dynamic `env[key]` forces Vite to embed every VITE_* build var
+ * (incl. Vercel git meta). Optional chaining keeps Node unit tests happy.
+ */
+function viteAdsId(): string {
   try {
-    const env =
-      typeof import.meta !== "undefined"
-        ? (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env
-        : undefined;
-    return stripEnv(env?.[key]);
+    return stripEnv(import.meta.env?.VITE_GOOGLE_ADS_ID);
+  } catch {
+    return "";
+  }
+}
+
+function viteAdsLabel(
+  key:
+    | "VITE_GOOGLE_ADS_SIGNUP_LABEL"
+    | "VITE_GOOGLE_ADS_CONFIRM_LABEL"
+    | "VITE_GOOGLE_ADS_BOATSHOW_LABEL"
+    | "VITE_GOOGLE_ADS_CHECKOUT_LABEL",
+): string {
+  try {
+    switch (key) {
+      case "VITE_GOOGLE_ADS_SIGNUP_LABEL":
+        return stripEnv(import.meta.env?.VITE_GOOGLE_ADS_SIGNUP_LABEL);
+      case "VITE_GOOGLE_ADS_CONFIRM_LABEL":
+        return stripEnv(import.meta.env?.VITE_GOOGLE_ADS_CONFIRM_LABEL);
+      case "VITE_GOOGLE_ADS_BOATSHOW_LABEL":
+        return stripEnv(import.meta.env?.VITE_GOOGLE_ADS_BOATSHOW_LABEL);
+      case "VITE_GOOGLE_ADS_CHECKOUT_LABEL":
+        return stripEnv(import.meta.env?.VITE_GOOGLE_ADS_CHECKOUT_LABEL);
+    }
   } catch {
     return "";
   }
@@ -40,16 +64,16 @@ function readViteEnv(key: string): string {
 
 /** Public Google tag id (AW-… / GT-… / G-…). Empty = measurement off. */
 export function googleAdsId(): string {
-  return readViteEnv("VITE_GOOGLE_ADS_ID");
+  return viteAdsId();
 }
 
 /** Map product events → Google Ads conversion labels (not full send_to). */
 export function googleAdsConversionLabels(): Partial<Record<GoogleAdsConversion, string>> {
   return {
-    sign_up: readViteEnv("VITE_GOOGLE_ADS_SIGNUP_LABEL") || undefined,
-    email_confirmed: readViteEnv("VITE_GOOGLE_ADS_CONFIRM_LABEL") || undefined,
-    boatshow_lead: readViteEnv("VITE_GOOGLE_ADS_BOATSHOW_LABEL") || undefined,
-    begin_checkout: readViteEnv("VITE_GOOGLE_ADS_CHECKOUT_LABEL") || undefined,
+    sign_up: viteAdsLabel("VITE_GOOGLE_ADS_SIGNUP_LABEL") || undefined,
+    email_confirmed: viteAdsLabel("VITE_GOOGLE_ADS_CONFIRM_LABEL") || undefined,
+    boatshow_lead: viteAdsLabel("VITE_GOOGLE_ADS_BOATSHOW_LABEL") || undefined,
+    begin_checkout: viteAdsLabel("VITE_GOOGLE_ADS_CHECKOUT_LABEL") || undefined,
   };
 }
 

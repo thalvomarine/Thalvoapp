@@ -110,6 +110,57 @@ const cssLinks = cssFiles
   .map((f) => `    <link rel="stylesheet" href="/assets/${f}" />`)
   .join("\n");
 
+// External boot script keeps CSP script-src free of 'unsafe-inline' /
+// 'unsafe-eval' while still supporting Capgo + native hash history.
+const bootJs = `/* THALVO SPA boot — keep in sync with scripts/prepare-web-spa.mjs */
+(function () {
+  self.$R = self.$R || {};
+  self.$_TSR = {
+    h: function () { this.hydrated = true; this.c(); },
+    e: function () { this.streamEnded = true; this.c(); },
+    c: function () {
+      if (!(this.hydrated && this.streamEnded)) return;
+      try { delete self.$_TSR; } catch (e) {}
+      try { delete self.$R.tsr; } catch (e) {}
+    },
+    p: function (fn) { this.initialized ? fn() : this.buffer.push(fn); },
+    buffer: [],
+    router: { matches: [] }
+  };
+  var native = /^(capacitor|ionic|file):$/.test(location.protocol)
+    || (self.Capacitor && typeof self.Capacitor.isNativePlatform === "function" && self.Capacitor.isNativePlatform());
+  if (native) {
+    var path = location.pathname || "";
+    if (/index\\.html$/i.test(path) && (!location.hash || location.hash === "#")) {
+      var next = path + "#/";
+      try { history.replaceState(null, "", next); }
+      catch (e) { location.replace(next); }
+    }
+  }
+})();
+(function () {
+  /* Capgo fail-safe: notify as soon as the Capacitor bridge exists,
+     even before the hashed React entry finishes downloading/parsing. */
+  var tries = 0;
+  function ping() {
+    tries += 1;
+    try {
+      var Cap = self.Capacitor;
+      if (!Cap || typeof Cap.isNativePlatform !== "function" || !Cap.isNativePlatform()) return;
+      var plug = Cap.Plugins && Cap.Plugins.CapacitorUpdater;
+      if (plug && typeof plug.notifyAppReady === "function") {
+        Promise.resolve(plug.notifyAppReady()).catch(function () {});
+        return;
+      }
+    } catch (e) {}
+    if (tries < 40) setTimeout(ping, 250);
+  }
+  ping();
+})();
+`;
+
+writeFileSync(join(distDir, "thalvo-boot.js"), bootJs);
+
 const indexHtml = `<!doctype html>
 <html lang="tr" class="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
   <head>
@@ -164,53 +215,7 @@ ${cssLinks}
         50% { transform: translateY(-3px); opacity: 1; }
       }
     </style>
-    <script>
-      (function () {
-        self.$R = self.$R || {};
-        self.$_TSR = {
-          h: function () { this.hydrated = true; this.c(); },
-          e: function () { this.streamEnded = true; this.c(); },
-          c: function () {
-            if (!(this.hydrated && this.streamEnded)) return;
-            try { delete self.$_TSR; } catch (e) {}
-            try { delete self.$R.tsr; } catch (e) {}
-          },
-          p: function (fn) { this.initialized ? fn() : this.buffer.push(fn); },
-          buffer: [],
-          router: { matches: [] }
-        };
-        var native = /^(capacitor|ionic|file):$/.test(location.protocol)
-          || (self.Capacitor && typeof self.Capacitor.isNativePlatform === "function" && self.Capacitor.isNativePlatform());
-        if (!native) return;
-        var path = location.pathname || "";
-        if (!/index\\.html$/i.test(path)) return;
-        if (location.hash && location.hash !== "#") return;
-        var next = path + "#/";
-        try { history.replaceState(null, "", next); }
-        catch (e) { location.replace(next); }
-      })();
-    </script>
-    <script>
-      /* Capgo fail-safe: notify as soon as the Capacitor bridge exists,
-         even before the hashed React entry finishes downloading/parsing. */
-      (function () {
-        var tries = 0;
-        function ping() {
-          tries += 1;
-          try {
-            var Cap = self.Capacitor;
-            if (!Cap || typeof Cap.isNativePlatform !== "function" || !Cap.isNativePlatform()) return;
-            var plug = Cap.Plugins && Cap.Plugins.CapacitorUpdater;
-            if (plug && typeof plug.notifyAppReady === "function") {
-              Promise.resolve(plug.notifyAppReady()).catch(function () {});
-              return;
-            }
-          } catch (e) {}
-          if (tries < 40) setTimeout(ping, 250);
-        }
-        ping();
-      })();
-    </script>
+    <script src="/thalvo-boot.js"></script>
   </head>
   <body class="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
     <div id="thalvo-root">
@@ -241,3 +246,4 @@ writeFileSync(join(distDir, "index.html"), indexHtml);
 console.log(`[spa] dist ready at ${distDir}`);
 console.log(`[spa] assets from ${sourceDir}`);
 console.log(`[spa] client entry /assets/${entry}`);
+console.log(`[spa] boot script /thalvo-boot.js`);
