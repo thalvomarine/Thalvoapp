@@ -22,9 +22,9 @@ can pick them up without re-discovering.
   (personal email no longer shipped in the client bundle).
 - **THALVO AI on Vercel.** Static `dist/` SPA cannot run TanStack server
   functions. Live chat uses bundled `api/chat.js` + `api/assistant.js`
-  (from `serverless/*.ts` via `scripts/bundle-api.mjs`). Set
-  `THALVO_AI_API_KEY` (and Supabase URL/anon) on the Vercel project or the
-  endpoints return training-only / `ai_not_configured`.
+  (from `serverless/*.ts` via `scripts/bundle-api.mjs`). Without
+  `THALVO_AI_API_KEY` both endpoints answer from `answerFromTraining`
+  (no 503). Set the key on Vercel for live LLM + weather tools.
 - **Admin job status shortcut.** Control Tower can still `UPDATE jobs.status`
   directly (trigger allows admin). Prefer `admin_close_job` / ledger RPCs
   before treating completion as financial truth.

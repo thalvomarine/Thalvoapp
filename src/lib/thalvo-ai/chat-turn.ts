@@ -23,6 +23,7 @@ import type { CaptainCockpitContext, NearbyChartPoint } from "@/lib/ai-captain-t
 import { fetchMarineWeatherAt } from "@/lib/thalvo-ai/marine-weather";
 import { listSessionLines, loadMemoryBlock, rememberFact, saveChatLine } from "@/lib/thalvo-ai/memory-store";
 import { platformRouteCatalog, resolvePlatformRoute } from "@/lib/thalvo-ai/platform-routes";
+import { answerFromTraining } from "@/lib/thalvo-ai/domain";
 import { authenticateRequest, isAuthed, jsonError } from "@/lib/thalvo-ai/request-auth";
 import { buildChiefEngineerPrompt } from "@/lib/thalvo-ai/system-prompt";
 
@@ -101,20 +102,37 @@ async function handlePost(request: Request): Promise<Response> {
   const totalChars = uiMessages.reduce((sum, message) => sum + textOf(message).length, 0);
   if (totalChars > 12000) return jsonError(400, "ai_too_long");
 
+  const position = validPosition(parsed.position ?? null);
+  const userText = textOf(uiMessages.at(-1)!);
+  const storedUser = userText || (hasImage(uiMessages.at(-1)!) ? "[photo]" : "");
+
   const apiKey = (process.env.THALVO_AI_API_KEY ?? process.env.LOVABLE_API_KEY ?? "").trim();
+  // No model key on Vercel → same training fallback as /api/assistant (product rule).
   if (!apiKey) {
-    console.error("[thalvo-ai] missing THALVO_AI_API_KEY");
-    return jsonError(503, "ai_not_configured");
+    const trained = await answerFromTraining({ text: userText, lang, position });
+    await saveChatLine(auth.supabase, auth.userId, parsed.sessionId, "user", storedUser);
+    await saveChatLine(auth.supabase, auth.userId, parsed.sessionId, "assistant", trained.text);
+    const message: UIMessage = {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      parts: [{ type: "text", text: trained.text }],
+    };
+    return new Response(JSON.stringify({ messages: [message], source: "training" }), {
+      status: 200,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "x-thalvo-ai": "training",
+      },
+    });
   }
+
   if (!allowLocalQuota(auth.userId)) return jsonError(429, "ai_rate_limited");
   const quota = await auth.supabase.rpc("consume_captain_ai_quota");
   if (quota.error && /ai_rate_limited/i.test(quota.error.message)) {
     return jsonError(429, "ai_rate_limited");
   }
 
-  const position = validPosition(parsed.position ?? null);
-  const userText = textOf(uiMessages.at(-1)!);
-  const storedUser = userText || (hasImage(uiMessages.at(-1)!) ? "[photo]" : "");
   await saveChatLine(auth.supabase, auth.userId, parsed.sessionId, "user", storedUser);
 
   const [memoryBlock, cockpit] = await Promise.all([

@@ -784,6 +784,281 @@ var require_dist = __commonJS({
   }
 });
 
+// src/lib/geo-eta.ts
+function toRad(deg) {
+  return deg * Math.PI / 180;
+}
+function haversineNm(lat1, lng1, lat2, lng2) {
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const metres = EARTH_RADIUS_M * c;
+  return metres / METRES_PER_NM;
+}
+var EARTH_RADIUS_M, METRES_PER_NM;
+var init_geo_eta = __esm({
+  "src/lib/geo-eta.ts"() {
+    "use strict";
+    EARTH_RADIUS_M = 6371e3;
+    METRES_PER_NM = 1852;
+  }
+});
+
+// src/lib/metocean.ts
+function compassLabel(deg) {
+  if (!Number.isFinite(deg)) return "\u2014";
+  const idx = Math.round(deg / 22.5) % 16;
+  return COMPASS_POINTS[(idx + 16) % 16];
+}
+var COMPASS_POINTS;
+var init_metocean = __esm({
+  "src/lib/metocean.ts"() {
+    "use strict";
+    COMPASS_POINTS = [
+      "N",
+      "NNE",
+      "NE",
+      "ENE",
+      "E",
+      "ESE",
+      "SE",
+      "SSE",
+      "S",
+      "SSW",
+      "SW",
+      "WSW",
+      "W",
+      "WNW",
+      "NW",
+      "NNW"
+    ];
+  }
+});
+
+// src/lib/thalvo-ai/places.ts
+function resolveNamedPlace(text2) {
+  const q = text2.toLocaleLowerCase("tr");
+  for (const water of NAMED_WATERS) {
+    if (water.keys.some((key) => q.includes(key))) return water;
+  }
+  for (const region of REGION_POINTS) {
+    if (region.keys.some((key) => q.includes(key))) {
+      return {
+        name: region.name,
+        lat: region.lat,
+        lng: region.lng,
+        keys: region.keys,
+        region: region.region
+      };
+    }
+  }
+  return null;
+}
+function lookupPlaceByName(raw) {
+  const q = raw.trim().toLocaleLowerCase("tr");
+  if (!q) return null;
+  for (const water of NAMED_WATERS) {
+    if (water.name.toLocaleLowerCase("tr") === q) return water;
+    if (water.keys.some((key) => key === q)) return water;
+  }
+  for (const region of REGION_POINTS) {
+    if (region.name.toLocaleLowerCase("tr") === q || region.keys.includes(q)) {
+      return {
+        name: region.name,
+        lat: region.lat,
+        lng: region.lng,
+        keys: region.keys,
+        region: region.region
+      };
+    }
+  }
+  return null;
+}
+function placeCatalogForPrompt() {
+  return NAMED_WATERS.map((w) => `${w.name} (${w.lat.toFixed(3)}, ${w.lng.toFixed(3)})`).join("; ");
+}
+var NAMED_WATERS, REGION_POINTS;
+var init_places = __esm({
+  "src/lib/thalvo-ai/places.ts"() {
+    "use strict";
+    NAMED_WATERS = [
+      { name: "Didim", lat: 37.375, lng: 27.267, keys: ["didim"], region: "aegean" },
+      { name: "Bodrum", lat: 37.034, lng: 27.43, keys: ["bodrum"], region: "aegean" },
+      { name: "Dat\xE7a", lat: 36.727, lng: 27.686, keys: ["dat\xE7a", "datca"], region: "aegean" },
+      { name: "Marmaris", lat: 36.8525, lng: 28.278, keys: ["marmaris"], region: "aegean" },
+      { name: "G\xF6cek", lat: 36.7525, lng: 28.9428, keys: ["g\xF6cek", "gocek"], region: "mediterranean" },
+      { name: "Fethiye", lat: 36.621, lng: 29.116, keys: ["fethiye"], region: "mediterranean" },
+      { name: "Ka\u015F", lat: 36.2, lng: 29.64, keys: ["ka\u015F", "kas"], region: "mediterranean" },
+      { name: "Finike", lat: 36.295, lng: 30.145, keys: ["finike"], region: "mediterranean" },
+      { name: "Kemer", lat: 36.597, lng: 30.56, keys: ["kemer"], region: "mediterranean" },
+      { name: "Antalya", lat: 36.885, lng: 30.705, keys: ["antalya"], region: "mediterranean" }
+    ];
+    REGION_POINTS = [
+      {
+        name: "Ege",
+        lat: 37.15,
+        lng: 27.2,
+        keys: ["ege", "aegean", "e\u011Fe"],
+        region: "aegean"
+      },
+      {
+        name: "Akdeniz",
+        lat: 36.35,
+        lng: 29.1,
+        keys: ["akdeniz", "mediterranean", "med"],
+        region: "mediterranean"
+      }
+    ];
+  }
+});
+
+// src/lib/thalvo-ai/sea-state.ts
+function classifySeaState(input2) {
+  const wind = finite(input2.windSpeedKts);
+  const gust = input2.windGustKts == null ? null : finite(input2.windGustKts);
+  const wave = input2.waveHeightM == null ? null : finite(input2.waveHeightM);
+  const thunder = input2.weatherCode != null && THUNDER.has(input2.weatherCode);
+  if (thunder || wind >= 48 || gust != null && gust >= 55 || wave != null && wave >= 4) {
+    return "storm";
+  }
+  if (wind >= 34 || gust != null && gust >= 40 || wave != null && wave >= 2.5) {
+    return "gale";
+  }
+  if (wind >= 22 || gust != null && gust >= 28 || wave != null && wave >= 1.5) {
+    return "caution";
+  }
+  return "none";
+}
+function finite(value) {
+  return Number.isFinite(value) ? value : 0;
+}
+var THUNDER;
+var init_sea_state = __esm({
+  "src/lib/thalvo-ai/sea-state.ts"() {
+    "use strict";
+    THUNDER = /* @__PURE__ */ new Set([95, 96, 99]);
+  }
+});
+
+// src/lib/thalvo-ai/marine-weather.ts
+var marine_weather_exports = {};
+__export(marine_weather_exports, {
+  fetchMarineWeather: () => fetchMarineWeather,
+  fetchMarineWeatherAt: () => fetchMarineWeatherAt
+});
+async function fetchMarineWeatherAt(input2) {
+  const named = input2.placeName ? lookupPlaceByName(input2.placeName) : null;
+  const lat = named?.lat ?? input2.lat;
+  const lng = named?.lng ?? input2.lng;
+  if (lat == null || lng == null) throw new Error("weather_place_required");
+  const report = await fetchMarineWeather(lat, lng);
+  return { ...report, placeName: named?.name ?? (input2.placeName?.trim() || null) };
+}
+async function fetchMarineWeather(lat, lng) {
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+    throw new Error("invalid_coordinates");
+  }
+  const latitude = round6(lat);
+  const longitude = round6(lng);
+  const forecastUrl = `${FORECAST_URL}?latitude=${latitude}&longitude=${longitude}&current=wind_speed_10m,wind_gusts_10m,wind_direction_10m,surface_pressure,weather_code&wind_speed_unit=kn`;
+  const marineUrl = `${MARINE_URL}?latitude=${latitude}&longitude=${longitude}&current=wave_height,wave_period,swell_wave_height`;
+  const signal = AbortSignal.timeout(8e3);
+  const forecastRes = await fetch(forecastUrl, { signal });
+  if (!forecastRes.ok) throw new Error(`open-meteo forecast ${forecastRes.status}`);
+  const forecast = await forecastRes.json();
+  const current = forecast.current ?? {};
+  let marineCurrent = {};
+  try {
+    const marineRes = await fetch(marineUrl, { signal: AbortSignal.timeout(8e3) });
+    if (marineRes.ok) {
+      const marine = await marineRes.json();
+      marineCurrent = marine.current ?? {};
+    }
+  } catch {
+    marineCurrent = {};
+  }
+  const windSpeedKts = round1(num(current.wind_speed_10m));
+  const windGustKts = optionalNum(current.wind_gusts_10m);
+  const windDirectionDeg = round1(num(current.wind_direction_10m));
+  const waveHeightM = optionalNum(marineCurrent.wave_height);
+  const swellHeightM = optionalNum(marineCurrent.swell_wave_height);
+  const wavePeriodS = optionalNum(marineCurrent.wave_period);
+  const pressureHpa = optionalNum(current.surface_pressure);
+  const weatherCode = optionalInt(current.weather_code);
+  const alert = classifySeaState({ windSpeedKts, windGustKts, waveHeightM, weatherCode });
+  const windFrom = compassLabel(windDirectionDeg);
+  const observedAt = typeof current.time === "string" ? current.time : (/* @__PURE__ */ new Date()).toISOString();
+  const facts = {
+    windSpeedKts,
+    windGustKts,
+    windFrom,
+    waveHeightM,
+    swellHeightM,
+    wavePeriodS,
+    pressureHpa,
+    alert
+  };
+  return {
+    ok: true,
+    source: "open-meteo",
+    placeName: null,
+    latitude,
+    longitude,
+    observedAt,
+    windSpeedKts,
+    windGustKts,
+    windDirectionDeg,
+    windFrom,
+    waveHeightM,
+    swellHeightM,
+    wavePeriodS,
+    pressureHpa,
+    weatherCode,
+    alert,
+    summaryTr: summary(facts, "tr"),
+    summaryEn: summary(facts, "en")
+  };
+}
+function summary(facts, lang) {
+  const gust = facts.windGustKts == null ? "" : lang === "tr" ? `, hamle ${Math.round(facts.windGustKts)} kn` : `, gust ${Math.round(facts.windGustKts)} kn`;
+  const wave = facts.waveHeightM == null ? lang === "tr" ? "Dalga y\xFCksekli\u011Fi bu noktada yok." : "Wave height is unavailable at this point." : lang === "tr" ? `Dalga ${facts.waveHeightM.toFixed(1)} m${facts.wavePeriodS == null ? "" : `, periyot ${Math.round(facts.wavePeriodS)} sn`}${facts.swellHeightM == null ? "" : `, \u015Fi\u015F ${facts.swellHeightM.toFixed(1)} m`}.` : `Waves ${facts.waveHeightM.toFixed(1)} m${facts.wavePeriodS == null ? "" : `, period ${Math.round(facts.wavePeriodS)} s`}${facts.swellHeightM == null ? "" : `, swell ${facts.swellHeightM.toFixed(1)} m`}.`;
+  const pressure = facts.pressureHpa == null ? "" : lang === "tr" ? ` Bas\u0131n\xE7 ${Math.round(facts.pressureHpa)} hPa.` : ` Pressure ${Math.round(facts.pressureHpa)} hPa.`;
+  const band = lang === "tr" ? { none: "Uyar\u0131 yok.", caution: "Dikkat: sert deniz.", gale: "F\u0131rt\u0131na uyar\u0131s\u0131: seyir riskli.", storm: "\u015Eiddetli f\u0131rt\u0131na: bar\u0131na\u011Fa d\xF6n veya demirde kal." } : { none: "No weather warning.", caution: "Caution: rough sea.", gale: "Gale warning: passage is risky.", storm: "Storm: return to shelter or stay secured." };
+  const wind = lang === "tr" ? `R\xFCzg\xE2r ${Math.round(facts.windSpeedKts)} kn, ${facts.windFrom} y\xF6n\xFCnden${gust}.` : `Wind ${Math.round(facts.windSpeedKts)} kn from ${facts.windFrom}${gust}.`;
+  return `${wind} ${wave}${pressure} ${band[facts.alert]}`;
+}
+function num(value) {
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n)) throw new Error("weather_field_missing");
+  return n;
+}
+function optionalNum(value) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  return round1(value);
+}
+function optionalInt(value) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  return Math.round(value);
+}
+function round1(value) {
+  return Math.round(value * 10) / 10;
+}
+function round6(value) {
+  return Math.round(value * 1e6) / 1e6;
+}
+var FORECAST_URL, MARINE_URL;
+var init_marine_weather = __esm({
+  "src/lib/thalvo-ai/marine-weather.ts"() {
+    "use strict";
+    init_metocean();
+    init_places();
+    init_sea_state();
+    FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
+    MARINE_URL = "https://marine-api.open-meteo.com/v1/marine";
+  }
+});
+
 // node_modules/tslib/tslib.es6.mjs
 var tslib_es6_exports = {};
 __export(tslib_es6_exports, {
@@ -59082,20 +59357,8 @@ function createThalvoAiProvider(apiKey) {
   });
 }
 
-// src/lib/geo-eta.ts
-var EARTH_RADIUS_M = 6371e3;
-var METRES_PER_NM = 1852;
-function toRad(deg) {
-  return deg * Math.PI / 180;
-}
-function haversineNm(lat1, lng1, lat2, lng2) {
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const metres = EARTH_RADIUS_M * c;
-  return metres / METRES_PER_NM;
-}
+// src/lib/aiCaptainService.ts
+init_geo_eta();
 
 // src/lib/ai-captain-types.ts
 var CAPTAIN_LAYER_ALIASES = {
@@ -59242,147 +59505,8 @@ function createCaptainTools(nearby) {
   };
 }
 
-// src/lib/metocean.ts
-var COMPASS_POINTS = [
-  "N",
-  "NNE",
-  "NE",
-  "ENE",
-  "E",
-  "ESE",
-  "SE",
-  "SSE",
-  "S",
-  "SSW",
-  "SW",
-  "WSW",
-  "W",
-  "WNW",
-  "NW",
-  "NNW"
-];
-function compassLabel(deg) {
-  if (!Number.isFinite(deg)) return "\u2014";
-  const idx = Math.round(deg / 22.5) % 16;
-  return COMPASS_POINTS[(idx + 16) % 16];
-}
-
-// src/lib/thalvo-ai/sea-state.ts
-var THUNDER = /* @__PURE__ */ new Set([95, 96, 99]);
-function classifySeaState(input2) {
-  const wind = finite(input2.windSpeedKts);
-  const gust = input2.windGustKts == null ? null : finite(input2.windGustKts);
-  const wave = input2.waveHeightM == null ? null : finite(input2.waveHeightM);
-  const thunder = input2.weatherCode != null && THUNDER.has(input2.weatherCode);
-  if (thunder || wind >= 48 || gust != null && gust >= 55 || wave != null && wave >= 4) {
-    return "storm";
-  }
-  if (wind >= 34 || gust != null && gust >= 40 || wave != null && wave >= 2.5) {
-    return "gale";
-  }
-  if (wind >= 22 || gust != null && gust >= 28 || wave != null && wave >= 1.5) {
-    return "caution";
-  }
-  return "none";
-}
-function finite(value) {
-  return Number.isFinite(value) ? value : 0;
-}
-
-// src/lib/thalvo-ai/marine-weather.ts
-var FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
-var MARINE_URL = "https://marine-api.open-meteo.com/v1/marine";
-async function fetchMarineWeather(lat, lng) {
-  if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-    throw new Error("invalid_coordinates");
-  }
-  const latitude = round6(lat);
-  const longitude = round6(lng);
-  const forecastUrl = `${FORECAST_URL}?latitude=${latitude}&longitude=${longitude}&current=wind_speed_10m,wind_gusts_10m,wind_direction_10m,surface_pressure,weather_code&wind_speed_unit=kn`;
-  const marineUrl = `${MARINE_URL}?latitude=${latitude}&longitude=${longitude}&current=wave_height,wave_period,swell_wave_height`;
-  const signal = AbortSignal.timeout(8e3);
-  const forecastRes = await fetch(forecastUrl, { signal });
-  if (!forecastRes.ok) throw new Error(`open-meteo forecast ${forecastRes.status}`);
-  const forecast = await forecastRes.json();
-  const current = forecast.current ?? {};
-  let marineCurrent = {};
-  try {
-    const marineRes = await fetch(marineUrl, { signal: AbortSignal.timeout(8e3) });
-    if (marineRes.ok) {
-      const marine = await marineRes.json();
-      marineCurrent = marine.current ?? {};
-    }
-  } catch {
-    marineCurrent = {};
-  }
-  const windSpeedKts = round1(num(current.wind_speed_10m));
-  const windGustKts = optionalNum(current.wind_gusts_10m);
-  const windDirectionDeg = round1(num(current.wind_direction_10m));
-  const waveHeightM = optionalNum(marineCurrent.wave_height);
-  const swellHeightM = optionalNum(marineCurrent.swell_wave_height);
-  const wavePeriodS = optionalNum(marineCurrent.wave_period);
-  const pressureHpa = optionalNum(current.surface_pressure);
-  const weatherCode = optionalInt(current.weather_code);
-  const alert = classifySeaState({ windSpeedKts, windGustKts, waveHeightM, weatherCode });
-  const windFrom = compassLabel(windDirectionDeg);
-  const observedAt = typeof current.time === "string" ? current.time : (/* @__PURE__ */ new Date()).toISOString();
-  const facts = {
-    windSpeedKts,
-    windGustKts,
-    windFrom,
-    waveHeightM,
-    swellHeightM,
-    wavePeriodS,
-    pressureHpa,
-    alert
-  };
-  return {
-    ok: true,
-    source: "open-meteo",
-    latitude,
-    longitude,
-    observedAt,
-    windSpeedKts,
-    windGustKts,
-    windDirectionDeg,
-    windFrom,
-    waveHeightM,
-    swellHeightM,
-    wavePeriodS,
-    pressureHpa,
-    weatherCode,
-    alert,
-    summaryTr: summary(facts, "tr"),
-    summaryEn: summary(facts, "en")
-  };
-}
-function summary(facts, lang) {
-  const gust = facts.windGustKts == null ? "" : lang === "tr" ? `, hamle ${Math.round(facts.windGustKts)} kn` : `, gust ${Math.round(facts.windGustKts)} kn`;
-  const wave = facts.waveHeightM == null ? lang === "tr" ? "Dalga y\xFCksekli\u011Fi bu noktada yok." : "Wave height is unavailable at this point." : lang === "tr" ? `Dalga ${facts.waveHeightM.toFixed(1)} m${facts.wavePeriodS == null ? "" : `, periyot ${Math.round(facts.wavePeriodS)} sn`}${facts.swellHeightM == null ? "" : `, \u015Fi\u015F ${facts.swellHeightM.toFixed(1)} m`}.` : `Waves ${facts.waveHeightM.toFixed(1)} m${facts.wavePeriodS == null ? "" : `, period ${Math.round(facts.wavePeriodS)} s`}${facts.swellHeightM == null ? "" : `, swell ${facts.swellHeightM.toFixed(1)} m`}.`;
-  const pressure = facts.pressureHpa == null ? "" : lang === "tr" ? ` Bas\u0131n\xE7 ${Math.round(facts.pressureHpa)} hPa.` : ` Pressure ${Math.round(facts.pressureHpa)} hPa.`;
-  const band = lang === "tr" ? { none: "Uyar\u0131 yok.", caution: "Dikkat: sert deniz.", gale: "F\u0131rt\u0131na uyar\u0131s\u0131: seyir riskli.", storm: "\u015Eiddetli f\u0131rt\u0131na: bar\u0131na\u011Fa d\xF6n veya demirde kal." } : { none: "No weather warning.", caution: "Caution: rough sea.", gale: "Gale warning: passage is risky.", storm: "Storm: return to shelter or stay secured." };
-  const wind = lang === "tr" ? `R\xFCzg\xE2r ${Math.round(facts.windSpeedKts)} kn, ${facts.windFrom} y\xF6n\xFCnden${gust}.` : `Wind ${Math.round(facts.windSpeedKts)} kn from ${facts.windFrom}${gust}.`;
-  return `${wind} ${wave}${pressure} ${band[facts.alert]}`;
-}
-function num(value) {
-  const n = typeof value === "number" ? value : Number(value);
-  if (!Number.isFinite(n)) throw new Error("weather_field_missing");
-  return n;
-}
-function optionalNum(value) {
-  if (typeof value !== "number" || !Number.isFinite(value)) return null;
-  return round1(value);
-}
-function optionalInt(value) {
-  if (typeof value !== "number" || !Number.isFinite(value)) return null;
-  return Math.round(value);
-}
-function round1(value) {
-  return Math.round(value * 10) / 10;
-}
-function round6(value) {
-  return Math.round(value * 1e6) / 1e6;
-}
+// src/lib/thalvo-ai/chat-turn.ts
+init_marine_weather();
 
 // src/lib/thalvo-ai/memory-store.ts
 var EMBEDDING_DIM = 1536;
@@ -59613,6 +59737,455 @@ function platformRouteCatalog() {
   lines.push("- /escrow: alias of /app/orders");
   lines.push("- /support: alias of /app/report");
   return lines.join("\n");
+}
+
+// src/lib/thalvo-ai/domain.ts
+init_places();
+var LEXICON = {
+  weather: [
+    "hava",
+    "r\xFCzgar",
+    "ruzgar",
+    "dalga",
+    "f\u0131rt\u0131na",
+    "firtina",
+    "meltem",
+    "poyraz",
+    "lodos",
+    "deniz durumu",
+    "beaufort",
+    "forecast",
+    "weather",
+    "wind",
+    "wave",
+    "swell",
+    "storm",
+    "gale",
+    "gust",
+    "barometer",
+    "bas\u0131n\xE7",
+    "basinc",
+    "\u015Fi\u015F",
+    "sis",
+    "etezyen",
+    "etesian"
+  ],
+  machinery: [
+    "motor",
+    "makine",
+    "hararet",
+    "overheat",
+    "impeller",
+    "pervane",
+    "ya\u011F",
+    "yag",
+    "yak\u0131t",
+    "yakit",
+    "dizel",
+    "benzin",
+    "volvo",
+    "yanmar",
+    "mercury",
+    "yamaha",
+    "cummins",
+    "caterpillar",
+    "mar\u015F",
+    "mars",
+    "egzoz",
+    "duman",
+    "kay\u0131\u015F",
+    "kayis",
+    "so\u011Futma",
+    "sogutma",
+    "alternat\xF6r",
+    "alternator",
+    "jenerat\xF6r",
+    "generator",
+    "outboard",
+    "saildrive",
+    "mixing elbow",
+    "dirsek",
+    "tell-tale",
+    "su ka\xE7a\u011F\u0131",
+    "su kacagi",
+    "engine",
+    "diesel",
+    "oil pressure",
+    "ak\xFC",
+    "aku",
+    "battery",
+    "\u015Farj",
+    "sarj",
+    "sintine",
+    "bilge",
+    "pompa",
+    "d\xFCmen",
+    "dumen",
+    "steering",
+    "hidrolik"
+  ],
+  seamanship: [
+    "demir",
+    "alarga",
+    "tonoz",
+    "colreg",
+    "\xE7at\u0131\u015Fma",
+    "catisma",
+    "seyir",
+    "rota",
+    "s\u0131\u011F",
+    "siglik",
+    "su \xE7ekimi",
+    "su cekimi",
+    "draft",
+    "marina",
+    "g\xF6cek",
+    "gocek",
+    "marmaris",
+    "bodrum",
+    "fethiye",
+    "ka\u015F",
+    "kas",
+    "dat\xE7a",
+    "datca",
+    "didim",
+    "finike",
+    "kemer",
+    "antalya",
+    "adam denize",
+    "man overboard",
+    "can yele\u011Fi",
+    "fog",
+    "iskele",
+    "sancak",
+    "mooring",
+    "anchor",
+    "anchorage",
+    "under keel",
+    "dip pay\u0131",
+    "dip payi",
+    "yang\u0131n",
+    "yangin",
+    "fire",
+    "karaya oturma",
+    "grounding",
+    "vhf",
+    "mayday",
+    "pan-pan",
+    "su alma",
+    "flooding",
+    "sis i\u015Fareti",
+    "sis isareti",
+    "fog signal"
+  ]
+};
+var NOTES = [
+  {
+    domain: "machinery",
+    keys: ["hararet", "overheat", "\u0131s\u0131nd\u0131", "isindi", "temperature", "hararet yapt\u0131", "hararet yapti"],
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Motor so\u011Futma suyunu yeterince alam\u0131yor veya \u0131s\u0131y\u0131 denize atam\u0131yor.
+- Neden olabilir: Deniz suyu s\xFCzgeci t\u0131kal\u0131; impeller y\u0131rt\u0131k; kay\u0131\u015F gev\u015Fek; ekzoz dirse\u011Fi (mixing elbow) daralm\u0131\u015F.
+- \u015Eimdi ne yap: Devri d\xFC\u015F\xFCr. Hararet d\xFC\u015Fmezse motoru durdur. S\u0131cakken radyat\xF6r veya e\u015Fanj\xF6r kapa\u011F\u0131n\u0131 a\xE7ma. Tatl\u0131 su devresine deniz suyu kar\u0131\u015Ft\u0131ysa ustaya b\u0131rak.
+- Ne zaman usta \xE7a\u011F\u0131r: Durdurmana ra\u011Fmen ibre d\xFC\u015Fm\xFCyorsa, beyaz buhar veya so\u011Futma suyu ka\xE7a\u011F\u0131 varsa.
+- Marka notu: Par\xE7a kodu plakadaki model olmadan s\xF6ylenmez. Volvo Penta, Yanmar ve d\u0131\u015Ftan takmalarda ilk bak\u0131lacak par\xE7a sezonluk impeller'd\u0131r.`,
+    en: `## Plain-language report
+- What is happening: The engine is not taking enough seawater, or it cannot dump the heat.
+- What can cause it: Blocked seawater strainer, torn impeller, loose belt, or a narrowed mixing elbow.
+- What to do now: Reduce rpm. Stop the engine if the temperature does not fall. Do not open a hot cooling cap.
+- When to call a mechanic: The gauge stays high after shutdown, or you see steam or a cooling-water leak.
+- Brand note: No part number without the plate. On Volvo Penta, Yanmar, and outboards the seasonal impeller is the first item to inspect.`
+  },
+  {
+    domain: "machinery",
+    keys: ["ya\u011F bas\u0131nc\u0131", "yag basinci", "oil pressure", "ya\u011F ikaz", "yag ikaz"],
+    emergency: true,
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Ya\u011F bas\u0131nc\u0131 d\xFC\u015F\xFCnce yataklar ya\u011Fs\u0131z kal\u0131r. Bu bir seyir ar\u0131zas\u0131 de\u011Fil, motoru durdurma sebebidir.
+- Neden olabilir: Ya\u011F seviyesi d\xFC\u015F\xFCk; ya\u011F filtresi t\u0131kal\u0131; bas\u0131n\xE7 m\xFC\u015Firi ar\u0131zal\u0131; ka\xE7ak.
+- \u015Eimdi ne yap: Motoru hemen durdur. Seviyeyi motor so\u011Fuyunca kontrol et. Ka\xE7ak varsa \xFCst\xFCne basma ve k\u0131v\u0131lc\u0131m \xE7\u0131karma.
+- Ne zaman usta \xE7a\u011F\u0131r: \u015Eimdi. Ya\u011Fs\u0131z motoru tekrar \xE7al\u0131\u015Ft\u0131rma.
+- Marka notu: M\xFC\u015Fir hatas\u0131 ihtimali, d\xFC\u015F\xFCk ya\u011F ihtimalinden sonra gelir. Uydurma bas\u0131n\xE7 de\u011Feri yok.`,
+    en: `## Plain-language report
+- What is happening: Low oil pressure starves the bearings. Stop the engine.
+- What can cause it: Low oil level, a blocked filter, a faulty sender, or a leak.
+- What to do now: Shut down now. Check the level only once it is cool. Keep sparks away from a leak.
+- When to call a mechanic: Now. Do not restart an engine that ran without oil pressure.
+- Brand note: A bad sender is considered after a real low level. No invented pressure figure.`
+  },
+  {
+    domain: "machinery",
+    keys: ["\xE7al\u0131\u015Fm\u0131yor", "calismiyor", "mar\u015F", "mars basm\u0131yor", "won't start", "wont start", "no start", "mar\u015F alm\u0131yor"],
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Motor d\xF6nm\xFCyor ya da d\xF6n\xFCp tutu\u015Fmuyor.
+- Neden olabilir: Ak\xFC zay\u0131f veya \u015Falter kapal\u0131; yak\u0131t muslu\u011Fu kapal\u0131; yak\u0131tta hava; stop ipleri veya g\xFCvenlik \u015Falteri \xE7ekili.
+- \u015Eimdi ne yap: Ak\xFC \u015Falterini, stop d\xFC\u011Fmesini ve yak\u0131t vanas\u0131n\u0131 kontrol et. Mar\u015F basarken t\u0131k yoksa ak\xFC ve kutup ba\u015F\u0131d\u0131r. Devir al\u0131p s\xF6n\xFCyorsa yak\u0131tta hava olabilir.
+- Ne zaman usta \xE7a\u011F\u0131r: Kutuplar temiz ve yak\u0131t a\xE7\u0131kken h\xE2l\xE2 d\xF6nm\xFCyorsa.
+- Marka notu: Seri numaras\u0131 veya ar\u0131za kodu uydurulmaz. Plakadaki marka ve modeli yaz.`,
+    en: `## Plain-language report
+- What is happening: The engine does not crank, or it cranks and does not fire.
+- What can cause it: A weak battery or an open switch, a closed fuel valve, air in the fuel, or a kill switch left on.
+- What to do now: Check the battery switch, stop button, and fuel valve. A click with no crank points at the battery. Crank then die points at air in the fuel.
+- When to call a mechanic: It still will not turn with clean terminals and fuel open.
+- Brand note: Do not invent a fault code. Read the brand and model off the plate.`
+  },
+  {
+    domain: "machinery",
+    keys: ["impeller", "su atm\u0131yor", "su atmiyor", "tell-tale", "so\u011Futma suyu yok", "sogutma suyu yok"],
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Deniz suyu pompas\u0131 basm\u0131yor. D\u0131\u015Ftan takmada kontrol deli\u011Finden (tell-tale) su gelmez; i\xE7ten takmada hararet bunu izler.
+- Neden olabilir: Impeller kanatlar\u0131 kopmu\u015F; s\xFCzge\xE7 yosun tutmu\u015F; termostat kapal\u0131 kalm\u0131\u015F.
+- \u015Eimdi ne yap: Motoru y\xFCkte \xE7al\u0131\u015Ft\u0131rmaya devam etme. Sezon ba\u015F\u0131 impeller kontrol\xFC standart bak\u0131md\u0131r. Kopan kanat e\u015Fanj\xF6rde kalm\u0131\u015F olabilir.
+- Ne zaman usta \xE7a\u011F\u0131r: Impeller de\u011Fi\u015Fince de su gelmiyorsa.
+- Marka notu: Kanat say\u0131s\u0131 modele g\xF6redir. Plakas\u0131z par\xE7a kodu yok.`,
+    en: `## Plain-language report
+- What is happening: The seawater pump is not pumping. On an outboard the tell-tale goes dry; on an inboard the temperature follows.
+- What can cause it: A shredded impeller, a fouled strainer, or a thermostat stuck shut.
+- What to do now: Do not keep it under load. Checking the impeller at the start of the season is normal service. Broken vanes can sit in the heat exchanger.
+- When to call a mechanic: Still no water after a new impeller.
+- Brand note: Vane count depends on the model. No part number without the plate.`
+  },
+  {
+    domain: "machinery",
+    keys: ["duman", "smoke", "beyaz duman", "siyah duman", "mavi duman"],
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Egzoz duman\u0131n\u0131n rengi yanma veya so\u011Futma hakk\u0131nda ipucu verir. Tek ba\u015F\u0131na te\u015Fhis de\u011Fildir.
+- Neden olabilir: Beyaz ve s\xFCrekli duman so\u011Futma suyunun egzoza ka\xE7mas\u0131 olabilir. Siyah duman fazla yak\u0131t veya t\u0131kal\u0131 hava filtresi. Mavi duman ya\u011F yak\u0131m\u0131.
+- \u015Eimdi ne yap: Y\xFCk\xFC azalt. Beyaz duman hararetle birlikteyse motoru durdur. Yak\u0131t ka\xE7a\u011F\u0131n\u0131n yan\u0131nda \xE7\u0131plak alev veya k\u0131v\u0131lc\u0131m yok.
+- Ne zaman usta \xE7a\u011F\u0131r: Renk y\xFCk kalk\u0131nca ge\xE7miyorsa veya su ka\xE7a\u011F\u0131 \u015F\xFCphesi varsa.
+- Marka notu: Enjekt\xF6r kodu veya kompresyon de\u011Feri uydurulmaz.`,
+    en: `## Plain-language report
+- What is happening: Exhaust colour is a clue, not a diagnosis by itself.
+- What can cause it: Continuous white smoke can be cooling water in the exhaust. Black smoke is excess fuel or a choked air filter. Blue smoke is oil.
+- What to do now: Reduce load. If white smoke comes with overheating, stop. No flame or spark near a fuel leak.
+- When to call a mechanic: The colour stays after you ease off, or you suspect water in the engine.
+- Brand note: No invented injector code or compression figure.`
+  },
+  {
+    domain: "seamanship",
+    keys: ["demir", "alarga", "anchor", "anchorage", "tonoz"],
+    tr: `## Seyir notu
+- Demir yeri: R\xFCzg\xE2r koyun a\xE7\u0131k a\u011Fz\u0131na do\u011Fru esiyorsa alarga a\xE7\u0131k say\u0131l\u0131r. Tonoz varsa \xE7apay\u0131 ona g\xF6re se\xE7.
+- Dip pay\u0131: Haritadaki derinli\u011Fin tekne su \xE7ekiminden en az 1,5 m fazla olmas\u0131 gerekir. Derinlik kayd\u0131 yoksa "kay\u0131tta yok" de, uydurma.
+- Zincir: Sert havada k\u0131sa kaloma demiri tarat\u0131r. Kaloma, r\xFCzg\xE2r ve dip cinsine g\xF6re artar. Say\u0131 uydurma.
+- Kontrol: Demir tuttuktan sonra sabit bir kerahet (kerteriz) al. Kayma varsa motor haz\u0131r olsun.`,
+    en: `## Seamanship note
+- Anchorage: If the wind blows into the open mouth, the bay is exposed. Use a mooring buoy when one is there.
+- Under-keel: Charted depth should exceed draft by at least 1.5 m. If depth is not on file, say so.
+- Scope: Short scope drags in a blow. Scope grows with wind and bottom. Do not invent a length.
+- Check: Take a transit after the anchor sets. Have the engine ready if the transit moves.`
+  },
+  {
+    domain: "seamanship",
+    keys: ["colreg", "\xE7at\u0131\u015Fma", "catisma", "sancak", "starboard", "sis", "fog", "\xE7at\u0131\u015Fmay\u0131 \xF6nleme"],
+    tr: `## Seyir notu
+- Dar kanalda m\xFCmk\xFCn oldu\u011Funca sanca\u011F\u0131na yak\u0131n seyret.
+- Kar\u015F\u0131dan kar\u015F\u0131ya: ikisi de sanca\u011Fa manevra eder.
+- Kesi\u015Fme: sanca\u011F\u0131ndaki tekneye yol ver.
+- S\u0131n\u0131rl\u0131 g\xF6r\xFC\u015Fte s\xFCrat d\xFC\u015Fer ve sis i\u015Fareti verilir.
+- Manevra erken ve kar\u015F\u0131 tarafa belli olacak kadar belirgin olmal\u0131.`,
+    en: `## Seamanship note
+- In a narrow channel, keep to starboard as far as is safe.
+- Head-on: both alter to starboard.
+- Crossing: give way to the vessel on your starboard side.
+- In fog, slow down and sound the signal.
+- The alteration should be early and large enough to be obvious.`
+  },
+  {
+    domain: "seamanship",
+    keys: ["adam denize", "man overboard", "mob", "denize adam"],
+    emergency: true,
+    tr: `## Seyir notu
+- Ba\u011F\u0131r, i\u015Faret et, bir ki\u015Fi bak\u0131\u015F\u0131 hi\xE7 kesmesin.
+- Can simidini at. Pervaneden uzak dur.
+- Tekneyi adama do\u011Fru yava\u015F ve kontroll\xFC yakla\u015Ft\u0131r. \u0130lk i\u015F motoru tam yol ki\u015Fiye s\xFCrmek de\u011Fildir.
+- VHF veya telefon ile yard\u0131m, ki\u015Fi teknedeyken \xE7a\u011Fr\u0131l\u0131r; \xF6nce ki\u015Fi g\xF6zden ka\xE7mas\u0131n.`,
+    en: `## Seamanship note
+- Shout, point, and keep one person watching without looking away.
+- Throw the lifebuoy. Stay clear of the propeller.
+- Bring the boat back slowly. Do not drive full ahead at the person.
+- Call for help once someone still has the person in sight.`
+  },
+  {
+    domain: "seamanship",
+    keys: ["meltem", "etezyen", "etesian", "poyraz", "lodos"],
+    tr: `## Seyir notu
+- Yaz meltemi Ege'de \xE7o\u011Funlukla kuzeyli eser ve \xF6\u011Fleden sonra sertle\u015Fir.
+- Poyraz kuzeydo\u011Fudan, lodos g\xFCneybat\u0131dan gelir. Koy se\xE7imi r\xFCzg\xE2r\u0131n a\u011Fza m\u0131 yoksa s\u0131rt\u0131n arkas\u0131na m\u0131 geldi\u011Fine bakar.
+- Say\u0131 i\xE7in canl\u0131 hava \xF6l\xE7\xFCm\xFC gerekir. Bu not r\xFCzg\xE2r h\u0131z\u0131 uydurmaz.`,
+    en: `## Seamanship note
+- The summer meltem in the Aegean is usually northerly and often freshens after noon.
+- Poyraz is northeasterly, lodos southwesterly. A bay is chosen by whether that wind blows into the mouth or over the hill behind it.
+- A speed needs a live weather reading. This note does not invent one.`
+  },
+  {
+    domain: "machinery",
+    keys: ["ak\xFC", "aku", "battery", "\u015Farj etmiyor", "sarj etmiyor", "voltaj d\xFC\u015F\xFCk", "12v"],
+    tr: `## Sade Dil Raporu
+- Ne oluyor: Elektrik sistemi gerilim tutmuyor veya mar\u015F i\xE7in yeterli g\xFC\xE7 vermiyor.
+- Neden olabilir: Ak\xFC ya\u015Flanm\u0131\u015F; kutup ba\u015F\u0131 oksitli; alternat\xF6r kay\u0131\u015F\u0131 gev\u015Fek; ka\xE7ak y\xFCk (buzdolab\u0131, inverter) geceyi bo\u015Faltm\u0131\u015F.
+- \u015Eimdi ne yap: Voltaj\u0131 \xF6l\xE7 (motor kapal\u0131 ~12,4 V ve \xFCst\xFC iyi). Kutuplar\u0131 temizle. Motor \xE7al\u0131\u015F\u0131rken \u015Farj ~13,5\u201314,5 V band\u0131nda olmal\u0131 \u2014 kesin say\u0131 plakaya ve reg\xFClat\xF6re ba\u011Fl\u0131d\u0131r, uydurma.
+- Ne zaman usta \xE7a\u011F\u0131r: Motor \xE7al\u0131\u015F\u0131rken gerilim y\xFCkselmiyorsa veya ak\xFC \u015Fi\u015Fmi\u015F/kokuyorsa.
+- Marka notu: AGM / jel / \u0131slak tip farkl\u0131 \u015Farj ister. Tip plakas\u0131z tahmin edilmez.`,
+    en: `## Plain-language report
+- What is happening: The electrical system will not hold voltage, or it will not crank.
+- What can cause it: An aged battery, oxidised terminals, a loose alternator belt, or a parasitic load overnight.
+- What to do now: Measure voltage (engine off, about 12.4 V and up is healthy). Clean the posts. Running charge is often ~13.5\u201314.5 V \u2014 exact band depends on the regulator; do not invent a figure.
+- When to call a mechanic: Voltage does not rise with the engine, or the battery is swollen or smells.
+- Brand note: AGM, gel, and flooded need different charge profiles. Do not guess the type off the plate.`
+  },
+  {
+    domain: "machinery",
+    keys: ["sintine", "bilge", "su alma", "flooding", "tekne su al\u0131yor", "tekne su aliyor"],
+    emergency: true,
+    tr: `## Sade Dil Raporu
+- Ne oluyor: G\xF6vdeye veya sintineye su giriyor. Bu makine ar\u0131zas\u0131ndan \xF6nce emniyet i\u015Fidir.
+- Neden olabilir: Sintine pompas\u0131 \xE7al\u0131\u015Fm\u0131yor; hortum/kelep\xE7e ka\xE7\u0131r\u0131yor; shaft packing / stuffing box; a\xE7\u0131k deniz suyu vanas\u0131; g\xF6vde \xE7atla\u011F\u0131.
+- \u015Eimdi ne yap: Pompay\u0131 a\xE7, yedek pompa varsa kullan. Deniz suyu vanalar\u0131n\u0131 bilinen s\u0131z\u0131nt\u0131 hatt\u0131nda kapat. Can yele\u011Fi haz\u0131r tut. Su y\xFCkseliyorsa VHF / telefon ile yard\u0131m iste.
+- Ne zaman usta \xE7a\u011F\u0131r: Pompa yeti\u015Fmiyorsa veya kaynak bulunam\u0131yorsa \u2014 \u015Fimdi.
+- Marka notu: Ka\xE7ak yeri g\xF6rmeden par\xE7a uydurma.`,
+    en: `## Plain-language report
+- What is happening: Water is entering the hull or bilge. Safety before diagnosis.
+- What can cause it: A dead bilge pump, a hose clamp, stuffing box, an open seacock, or a hull breach.
+- What to do now: Run the pump and any spare. Close seacocks on the known leak line. Keep lifejackets ready. Call for help if the water is winning.
+- When to call a mechanic: The pump cannot keep up, or you cannot find the source \u2014 now.
+- Brand note: Do not invent a part before you see the leak.`
+  },
+  {
+    domain: "seamanship",
+    keys: ["yang\u0131n", "yangin", "fire", "alev", "duman kokusu"],
+    emergency: true,
+    tr: `## Seyir notu
+- \xD6nce insanlar: herkes can yele\u011Fi, yang\u0131n battaniyesi / CO\u2082 / k\xF6p\xFCk \u2014 yak\u0131t tipine uygun s\xF6nd\xFCr\xFCc\xFC.
+- Elektrik yang\u0131n\u0131nda ak\xFC \u015Falterini kes (g\xFCvenliyse). Yak\u0131t yang\u0131n\u0131nda su ile b\xFCy\xFCtme.
+- Motor odas\u0131 kapal\u0131ysa kapa\u011F\u0131 a\xE7\u0131p oksijen verme; sabit s\xF6nd\xFCrme varsa onu kullan.
+- Duman veya alev kontrol alt\u0131na al\u0131nm\u0131yorsa tekneyi terk plan\u0131 haz\u0131r olsun; VHF Mayday.`,
+    en: `## Seamanship note
+- People first: lifejackets on, then the right extinguisher for the fuel type.
+- For electrical fire, kill the battery switch if safe. Do not fight a fuel fire with water.
+- Do not feed a closed engine-room fire with oxygen; use fixed extinguishing if fitted.
+- If smoke or flame is not controlled, prepare to abandon and call Mayday on VHF.`
+  },
+  {
+    domain: "seamanship",
+    keys: ["karaya oturma", "grounding", "oturduk", "s\u0131\u011Fl\u0131kta kald\u0131k", "siglikta kaldik"],
+    emergency: true,
+    tr: `## Seyir notu
+- Motoru zorlama: pervane ve so\u011Futma suyu hasar riski. Durumu sakin de\u011Ferlendir.
+- Gelgit / r\xFCzg\xE2r y\xF6n\xFC tekneyi daha m\u0131 bat\u0131r\u0131yor yoksa kald\u0131r\u0131yor mu bak.
+- Su alma kontrol\xFC yap. Yaral\u0131 yoksa \xF6nce tekne b\xFCt\xFCnl\xFC\u011F\xFC.
+- Kendi g\xFCc\xFCnle \xE7\u0131kam\u0131yorsan \xE7ekici / yard\u0131m \xE7a\u011F\u0131r; yanl\u0131\u015F \xE7eki\u015F omurgay\u0131 yorar.`,
+    en: `## Seamanship note
+- Do not thrash the engine: prop and cooling intake can be damaged. Assess calmly.
+- Check whether tide or wind is setting you harder on, or lifting you off.
+- Check for flooding. If no injuries, hull integrity comes next.
+- If you cannot free yourself, call a tow; a bad pull can stress the keel.`
+  },
+  {
+    domain: "seamanship",
+    keys: ["vhf", "mayday", "pan-pan", "sec\xFCrite", "securite", "kanal 16"],
+    tr: `## Seyir notu
+- Kanal 16 dinlenir. Mayday: can tehlikesi. Pan-Pan: acil ama can tehlikesi yok. S\xE9curit\xE9: seyir uyar\u0131s\u0131.
+- Mesaj: kimlik, konum (enlem/boylam veya bilinen nokta), ne oldu, ka\xE7 ki\u015Fi, ne yard\u0131m.
+- Konum uydurma. Bilmiyorsan en yak\u0131n bilinen koy / marina ad\u0131n\u0131 s\xF6yle.`,
+    en: `## Seamanship note
+- Guard channel 16. Mayday: grave danger. Pan-Pan: urgent, no immediate life threat. S\xE9curit\xE9: safety warning.
+- Message: who you are, where (lat/lng or a known place), what happened, how many souls, what help.
+- Do not invent a position. If unsure, name the nearest known bay or marina.`
+  },
+  {
+    domain: "machinery",
+    keys: ["d\xFCmen", "dumen", "steering", "direksiyon bo\u015F", "hidrolik d\xFCmen"],
+    emergency: true,
+    tr: `## Sade Dil Raporu
+- Ne oluyor: D\xFCmen cevaps\u0131z veya a\u015F\u0131r\u0131 bo\u015F. Trafikte bu acildir.
+- Neden olabilir: Hidrolik ka\xE7ak / seviye d\xFC\u015F\xFCk; kablo kopuk; otolota / autopilot kavramas\u0131; d\xFCmen yekesi / quadrant.
+- \u015Eimdi ne yap: S\xFCrati d\xFC\u015F\xFCr. Trafikten uzakla\u015F. Yedek d\xFCmen (tiller / emergency steering) varsa haz\u0131rla. Yak\u0131t ka\xE7a\u011F\u0131 gibi hidrolik ya\u011F\u0131 varsa k\u0131v\u0131lc\u0131m yok.
+- Ne zaman usta \xE7a\u011F\u0131r: Yedek d\xFCmenle limana d\xF6nemiyorsan \u2014 \u015Fimdi yard\u0131m iste.
+- Marka notu: Hidrolik ya\u011F tipi plakas\u0131z s\xF6ylenmez.`,
+    en: `## Plain-language report
+- What is happening: Steering is dead or dangerously loose. In traffic this is an emergency.
+- What can cause it: Hydraulic leak or low fluid, a parted cable, autopilot clutch, or quadrant failure.
+- What to do now: Slow down. Get clear of traffic. Rig emergency steering if fitted. No sparks near hydraulic oil mistreated as a fuel hazard.
+- When to call a mechanic: If you cannot make harbour on emergency steering \u2014 call help now.
+- Brand note: Do not invent the hydraulic fluid type off the plate.`
+  }
+];
+function classifyMarineDomain(text2) {
+  const q = text2.toLocaleLowerCase("tr");
+  let best = "outside";
+  let score = 0;
+  for (const domain2 of ["weather", "machinery", "seamanship"]) {
+    const hits = LEXICON[domain2].reduce((sum, word) => sum + (q.includes(word) ? word.length : 0), 0);
+    if (hits > score) {
+      score = hits;
+      best = domain2;
+    }
+  }
+  return best;
+}
+function offTopicReply(lang) {
+  return lang === "tr" ? "THALVO AI yaln\u0131z \xFC\xE7 konuda cevap verir: deniz ve seyir, makine, hava durumu. Bu soru o alan\u0131n d\u0131\u015F\u0131nda." : "THALVO AI answers only three subjects: seamanship, machinery, and weather. That question is outside those subjects.";
+}
+async function answerFromTraining(input2) {
+  const domain2 = classifyMarineDomain(input2.text);
+  if (domain2 === "outside") {
+    return { text: offTopicReply(input2.lang), domain: domain2, emergency: false, confident: true, weather: null };
+  }
+  if (domain2 === "weather") {
+    const named = resolveNamedPlace(input2.text);
+    const place = named ?? (input2.position ? { ...input2.position, name: null } : null);
+    if (!place) {
+      const text2 = input2.lang === "tr" ? "Hava i\xE7in bir yer laz\u0131m. G\xF6cek, Bodrum, Marmaris, Fethiye, Ka\u015F veya Ege / Akdeniz diyebilirsin; ya da haritada konumunu a\xE7." : "Weather needs a place. Name G\xF6cek, Bodrum, Marmaris, Fethiye, Ka\u015F, or Aegean / Mediterranean \u2014 or turn on your position.";
+      return { text: text2, domain: domain2, emergency: false, confident: true, weather: null };
+    }
+    try {
+      const { fetchMarineWeather: fetchMarineWeather2 } = await Promise.resolve().then(() => (init_marine_weather(), marine_weather_exports));
+      const report = await fetchMarineWeather2(place.lat, place.lng);
+      const label = "name" in place && typeof place.name === "string" ? place.name : null;
+      return {
+        text: formatWeather(report, input2.lang, label),
+        domain: domain2,
+        emergency: report.alert === "storm" || report.alert === "gale",
+        confident: true,
+        weather: { alert: report.alert, summaryTr: report.summaryTr, summaryEn: report.summaryEn }
+      };
+    } catch {
+      const text2 = input2.lang === "tr" ? "Canl\u0131 hava \xF6l\xE7\xFCm\xFC \u015Fu an gelmedi (Open-Meteo). Dalga y\xFCksekli\u011Fi uydurmam. Biraz sonra ayn\u0131 yeri tekrar sor." : "The live weather reading did not arrive (Open-Meteo). I will not invent a wave height. Ask the same place again shortly.";
+      return { text: text2, domain: domain2, emergency: false, confident: true, weather: null };
+    }
+  }
+  const note = matchNote(input2.text);
+  if (!note) {
+    const text2 = domain2 === "machinery" ? input2.lang === "tr" ? "Makine i\xE7in belirtiyi yaz: hararet, ya\u011F bas\u0131nc\u0131, mar\u015F, su atmama, duman rengi, ak\xFC veya sintine. Plakadaki marka ve modeli ekle. Par\xE7a kodu uydurmam." : "For machinery, name the symptom: overheating, oil pressure, no start, no tell-tale, smoke colour, battery, or bilge. Add the brand and model from the plate. I will not invent a part number." : input2.lang === "tr" ? "Seyir i\xE7in ne yapmak istedi\u011Fini yaz: demir, \xE7at\u0131\u015Fma kurallar\u0131, denize adam, yang\u0131n, karaya oturma veya VHF. R\xFCzg\xE2r h\u0131z\u0131 ancak canl\u0131 \xF6l\xE7\xFCden gelir." : "For seamanship, say what you need: anchoring, collision rules, man overboard, fire, grounding, or VHF. A wind speed comes only from a live reading.";
+    return { text: text2, domain: domain2, emergency: false, confident: false, weather: null };
+  }
+  return {
+    text: input2.lang === "tr" ? note.tr : note.en,
+    domain: domain2,
+    emergency: note.emergency === true,
+    confident: true,
+    weather: null
+  };
+}
+function matchNote(text2) {
+  const q = text2.toLocaleLowerCase("tr");
+  let best = null;
+  let score = 0;
+  for (const note of NOTES) {
+    const hits = note.keys.reduce((sum, key) => sum + (q.includes(key) ? key.length : 0), 0);
+    if (hits > score) {
+      score = hits;
+      best = note;
+    }
+  }
+  return best;
+}
+function formatWeather(report, lang, label) {
+  const body = lang === "tr" ? report.summaryTr : report.summaryEn;
+  const where = label == null ? lang === "tr" ? "Bulundu\u011Fun nokta" : "Your position" : label;
+  const source = lang === "tr" ? "Kaynak: Open-Meteo canl\u0131 \xF6l\xE7\xFC (resm\xEE MG\u0130M b\xFClteni de\u011Fil)." : "Source: Open-Meteo live reading (not an official national bulletin).";
+  return `${where}. ${body} ${source}`;
 }
 
 // node_modules/@supabase/supabase-js/dist/index.mjs
@@ -67683,6 +68256,7 @@ function isAuthed(value) {
 }
 
 // src/lib/thalvo-ai/system-prompt.ts
+init_places();
 var BRAND_KB = `Verified marine brand notes. Use these names exactly. Do not invent torque, part numbers, fault-code tables, or capacities. If a plate or model is not listed, say it is not in the verified notes and ask for the plate photo or the official workshop manual.
 
 - Volvo Penta: diesel inboards D1, D2, D3, D4, D6, D8, D11, D13; IPS pod drives; saildrive; gasoline sterndrives; EVC electronic control. Recurring service: seawater impeller, heat exchanger, mixing elbow, belts, anodes. Do not invent EVC codes.
@@ -67721,7 +68295,9 @@ Emniyet her \u015Feyden \xF6nce: yang\u0131n, su alma, karbonmonoksit, denize ad
 
 Mentorluk: istenen i\u015Fi neden, ad\u0131m, "oldu\u011Funu nas\u0131l anlars\u0131n" diye anlat. Resmi at\xF6lye kitab\u0131n\u0131n yerine ge\xE7me.
 
-Hava: deniz durumu, r\xFCzg\xE2r veya f\u0131rt\u0131na sorusunda getMarineWeather \xE7a\u011F\u0131r. Ara\xE7taki say\u0131lar\u0131 aynen kullan. Dalga y\xFCksekli\u011Fi uydurma. Konum yoksa sor; kokpit konumu verildiyse onu kullan.
+Hava: deniz durumu, r\xFCzg\xE2r veya f\u0131rt\u0131na sorusunda getMarineWeather \xE7a\u011F\u0131r (lat/lng veya bilinen yer ad\u0131). Ara\xE7taki say\u0131lar\u0131 aynen kullan. Dalga y\xFCksekli\u011Fi uydurma. Kaynak Open-Meteo'dur; resm\xEE MG\u0130M b\xFClteni gibi sunma. Konum yoksa sor; kokpit konumu verildiyse onu kullan.
+
+D\xFCr\xFCstl\xFCk: \xD6demeler \u015Fu an sim\xFCle / etiketli demodur \u2014 ger\xE7ek kart tahsilat\u0131 yokmu\u015F gibi "sigortal\u0131 \xF6deme" veya "banka garantisi" uydurma. G\u0130B veya MERS\u0130S do\u011Frulamas\u0131 yapam\u0131yorsun.
 
 Site yard\u0131m\u0131: kaptan escrow, par\xE7a, destek, pasaport, servis veya sipari\u015F sayfas\u0131n\u0131 bulamazsa navigateToPage \xE7a\u011F\u0131r ve tek c\xFCmleyle nereye gitti\u011Fini s\xF6yle.
 
@@ -67745,7 +68321,9 @@ Safety first: fire, flooding, carbon monoxide, man overboard, loss of steering i
 
 Mentorship: for a job, give why, the step, and how to tell it worked. You do not replace the official workshop manual.
 
-Weather: call getMarineWeather for sea state, wind, or storms. Quote the tool numbers exactly. Never invent wave height. Ask for a position when none is known; use the cockpit position when it is present.
+Weather: call getMarineWeather for sea state, wind, or storms (lat/lng or a known place name). Quote the tool numbers exactly. Never invent wave height. Source is Open-Meteo \u2014 do not present it as an official national bulletin. Ask for a position when none is known; use the cockpit position when it is present.
+
+Honesty: Payments are still simulated / labelled demo \u2014 never invent "insured payment" or "bank guarantee". You cannot verify G\u0130B or MERS\u0130S.
 
 Site help: when the captain cannot find escrow, parts, support, the passport, services, or orders, call navigateToPage and say in one sentence where you are sending them.
 
@@ -67757,6 +68335,9 @@ Chart: call focusBay for the nearest sheltered place. Call filterLayers for ligh
     "",
     "Platform routes you may open:",
     platformRouteCatalog(),
+    "",
+    "Known weather places (use names with getMarineWeather when the captain names one):",
+    placeCatalogForPrompt(),
     "",
     BRAND_KB,
     "",
@@ -67825,19 +68406,33 @@ async function handlePost(request) {
   }
   const totalChars = uiMessages.reduce((sum, message) => sum + textOf(message).length, 0);
   if (totalChars > 12e3) return jsonError(400, "ai_too_long");
+  const position = validPosition(parsed.position ?? null);
+  const userText = textOf(uiMessages.at(-1));
+  const storedUser = userText || (hasImage(uiMessages.at(-1)) ? "[photo]" : "");
   const apiKey = (process.env.THALVO_AI_API_KEY ?? process.env.LOVABLE_API_KEY ?? "").trim();
   if (!apiKey) {
-    console.error("[thalvo-ai] missing THALVO_AI_API_KEY");
-    return jsonError(503, "ai_not_configured");
+    const trained = await answerFromTraining({ text: userText, lang, position });
+    await saveChatLine(auth.supabase, auth.userId, parsed.sessionId, "user", storedUser);
+    await saveChatLine(auth.supabase, auth.userId, parsed.sessionId, "assistant", trained.text);
+    const message = {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      parts: [{ type: "text", text: trained.text }]
+    };
+    return new Response(JSON.stringify({ messages: [message], source: "training" }), {
+      status: 200,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "x-thalvo-ai": "training"
+      }
+    });
   }
   if (!allowLocalQuota(auth.userId)) return jsonError(429, "ai_rate_limited");
   const quota = await auth.supabase.rpc("consume_captain_ai_quota");
   if (quota.error && /ai_rate_limited/i.test(quota.error.message)) {
     return jsonError(429, "ai_rate_limited");
   }
-  const position = validPosition(parsed.position ?? null);
-  const userText = textOf(uiMessages.at(-1));
-  const storedUser = userText || (hasImage(uiMessages.at(-1)) ? "[photo]" : "");
   await saveChatLine(auth.supabase, auth.userId, parsed.sessionId, "user", storedUser);
   const [memoryBlock, cockpit] = await Promise.all([
     loadMemoryBlock(auth.supabase, auth.userId, userText).catch((error61) => {
@@ -67854,14 +68449,15 @@ async function handlePost(request) {
   );
   const tools = {
     getMarineWeather: tool2({
-      description: "Live marine weather and sea state for one position. Returns wind knots, gusts, wave height, swell, and a storm band. Quote these numbers. Do not invent weather.",
+      description: "Live marine weather and sea state from Open-Meteo. Pass lat/lng and/or a known Turkish-coast place name (G\xF6cek, Bodrum, Marmaris, Fethiye, Ka\u015F, Ege, Akdeniz\u2026). Returns wind knots, gusts, wave height, swell, and a storm band. Quote these numbers. Do not invent weather. Not an official national bulletin.",
       inputSchema: external_exports.object({
-        lat: external_exports.number().min(-90).max(90),
-        lng: external_exports.number().min(-180).max(180)
+        lat: external_exports.number().min(-90).max(90).optional(),
+        lng: external_exports.number().min(-180).max(180).optional(),
+        placeName: external_exports.string().min(2).max(80).optional()
       }),
-      execute: async ({ lat, lng }) => {
+      execute: async ({ lat, lng, placeName }) => {
         try {
-          return await fetchMarineWeather(lat, lng);
+          return await fetchMarineWeatherAt({ lat, lng, placeName });
         } catch (error61) {
           console.error("[thalvo-ai] weather", error61 instanceof Error ? error61.name : "error");
           return { ok: false, error: "weather_unavailable" };
