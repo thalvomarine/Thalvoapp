@@ -13,7 +13,7 @@ Paste-ready listing copy, privacy answers, and review notes live under `store/`.
 
 | Gate | Status to reach before submit |
 | --- | --- |
-| Apple Developer Program | Membership **Active** (Enrollment Pending → wait; then App Store Connect opens) |
+| Apple Developer Program | Membership **Active** (confirmed). Create the app record, then archive from a Mac |
 | Google Play Console | Developer account paid + identity verified |
 | iOS signing team | Xcode → Signing & Capabilities → your **Individual** team (replace any old `DEVELOPMENT_TEAM`) |
 | Android upload key | Create once, back up; see `android/keystore.properties.example` |
@@ -38,21 +38,23 @@ Keep Capgo `autoUpdate: false` until a production OTA bundle is verified (see `s
 
 ## Apple App Store / TestFlight
 
-1. Wait until [developer.apple.com/account](https://developer.apple.com/account) shows **Active**.
-2. App Store Connect → My Apps → **+** → iOS app  
-   - Name: Thalvo MarineOS  
-   - Bundle ID: `com.thalvo.marineos` (register in Certificates, Identifiers & Profiles if missing)  
-   - SKU: `thalvo-marineos` (or similar, immutable)
-3. On a Mac: `npm run build:mobile && npx cap open ios`
-4. Select your Individual team → Any iOS Device → **Product → Archive** → Distribute → **App Store Connect** / TestFlight.
-5. Fill listing from `store/listing.tr.md` / `store/listing.en.md`.
-6. App Privacy: follow `store/apple-app-privacy.md`.
-7. Export compliance: app uses only standard HTTPS — Info.plist sets `ITSAppUsesNonExemptEncryption=false`.
-8. Review notes: paste `store/review-notes.md`.
-9. Submit TestFlight internal → external → **Submit for Review**.
+1. App Store Connect → My Apps → **+** → iOS app. Field-by-field answers: `store/app-store-connect.md`.
+   - Name: Thalvo MarineOS
+   - Bundle ID: `com.thalvo.marineos` (register in Certificates, Identifiers & Profiles if the menu is empty)
+   - SKU: `thalvo-marineos` (immutable)
+   - User Access: Full Access
+2. On a Mac: `npm run build:mobile && npm run store:preflight && npx cap open ios`
+3. Signing & Capabilities → the Individual team whose Team ID matches Membership (the project currently has `V3PL686UYB`). Any iOS Device → **Product → Archive** → Distribute → **App Store Connect**.
+4. Fill listing from `store/listing.tr.md` (primary) and `store/listing.en.md`.
+5. App Privacy: follow `store/apple-app-privacy.md`.
+6. Export compliance: standard HTTPS only — Info.plist sets `ITSAppUsesNonExemptEncryption=false`.
+7. Screenshots: at least one **1179×2556 or 1206×2622** iPhone frame, and one **2064×2752 or 2048×2732** iPad frame. The target includes iPad (`TARGETED_DEVICE_FAMILY = 1,2`).
+8. Review notes: paste `store/review-notes.md` and add a confirmed captain login before submit.
+9. Account deletion is in the binary: Profile → Account settings → Delete account. It calls `delete_own_account`.
+10. TestFlight internal, then **Submit for Review**.
 
-Primary category: **Navigation** (secondary: Lifestyle or Utilities).  
-Age rating: 4+ / no unrestricted web, no gambling.
+Primary category: **Navigation** (secondary: Lifestyle).  
+Age rating: no violence, sexual content, gambling, or general web browser. Job chat is user-to-user, so the computed rating can sit above 4+. Answers are in `store/app-store-connect.md`.
 
 ## Google Play
 
@@ -88,8 +90,8 @@ Output: `android/app/build/outputs/bundle/release/app-release.aab`
 | App icon (Play) | 512×512 PNG | `npm run cap:assets` → `store/assets/icon-512.png` |
 | App icon (Apple) | 1024×1024 in AppIcon set | generated into iOS AppIcon catalog |
 | Feature graphic (Play) | 1024×500 | `store/assets/feature-graphic.png` |
-| Phone screenshots | Apple 6.7" + 6.1"; Play phone | `store/assets/screenshots/` (capture manually) |
-| Tablet (optional) | iPad 13" | optional for first submit |
+| Phone screenshots | iPhone Dynamic Island medium: 1179×2556 or 1206×2622 | `store/assets/screenshots/` |
+| iPad screenshots | 13": 2064×2752 or 2048×2732 (required — app runs on iPad) | `store/assets/screenshots/` |
 
 ## After both stores are live
 

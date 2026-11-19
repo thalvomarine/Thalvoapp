@@ -13,16 +13,19 @@ const root = process.cwd();
 const iconSrc = join(root, "resources/icon.png");
 const navy = { r: 10, g: 25, b: 47, alpha: 1 };
 
-async function solidIcon(size, out) {
+async function solidIcon(size, out, { opaque = false } = {}) {
   const logo = Math.round(size * 0.78);
   const fg = await sharp(iconSrc)
     .resize(logo, logo, { fit: "contain", background: navy })
     .png()
     .toBuffer();
-  await sharp({ create: { width: size, height: size, channels: 4, background: navy } })
-    .composite([{ input: fg, gravity: "centre" }])
-    .png()
-    .toFile(out);
+  let image = sharp({ create: { width: size, height: size, channels: 4, background: navy } }).composite([
+    { input: fg, gravity: "centre" },
+  ]);
+  // App Store rejects the 1024 marketing icon if an alpha channel exists,
+  // even when every pixel is opaque.
+  if (opaque) image = image.removeAlpha();
+  await image.png().toFile(out);
 }
 
 async function splashPortrait(w, h, out, logoFrac = 0.36) {
@@ -81,7 +84,7 @@ async function main() {
     "AppIcon-512@2x.png": 1024,
   };
   for (const [name, size] of Object.entries(iosIcons)) {
-    await solidIcon(size, join(iosIconDir, name));
+    await solidIcon(size, join(iosIconDir, name), { opaque: name === "AppIcon-512@2x.png" });
   }
 
   const iosSplashDir = join(root, "ios/App/App/Assets.xcassets/Splash.imageset");

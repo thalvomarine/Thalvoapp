@@ -4,6 +4,7 @@ Paste-ready materials for App Store Connect and Google Play Console.
 
 | File | Use |
 | --- | --- |
+| `app-store-connect.md` | Every App Store Connect field, in order |
 | `listing.tr.md` / `listing.en.md` | Name, subtitle, description, keywords |
 | `apple-app-privacy.md` | App Privacy questionnaire |
 | `google-data-safety.md` | Play Data safety form |

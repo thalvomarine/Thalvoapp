@@ -45,7 +45,7 @@ console.log(
 );
 console.log("");
 console.log("On a Mac with Xcode + your Apple team:");
-console.log("  1) Wait until Apple Developer membership is Active (Enrollment Pending blocks Connect)");
+console.log("  1) Apple Developer membership is Active — create the app in App Store Connect");
 console.log("  2) git pull && npm ci && npm run build:mobile && npm run store:preflight");
 console.log("  3) npx cap open ios");
 console.log("  4) Signing → your Individual team (replace stale DEVELOPMENT_TEAM if needed)");
