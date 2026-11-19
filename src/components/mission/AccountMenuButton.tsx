@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Shield, Store, User, UserCircle2 } from "lucide-react";
+import { LogOut, Shield, Ship, Store, User, UserCircle2 } from "lucide-react";
 import { RescueMark, ControlTowerMark } from "@/components/brand/ProductMarks";
 import type { Profile } from "@/lib/session";
 import { useSessionUser } from "@/lib/session";
@@ -80,6 +80,13 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
           <DropdownMenuItem asChild>
             <Link to="/app/dealer">
               <Store className="size-4 mr-2" /> {t("nav.dock_counter")}
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {!isSupplier && (
+          <DropdownMenuItem asChild>
+            <Link to="/app/charter">
+              <Ship className="size-4 mr-2" /> {t("charter.menu")}
             </Link>
           </DropdownMenuItem>
         )}
