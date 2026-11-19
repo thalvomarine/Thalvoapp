@@ -1490,6 +1490,7 @@
       "title": "Something went off course",
       "body": "THALVO hit a snag rendering this screen. Your data is safe. Try again — most disruptions clear on the next attempt.",
       "retry": "Retry",
+      "reload": "Reload page",
       "return_map": "Return to Map",
       "footer": "THALVO · Mission Control · Fault contained"
     }
@@ -1954,7 +1955,8 @@
     "route_deck_unlock": "Edit",
     "route_deck_remove_point": "Remove point",
     "crash_title": "Chart could not load. SOS remains available.",
-    "crash_retry": "Retry chart"
+    "crash_retry": "Retry chart",
+    "crash_reload": "Reload page"
   },
   "boatshow": {
     "kicker": "Boat show · Göcek–Marmaris pilot",
