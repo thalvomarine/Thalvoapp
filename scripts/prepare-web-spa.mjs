@@ -110,6 +110,57 @@ const cssLinks = cssFiles
   .map((f) => `    <link rel="stylesheet" href="/assets/${f}" />`)
   .join("\n");
 
+// External boot script keeps CSP script-src free of 'unsafe-inline' /
+// 'unsafe-eval' while still supporting Capgo + native hash history.
+const bootJs = `/* THALVO SPA boot — keep in sync with scripts/prepare-web-spa.mjs */
+(function () {
+  self.$R = self.$R || {};
+  self.$_TSR = {
+    h: function () { this.hydrated = true; this.c(); },
+    e: function () { this.streamEnded = true; this.c(); },
+    c: function () {
+      if (!(this.hydrated && this.streamEnded)) return;
+      try { delete self.$_TSR; } catch (e) {}
+      try { delete self.$R.tsr; } catch (e) {}
+    },
+    p: function (fn) { this.initialized ? fn() : this.buffer.push(fn); },
+    buffer: [],
+    router: { matches: [] }
+  };
+  var native = /^(capacitor|ionic|file):$/.test(location.protocol)
+    || (self.Capacitor && typeof self.Capacitor.isNativePlatform === "function" && self.Capacitor.isNativePlatform());
+  if (native) {
+    var path = location.pathname || "";
+    if (/index\\.html$/i.test(path) && (!location.hash || location.hash === "#")) {
+      var next = path + "#/";
+      try { history.replaceState(null, "", next); }
+      catch (e) { location.replace(next); }
+    }
+  }
+})();
+(function () {
+  /* Capgo fail-safe: notify as soon as the Capacitor bridge exists,
+     even before the hashed React entry finishes downloading/parsing. */
+  var tries = 0;
+  function ping() {
+    tries += 1;
+    try {
+      var Cap = self.Capacitor;
+      if (!Cap || typeof Cap.isNativePlatform !== "function" || !Cap.isNativePlatform()) return;
+      var plug = Cap.Plugins && Cap.Plugins.CapacitorUpdater;
+      if (plug && typeof plug.notifyAppReady === "function") {
+        Promise.resolve(plug.notifyAppReady()).catch(function () {});
+        return;
+      }
+    } catch (e) {}
+    if (tries < 40) setTimeout(ping, 250);
+  }
+  ping();
+})();
+`;
+
+writeFileSync(join(distDir, "thalvo-boot.js"), bootJs);
+
 const indexHtml = `<!doctype html>
 <html lang="tr" class="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
   <head>
@@ -164,53 +215,7 @@ ${cssLinks}
         50% { transform: translateY(-3px); opacity: 1; }
       }
     </style>
-    <script>
-      (function () {
-        self.$R = self.$R || {};
-        self.$_TSR = {
-          h: function () { this.hydrated = true; this.c(); },
-          e: function () { this.streamEnded = true; this.c(); },
-          c: function () {
-            if (!(this.hydrated && this.streamEnded)) return;
-            try { delete self.$_TSR; } catch (e) {}
-            try { delete self.$R.tsr; } catch (e) {}
-          },
-          p: function (fn) { this.initialized ? fn() : this.buffer.push(fn); },
-          buffer: [],
-          router: { matches: [] }
-        };
-        var native = /^(capacitor|ionic|file):$/.test(location.protocol)
-          || (self.Capacitor && typeof self.Capacitor.isNativePlatform === "function" && self.Capacitor.isNativePlatform());
-        if (!native) return;
-        var path = location.pathname || "";
-        if (!/index\\.html$/i.test(path)) return;
-        if (location.hash && location.hash !== "#") return;
-        var next = path + "#/";
-        try { history.replaceState(null, "", next); }
-        catch (e) { location.replace(next); }
-      })();
-    </script>
-    <script>
-      /* Capgo fail-safe: notify as soon as the Capacitor bridge exists,
-         even before the hashed React entry finishes downloading/parsing. */
-      (function () {
-        var tries = 0;
-        function ping() {
-          tries += 1;
-          try {
-            var Cap = self.Capacitor;
-            if (!Cap || typeof Cap.isNativePlatform !== "function" || !Cap.isNativePlatform()) return;
-            var plug = Cap.Plugins && Cap.Plugins.CapacitorUpdater;
-            if (plug && typeof plug.notifyAppReady === "function") {
-              Promise.resolve(plug.notifyAppReady()).catch(function () {});
-              return;
-            }
-          } catch (e) {}
-          if (tries < 40) setTimeout(ping, 250);
-        }
-        ping();
-      })();
-    </script>
+    <script src="/thalvo-boot.js"></script>
   </head>
   <body class="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
     <div id="thalvo-root">
@@ -238,6 +243,42 @@ ${cssLinks}
 `;
 
 writeFileSync(join(distDir, "index.html"), indexHtml);
+
+// Vercel serves this file with HTTP 404 for paths outside the SPA allowlist
+// in vercel.json (no catch-all rewrite). Keep it script-free for CSP.
+const notFoundHtml = `<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0A192F" />
+    <title>404 | THALVO</title>
+    <style>
+      html, body { margin: 0; min-height: 100%; min-height: 100dvh; background: #0A192F; color: #f8fafc;
+        font-family: Montserrat, -apple-system, "Segoe UI", Roboto, sans-serif; }
+      main { min-height: 100dvh; display: grid; place-items: center; padding: 24px; text-align: center; box-sizing: border-box; }
+      h1 { margin: 0; font-size: clamp(3rem, 12vw, 4.5rem); font-weight: 900; letter-spacing: -0.04em; }
+      p { margin: 16px 0 0; opacity: 0.8; }
+      a { display: inline-flex; margin-top: 24px; padding: 12px 24px; border-radius: 999px; text-decoration: none;
+        font-weight: 700; color: #0A192F; background: #F5B942; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div>
+        <h1>404</h1>
+        <p>That page drifted away.</p>
+        <a href="/">THALVO</a>
+      </div>
+    </main>
+  </body>
+</html>
+`;
+writeFileSync(join(distDir, "404.html"), notFoundHtml);
+
 console.log(`[spa] dist ready at ${distDir}`);
 console.log(`[spa] assets from ${sourceDir}`);
 console.log(`[spa] client entry /assets/${entry}`);
+console.log(`[spa] boot script /thalvo-boot.js`);
+console.log(`[spa] not-found /404.html`);
