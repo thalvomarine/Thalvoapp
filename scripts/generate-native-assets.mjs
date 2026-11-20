@@ -61,25 +61,24 @@ async function main() {
 
   const iosIconDir = join(root, "ios/App/App/Assets.xcassets/AppIcon.appiconset");
   const iosIcons = {
-    "carol.w@example.org": 40,
-    "ivan.p@example.net": 60,
-    "grace.l@example.com": 58,
-    "aaron.s@example.org": 87,
-    "ivan.p@example.net": 80,
-    "victor.l@example.com": 120,
-    "victor.l@example.com": 120,
-    "tina.r@example.net": 180,
     "AppIcon-20.png": 20,
-    "AppIcon-20@2x.png": 40,
     "AppIcon-29.png": 29,
-    "AppIcon-29@2x.png": 58,
     "AppIcon-40.png": 40,
-    "AppIcon-40@2x.png": 80,
+    "AppIcon-58.png": 58,
+    "AppIcon-60.png": 60,
     "AppIcon-76.png": 76,
-    "AppIcon-76@2x.png": 152,
-    "AppIcon-83.5@2x.png": 167,
-    "AppIcon-512@2x.png": 1024,
+    "AppIcon-80.png": 80,
+    "AppIcon-87.png": 87,
+    "AppIcon-120.png": 120,
+    "AppIcon-152.png": 152,
+    "AppIcon-167.png": 167,
+    "AppIcon-180.png": 180,
+    "AppIcon-1024.png": 1024,
   };
+  const keepIcons = new Set([...Object.keys(iosIcons), "Contents.json"]);
+  for (const stale of readdirSync(iosIconDir)) {
+    if (!keepIcons.has(stale)) unlinkSync(join(iosIconDir, stale));
+  }
   for (const [name, size] of Object.entries(iosIcons)) {
     await solidIcon(size, join(iosIconDir, name));
   }
