@@ -16,7 +16,8 @@ Auth logs (project `vofjektddsxmavghlerj`) showed:
 1. **Site URL** must be `https://thalvo.org`
 2. **Redirect allow list** must include `https://thalvo.org/**` (and local `http://localhost:8080/**` for Vite)
 3. Client always passes `emailRedirectTo: https://thalvo.org/auth?confirmed=1` via `confirmationRedirect()` — never the current window origin
-4. Templates use `{{ .ConfirmationURL }}` so GoTrue embeds the allow-listed redirect
+4. Password recovery uses `redirectTo: https://thalvo.org/auth/reset` via `recoveryRedirect()` / `resetPasswordForEmail`
+5. Templates use `{{ .ConfirmationURL }}` so GoTrue embeds the allow-listed redirect
 
 ## Apply hosted Auth config
 
