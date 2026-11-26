@@ -20,7 +20,7 @@ description: >-
 - An empty catalogue is an empty state, not a load error.
 - THALVO AI answers seamanship, machinery, and weather without inventing wave heights. Live weather is Open-Meteo (not an official MGİM bulletin). If the server function fails, the client still answers from `answerFromTraining`.
 - Do not commit route-drawing leftovers, `print/`, whitepaper drafts, or local config copies. Do not print Supabase keys. Payments stay simulated and labelled.
-- Charter has two doors. Guests browse `/charter` by place, Saturday, party, hull and contract, then leave an inquiry. A signed-in firm names any home port and sets yacht, hull, price, photographs and Saturday open/closed days on `/app/charter`. The sample fleet stays labelled. Payments stay simulated. `/charter-preview` is the operations sheet.
+- Charter has two doors. Guests browse `/charter` in the MarineOS dark catalogue: brand hero, place/check-in/check-out/party search, a static home-port chart (Esri dark + OpenSeaMap, no live boats), hull/contract/cabin filters without skeleton flashes, weekly EUR with inclusions, then an inquiry. A signed-in firm names any home port and sets yacht, hull, price, photographs and Saturday open/closed days on `/app/charter`. The sample fleet stays labelled. Payments stay simulated. `/charter-preview` is the operations sheet.
 - `routeTree.gen.ts` is generated. Do not hand-edit it.
 - Live site: push `main`. GitHub deploys thalvo.org. Do not redeploy an old TanStack Start build.
 - App Store / Play launch package: `docs/STORE_LAUNCH.md` and `store/`. Bundle id `com.thalvo.marineos`. Keep Capgo `autoUpdate` false until a production OTA is verified. Payments stay simulated in review notes.
