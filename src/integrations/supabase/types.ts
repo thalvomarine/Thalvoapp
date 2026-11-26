@@ -1576,6 +1576,7 @@ export type Database = {
           berths: number
           cabins: number
           base: string
+          hull: string
           kind: string
           weekly_eur: number
           skipper: string | null
@@ -1595,6 +1596,7 @@ export type Database = {
           berths: number
           cabins: number
           base: string
+          hull?: string
           kind: string
           weekly_eur: number
           skipper?: string | null
@@ -1614,6 +1616,7 @@ export type Database = {
           berths?: number
           cabins?: number
           base?: string
+          hull?: string
           kind?: string
           weekly_eur?: number
           skipper?: string | null

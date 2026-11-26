@@ -1,6 +1,9 @@
 /** Charter operator desk — sample fleet & bookings (UI preview, not live DB). */
 
-export type CharterBase = "Göcek" | "Marmaris" | "Bodrum" | "Fethiye";
+/** Home port as the firm writes it. Not a closed coast list. */
+export type CharterBase = string;
+
+export type CharterHull = "sail" | "catamaran" | "motor" | "gulet";
 
 export type YachtStatus = "available" | "on_charter" | "turnaround" | "maintenance";
 
@@ -24,6 +27,7 @@ export interface CharterYacht {
   berths: number;
   cabins: number;
   base: CharterBase;
+  hull: CharterHull;
   kind: CharterKind;
   status: YachtStatus;
   weeklyFromEur: number;
@@ -87,7 +91,12 @@ export function parseIsoDate(iso: string): Date {
   return new Date(y!, m! - 1, d!);
 }
 
-export const CHARTER_BASES: CharterBase[] = ["Göcek", "Marmaris", "Bodrum", "Fethiye"];
+/** Distinct home ports on the boats in view, for filter chips. */
+export function fleetBases(rows: { base: string }[]): string[] {
+  return [...new Set(rows.map((row) => row.base.trim()).filter((base) => base.length > 0))].sort((a, b) =>
+    a.localeCompare(b, "tr"),
+  );
+}
 
 export const SEED_FLEET: CharterYacht[] = [
   {
@@ -99,6 +108,7 @@ export const SEED_FLEET: CharterYacht[] = [
     berths: 10,
     cabins: 4,
     base: "Göcek",
+    hull: "catamaran",
     kind: "bareboat",
     status: "on_charter",
     weeklyFromEur: 6800,
@@ -113,6 +123,7 @@ export const SEED_FLEET: CharterYacht[] = [
     berths: 8,
     cabins: 4,
     base: "Bodrum",
+    hull: "sail",
     kind: "bareboat",
     status: "available",
     weeklyFromEur: 5200,
@@ -127,6 +138,7 @@ export const SEED_FLEET: CharterYacht[] = [
     berths: 8,
     cabins: 3,
     base: "Marmaris",
+    hull: "sail",
     kind: "bareboat",
     status: "turnaround",
     weeklyFromEur: 4100,
@@ -141,6 +153,7 @@ export const SEED_FLEET: CharterYacht[] = [
     berths: 16,
     cabins: 8,
     base: "Göcek",
+    hull: "gulet",
     kind: "crewed",
     status: "on_charter",
     weeklyFromEur: 18500,
@@ -155,6 +168,7 @@ export const SEED_FLEET: CharterYacht[] = [
     berths: 10,
     cabins: 4,
     base: "Bodrum",
+    hull: "catamaran",
     kind: "bareboat",
     status: "maintenance",
     weeklyFromEur: 7400,
@@ -169,6 +183,7 @@ export const SEED_FLEET: CharterYacht[] = [
     berths: 8,
     cabins: 3,
     base: "Fethiye",
+    hull: "sail",
     kind: "bareboat",
     status: "available",
     weeklyFromEur: 4800,

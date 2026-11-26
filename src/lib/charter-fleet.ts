@@ -1,4 +1,4 @@
-import type { CharterBase, CharterKind, CharterYacht, InquiryStatus } from "@/lib/charter-desk";
+import type { CharterBase, CharterHull, CharterKind, CharterYacht, InquiryStatus } from "@/lib/charter-desk";
 
 export interface FleetYachtInput {
   name: string;
@@ -8,6 +8,7 @@ export interface FleetYachtInput {
   berths: number;
   cabins: number;
   base: CharterBase;
+  hull: CharterHull;
   kind: CharterKind;
   weeklyEur: number;
   skipper: string;
@@ -30,6 +31,7 @@ export interface StoredYacht {
   berths: number;
   cabins: number;
   base: CharterBase;
+  hull: CharterHull;
   kind: CharterKind;
   weeklyEur: number;
   skipper: string | null;
@@ -54,6 +56,7 @@ export interface StoredInquiry {
   contact: string;
   party: number;
   startIso: string;
+  endIso: string;
   note: string | null;
   status: InquiryStatus;
 }
@@ -63,49 +66,77 @@ export interface InquiryInput {
   contact: string;
   party: number;
   startIso: string;
+  endIso: string;
   note: string;
 }
 
-const BASES = new Set<CharterBase>(["Göcek", "Marmaris", "Bodrum", "Fethiye"]);
+const HULLS = new Set<CharterHull>(["sail", "catamaran", "motor", "gulet"]);
 const KINDS = new Set<CharterKind>(["bareboat", "crewed", "cabin"]);
+const DAY_MS = 86_400_000;
 
 function startOfDay(d: Date): Date {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-function toIsoDate(d: Date): string {
+export function toIsoDate(d: Date): string {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
 
-/** Upcoming Saturday-to-Saturday starts, including today when today is Saturday. */
-export function upcomingSaturdays(now = new Date(), count = 8): string[] {
+export function addIsoDays(iso: string, days: number): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  const date = new Date(y!, m! - 1, d! + days);
+  return toIsoDate(date);
+}
+
+export function isIsoDate(iso: string): boolean {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return false;
+  const date = new Date(y, m - 1, d);
+  return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
+}
+
+/** Upcoming calendar days, including today. */
+export function upcomingDays(now = new Date(), count = 42): string[] {
   const today = startOfDay(now);
-  const ahead = today.getDay() === 6 ? 0 : 6 - today.getDay();
-  const first = new Date(today.getTime() + ahead * 86_400_000);
   const days: string[] = [];
   for (let i = 0; i < count; i++) {
-    days.push(toIsoDate(new Date(first.getTime() + i * 7 * 86_400_000)));
+    days.push(toIsoDate(new Date(today.getTime() + i * DAY_MS)));
   }
   return days;
 }
 
-export function isSaturdayIso(iso: string): boolean {
-  const [y, m, d] = iso.split("-").map(Number);
-  if (!y || !m || !d) return false;
-  return new Date(y, m - 1, d).getDay() === 6;
+/** Nights in [startIso, endIso). */
+export function stayNights(startIso: string, endIso: string): string[] {
+  if (!isIsoDate(startIso) || !isIsoDate(endIso) || endIso <= startIso) return [];
+  const nights: string[] = [];
+  let cursor = startIso;
+  while (cursor < endIso) {
+    nights.push(cursor);
+    cursor = addIsoDays(cursor, 1);
+  }
+  return nights;
 }
 
-export function yachtInputError(input: FleetYachtInput): "name" | "model" | "year" | "loa" | "berths" | "cabins" | "base" | "kind" | "price" | "skipper" | null {
+export function stayFullyOpen(openDays: string[], startIso: string, endIso: string): boolean {
+  const nights = stayNights(startIso, endIso);
+  if (nights.length === 0) return false;
+  const open = new Set(openDays);
+  return nights.every((night) => open.has(night));
+}
+
+export function yachtInputError(input: FleetYachtInput): "name" | "model" | "year" | "loa" | "berths" | "cabins" | "base" | "hull" | "kind" | "price" | "skipper" | null {
   if (input.name.trim().length < 2 || input.name.trim().length > 80) return "name";
   if (input.model.trim().length < 2 || input.model.trim().length > 80) return "model";
   if (!Number.isInteger(input.year) || input.year < 1970 || input.year > 2040) return "year";
   if (!(input.loaM > 0) || input.loaM > 80) return "loa";
   if (!Number.isInteger(input.berths) || input.berths < 1 || input.berths > 40) return "berths";
   if (!Number.isInteger(input.cabins) || input.cabins < 1 || input.cabins > 20) return "cabins";
-  if (!BASES.has(input.base)) return "base";
+  const base = input.base.trim();
+  if (base.length < 2 || base.length > 80) return "base";
+  if (!HULLS.has(input.hull)) return "hull";
   if (!KINDS.has(input.kind)) return "kind";
   if (!(input.weeklyEur >= 0) || input.weeklyEur > 500_000) return "price";
   const skipper = input.skipper.trim();
@@ -113,11 +144,13 @@ export function yachtInputError(input: FleetYachtInput): "name" | "model" | "yea
   return null;
 }
 
-export function inquiryInputError(input: InquiryInput): "name" | "contact" | "party" | "week" | "note" | null {
+export function inquiryInputError(input: InquiryInput): "name" | "contact" | "party" | "dates" | "note" | null {
   if (input.guestName.trim().length < 2 || input.guestName.trim().length > 80) return "name";
   if (input.contact.trim().length < 5 || input.contact.trim().length > 120) return "contact";
   if (!Number.isInteger(input.party) || input.party < 1 || input.party > 24) return "party";
-  if (!isSaturdayIso(input.startIso)) return "week";
+  if (!isIsoDate(input.startIso) || !isIsoDate(input.endIso) || input.endIso <= input.startIso) return "dates";
+  const nights = stayNights(input.startIso, input.endIso);
+  if (nights.length < 1 || nights.length > 60) return "dates";
   if (input.note.trim().length > 500) return "note";
   return null;
 }
@@ -132,6 +165,7 @@ export function toDeskYacht(yacht: StoredYacht): CharterYacht {
     berths: yacht.berths,
     cabins: yacht.cabins,
     base: yacht.base,
+    hull: yacht.hull,
     kind: yacht.kind,
     status: yacht.listed ? "available" : "turnaround",
     weeklyFromEur: yacht.weeklyEur,
@@ -150,3 +184,61 @@ export function blockedStarts(yacht: StoredYacht): string[] {
 export function openStarts(yacht: StoredYacht): string[] {
   return yacht.weeks.filter((week) => week.status === "open").map((week) => week.startIso);
 }
+
+export interface CatalogueProbe {
+  base: string;
+  openDays: string[];
+  berths: number;
+  cabins?: number;
+  hull: CharterHull | null;
+  weeklyEur: number;
+  loaM: number;
+}
+
+export interface CatalogueQuery {
+  place: string;
+  checkIn?: string;
+  checkOut?: string;
+  party: number;
+  minCabins?: number;
+  minWeekly?: number;
+  maxWeekly?: number;
+  hull: CharterHull | "all";
+}
+
+/** Guest search: place, stay dates, party, cabins, price and hull. */
+export function catalogueMatch(row: CatalogueProbe, query: CatalogueQuery): boolean {
+  const place = query.place.trim().toLocaleLowerCase("tr");
+  if (place && !row.base.toLocaleLowerCase("tr").includes(place)) return false;
+  const checkIn = query.checkIn ?? "";
+  const checkOut = query.checkOut ?? "";
+  if (checkIn && checkOut && checkOut > checkIn) {
+    if (!stayFullyOpen(row.openDays, checkIn, checkOut)) return false;
+  } else if (row.openDays.length === 0) {
+    return false;
+  }
+  if (query.party > row.berths) return false;
+  const minCabins = query.minCabins ?? 1;
+  if (minCabins > 1 && (row.cabins ?? 0) < minCabins) return false;
+  const minWeekly = query.minWeekly ?? 0;
+  const maxWeekly = query.maxWeekly ?? 0;
+  if (minWeekly > 0 && row.weeklyEur < minWeekly) return false;
+  if (maxWeekly > 0 && row.weeklyEur > maxWeekly) return false;
+  if (query.hull !== "all" && row.hull !== query.hull) return false;
+  return true;
+}
+
+export type CatalogueSort = "open" | "price" | "loa";
+
+export function sortCatalogue<T extends CatalogueProbe>(rows: T[], sort: CatalogueSort): T[] {
+  const copy = rows.slice();
+  copy.sort((a, b) => {
+    if (sort === "price") return a.weeklyEur - b.weeklyEur || a.base.localeCompare(b.base, "tr");
+    if (sort === "loa") return b.loaM - a.loaM || a.weeklyEur - b.weeklyEur;
+    const aDay = a.openDays[0] ?? "9999";
+    const bDay = b.openDays[0] ?? "9999";
+    return aDay.localeCompare(bDay) || a.weeklyEur - b.weeklyEur;
+  });
+  return copy;
+}
+

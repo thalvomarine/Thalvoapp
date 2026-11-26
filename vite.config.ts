@@ -30,6 +30,8 @@ export default defineConfig({
   server: {
     host: "::",
     port: 8080,
+    // Allow Cloudflare / localtunnel preview hosts in cloud agents.
+    allowedHosts: true,
   },
   build: {
     target: "es2022",

@@ -835,6 +835,48 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
 .leaflet-container {
   background: #06101c;
 }
+
+/* Charter catalogue chart: contain Leaflet pane z-index and kill the global
+   500px min-height so the map cannot slide over hero/search/sheet. */
+.charter-base-chart {
+  isolation: isolate;
+  contain: layout paint;
+  z-index: 0;
+}
+.charter-base-chart .leaflet-container,
+.charter-base-chart-map.leaflet-container {
+  min-height: 0 !important;
+  height: 100% !important;
+  width: 100%;
+  background: #06101c;
+}
+.charter-base-chart .leaflet-pane,
+.charter-base-chart .leaflet-control,
+.charter-base-chart .leaflet-top,
+.charter-base-chart .leaflet-bottom {
+  z-index: auto;
+}
+.charter-base-chart .leaflet-map-pane {
+  z-index: 1;
+}
+.charter-base-chart .leaflet-tile-pane {
+  z-index: 2;
+}
+.charter-base-chart .leaflet-overlay-pane {
+  z-index: 3;
+}
+.charter-base-chart .leaflet-shadow-pane {
+  z-index: 4;
+}
+.charter-base-chart .leaflet-marker-pane {
+  z-index: 5;
+}
+.charter-base-chart .leaflet-tooltip-pane {
+  z-index: 6;
+}
+.charter-base-chart .leaflet-popup-pane {
+  z-index: 7;
+}
 .leaflet-control-attribution {
   max-width: 46vw;
   overflow: hidden;

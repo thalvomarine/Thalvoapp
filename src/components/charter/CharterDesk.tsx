@@ -15,7 +15,6 @@ import { GlassPanel } from "@/components/mission/GlassPanel";
 import { formatDm } from "@/lib/formatters";
 import { blockedStarts, toDeskYacht, type StoredYacht } from "@/lib/charter-fleet";
 import {
-  CHARTER_BASES,
   SEED_FLEET,
   SEED_INQUIRIES,
   bookingNights,
@@ -24,6 +23,7 @@ import {
   charterMoney,
   filterBookings,
   filterFleet,
+  fleetBases,
   fleetStats,
   formatLoa,
   handoverItems,
@@ -45,7 +45,7 @@ import {
   type YachtStatus,
 } from "@/lib/charter-desk";
 
-const BASE_FIX: Record<CharterBase, { lat: number; lng: number }> = {
+const BASE_FIX: Record<string, { lat: number; lng: number }> = {
   Göcek: { lat: 36.7531, lng: 28.9386 },
   Marmaris: { lat: 36.851, lng: 28.2742 },
   Bodrum: { lat: 37.0344, lng: 27.4305 },
@@ -91,6 +91,7 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
   const [inquiries, setInquiries] = useState<CharterInquiry[]>(SEED_INQUIRIES);
   const [handover, setHandover] = useState<Record<string, HandoverItem[]>>({});
 
+  const bases = fleetBases(fleetRows);
   const today = todayIso();
   const stats = fleetStats(filterFleet(fleetRows, base, "all"));
   const week = useMemo(() => buildWeekStrip(bookings, fleetRows), [bookings, fleetRows]);
@@ -162,14 +163,14 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
         <Chip active={base === "all"} onClick={() => setBase("all")}>
           {t("charter.base_all")}
         </Chip>
-        {CHARTER_BASES.map((name) => (
+        {bases.map((name) => (
           <Chip key={name} active={base === name} onClick={() => setBase(name)}>
             {name}
           </Chip>
         ))}
       </div>
 
-      {base !== "all" && (
+      {base !== "all" && BASE_FIX[base] && (
         <p className="font-mono text-[11px] tracking-wide text-white/55">{formatDm(BASE_FIX[base].lat, BASE_FIX[base].lng)}</p>
       )}
 
@@ -344,12 +345,11 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               <StatusBadge tone={YACHT_TONE[yacht.status]}>{t(`charter.yacht_${yacht.status}`)}</StatusBadge>
-              <DataPill label={t(`charter.kind_${yacht.kind as CharterKind}`)} />
               <DataPill icon={<Anchor className="size-3" />} label={t("charter.cabins")} value={String(yacht.cabins)} />
             </div>
             <p className="mt-3 font-mono text-[11px] text-white/55">{formatDm(BASE_FIX[yacht.base].lat, BASE_FIX[yacht.base].lng)}</p>
             <p className="mt-3 text-[13px] text-white/75">
-              {yacht.skipper ? `${t("charter.skipper")}: ${yacht.skipper}` : t("charter.bareboat_note")}
+              {yacht.skipper ? `${t("charter.skipper")}: ${yacht.skipper}` : t("charter.skipper_optional")}
             </p>
             <p className="mt-2 text-[13px] text-white/80">
               {t("charter.from_week")} <MoneyAmount value={yacht.weeklyFromEur} currency="EUR" tone="gold" />
