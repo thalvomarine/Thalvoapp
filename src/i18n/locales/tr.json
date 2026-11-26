@@ -2450,6 +2450,9 @@
     "stay_prev": "Önceki ay",
     "stay_next": "Sonraki ay",
     "nights_count": "{{count}} gece",
-    "skipper_optional": "Kaptan opsiyonel — firma yazar."
+    "skipper_optional": "Kaptan opsiyonel — firma yazar.",
+    "stay_save": "Kaydet",
+    "matrix_hint": "Açık günler açık, seçili aralık amber. Canlı tekne yok.",
+    "party_count": "{{count}} kişi"
   }
 }

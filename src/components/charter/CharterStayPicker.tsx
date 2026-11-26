@@ -9,6 +9,8 @@ type Props = {
   checkOut: string;
   onChange: (next: { checkIn: string; checkOut: string }) => void;
   openDays?: string[];
+  embark?: string;
+  disembark?: string;
 };
 
 type DayTone = "out" | "edge-in" | "edge-out" | "mid" | "preview" | "closed" | "idle";
@@ -69,27 +71,39 @@ function tone(iso: string, checkIn: string, checkOut: string, hover: string, ope
   return "idle";
 }
 
-/** Dual-month stay picker. Range is check-in → check-out; nights are the days between. */
-export function CharterStayPicker({ checkIn, checkOut, onChange, openDays }: Props) {
+/** Dual-month stay picker with draft → save. Nights are [check-in, check-out). */
+export function CharterStayPicker({
+  checkIn,
+  checkOut,
+  onChange,
+  openDays,
+  embark = "17:00",
+  disembark = "09:00",
+}: Props) {
   const { t, i18n } = useTranslation();
   const panelId = useId();
   const root = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [pick, setPick] = useState<"in" | "out">("in");
   const [hover, setHover] = useState("");
+  const [draftIn, setDraftIn] = useState(checkIn);
+  const [draftOut, setDraftOut] = useState(checkOut);
   const [left, setLeft] = useState(() => monthStart(checkIn || toIsoDate(new Date())));
   const [anchor, setAnchor] = useState({ top: 0, left: 0, width: 0 });
-  const panelRef = useRef<HTMLDivElement>(null);
   const openSet = useMemo(() => (openDays ? new Set(openDays) : null), [openDays]);
-  const nights = stayNights(checkIn, checkOut).length;
+  const committedNights = stayNights(checkIn, checkOut).length;
+  const draftNights = stayNights(draftIn, draftOut).length;
   const weekdays = useMemo(() => weekdayLabels(i18n.language), [i18n.language]);
   const right = shiftMonth(left, 1);
+  const desktop = typeof window !== "undefined" && window.matchMedia("(min-width: 640px)").matches;
+  const canSave = Boolean(draftIn && draftOut && draftOut > draftIn);
 
   useLayoutEffect(() => {
     if (!open || !root.current) return;
     const place = () => {
       const rect = root.current!.getBoundingClientRect();
-      const width = Math.min(640, Math.max(rect.width, window.innerWidth - 24));
+      const width = Math.min(680, Math.max(rect.width, Math.min(window.innerWidth - 24, 640)));
       const leftPos = Math.min(Math.max(12, rect.left), Math.max(12, window.innerWidth - width - 12));
       setAnchor({ top: rect.bottom + 10, left: leftPos, width });
     };
@@ -108,9 +122,15 @@ export function CharterStayPicker({ checkIn, checkOut, onChange, openDays }: Pro
       const target = event.target as Node;
       if (root.current?.contains(target) || panelRef.current?.contains(target)) return;
       setOpen(false);
+      setDraftIn(checkIn);
+      setDraftOut(checkOut);
     };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        setDraftIn(checkIn);
+        setDraftOut(checkOut);
+      }
     };
     document.addEventListener("mousedown", onDoc);
     window.addEventListener("keydown", onKey);
@@ -118,137 +138,140 @@ export function CharterStayPicker({ checkIn, checkOut, onChange, openDays }: Pro
       document.removeEventListener("mousedown", onDoc);
       window.removeEventListener("keydown", onKey);
     };
-  }, [open]);
+  }, [open, checkIn, checkOut]);
 
   useEffect(() => {
     if (!open) return;
     const previous = document.body.style.overflow;
-    if (window.matchMedia("(max-width: 639px)").matches) {
-      document.body.style.overflow = "hidden";
-    }
+    if (window.matchMedia("(max-width: 639px)").matches) document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previous;
     };
   }, [open]);
 
+  const openPanel = () => {
+    setDraftIn(checkIn);
+    setDraftOut(checkOut);
+    setPick(checkIn && !checkOut ? "out" : "in");
+    setLeft(monthStart(checkIn || toIsoDate(new Date())));
+    setOpen(true);
+  };
+
   const choose = (iso: string) => {
     if (openSet && !openSet.has(iso)) return;
-    if (pick === "in" || !checkIn || (checkOut && checkIn)) {
-      onChange({ checkIn: iso, checkOut: "" });
+    if (pick === "in" || !draftIn || (draftOut && draftIn)) {
+      setDraftIn(iso);
+      setDraftOut("");
       setPick("out");
       return;
     }
-    if (iso <= checkIn) {
-      onChange({ checkIn: iso, checkOut: "" });
+    if (iso <= draftIn) {
+      setDraftIn(iso);
+      setDraftOut("");
       setPick("out");
       return;
     }
-    onChange({ checkIn, checkOut: iso });
+    setDraftOut(iso);
     setPick("in");
-    setOpen(false);
   };
 
   const clear = () => {
-    onChange({ checkIn: "", checkOut: "" });
+    setDraftIn("");
+    setDraftOut("");
     setPick("in");
   };
 
-  const desktop = typeof window !== "undefined" && window.matchMedia("(min-width: 640px)").matches;
+  const save = () => {
+    if (!canSave) return;
+    onChange({ checkIn: draftIn, checkOut: draftOut });
+    setOpen(false);
+  };
+
   const panel =
     open && typeof document !== "undefined"
       ? createPortal(
-        <>
-          <button
-            type="button"
-            aria-label={t("common.close")}
-            className="fixed inset-0 z-[2200] bg-black/50 sm:bg-transparent"
-            onClick={() => setOpen(false)}
-          />
-          <div
-            ref={panelRef}
-            id={panelId}
-            role="dialog"
-            aria-label={t("charter.stay_label")}
-            className="charter-stay-panel fixed z-[2210] overflow-hidden border border-white/12 bg-[#071422] shadow-[0_28px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:rounded-t-[1.75rem] max-sm:border-b-0 sm:rounded-3xl"
-            style={{
-              ...(desktop ? { top: anchor.top, left: anchor.left, width: anchor.width } : {}),
-              transition: "opacity 220ms ease, transform 280ms cubic-bezier(0.22, 1, 0.36, 1)",
-            }}
-          >
-            <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-white/20 sm:hidden" />
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
-              <div className="flex items-center gap-1 rounded-full bg-white/[0.04] p-1">
-                <button
-                  type="button"
-                  onClick={() => setPick("in")}
-                  className={
-                    "rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-wide transition-colors duration-200 " +
-                    (pick === "in" ? "bg-[#F5B942] text-[#1a1203]" : "text-white/55 hover:text-white/85")
-                  }
-                >
-                  {t("charter.search_in")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (checkIn) setPick("out");
-                  }}
-                  className={
-                    "rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-wide transition-colors duration-200 " +
-                    (pick === "out" ? "bg-[#F5B942] text-[#1a1203]" : "text-white/55 hover:text-white/85")
-                  }
-                >
-                  {t("charter.search_out")}
-                </button>
+          <>
+            <button
+              type="button"
+              aria-label={t("common.close")}
+              className="fixed inset-0 z-[2200] bg-black/55 sm:bg-black/25"
+              onClick={() => {
+                setOpen(false);
+                setDraftIn(checkIn);
+                setDraftOut(checkOut);
+              }}
+            />
+            <div
+              ref={panelRef}
+              id={panelId}
+              role="dialog"
+              aria-label={t("charter.stay_label")}
+              className="charter-stay-panel fixed z-[2210] overflow-hidden border border-white/12 bg-[#071422] shadow-[0_28px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:rounded-t-[1.75rem] max-sm:border-b-0 sm:rounded-3xl"
+              style={desktop ? { top: anchor.top, left: anchor.left, width: anchor.width } : undefined}
+            >
+              <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-white/20 sm:hidden" />
+              <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+                <div className="flex items-center gap-1 rounded-full bg-white/[0.04] p-1">
+                  <button
+                    type="button"
+                    onClick={() => setPick("in")}
+                    className={
+                      "rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-wide transition-colors duration-200 " +
+                      (pick === "in" ? "bg-[#F5B942] text-[#1a1203]" : "text-white/55 hover:text-white/85")
+                    }
+                  >
+                    {t("charter.search_in")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (draftIn) setPick("out");
+                    }}
+                    className={
+                      "rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-wide transition-colors duration-200 " +
+                      (pick === "out" ? "bg-[#F5B942] text-[#1a1203]" : "text-white/55 hover:text-white/85")
+                    }
+                  >
+                    {t("charter.search_out")}
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={() => setLeft(shiftMonth(left, -1))} className="grid size-8 place-items-center rounded-full border border-white/10 text-white/70 transition-colors hover:border-white/25 hover:text-white" aria-label={t("charter.stay_prev")}>
+                    <ChevronLeft className="size-4" />
+                  </button>
+                  <button type="button" onClick={() => setLeft(shiftMonth(left, 1))} className="grid size-8 place-items-center rounded-full border border-white/10 text-white/70 transition-colors hover:border-white/25 hover:text-white" aria-label={t("charter.stay_next")}>
+                    <ChevronRight className="size-4" />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                {(checkIn || checkOut) && (
-                  <button type="button" onClick={clear} className="text-[11px] font-semibold text-[#F5B942]/95 transition-opacity hover:opacity-80">
+
+              <p className="px-4 pt-3 text-[12px] text-white/50">
+                {pick === "out" ? t("charter.stay_pick_out") : t("charter.stay_pick_in")}
+                {draftNights > 0 && <span className="ml-2 text-[#00F0FF]/90">{t("charter.nights_count", { count: draftNights })}</span>}
+              </p>
+
+              <div className="grid max-h-[min(58dvh,30rem)] gap-5 overflow-y-auto p-4 sm:grid-cols-2 sm:max-h-none">
+                <MonthGrid title={monthLabel(left, i18n.language)} weekdays={weekdays} cells={cellsForMonth(left)} checkIn={draftIn} checkOut={draftOut} hover={hover} openSet={openSet} onHover={setHover} onChoose={choose} />
+                <MonthGrid title={monthLabel(right, i18n.language)} weekdays={weekdays} cells={cellsForMonth(right)} checkIn={draftIn} checkOut={draftOut} hover={hover} openSet={openSet} onHover={setHover} onChoose={choose} />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-4 py-3">
+                <p className="font-mono text-[11px] tracking-wide text-white/45">
+                  {t("charter.embark")} {embark} · {t("charter.disembark")} {disembark}
+                </p>
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={clear} className="h-9 rounded-full px-3 text-[12px] font-semibold text-white/60 hover:text-white">
                     {t("charter.stay_clear")}
                   </button>
-                )}
-                <button type="button" onClick={() => setLeft(shiftMonth(left, -1))} className="grid size-8 place-items-center rounded-full border border-white/10 text-white/70 transition-colors hover:border-white/25 hover:text-white" aria-label={t("charter.stay_prev")}>
-                  <ChevronLeft className="size-4" />
-                </button>
-                <button type="button" onClick={() => setLeft(shiftMonth(left, 1))} className="grid size-8 place-items-center rounded-full border border-white/10 text-white/70 transition-colors hover:border-white/25 hover:text-white" aria-label={t("charter.stay_next")}>
-                  <ChevronRight className="size-4" />
-                </button>
+                  <button type="button" disabled={!canSave} onClick={save} className="h-9 rounded-full bg-[#F5B942] px-4 text-[12px] font-semibold text-[#1a1203] disabled:opacity-35">
+                    {t("charter.stay_save")}
+                  </button>
+                </div>
               </div>
             </div>
-
-            <p className="px-4 pt-3 text-[12px] text-white/50">
-              {pick === "out" ? t("charter.stay_pick_out") : t("charter.stay_pick_in")}
-              {nights > 0 && <span className="ml-2 text-[#00F0FF]/90">{t("charter.nights_count", { count: nights })}</span>}
-            </p>
-
-            <div className="grid max-h-[min(70dvh,34rem)] gap-5 overflow-y-auto p-4 sm:grid-cols-2 sm:max-h-none">
-              <MonthGrid
-                title={monthLabel(left, i18n.language)}
-                weekdays={weekdays}
-                cells={cellsForMonth(left)}
-                checkIn={checkIn}
-                checkOut={checkOut}
-                hover={hover}
-                openSet={openSet}
-                onHover={setHover}
-                onChoose={choose}
-              />
-              <MonthGrid
-                title={monthLabel(right, i18n.language)}
-                weekdays={weekdays}
-                cells={cellsForMonth(right)}
-                checkIn={checkIn}
-                checkOut={checkOut}
-                hover={hover}
-                openSet={openSet}
-                onHover={setHover}
-                onChoose={choose}
-              />
-            </div>
-          </div>
-        </>,
-        document.body,
-      )
+          </>,
+          document.body,
+        )
       : null;
 
   return (
@@ -257,10 +280,7 @@ export function CharterStayPicker({ checkIn, checkOut, onChange, openDays }: Pro
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
-        onClick={() => {
-          setOpen((value) => !value);
-          setPick(checkIn && !checkOut ? "out" : "in");
-        }}
+        onClick={() => (open ? setOpen(false) : openPanel())}
         className="group flex h-12 w-full items-center gap-3 rounded-2xl border border-white/15 bg-[#06101c]/85 px-3 text-left transition-[border-color,box-shadow,background-color] duration-250 hover:border-[#F5B942]/40 focus:border-[#F5B942]/65 focus:outline-none focus:shadow-[0_0_0_3px_rgba(245,185,66,0.12)]"
       >
         <span className="grid size-9 place-items-center rounded-xl bg-[#F5B942]/12 text-[#F5B942] transition-colors duration-250 group-hover:bg-[#F5B942]/18">
@@ -272,7 +292,7 @@ export function CharterStayPicker({ checkIn, checkOut, onChange, openDays }: Pro
             <span className={checkIn ? "text-white" : "text-white/35"}>{checkIn ? dayLabel(checkIn, i18n.language) : t("charter.search_in")}</span>
             <span aria-hidden className="text-white/20">→</span>
             <span className={checkOut ? "text-white" : "text-white/35"}>{checkOut ? dayLabel(checkOut, i18n.language) : t("charter.search_out")}</span>
-            {nights > 0 && <span className="text-[12px] text-[#00F0FF]/90">{t("charter.nights_count", { count: nights })}</span>}
+            {committedNights > 0 && <span className="text-[12px] text-[#00F0FF]/90">{t("charter.nights_count", { count: committedNights })}</span>}
           </span>
         </span>
       </button>
@@ -343,14 +363,13 @@ function MonthGrid({
                     "absolute inset-y-1 left-0 right-0 " +
                     (kind === "preview" ? "bg-[#00F0FF]/10 " : "bg-[#F5B942]/18 ") +
                     (rangeStart ? "left-1 rounded-l-full " : "") +
-                    (rangeEnd ? "right-1 rounded-r-full " : "") +
-                    (kind === "edge-in" || kind === "edge-out" ? "" : "")
+                    (rangeEnd ? "right-1 rounded-r-full " : "")
                   }
                 />
               )}
               <span
                 className={
-                  "relative z-[1] grid size-9 place-items-center rounded-full mx-auto transition-colors duration-150 " +
+                  "relative z-[1] mx-auto grid size-9 place-items-center rounded-full transition-colors duration-150 " +
                   (kind === "edge-in" || kind === "edge-out"
                     ? "bg-[#F5B942] text-[#1a1203]"
                     : kind === "mid"

@@ -2450,6 +2450,9 @@
     "stay_prev": "Previous month",
     "stay_next": "Next month",
     "nights_count": "{{count}} nights",
-    "skipper_optional": "Skipper optional — the firm writes it."
+    "skipper_optional": "Skipper optional — the firm writes it.",
+    "stay_save": "Save",
+    "matrix_hint": "Open days stay bright; the selected stay is amber. No live boats.",
+    "party_count": "{{count}} guests"
   }
 }
