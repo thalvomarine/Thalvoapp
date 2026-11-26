@@ -160,6 +160,7 @@ export interface CatalogueProbe {
   base: string;
   openWeeks: string[];
   berths: number;
+  cabins?: number;
   hull: CharterHull | null;
   kind: CharterKind;
   weeklyEur: number;
@@ -169,17 +170,47 @@ export interface CatalogueProbe {
 export interface CatalogueQuery {
   place: string;
   week: string;
+  checkIn?: string;
+  checkOut?: string;
   party: number;
+  minCabins?: number;
+  minWeekly?: number;
+  maxWeekly?: number;
   hull: CharterHull | "all";
   kind: CharterKind | "all";
 }
 
-/** Guest search: place, Saturday, party size, hull and contract. */
+function addIsoDays(iso: string, days: number): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  const date = new Date(y!, m! - 1, d! + days);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+/** Saturday week overlaps a check-in/check-out stay. */
+export function weekOverlapsStay(weekStart: string, checkIn: string, checkOut: string): boolean {
+  const weekEnd = addIsoDays(weekStart, 7);
+  return weekStart < checkOut && weekEnd > checkIn;
+}
+
+/** Guest search: place, dates, party, cabins, price, hull and contract. */
 export function catalogueMatch(row: CatalogueProbe, query: CatalogueQuery): boolean {
   const place = query.place.trim().toLocaleLowerCase("tr");
   if (place && !row.base.toLocaleLowerCase("tr").includes(place)) return false;
   if (query.week && !row.openWeeks.includes(query.week)) return false;
+  const checkIn = query.checkIn ?? "";
+  const checkOut = query.checkOut ?? "";
+  if (checkIn && checkOut && checkOut > checkIn) {
+    if (!row.openWeeks.some((week) => weekOverlapsStay(week, checkIn, checkOut))) return false;
+  }
   if (query.party > row.berths) return false;
+  const minCabins = query.minCabins ?? 1;
+  if (minCabins > 1 && (row.cabins ?? 0) < minCabins) return false;
+  const minWeekly = query.minWeekly ?? 0;
+  const maxWeekly = query.maxWeekly ?? 0;
+  if (minWeekly > 0 && row.weeklyEur < minWeekly) return false;
+  if (maxWeekly > 0 && row.weeklyEur > maxWeekly) return false;
   if (query.hull !== "all" && row.hull !== query.hull) return false;
   if (query.kind !== "all" && row.kind !== query.kind) return false;
   return true;

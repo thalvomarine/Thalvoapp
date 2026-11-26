@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { catalogueMatch, inquiryInputError, isSaturdayIso, sortCatalogue, upcomingSaturdays, yachtInputError } from "./charter-fleet.ts";
+import { catalogueMatch, inquiryInputError, isSaturdayIso, sortCatalogue, upcomingSaturdays, weekOverlapsStay, yachtInputError } from "./charter-fleet.ts";
 import type { FleetYachtInput } from "./charter-fleet.ts";
 
 const valid: FleetYachtInput = {
@@ -64,5 +64,28 @@ describe("charter fleet input", () => {
       "price",
     );
     assert.equal(priced[0]?.base, "Palma");
+  });
+
+  it("keeps a Saturday week that overlaps the stay and drops a later one", () => {
+    assert.equal(weekOverlapsStay("2026-11-14", "2026-11-16", "2026-11-20"), true);
+    assert.equal(weekOverlapsStay("2026-11-21", "2026-11-16", "2026-11-20"), false);
+    const boat = {
+      base: "Göcek",
+      openWeeks: ["2026-11-14", "2026-11-21"],
+      berths: 8,
+      cabins: 3,
+      hull: "gulet" as const,
+      kind: "crewed" as const,
+      weeklyEur: 18000,
+      loaM: 28,
+    };
+    assert.equal(
+      catalogueMatch(boat, { place: "göcek", week: "", checkIn: "2026-11-16", checkOut: "2026-11-20", party: 2, minCabins: 1, hull: "all", kind: "all" }),
+      true,
+    );
+    assert.equal(
+      catalogueMatch(boat, { place: "", week: "", party: 2, minCabins: 6, hull: "all", kind: "all" }),
+      false,
+    );
   });
 });
