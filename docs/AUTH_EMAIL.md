@@ -38,6 +38,27 @@ SUPABASE_ACCESS_TOKEN=sbp_… node scripts/apply-auth-url-config.mjs
 ## Sender still says Supabase?
 
 Subject/body branding does **not** change the From address. To send as
-`noreply@thalvo.org` (or similar), configure **custom SMTP** under
-Authentication → SMTP Settings (Resend / Postmark / SES). Until then the
-platform mailer remains `noreply@mail.app.supabase.io`.
+`noreply@thalvo.org` (or similar), configure **custom SMTP**.
+
+### Recommended: Resend
+
+1. Create a Resend account and verify the `thalvo.org` domain (SPF/DKIM/DMARC).
+2. Create an API key.
+3. In Supabase → Authentication → SMTP:
+   - Host `smtp.resend.com`
+   - Port `465` (or `587`)
+   - User `resend`
+   - Pass = Resend API key
+   - Sender `THALVO`
+   - From `noreply@thalvo.org` (or `auth@thalvo.org`)
+4. Or apply via script:
+
+```bash
+SUPABASE_ACCESS_TOKEN=sbp_… \
+SMTP_HOST=smtp.resend.com SMTP_PORT=465 SMTP_USER=resend \
+SMTP_PASS=re_… SMTP_ADMIN_EMAIL=noreply@thalvo.org SMTP_SENDER_NAME=THALVO \
+npm run auth:apply-urls -- --templates-only
+```
+
+Until custom SMTP is on, the platform mailer remains `noreply@mail.app.supabase.io`
+and is rate-limited (~2 msgs/hour) — not for production.

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Patch hosted Supabase Auth URL + confirmation email branding.
+ * Patch hosted Supabase Auth URL, confirmation email branding, and optional SMTP.
  *
  * Requires a personal access token with auth_config_write:
  *   https://supabase.com/dashboard/account/tokens
@@ -9,10 +9,13 @@
  *   SUPABASE_ACCESS_TOKEN=sbp_… node scripts/apply-auth-url-config.mjs
  *   SUPABASE_ACCESS_TOKEN=sbp_… node scripts/apply-auth-url-config.mjs --dry-run
  *
- * Fixes the live Site URL stuck on http://localhost:3000 (confirmation
- * links were redirecting there) and installs THALVO-branded mail subjects
- * / bodies. Custom SMTP is still required to change the From address away
- * from noreply@mail.app.supabase.io.
+ * Optional SMTP (changes From away from noreply@mail.app.supabase.io):
+ *   SMTP_HOST=smtp.resend.com
+ *   SMTP_PORT=465
+ *   SMTP_USER=resend
+ *   SMTP_PASS=re_…
+ *   SMTP_ADMIN_EMAIL=noreply@thalvo.org
+ *   SMTP_SENDER_NAME=THALVO
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -21,6 +24,7 @@ import { dirname, join } from "node:path";
 const PROJECT_REF = process.env.SUPABASE_PROJECT_REF || "vofjektddsxmavghlerj";
 const TOKEN = process.env.SUPABASE_ACCESS_TOKEN;
 const dryRun = process.argv.includes("--dry-run");
+const templatesOnly = process.argv.includes("--templates-only");
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const confirmHtml = readFileSync(join(root, "supabase/templates/confirm.html"), "utf8");
@@ -36,8 +40,6 @@ const ALLOW_LIST = [
 ].join(",");
 
 const payload = {
-  site_url: "https://thalvo.org",
-  uri_allow_list: ALLOW_LIST,
   mailer_subjects_confirmation: "THALVO — e-postanı onayla",
   mailer_templates_confirmation_content: confirmHtml,
   mailer_subjects_recovery: "THALVO — şifreni yenile",
@@ -46,11 +48,39 @@ const payload = {
   mailer_subjects_email_change: "THALVO — yeni e-postanı onayla",
 };
 
+if (!templatesOnly) {
+  payload.site_url = "https://thalvo.org";
+  payload.uri_allow_list = ALLOW_LIST;
+}
+
+const smtpHost = process.env.SMTP_HOST?.trim();
+const smtpUser = process.env.SMTP_USER?.trim();
+const smtpPass = process.env.SMTP_PASS?.trim();
+const smtpAdmin = process.env.SMTP_ADMIN_EMAIL?.trim();
+const smtpPort = (process.env.SMTP_PORT || "465").trim();
+const smtpSender = (process.env.SMTP_SENDER_NAME || "THALVO").trim();
+
+const smtpReady = Boolean(smtpHost && smtpUser && smtpPass && smtpAdmin);
+if (smtpReady) {
+  Object.assign(payload, {
+    external_email_enabled: true,
+    smtp_host: smtpHost,
+    smtp_port: smtpPort,
+    smtp_user: smtpUser,
+    smtp_pass: smtpPass,
+    smtp_admin_email: smtpAdmin,
+    smtp_sender_name: smtpSender,
+  });
+}
+
 const url = `https://api.supabase.com/v1/projects/${PROJECT_REF}/config/auth`;
 const summary = {
   ...payload,
   mailer_templates_confirmation_content: `[${confirmHtml.length} chars]`,
   mailer_templates_recovery_content: `[${recoveryHtml.length} chars]`,
+  ...(smtpReady
+    ? { smtp_pass: "[redacted]", smtp_configured: true }
+    : { smtp_configured: false }),
 };
 
 if (dryRun) {
@@ -64,11 +94,10 @@ if (!TOKEN) {
     [
       "Missing SUPABASE_ACCESS_TOKEN.",
       "",
-      "1. Create a token at https://supabase.com/dashboard/account/tokens",
-      "2. Or set Site URL manually:",
-      "   https://supabase.com/dashboard/project/vofjektddsxmavghlerj/auth/url-configuration",
-      "   Site URL → https://thalvo.org",
-      "   Redirect URLs → https://thalvo.org/**  (+ localhost:8080/** for local)",
+      "Create a token: https://supabase.com/dashboard/account/tokens",
+      "Or apply manually:",
+      "  Templates → https://supabase.com/dashboard/project/vofjektddsxmavghlerj/auth/templates",
+      "  SMTP      → https://supabase.com/dashboard/project/vofjektddsxmavghlerj/settings/auth",
       "",
       "Payload that would be applied:",
       JSON.stringify(summary, null, 2),
@@ -99,7 +128,7 @@ try {
   parsed = text;
 }
 
-console.log("Auth URL config updated.");
+console.log("Auth mail config updated.");
 console.log(
   JSON.stringify(
     {
@@ -107,8 +136,18 @@ console.log(
       uri_allow_list: parsed?.uri_allow_list,
       mailer_subjects_confirmation: parsed?.mailer_subjects_confirmation,
       mailer_subjects_recovery: parsed?.mailer_subjects_recovery,
+      smtp_host: parsed?.smtp_host || null,
+      smtp_admin_email: parsed?.smtp_admin_email || null,
+      smtp_sender_name: parsed?.smtp_sender_name || null,
+      smtp_configured: smtpReady,
     },
     null,
     2,
   ),
 );
+
+if (!smtpReady) {
+  console.log(
+    "\nSMTP not applied (set SMTP_HOST/USER/PASS/ADMIN_EMAIL to send as @thalvo.org).",
+  );
+}
