@@ -30,6 +30,25 @@ import { initGoogleAds, trackGoogleAdsConversion, trackGoogleAdsPageView } from 
 
 function NotFoundComponent() {
   const { t } = useTranslation();
+  useEffect(() => {
+    const prevTitle = document.title;
+    document.title = "404 | THALVO";
+    let meta = document.querySelector('meta[name="robots"]');
+    const created = !meta;
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "robots");
+      document.head.appendChild(meta);
+    }
+    const prevRobots = meta.getAttribute("content");
+    meta.setAttribute("content", "noindex, nofollow");
+    return () => {
+      document.title = prevTitle;
+      if (created) meta?.remove();
+      else if (prevRobots != null) meta?.setAttribute("content", prevRobots);
+      else meta?.removeAttribute("content");
+    };
+  }, []);
   return (
     <div className="flex min-h-dvh items-center justify-center bg-deep px-4 text-white">
       <div className="max-w-md text-center">

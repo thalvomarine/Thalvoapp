@@ -3,11 +3,12 @@ import { isValidCoordinate } from "@/lib/geolocation";
 
 export type EmergencyServiceCategory = "diver" | "mechanic" | "electrician" | "towing";
 export type EmergencyUrgency = "urgent" | "standard";
-export type EmergencyServiceStatus = "pending" | "en_route" | "on_scene" | "completed";
+export type EmergencyServiceStatus = "pending" | "en_route" | "on_scene" | "completed" | "cancelled";
 
 export interface EmergencyServiceRequest {
   id: string;
   user_id: string;
+  job_id: string | null;
   vessel_name: string;
   category: EmergencyServiceCategory;
   lat: number;
@@ -43,9 +44,10 @@ export function asCoordinate(value: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-/** Fan a captain/sailor call out to usta accounts with the device fix. */
+/** Fan a captain/sailor call out to usta accounts, linked to the marketplace job. */
 export async function publishLocatedCall(input: {
   userId: string;
+  jobId: string;
   category: "diver" | "mechanic";
   lat: number;
   lng: number;
@@ -57,8 +59,12 @@ export async function publishLocatedCall(input: {
   if (!isValidCoordinate(input.lat, input.lng)) {
     return { error: "invalid-fix" };
   }
+  if (!input.jobId) {
+    return { error: "missing-job" };
+  }
   const { error } = await supabase.from("emergency_service_requests").insert({
     user_id: input.userId,
+    job_id: input.jobId,
     vessel_name: input.vesselName.slice(0, 80),
     category: input.category,
     lat: input.lat,

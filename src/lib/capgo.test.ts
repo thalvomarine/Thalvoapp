@@ -28,7 +28,18 @@ test("native synced Capgo configs keep autoUpdate off", () => {
     "android/app/src/main/assets/capacitor.config.json",
     "ios/App/App/capacitor.config.json",
   ]) {
-    const raw = JSON.parse(readFileSync(join(root, rel), "utf8")) as {
+    let rawText: string;
+    try {
+      rawText = readFileSync(join(root, rel), "utf8");
+    } catch (err) {
+      const code = err && typeof err === "object" && "code" in err ? (err as NodeJS.ErrnoException).code : "";
+      if (code === "ENOENT") {
+        // Cloud/agent checkouts may omit native sync artifacts until `cap sync`.
+        continue;
+      }
+      throw err;
+    }
+    const raw = JSON.parse(rawText) as {
       plugins?: { CapacitorUpdater?: { autoUpdate?: boolean } };
     };
     assert.equal(assertCapgoAutoUpdateOff(raw), true, rel);

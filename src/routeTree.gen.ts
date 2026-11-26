@@ -25,6 +25,8 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthForgotRouteImport } from './routes/auth_.forgot'
+import { Route as AuthResetRouteImport } from './routes/auth_.reset'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as AuthenticatedAppDealerRouteImport } from './routes/_authenticated/app.dealer'
@@ -119,6 +121,16 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthForgotRoute = AuthForgotRouteImport.update({
+  id: '/auth_/forgot',
+  path: '/auth/forgot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetRoute = AuthResetRouteImport.update({
+  id: '/auth_/reset',
+  path: '/auth/reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/app/',
   path: '/app/',
@@ -212,6 +224,8 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/auth/forgot': typeof AuthForgotRoute
+  '/auth/reset': typeof AuthResetRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/dealer': typeof AuthenticatedAppDealerRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
@@ -243,6 +257,8 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/auth/forgot': typeof AuthForgotRoute
+  '/auth/reset': typeof AuthResetRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/dealer': typeof AuthenticatedAppDealerRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
@@ -276,6 +292,8 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/auth_/forgot': typeof AuthForgotRoute
+  '/auth_/reset': typeof AuthResetRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/dealer': typeof AuthenticatedAppDealerRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
@@ -309,6 +327,8 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/admin'
+    | '/auth/forgot'
+    | '/auth/reset'
     | '/app/admin'
     | '/app/dealer'
     | '/app/marketplace'
@@ -340,6 +360,8 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/admin'
+    | '/auth/forgot'
+    | '/auth/reset'
     | '/app/admin'
     | '/app/dealer'
     | '/app/marketplace'
@@ -372,6 +394,8 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/_authenticated/admin'
+    | '/auth_/forgot'
+    | '/auth_/reset'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/dealer'
     | '/_authenticated/app/marketplace'
@@ -404,6 +428,8 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ServicesRoute: typeof ServicesRoute
   TermsRoute: typeof TermsRoute
+  AuthForgotRoute: typeof AuthForgotRoute
+  AuthResetRoute: typeof AuthResetRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -519,6 +545,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/auth_/forgot': {
+      id: '/auth_/forgot'
+      path: '/auth/forgot'
+      fullPath: '/auth/forgot'
+      preLoaderRoute: typeof AuthForgotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth_/reset': {
+      id: '/auth_/reset'
+      path: '/auth/reset'
+      fullPath: '/auth/reset'
+      preLoaderRoute: typeof AuthResetRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app/': {
       id: '/_authenticated/app/'
@@ -676,6 +716,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ServicesRoute: ServicesRoute,
   TermsRoute: TermsRoute,
+  AuthForgotRoute: AuthForgotRoute,
+  AuthResetRoute: AuthResetRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

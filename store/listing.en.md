@@ -1,7 +1,8 @@
 # Store listing copy — English
 
 App name (≤30): `Thalvo MarineOS`  
-Subtitle / short description (≤80): `Coast chart, cockpit and boat support for the Aegean & Med`
+Apple subtitle (≤30): `Aegean and Med coast chart`  
+Play short description (≤80): `Coast chart, cockpit and boat support for the Aegean & Med`
 
 ## Short description (Play, ≤80)
 
