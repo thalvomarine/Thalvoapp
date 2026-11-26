@@ -37,6 +37,14 @@ export function LiveOpsPanel() {
         eyebrow={t("ops.eyebrow")}
         title={t("ops.title")}
         subtitle={t("ops.subtitle")}
+        actions={
+          <Link
+            to="/app/charter"
+            className="rounded-full border border-amber-300/40 px-3 py-1 text-[11px] font-semibold text-amber-100"
+          >
+            {t("charter.menu")}
+          </Link>
+        }
       />
 
       <div className="grid grid-cols-3 gap-2">
