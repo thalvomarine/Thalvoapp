@@ -5,12 +5,17 @@ import {
   bookingNights,
   buildSeedBookings,
   buildWeekStrip,
+  charterMoney,
   filterBookings,
   filterFleet,
   fleetStats,
   formatLoa,
+  handoverItems,
+  occupancyCell,
+  saturdayWeeks,
   todayIso,
   todaysOps,
+  yachtById,
 } from "./charter-desk.ts";
 
 describe("charter-desk", () => {
@@ -59,5 +64,44 @@ describe("charter-desk", () => {
     assert.equal(formatLoa(12.8), "12.8 m");
     const nights = bookingNights(bookings[0]!);
     assert.ok(nights >= 1);
+  });
+
+  it("builds Saturday occupancy the way a charter base reads the week", () => {
+    const now = new Date(2026, 10, 26, 9, 0, 0); // Thu 26 Nov 2026
+    const weeks = saturdayWeeks(now, 4);
+    assert.equal(weeks.length, 4);
+    assert.equal(weeks[0]?.startIso, "2026-11-21");
+    assert.equal(weeks[0]?.endIso, "2026-11-28");
+    assert.equal(weeks[1]?.startIso, "2026-11-28");
+
+    const bookings = buildSeedBookings(now);
+    const today = todayIso(now);
+    const twin = yachtById(SEED_FLEET, "yt-twin-coast")!;
+    assert.equal(occupancyCell(twin, weeks[0]!, bookings, today).tone, "service");
+
+    const pearl = yachtById(SEED_FLEET, "yt-aegean-pearl")!;
+    const pearlCell = occupancyCell(pearl, weeks[0]!, bookings, today);
+    assert.equal(pearlCell.tone, "booked");
+    assert.equal(pearlCell.booking?.guest, "Helena & Markus W.");
+
+    const gulet = yachtById(SEED_FLEET, "yt-blue-anatolia")!;
+    assert.equal(occupancyCell(gulet, weeks[0]!, bookings, today).tone, "one_way");
+
+    const wind = yachtById(SEED_FLEET, "yt-lycian-wind")!;
+    const optionWeek = weeks.find((week) => occupancyCell(wind, week, bookings, today).tone === "option");
+    assert.ok(optionWeek);
+
+    const meltemi = yachtById(SEED_FLEET, "yt-meltemi")!;
+    const sophie = bookings.find((b) => b.yachtId === "yt-meltemi")!;
+    const money = charterMoney(sophie, meltemi);
+    assert.equal(money.collected, Math.round(money.fee * 0.5));
+    assert.ok(money.deposit > 0);
+    assert.equal(money.apa, 0);
+    assert.ok(handoverItems("bareboat").includes("transit_log"));
+    assert.ok(handoverItems("bareboat").includes("licence"));
+    assert.ok(handoverItems("crewed").includes("apa"));
+    const guletMoney = charterMoney(bookings.find((b) => b.yachtId === "yt-blue-anatolia")!, gulet);
+    assert.ok(guletMoney.apa > 0);
+    assert.equal(guletMoney.deposit, 0);
   });
 });

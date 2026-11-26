@@ -407,3 +407,109 @@ export function bookingNights(b: CharterBooking): number {
   const end = parseIsoDate(b.endIso).getTime();
   return Math.max(1, Math.round((end - start) / DAY_MS));
 }
+
+/** Bareboat Saturday changeover used across the Mediterranean flotilla week. */
+export const BAREBOAT_EMBARK = "17:00";
+export const BAREBOAT_DISEMBARK = "09:00";
+/** Göcek / Bodrum crewed and gulet boarding window. */
+export const CREWED_EMBARK = "15:00";
+export const CREWED_DISEMBARK = "09:30";
+
+export function handoverWindow(kind: CharterKind): { embark: string; disembark: string } {
+  if (kind === "crewed") return { embark: CREWED_EMBARK, disembark: CREWED_DISEMBARK };
+  return { embark: BAREBOAT_EMBARK, disembark: BAREBOAT_DISEMBARK };
+}
+
+export type HandoverItem =
+  | "fuel"
+  | "water"
+  | "linen"
+  | "inventory"
+  | "transit_log"
+  | "licence"
+  | "dinghy"
+  | "apa"
+  | "provisions";
+
+export function handoverItems(kind: CharterKind): HandoverItem[] {
+  if (kind === "crewed") return ["fuel", "water", "linen", "inventory", "transit_log", "apa", "provisions"];
+  if (kind === "cabin") return ["fuel", "water", "linen", "inventory", "transit_log"];
+  return ["fuel", "water", "linen", "inventory", "transit_log", "licence", "dinghy"];
+}
+
+export interface OccupancyWeek {
+  startIso: string;
+  endIso: string;
+  label: string;
+}
+
+/** Saturday-to-Saturday columns, starting with the Saturday that opened this week. */
+export function saturdayWeeks(now = new Date(), count = 4): OccupancyWeek[] {
+  const today = startOfDay(now);
+  const sinceSat = (today.getDay() + 1) % 7;
+  const first = addDays(today, -sinceSat);
+  const weeks: OccupancyWeek[] = [];
+  for (let i = 0; i < count; i++) {
+    const start = addDays(first, i * 7);
+    const end = addDays(start, 7);
+    weeks.push({
+      startIso: toIsoDate(start),
+      endIso: toIsoDate(end),
+      label: String(start.getDate()),
+    });
+  }
+  return weeks;
+}
+
+export type OccupancyTone = "free" | "option" | "booked" | "one_way" | "service";
+
+export interface OccupancyCell {
+  tone: OccupancyTone;
+  booking?: CharterBooking;
+}
+
+export function occupancyCell(
+  yacht: CharterYacht,
+  week: OccupancyWeek,
+  bookings: CharterBooking[],
+  today: string,
+): OccupancyCell {
+  if (yacht.status === "maintenance") return { tone: "service" };
+  const hits = bookings.filter(
+    (b) =>
+      b.yachtId === yacht.id &&
+      b.status !== "cancelled" &&
+      b.startIso < week.endIso &&
+      b.endIso > week.startIso,
+  );
+  const rank = (b: CharterBooking) => (b.status === "checked_out" ? 0 : b.status === "option" ? 2 : 3);
+  const hit = hits.sort((a, b) => rank(b) - rank(a) || b.startIso.localeCompare(a.startIso))[0];
+  if (hit) {
+    if (hit.status === "option") return { tone: "option", booking: hit };
+    if (hit.baseOut !== hit.baseIn) return { tone: "one_way", booking: hit };
+    return { tone: "booked", booking: hit };
+  }
+  if (yacht.status === "turnaround" && today >= week.startIso && today < week.endIso) {
+    return { tone: "service" };
+  }
+  return { tone: "free" };
+}
+
+export interface CharterMoney {
+  fee: number;
+  collected: number;
+  balance: number;
+  deposit: number;
+  apa: number;
+}
+
+/** Sample fee rhythm: option unpaid, confirmed 50% in, embarked week paid. Damage deposit on bareboat, APA on crewed. */
+export function charterMoney(booking: CharterBooking, yacht: CharterYacht): CharterMoney {
+  const weeks = Math.max(1, Math.round(bookingNights(booking) / 7));
+  const fee = yacht.weeklyFromEur * weeks;
+  const ratio = booking.status === "option" ? 0 : booking.status === "confirmed" ? 0.5 : 1;
+  const collected = Math.round(fee * ratio);
+  const deposit = yacht.kind === "bareboat" ? Math.round(yacht.weeklyFromEur * 0.3) : 0;
+  const apa = yacht.kind === "crewed" ? Math.round(fee * 0.25) : 0;
+  return { fee, collected, balance: fee - collected, deposit, apa };
+}

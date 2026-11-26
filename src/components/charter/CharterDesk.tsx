@@ -20,18 +20,26 @@ import {
   bookingNights,
   buildSeedBookings,
   buildWeekStrip,
+  charterMoney,
   filterBookings,
   filterFleet,
   fleetStats,
   formatLoa,
+  handoverItems,
+  handoverWindow,
+  occupancyCell,
+  saturdayWeeks,
   todayIso,
   todaysOps,
   yachtById,
+  type HandoverItem,
+  type OccupancyTone,
   type BookingStatus,
   type CharterBase,
   type CharterBooking,
   type CharterInquiry,
   type CharterKind,
+  type CharterYacht,
   type InquiryStatus,
   type YachtStatus,
 } from "@/lib/charter-desk";
@@ -66,19 +74,20 @@ const INQUIRY_TONE: Record<InquiryStatus, "info" | "warning" | "success" | "neut
   lost: "danger",
 };
 
-type Tab = "today" | "fleet" | "bookings" | "inquiries";
+type Tab = "sheet" | "today" | "fleet" | "bookings" | "inquiries";
 type YachtFilter = YachtStatus | "all";
 
 export function CharterDesk() {
   const { t, i18n } = useTranslation();
   const [base, setBase] = useState<CharterBase | "all">("all");
-  const [tab, setTab] = useState<Tab>("today");
+  const [tab, setTab] = useState<Tab>("sheet");
   const [dayIso, setDayIso] = useState<string | null>(null);
   const [yachtFilter, setYachtFilter] = useState<YachtFilter>("all");
   const [openYacht, setOpenYacht] = useState<string | null>(null);
   const [bookings, setBookings] = useState<CharterBooking[]>(() => buildSeedBookings());
   const [fleetRows, setFleetRows] = useState(SEED_FLEET);
   const [inquiries, setInquiries] = useState<CharterInquiry[]>(SEED_INQUIRIES);
+  const [handover, setHandover] = useState<Record<string, HandoverItem[]>>({});
 
   const today = todayIso();
   const stats = fleetStats(filterFleet(fleetRows, base, "all"));
@@ -92,6 +101,8 @@ export function CharterDesk() {
     ? bookings.find((b) => b.yachtId === yacht.id && b.status !== "cancelled" && b.status !== "checked_out")
     : undefined;
   const openInquiries = inquiries.filter((q) => q.status === "new" || q.status === "quoted" || q.status === "hold");
+  const weeks = useMemo(() => saturdayWeeks(), []);
+  const sheetFleet = filterFleet(fleetRows, base, "all");
 
   const checkIn = (booking: CharterBooking) => {
     setBookings((rows) =>
@@ -110,6 +121,14 @@ export function CharterDesk() {
     toast.success(t("charter.quote_done"));
   };
 
+  const toggleHandover = (yachtId: string, item: HandoverItem) => {
+    setHandover((current) => {
+      const done = current[yachtId] ?? [];
+      const next = done.includes(item) ? done.filter((entry) => entry !== item) : [...done, item];
+      return { ...current, [yachtId]: next };
+    });
+  };
+
   return (
     <CockpitPage
       header={
@@ -125,6 +144,7 @@ export function CharterDesk() {
     >
       <GlassPanel className="border-amber-400/25 bg-amber-400/[0.06]">
         <p className="text-[12px] leading-relaxed text-amber-100/90">{t("charter.demo_note")}</p>
+        <p className="mt-1 text-[11px] text-amber-100/70">{t("charter.rhythm")}</p>
       </GlassPanel>
 
       <div className="flex gap-2 overflow-x-auto pb-1">
@@ -149,6 +169,7 @@ export function CharterDesk() {
         <MetricCard label={t("charter.stat_inquiries")} value={openInquiries.length} tone="warning" hint={t("charter.stat_inquiries_hint")} />
       </div>
 
+      {tab !== "sheet" && (
       <GlassPanel padded={false} className="p-3">
         <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">{t("charter.week_label")}</p>
         <div className="grid grid-cols-7 gap-1.5">
@@ -182,14 +203,26 @@ export function CharterDesk() {
           })}
         </div>
       </GlassPanel>
+      )}
 
       <div className="flex gap-2 overflow-x-auto">
-        {(["today", "fleet", "bookings", "inquiries"] as const).map((key) => (
+        {(["sheet", "today", "fleet", "bookings", "inquiries"] as const).map((key) => (
           <Chip key={key} active={tab === key} onClick={() => setTab(key)}>
             {t(`charter.tab_${key}`)}
           </Chip>
         ))}
       </div>
+
+      {tab === "sheet" && (
+        <OccupancySheet
+          fleet={sheetFleet}
+          weeks={weeks}
+          bookings={scopedBookings}
+          today={today}
+          locale={i18n.language}
+          onOpen={setOpenYacht}
+        />
+      )}
 
       {tab === "today" && (
         <div className="grid gap-3 lg:grid-cols-3">
@@ -284,7 +317,7 @@ export function CharterDesk() {
       {yacht && (
         <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/50 p-3 sm:items-center" onClick={() => setOpenYacht(null)}>
           <div
-            className="thalvo-dark w-full max-w-md rounded-3xl border border-white/10 bg-[#071422] p-4 shadow-2xl"
+            className="thalvo-dark max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-3xl border border-white/10 bg-[#071422] p-4 shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
@@ -310,17 +343,183 @@ export function CharterDesk() {
               {t("charter.from_week")} <MoneyAmount value={yacht.weeklyFromEur} currency="EUR" tone="gold" />
               <span className="text-white/40"> · {t("charter.simulated")}</span>
             </p>
+            <p className="mt-1 text-[12px] text-white/60">
+              {t("charter.embark")} {handoverWindow(yacht.kind).embark} · {t("charter.disembark")} {handoverWindow(yacht.kind).disembark}
+            </p>
             {yachtBooking && (
-              <GlassPanel className="mt-3 p-3">
-                <p className="text-[12px] font-semibold text-white">{yachtBooking.guest}</p>
-                <p className="text-[11px] text-white/55">{yachtBooking.ref} · {yachtBooking.baseOut} → {yachtBooking.baseIn}</p>
-                <p className="mt-1 text-[11px] text-white/55">{bookingNights(yachtBooking)} {t("charter.nights")} · {yachtBooking.party} {t("charter.party")}</p>
-              </GlassPanel>
+              <BookingMoney booking={yachtBooking} yacht={yacht} />
             )}
+            <HandoverList
+              yachtId={yacht.id}
+              kind={yacht.kind}
+              done={handover[yacht.id] ?? []}
+              onToggle={toggleHandover}
+            />
           </div>
         </div>
       )}
     </CockpitPage>
+  );
+}
+
+const CELL_CLASS: Record<OccupancyTone, string> = {
+  free: "border-white/10 bg-white/[0.03] text-white/45",
+  booked: "border-cyan-300/40 bg-cyan-400/15 text-cyan-50",
+  option: "border-amber-300/50 bg-amber-400/15 text-amber-50",
+  one_way: "border-cyan-200/30 bg-cyan-400/10 text-cyan-50",
+  service: "border-rose-400/30 bg-rose-500/10 text-rose-100",
+};
+
+function OccupancySheet({
+  fleet,
+  weeks,
+  bookings,
+  today,
+  locale,
+  onOpen,
+}: {
+  fleet: CharterYacht[];
+  weeks: ReturnType<typeof saturdayWeeks>;
+  bookings: CharterBooking[];
+  today: string;
+  locale: string;
+  onOpen: (id: string) => void;
+}) {
+  const { t } = useTranslation();
+  const tag = locale.startsWith("tr") ? "tr-TR" : locale.startsWith("el") ? "el-GR" : "en-GB";
+  const fmt = new Intl.DateTimeFormat(tag, { day: "numeric", month: "short" });
+  return (
+    <GlassPanel padded={false} className="overflow-hidden">
+      <p className="px-3 pt-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">{t("charter.sheet_label")}</p>
+      <div className="overflow-x-auto px-0 pb-3">
+      <table className="w-full min-w-[640px] border-collapse text-left">
+        <thead>
+          <tr>
+            <th className="sticky left-0 z-10 w-36 bg-[#071422] py-2 pl-3 pr-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{t("charter.tab_fleet")}</th>
+            {weeks.map((week) => {
+              const start = week.startIso.split("-").map(Number);
+              const end = week.endIso.split("-").map(Number);
+              const current = today >= week.startIso && today < week.endIso;
+              return (
+                <th
+                  key={week.startIso}
+                  className={"px-1 py-1 text-[10px] font-semibold uppercase tracking-wider " + (current ? "text-cyan-200" : "text-white/40")}
+                >
+                  {fmt.format(new Date(start[0]!, start[1]! - 1, start[2]!))}–{fmt.format(new Date(end[0]!, end[1]! - 1, end[2]!))}
+                </th>
+              );
+            })}
+          </tr>
+        </thead>
+        <tbody>
+          {fleet.map((boat) => (
+            <tr key={boat.id}>
+              <th className="sticky left-0 z-10 bg-[#071422] py-1 pl-3 pr-2 text-left shadow-[8px_0_12px_rgba(0,0,0,0.45)]">
+                <button type="button" onClick={() => onOpen(boat.id)} className="block max-w-36 text-left">
+                  <span className="block truncate text-[12px] font-semibold text-white">{boat.name}</span>
+                  <span className="block truncate text-[10px] font-normal text-white/45">{boat.base}</span>
+                </button>
+              </th>
+              {weeks.map((week) => {
+                const cell = occupancyCell(boat, week, bookings, today);
+                const guest = cell.booking?.guest.split(" ")[0] ?? t(`charter.cell_${cell.tone}`);
+                return (
+                  <td key={week.startIso} className="p-1">
+                    <button
+                      type="button"
+                      onClick={() => onOpen(boat.id)}
+                      className={"h-12 w-full rounded-lg border px-2 text-left text-[11px] font-semibold " + CELL_CLASS[cell.tone]}
+                    >
+                      <span className="block truncate">{guest}</span>
+                      <span className="block truncate text-[9px] font-medium uppercase tracking-wider opacity-70">
+                        {t(`charter.cell_${cell.tone}`)}
+                      </span>
+                    </button>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </div>
+    </GlassPanel>
+  );
+}
+
+function BookingMoney({
+  booking,
+  yacht,
+}: {
+  booking: CharterBooking;
+  yacht: CharterYacht;
+}) {
+  const { t } = useTranslation();
+  const money = charterMoney(booking, yacht);
+  const window = handoverWindow(yacht.kind);
+  return (
+    <GlassPanel className="mt-3 p-3">
+      <p className="text-[12px] font-semibold text-white">{booking.guest}</p>
+      <p className="text-[11px] text-white/55">{booking.ref} · {booking.baseOut} → {booking.baseIn}</p>
+      <p className="mt-1 text-[11px] text-white/55">
+        {bookingNights(booking)} {t("charter.nights")} · {booking.party} {t("charter.party")} · {window.embark}/{window.disembark}
+      </p>
+      {booking.status === "option" && (
+        <p className="mt-1 text-[11px] text-amber-200">{t("charter.option_hold", { until: booking.startIso })}</p>
+      )}
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-white/70">
+        <span>{t("charter.money_collected")} <MoneyAmount value={money.collected} currency="EUR" className="text-[11px]" /></span>
+        <span>{t("charter.money_balance")} <MoneyAmount value={money.balance} currency="EUR" className="text-[11px]" /></span>
+        {money.deposit > 0 && (
+          <span>{t("charter.money_deposit")} <MoneyAmount value={money.deposit} currency="EUR" className="text-[11px]" /></span>
+        )}
+        {money.apa > 0 && (
+          <span>{t("charter.money_apa")} <MoneyAmount value={money.apa} currency="EUR" className="text-[11px]" /></span>
+        )}
+      </div>
+      <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-white/35">{t("charter.simulated")}</p>
+    </GlassPanel>
+  );
+}
+
+function HandoverList({
+  yachtId,
+  kind,
+  done,
+  onToggle,
+}: {
+  yachtId: string;
+  kind: CharterKind;
+  done: HandoverItem[];
+  onToggle: (yachtId: string, item: HandoverItem) => void;
+}) {
+  const { t } = useTranslation();
+  const items = handoverItems(kind);
+  return (
+    <div className="mt-3">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
+        {t("charter.handover")} · {done.length}/{items.length}
+      </p>
+      <ul className="mt-2 grid grid-cols-2 gap-1.5">
+        {items.map((item) => {
+          const on = done.includes(item);
+          return (
+            <li key={item}>
+              <button
+                type="button"
+                onClick={() => onToggle(yachtId, item)}
+                className={
+                  "w-full rounded-lg border px-2 py-1.5 text-left text-[11px] " +
+                  (on ? "border-emerald-300/40 bg-emerald-400/10 text-emerald-100" : "border-white/10 text-white/70")
+                }
+              >
+                {t(`charter.check_${item}`)}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
