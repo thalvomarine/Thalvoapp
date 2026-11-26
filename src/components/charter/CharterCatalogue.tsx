@@ -273,13 +273,7 @@ export function CharterCatalogue() {
 
           <div className="flex items-center gap-2">
             <LanguageSwitcher tone="dark" />
-            <Link
-              to="/marketplace"
-              className="inline-flex h-9 items-center rounded-full border border-white/15 px-3 text-xs font-semibold text-white/80 transition-colors hover:border-white/30 hover:text-white sm:px-4"
-            >
-              {t("nav.marketplace")}
-            </Link>
-            <Link to="/auth" search={{ next: "/app/charter" }} className="inline-flex h-9 items-center rounded-full bg-[#F5B942] px-3 text-xs font-semibold text-[#1a1203] sm:px-4">
+            <Link to="/auth" search={{ next: "/app/charter" }} className="inline-flex h-9 items-center rounded-full bg-[#F5B942] px-4 text-xs font-semibold text-[#1a1203]">
               {t("charter.firm_entry")}
             </Link>
           </div>
@@ -507,16 +501,11 @@ export function CharterCatalogue() {
           </div>
         </section>
 
-        <div className="mt-10 grid gap-3 sm:grid-cols-2">
-          <Link to="/services" className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] p-4 transition-colors hover:border-white/25">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">{t("charter.door_service")}</p>
-            <p className="mt-2 text-[13px] leading-relaxed text-white/65">{t("charter.door_service_body")}</p>
-          </Link>
-          <Link to="/marketplace" className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] p-4 transition-colors hover:border-white/25">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("nav.marketplace")}</p>
-            <p className="mt-2 text-[13px] leading-relaxed text-white/65">{t("charter.door_marketplace_body")}</p>
-          </Link>
-        </div>
+        <p className="mt-10 text-[13px] text-white/40">
+          <Link to="/services" className="text-[#F5B942]">{t("charter.door_service")}</Link>
+          <span> · </span>
+          <Link to="/marketplace" className="text-[#F5B942]">{t("charter.door_parts")}</Link>
+        </p>
       </main>
 
       <PublicFooter />
