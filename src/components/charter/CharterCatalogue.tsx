@@ -366,10 +366,23 @@ export function CharterCatalogue() {
               </div>
             </div>
 
+            <div className="sticky top-14 z-30 -mx-5 border-y border-white/10 bg-[#06101c]/95 px-5 py-3 backdrop-blur-xl lg:hidden">
+              <FilterRail
+                minCabins={minCabins}
+                setMinCabins={setMinCabins}
+                hull={hull}
+                setHull={setHull}
+                budget={budget}
+                setBudget={setBudget}
+                filtering={filtering}
+                onClear={clearAll}
+              />
+            </div>
+
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm text-white/70">{t("charter.result_count", { count: shown.length })}</p>
               {filtering && (
-                <button type="button" onClick={clearAll} className="text-[12px] font-semibold text-[#F5B942]">
+                <button type="button" onClick={clearAll} className="hidden text-[12px] font-semibold text-[#F5B942] lg:inline">
                   {t("charter.search_reset")}
                 </button>
               )}
@@ -430,7 +443,7 @@ export function CharterCatalogue() {
             )}
           </div>
 
-          <aside className="h-fit space-y-5 rounded-[1.5rem] border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.02] p-4 lg:sticky lg:top-[4.5rem]">
+          <aside className="hidden h-fit space-y-5 rounded-[1.5rem] border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.02] p-4 lg:sticky lg:top-[4.5rem] lg:block">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">{t("charter.filters")}</p>
 
             <div>
@@ -940,11 +953,78 @@ function Faq({ q, a }: { q: string; a: string }) {
   );
 }
 
-function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: string }) {
+function Chip({ active, onClick, children, compact }: { active: boolean; onClick: () => void; children: string; compact?: boolean }) {
   return (
-    <button type="button" onClick={onClick} className={"rounded-full border px-3 py-1.5 text-[12px] font-semibold transition-colors " + (active ? "border-[#F5B942]/60 bg-[#F5B942]/15 text-[#F5B942]" : "border-white/10 text-white/70")}>
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        "shrink-0 rounded-full border font-semibold transition-colors " +
+        (compact ? "px-2.5 py-1 text-[11px] whitespace-nowrap" : "px-3 py-1.5 text-[12px]") +
+        " " +
+        (active ? "border-[#F5B942]/60 bg-[#F5B942]/15 text-[#F5B942]" : "border-white/10 text-white/70")
+      }
+    >
       {children}
     </button>
+  );
+}
+
+function FilterRail({
+  minCabins,
+  setMinCabins,
+  hull,
+  setHull,
+  budget,
+  setBudget,
+  filtering,
+  onClear,
+}: {
+  minCabins: number;
+  setMinCabins: (value: number) => void;
+  hull: CharterHull | "all";
+  setHull: (value: CharterHull | "all") => void;
+  budget: Budget;
+  setBudget: (value: Budget) => void;
+  filtering: boolean;
+  onClear: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-2.5">
+      <div className="flex items-center gap-2">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">{t("charter.filters")}</p>
+        {filtering && (
+          <button type="button" onClick={onClear} className="text-[11px] font-semibold text-[#F5B942]">
+            {t("charter.search_reset")}
+          </button>
+        )}
+        <div className="ml-auto flex items-center gap-1.5 rounded-full border border-white/12 px-1.5 py-0.5">
+          <button type="button" aria-label="-" disabled={minCabins <= 1} onClick={() => setMinCabins(Math.max(1, minCabins - 1))} className="grid size-7 place-items-center rounded-full disabled:opacity-30">
+            <Minus className="size-3.5" />
+          </button>
+          <span className="min-w-[3.25rem] text-center text-[11px] font-semibold text-white/80">
+            {minCabins}+ {t("charter.search_cabins")}
+          </span>
+          <button type="button" aria-label="+" disabled={minCabins >= 8} onClick={() => setMinCabins(Math.min(8, minCabins + 1))} className="grid size-7 place-items-center rounded-full disabled:opacity-30">
+            <Plus className="size-3.5" />
+          </button>
+        </div>
+      </div>
+      <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <Chip compact active={hull === "all"} onClick={() => setHull("all")}>{t("charter.hull_all")}</Chip>
+        {HULLS.map((value) => (
+          <Chip compact key={value} active={hull === value} onClick={() => setHull(value)}>{t(`charter.hull_${value}`)}</Chip>
+        ))}
+      </div>
+      <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {(["all", "low", "mid", "high"] as const).map((value) => (
+          <Chip compact key={value} active={budget === value} onClick={() => setBudget(value)}>
+            {t(`charter.budget_short_${value}`)}
+          </Chip>
+        ))}
+      </div>
+    </div>
   );
 }
 
