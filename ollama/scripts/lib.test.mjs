@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { trimHistory, userTurn } from "./chat.mjs";
 import { collectHits, redact, shouldSkip, tokenize } from "./lib.mjs";
 
 test("tokenize keeps rpc names and drops filler", () => {
@@ -33,6 +34,17 @@ test("cancel_own_call resolves to the live-call migration", async () => {
     hits.some((hit) => hit.path.includes("20261008143000_cancel_and_live_call.sql")),
     hits.map((hit) => hit.path).join("\n"),
   );
+});
+
+test("chat history keeps the latest turns and the current question", () => {
+  const history = Array.from({ length: 10 }, (_, index) => ({ role: "user", content: String(index) }));
+  assert.deepEqual(
+    trimHistory(history, 4).map((item) => item.content),
+    ["6", "7", "8", "9"],
+  );
+  const turn = userTurn("iptal nerede?", [{ path: "a.sql", excerpt: "1| cancel_own_call" }]);
+  assert.match(turn, /cancel_own_call/);
+  assert.match(turn, /iptal nerede/);
 });
 
 test("a Turkish SOS question still opens the cancel migration", async () => {

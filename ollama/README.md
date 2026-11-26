@@ -25,6 +25,16 @@ ollama create thalvo -f ollama/Modelfile
 
 `FROM` satırını değiştirmezsen `ollama create` o modeli indirebilir. İndirme istemiyorsan aşağıdaki `--model` yolunu kullan.
 
+## Konuşmak
+
+Tek soruluk `ask.mjs` her seferinde yeniden başlar. Sürekli konuşmak için:
+
+```bash
+node ollama/scripts/chat.mjs --model qwen2.5:14b
+```
+
+Yaz, Enter'a bas, cevabı bekle, sonraki cümleyi yaz. Bitirmek için `/cik`. Sohbet kodu okur. Dosyayı değiştirmez, migration uygulamaz, Supabase'e bağlanmaz. Dosya değişecek bir görevi bu sohbete bırakma; değişikliği tarif eder, yazmayı sen veya depo üzerinde çalışan bir ajan yapar.
+
 ## Soru sormak
 
 ```bash
