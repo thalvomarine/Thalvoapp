@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { inquiryInputError, isSaturdayIso, upcomingSaturdays, yachtInputError } from "./charter-fleet.ts";
+import { catalogueMatch, inquiryInputError, isSaturdayIso, sortCatalogue, upcomingSaturdays, yachtInputError } from "./charter-fleet.ts";
 import type { FleetYachtInput } from "./charter-fleet.ts";
 
 const valid: FleetYachtInput = {
@@ -11,6 +11,7 @@ const valid: FleetYachtInput = {
   berths: 8,
   cabins: 3,
   base: "Göcek",
+  hull: "sail",
   kind: "bareboat",
   weeklyEur: 4200,
   skipper: "",
@@ -22,7 +23,9 @@ describe("charter fleet input", () => {
     assert.equal(yachtInputError(valid), null);
     assert.equal(yachtInputError({ ...valid, name: " " }), "name");
     assert.equal(yachtInputError({ ...valid, weeklyEur: -1 }), "price");
-    assert.equal(yachtInputError({ ...valid, base: "İstanbul" as "Göcek" }), "base");
+    assert.equal(yachtInputError({ ...valid, base: "İstanbul" }), null);
+    assert.equal(yachtInputError({ ...valid, base: "A" }), "base");
+    assert.equal(yachtInputError({ ...valid, hull: "rib" as "sail" }), "hull");
   });
 
   it("lists the next Saturdays from a Thursday", () => {
@@ -45,5 +48,21 @@ describe("charter fleet input", () => {
       inquiryInputError({ guestName: "Ada", contact: "a", party: 4, startIso: "2026-11-28", note: "" }),
       "contact",
     );
+  });
+
+  it("matches a port by name and keeps a smaller party off a short boat", () => {
+    const split = { base: "Split", openWeeks: ["2026-11-28"], berths: 8, hull: "sail" as const, kind: "bareboat" as const, weeklyEur: 3600, loaM: 12.8 };
+    const query = { place: "spl", week: "2026-11-28", party: 4, hull: "sail" as const, kind: "all" as const };
+    assert.equal(catalogueMatch(split, query), true);
+    assert.equal(catalogueMatch(split, { ...query, place: "İstanbul" }), false);
+    assert.equal(catalogueMatch({ ...split, berths: 2 }, { ...query, party: 6 }), false);
+    const priced = sortCatalogue(
+      [
+        { ...split, weeklyEur: 9000, openWeeks: ["2026-12-05"] },
+        { ...split, base: "Palma", weeklyEur: 2000, openWeeks: ["2026-11-28"] },
+      ],
+      "price",
+    );
+    assert.equal(priced[0]?.base, "Palma");
   });
 });

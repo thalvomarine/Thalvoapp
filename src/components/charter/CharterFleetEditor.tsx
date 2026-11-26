@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ImageUploader } from "@/components/ImageUploader";
 import { MoneyAmount, StatusBadge } from "@/components/core";
 import { GlassPanel } from "@/components/mission/GlassPanel";
-import { CHARTER_BASES, type CharterBase, type CharterKind } from "@/lib/charter-desk";
+import { type CharterHull, type CharterKind } from "@/lib/charter-desk";
 import { createYacht, markInquiryQuoted, setWeekStatus, setYachtListed, setYachtPhotos } from "@/lib/charter-fleet-api";
 import {
   upcomingSaturdays,
@@ -21,7 +21,8 @@ const EMPTY: FleetYachtInput = {
   loaM: 12,
   berths: 6,
   cabins: 3,
-  base: "Göcek",
+  base: "",
+  hull: "sail",
   kind: "bareboat",
   weeklyEur: 4000,
   skipper: "",
@@ -100,10 +101,11 @@ export function CharterFleetEditor({
           <TextField label={t("charter.cabins")} value={String(form.cabins)} onChange={(cabins) => setForm({ ...form, cabins: Number(cabins) })} />
           <TextField label={t("charter.from_week")} value={String(form.weeklyEur)} onChange={(weeklyEur) => setForm({ ...form, weeklyEur: Number(weeklyEur) })} />
           <TextField label={t("charter.skipper")} value={form.skipper} onChange={(skipper) => setForm({ ...form, skipper })} />
+          <TextField label={t("charter.field_base")} value={form.base} onChange={(base) => setForm({ ...form, base })} />
           <label className="block">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">{t("charter.field_base")}</span>
-            <select value={form.base} onChange={(event) => setForm({ ...form, base: event.target.value as CharterBase })} className="mt-1 h-10 w-full rounded-xl border border-white/10 bg-[#071422] px-3 text-sm text-white">
-              {CHARTER_BASES.map((base) => <option key={base}>{base}</option>)}
+            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">{t("charter.field_hull")}</span>
+            <select value={form.hull} onChange={(event) => setForm({ ...form, hull: event.target.value as CharterHull })} className="mt-1 h-10 w-full rounded-xl border border-white/10 bg-[#071422] px-3 text-sm text-white">
+              {(["sail", "catamaran", "motor", "gulet"] as const).map((hull) => <option key={hull} value={hull}>{t(`charter.hull_${hull}`)}</option>)}
             </select>
           </label>
           <label className="block">

@@ -19,6 +19,7 @@ interface YachtRow {
   berths: number;
   cabins: number;
   base: string;
+  hull: string | null;
   kind: string;
   weekly_eur: number;
   skipper: string | null;
@@ -55,6 +56,7 @@ function asYacht(row: YachtRow, weeks: StoredWeek[]): StoredYacht {
     berths: row.berths,
     cabins: row.cabins,
     base: row.base as CharterBase,
+    hull: row.hull === "sail" || row.hull === "catamaran" || row.hull === "motor" || row.hull === "gulet" ? row.hull : "sail",
     kind: row.kind as CharterKind,
     weeklyEur: Number(row.weekly_eur),
     skipper: row.skipper,
@@ -113,7 +115,8 @@ export async function createYacht(ownerId: string, operatorName: string, input: 
       loa_m: input.loaM,
       berths: input.berths,
       cabins: input.cabins,
-      base: input.base,
+      base: input.base.trim(),
+      hull: input.hull,
       kind: input.kind,
       weekly_eur: input.weeklyEur,
       skipper: input.skipper.trim() || null,

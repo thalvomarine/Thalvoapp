@@ -1,4 +1,4 @@
-import type { CharterBase, CharterKind, CharterYacht, InquiryStatus } from "@/lib/charter-desk";
+import type { CharterBase, CharterHull, CharterKind, CharterYacht, InquiryStatus } from "@/lib/charter-desk";
 
 export interface FleetYachtInput {
   name: string;
@@ -8,6 +8,7 @@ export interface FleetYachtInput {
   berths: number;
   cabins: number;
   base: CharterBase;
+  hull: CharterHull;
   kind: CharterKind;
   weeklyEur: number;
   skipper: string;
@@ -30,6 +31,7 @@ export interface StoredYacht {
   berths: number;
   cabins: number;
   base: CharterBase;
+  hull: CharterHull;
   kind: CharterKind;
   weeklyEur: number;
   skipper: string | null;
@@ -66,7 +68,7 @@ export interface InquiryInput {
   note: string;
 }
 
-const BASES = new Set<CharterBase>(["Göcek", "Marmaris", "Bodrum", "Fethiye"]);
+const HULLS = new Set<CharterHull>(["sail", "catamaran", "motor", "gulet"]);
 const KINDS = new Set<CharterKind>(["bareboat", "crewed", "cabin"]);
 
 function startOfDay(d: Date): Date {
@@ -98,14 +100,16 @@ export function isSaturdayIso(iso: string): boolean {
   return new Date(y, m - 1, d).getDay() === 6;
 }
 
-export function yachtInputError(input: FleetYachtInput): "name" | "model" | "year" | "loa" | "berths" | "cabins" | "base" | "kind" | "price" | "skipper" | null {
+export function yachtInputError(input: FleetYachtInput): "name" | "model" | "year" | "loa" | "berths" | "cabins" | "base" | "hull" | "kind" | "price" | "skipper" | null {
   if (input.name.trim().length < 2 || input.name.trim().length > 80) return "name";
   if (input.model.trim().length < 2 || input.model.trim().length > 80) return "model";
   if (!Number.isInteger(input.year) || input.year < 1970 || input.year > 2040) return "year";
   if (!(input.loaM > 0) || input.loaM > 80) return "loa";
   if (!Number.isInteger(input.berths) || input.berths < 1 || input.berths > 40) return "berths";
   if (!Number.isInteger(input.cabins) || input.cabins < 1 || input.cabins > 20) return "cabins";
-  if (!BASES.has(input.base)) return "base";
+  const base = input.base.trim();
+  if (base.length < 2 || base.length > 80) return "base";
+  if (!HULLS.has(input.hull)) return "hull";
   if (!KINDS.has(input.kind)) return "kind";
   if (!(input.weeklyEur >= 0) || input.weeklyEur > 500_000) return "price";
   const skipper = input.skipper.trim();
@@ -132,6 +136,7 @@ export function toDeskYacht(yacht: StoredYacht): CharterYacht {
     berths: yacht.berths,
     cabins: yacht.cabins,
     base: yacht.base,
+    hull: yacht.hull,
     kind: yacht.kind,
     status: yacht.listed ? "available" : "turnaround",
     weeklyFromEur: yacht.weeklyEur,
@@ -149,4 +154,47 @@ export function blockedStarts(yacht: StoredYacht): string[] {
 
 export function openStarts(yacht: StoredYacht): string[] {
   return yacht.weeks.filter((week) => week.status === "open").map((week) => week.startIso);
+}
+
+export interface CatalogueProbe {
+  base: string;
+  openWeeks: string[];
+  berths: number;
+  hull: CharterHull | null;
+  kind: CharterKind;
+  weeklyEur: number;
+  loaM: number;
+}
+
+export interface CatalogueQuery {
+  place: string;
+  week: string;
+  party: number;
+  hull: CharterHull | "all";
+  kind: CharterKind | "all";
+}
+
+/** Guest search: place, Saturday, party size, hull and contract. */
+export function catalogueMatch(row: CatalogueProbe, query: CatalogueQuery): boolean {
+  const place = query.place.trim().toLocaleLowerCase("tr");
+  if (place && !row.base.toLocaleLowerCase("tr").includes(place)) return false;
+  if (query.week && !row.openWeeks.includes(query.week)) return false;
+  if (query.party > row.berths) return false;
+  if (query.hull !== "all" && row.hull !== query.hull) return false;
+  if (query.kind !== "all" && row.kind !== query.kind) return false;
+  return true;
+}
+
+export type CatalogueSort = "open" | "price" | "loa";
+
+export function sortCatalogue<T extends CatalogueProbe>(rows: T[], sort: CatalogueSort): T[] {
+  const copy = rows.slice();
+  copy.sort((a, b) => {
+    if (sort === "price") return a.weeklyEur - b.weeklyEur || a.base.localeCompare(b.base, "tr");
+    if (sort === "loa") return b.loaM - a.loaM || a.weeklyEur - b.weeklyEur;
+    const aWeek = a.openWeeks[0] ?? "9999";
+    const bWeek = b.openWeeks[0] ?? "9999";
+    return aWeek.localeCompare(bWeek) || a.weeklyEur - b.weeklyEur;
+  });
+  return copy;
 }
