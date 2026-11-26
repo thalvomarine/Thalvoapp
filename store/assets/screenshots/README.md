@@ -6,10 +6,13 @@ Capture from a real device or simulator after `npm run build:mobile`.
 
 The app runs on iPhone and iPad. App Store Connect rejects the version without both of these classes. PNG or JPEG, no transparency.
 
-- iPhone with Dynamic Island (medium): **1179×2556** or **1206×2622** — chart, cockpit, sign-in
-- iPad 13-inch: **2064×2752** or **2048×2732** — same frames
+- iPhone with Dynamic Island (large): **1320×2868** — the frames already captured from the Pro Max. In App Store Connect open **View All Sizes in Media Manager** and use the large slot. The medium slot rejects this size.
+- iPhone with Dynamic Island (medium): **1179×2556** or **1206×2622** — only if the file is actually that size. Do not scale a 1320×2868 shot down to fit.
+- iPad 13-inch: **2064×2752** or **2048×2732** — same frames. Not captured yet.
 
-Smaller iPhone sizes are optional; Connect scales the medium Dynamic Island set down.
+Order for the captured set: chart, landing, role picker (Kaptan / Teknisyen / Bayi). No Safari address bar. Upload the original photo, not a chat copy.
+
+Smaller iPhone sizes are optional; Connect scales a valid set down.
 
 ## Google Play
 

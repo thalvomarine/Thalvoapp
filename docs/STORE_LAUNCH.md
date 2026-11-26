@@ -48,13 +48,13 @@ Keep Capgo `autoUpdate: false` until a production OTA bundle is verified (see `s
 4. Fill listing from `store/listing.tr.md` (primary) and `store/listing.en.md`.
 5. App Privacy: follow `store/apple-app-privacy.md`.
 6. Export compliance: standard HTTPS only — Info.plist sets `ITSAppUsesNonExemptEncryption=false`.
-7. Screenshots: at least one **1179×2556 or 1206×2622** iPhone frame, and one **2064×2752 or 2048×2732** iPad frame. The target includes iPad (`TARGETED_DEVICE_FAMILY = 1,2`).
+7. Screenshots: the captured iPhone frames are **1320×2868**. Upload them in the large Dynamic Island size (View All Sizes). The medium slot only accepts 1179×2556 or 1206×2622 and rejects 1320×2868. iPad 13" **2064×2752 or 2048×2732** is still required (`TARGETED_DEVICE_FAMILY = 1,2`).
 8. Review notes: paste `store/review-notes.md` and add a confirmed captain login before submit.
 9. Account deletion is in the binary: Profile → Account settings → Delete account. It calls `delete_own_account`.
 10. TestFlight internal, then **Submit for Review**.
 
 Primary category: **Navigation** (secondary: Lifestyle).  
-Age rating: no violence, sexual content, gambling, or general web browser. Job chat is user-to-user, so the computed rating can sit above 4+. Answers are in `store/app-store-connect.md`.
+Age rating: the live questionnaire was saved at **4+** for 172 countries. Messaging, shared location and user-generated notes are Yes. Social Media is No, and “disabled for users under 13” is also No. The grid is in `store/app-store-connect.md`.
 
 ## Google Play
 
@@ -90,7 +90,7 @@ Output: `android/app/build/outputs/bundle/release/app-release.aab`
 | App icon (Play) | 512×512 PNG | `npm run cap:assets` → `store/assets/icon-512.png` |
 | App icon (Apple) | 1024×1024 in AppIcon set | generated into iOS AppIcon catalog |
 | Feature graphic (Play) | 1024×500 | `store/assets/feature-graphic.png` |
-| Phone screenshots | iPhone Dynamic Island medium: 1179×2556 or 1206×2622 | `store/assets/screenshots/` |
+| Phone screenshots | Captured set is 1320×2868 (large Dynamic Island). Medium slot is 1179×2556 or 1206×2622 only | `store/assets/screenshots/` |
 | iPad screenshots | 13": 2064×2752 or 2048×2732 (required — app runs on iPad) | `store/assets/screenshots/` |
 
 ## After both stores are live
