@@ -124,6 +124,9 @@ export function BrandLanding() {
             <a href="#about" className="landing-nav-link">
               {t("landing.nav_about")}
             </a>
+            <Link to="/charter" className="landing-nav-link">
+              {t("charter.door_charter")}
+            </Link>
             <button type="button" onClick={openPartner} className="landing-nav-link">
               {t("landing.cta_partner")}
             </button>
@@ -171,6 +174,9 @@ export function BrandLanding() {
             <Link to="/chart" className="landing-cta-primary">
               {t("landing.cta_chart")}
               <ArrowUpRight className="size-4 opacity-80" aria-hidden />
+            </Link>
+            <Link to="/charter" className="landing-cta-secondary">
+              {t("charter.guest_link")}
             </Link>
             <button type="button" onClick={openPartner} className="landing-cta-secondary">
               {t("landing.cta_partner")}
@@ -441,6 +447,13 @@ export function BrandLanding() {
                 className="rounded-md px-3 py-3.5 text-sm font-semibold text-white/85 hover:bg-white/[0.04]"
               >
                 {t("landing.cta_chart")}
+              </Link>
+              <Link
+                to="/charter"
+                onClick={() => setMenuOpen(false)}
+                className="rounded-md px-3 py-3.5 text-sm font-semibold text-white/85 hover:bg-white/[0.04]"
+              >
+                {t("charter.door_charter")}
               </Link>
               <Link
                 to="/auth"
