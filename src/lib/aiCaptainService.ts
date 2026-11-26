@@ -1,6 +1,7 @@
 import { generateText, stepCountIs, streamText, tool, type LanguageModel } from "ai";
 import { z } from "zod";
 import { haversineNm } from "@/lib/geo-eta";
+import { retrieveMarineNotes } from "@/lib/thalvo-ai/domain";
 import {
   resolveCaptainLayer,
   type CaptainAction,
@@ -18,7 +19,8 @@ Kurallar:
 - Verilen KOKPİT BAĞLAMI gerçeğidir. "Bu havada buraya demirlenir mi?" sorusunda seçili koy + rüzgâr yönü + tekne su çekimi / boyu ile hesapla.
 - Rüzgâr koyun açık ağzına 60° içinde esiyorsa alargayı riskli say; sığlık + draft için 1.5 m dip payı bırak.
 - ColReg özetle: dar kanalda sancak, sınırlı görüşte sis sinyali, çatışma riskinde erken ve belirgin manevra.
-- Acil arıza (hararet, yağ basıncı, yangın, su alma, pervane halatı) için önce insan/tekne emniyeti, sonra createSosOrMission.
+- Acil arıza (hararet, yağ basıncı, yangın, su alma, pervane halatı, vuruntu, kamarada egzoz kokusu) için önce insan/tekne emniyeti, sonra createSosOrMission.
+- Doğrulanmış usta notu verilmişse o sırayı esas al. Notta olmayan tork, parça kodu, basınç veya arıza kodu yazma.
 - En yakın korunaklı alarga istendiğinde focusBay çağır. Fener/sığlık katmanı istendiğinde filterLayers çağır.
 - Uydurma koordinat veya uydurma derinlik yazma. Bağlamda yoksa "kayıtta yok" de.
 - Kullanıcı acil durum tarif ederse yanıtın sonuna [EMERGENCY] ekle.`;
@@ -31,7 +33,8 @@ Rules:
 - The injected COCKPIT CONTEXT is ground truth. For "can I anchor here in this wind?" use the selected bay + wind + vessel draft/LOA.
 - If wind is within 60° of the bay's open mouth, treat the anchorage as exposed. Keep 1.5 m under-keel clearance vs charted depth.
 - ColRegs: starboard in a narrow channel, fog signals in restricted visibility, early and obvious action if risk of collision.
-- For heat / oil pressure / fire / flooding / rope in prop: safety first, then createSosOrMission.
+- For heat, oil pressure, fire, flooding, rope in the prop, a knock, or exhaust smell in the cabin: safety first, then createSosOrMission.
+- If verified yard notes are injected, follow their order. Do not add torque, part numbers, pressures, or fault codes they omit.
 - When asked for the nearest sheltered alarga, call focusBay. For lights or shoals, call filterLayers.
 - Never invent coordinates or depths. If the context lacks a fact, say it is not on file.
 - If the captain describes an emergency, append [EMERGENCY].`;
@@ -237,9 +240,17 @@ function collectToolOutputs(steps: Array<{ toolResults?: Array<{ output?: unknow
   return outs;
 }
 
+function captainSystem(input: CaptainRunInput): string {
+  const last = [...input.messages].reverse().find((message) => message.role === "user");
+  const notes = last ? retrieveMarineNotes(last.content, input.lang) : "";
+  return [captainSystemPrompt(input.lang), formatCockpitBlock(input.context, input.nearby, input.lang), notes]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
 /** Non-stream tool loop — used by the authenticated server function. */
 export async function runCaptainConsultation(input: CaptainRunInput): Promise<CaptainReply> {
-  const system = `${captainSystemPrompt(input.lang)}\n\n${formatCockpitBlock(input.context, input.nearby, input.lang)}`;
+  const system = captainSystem(input);
   const tools = createCaptainTools(input.nearby);
   const result = await generateText({
     model: input.model,
@@ -262,7 +273,7 @@ export async function runCaptainConsultation(input: CaptainRunInput): Promise<Ca
  * Caller iterates `textStream` or awaits `text`.
  */
 export function streamCaptainConsultation(input: CaptainRunInput) {
-  const system = `${captainSystemPrompt(input.lang)}\n\n${formatCockpitBlock(input.context, input.nearby, input.lang)}`;
+  const system = captainSystem(input);
   return streamText({
     model: input.model,
     system,

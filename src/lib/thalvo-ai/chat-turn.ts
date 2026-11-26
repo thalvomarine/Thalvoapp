@@ -23,7 +23,7 @@ import type { CaptainCockpitContext, NearbyChartPoint } from "@/lib/ai-captain-t
 import { fetchMarineWeatherAt } from "@/lib/thalvo-ai/marine-weather";
 import { listSessionLines, loadMemoryBlock, rememberFact, saveChatLine } from "@/lib/thalvo-ai/memory-store";
 import { platformRouteCatalog, resolvePlatformRoute } from "@/lib/thalvo-ai/platform-routes";
-import { answerFromTraining } from "@/lib/thalvo-ai/domain";
+import { answerFromTraining, retrieveMarineNotes } from "@/lib/thalvo-ai/domain";
 import { authenticateRequest, isAuthed, jsonError } from "@/lib/thalvo-ai/request-auth";
 import { buildChiefEngineerPrompt } from "@/lib/thalvo-ai/system-prompt";
 
@@ -143,11 +143,12 @@ async function handlePost(request: Request): Promise<Response> {
     loadCockpit(auth.supabase, auth.userId, position),
   ]);
   const nearby = await loadNearby(auth.supabase, position);
-  const system = buildChiefEngineerPrompt(
-    lang,
-    memoryBlock,
-    formatCockpitBlock(cockpit, nearby, lang),
-  );
+  const system = [
+    buildChiefEngineerPrompt(lang, memoryBlock, formatCockpitBlock(cockpit, nearby, lang)),
+    retrieveMarineNotes(userText, lang),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
 
   const tools = {
     getMarineWeather: tool({
