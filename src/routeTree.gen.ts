@@ -25,6 +25,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ProtoAegeanRouteImport } from './routes/proto.aegean'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as AuthenticatedAppDealerRouteImport } from './routes/_authenticated/app.dealer'
@@ -119,6 +120,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ProtoAegeanRoute = ProtoAegeanRouteImport.update({
+  id: '/proto/aegean',
+  path: '/proto/aegean',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/app/',
   path: '/app/',
@@ -212,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/proto/aegean': typeof ProtoAegeanRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/dealer': typeof AuthenticatedAppDealerRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/proto/aegean': typeof ProtoAegeanRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/dealer': typeof AuthenticatedAppDealerRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/proto/aegean': typeof ProtoAegeanRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/dealer': typeof AuthenticatedAppDealerRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRoute
@@ -309,6 +318,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/admin'
+    | '/proto/aegean'
     | '/app/admin'
     | '/app/dealer'
     | '/app/marketplace'
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/admin'
+    | '/proto/aegean'
     | '/app/admin'
     | '/app/dealer'
     | '/app/marketplace'
@@ -372,6 +383,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/_authenticated/admin'
+    | '/proto/aegean'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/dealer'
     | '/_authenticated/app/marketplace'
@@ -404,6 +416,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ServicesRoute: typeof ServicesRoute
   TermsRoute: typeof TermsRoute
+  ProtoAegeanRoute: typeof ProtoAegeanRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -519,6 +532,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/proto/aegean': {
+      id: '/proto/aegean'
+      path: '/proto/aegean'
+      fullPath: '/proto/aegean'
+      preLoaderRoute: typeof ProtoAegeanRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app/': {
       id: '/_authenticated/app/'
@@ -676,6 +696,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ServicesRoute: ServicesRoute,
   TermsRoute: TermsRoute,
+  ProtoAegeanRoute: ProtoAegeanRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
