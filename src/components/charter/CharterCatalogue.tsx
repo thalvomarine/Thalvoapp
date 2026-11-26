@@ -5,6 +5,7 @@ import { Anchor, Minus, Plus, Users, X } from "lucide-react";
 import { toast } from "sonner";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { PiriChartBackdrop } from "@/components/brand/PiriChartBackdrop";
+import { CharterStayPicker } from "@/components/charter/CharterStayPicker";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { Wordmark } from "@/components/Wordmark";
 import { ClientOnly, MapPlaceholder } from "@/components/ClientOnly";
@@ -17,7 +18,6 @@ import {
   parseIsoDate,
   todayIso,
   type CharterHull,
-  type CharterKind,
   type OccupancyWeek,
 } from "@/lib/charter-desk";
 import { formatDm } from "@/lib/formatters";
@@ -28,7 +28,9 @@ import {
   openStarts,
   samplePhoto,
   sortCatalogue,
-  upcomingSaturdays,
+  stayFullyOpen,
+  stayNights,
+  upcomingDays,
   type CatalogueQuery,
   type CatalogueSort,
   type StoredYacht,
@@ -50,7 +52,6 @@ const PLACE_FIX: Record<string, { lat: number; lng: number }> = {
 };
 
 const HULLS: CharterHull[] = ["sail", "catamaran", "motor", "gulet"];
-const KINDS = ["bareboat", "crewed", "cabin"] as const;
 type Budget = "all" | "low" | "mid" | "high";
 
 type Listing = {
@@ -63,12 +64,11 @@ type Listing = {
   cabins: number;
   base: string;
   hull: CharterHull;
-  kind: CharterKind;
   weeklyEur: number;
   skipper: string | null;
   operator: string;
   photos: string[];
-  openWeeks: string[];
+  openDays: string[];
   yard: boolean;
   sample: boolean;
 };
@@ -85,37 +85,39 @@ function weekOf(iso: string): OccupancyWeek {
 function sampleListings(now = new Date()): Listing[] {
   const bookings = buildSeedBookings(now);
   const today = todayIso(now);
-  const saturdays = upcomingSaturdays(now, 8);
-  const fromSeed = SEED_FLEET.map((yacht) => ({
-    id: yacht.id,
-    name: yacht.name,
-    model: yacht.model,
-    year: yacht.year,
-    loaM: yacht.loaM,
-    berths: yacht.berths,
-    cabins: yacht.cabins,
-    base: yacht.base,
-    hull: yacht.hull,
-    kind: yacht.kind,
-    weeklyEur: yacht.weeklyFromEur,
-    skipper: yacht.skipper,
-    operator: "THALVO sample",
-    photos: [samplePhoto(yacht.id)].filter((url): url is string => !!url),
-    openWeeks: saturdays.filter((iso) => {
+  const days = upcomingDays(now, 42);
+  const fromSeed = SEED_FLEET.map((yacht) => {
+    const openDays = days.filter((iso) => {
       const week = weekOf(iso);
-      const yardNow = yacht.status === "maintenance" && today >= week.startIso && today < week.endIso;
-      if (yardNow) return false;
-      const probe = yacht.status === "maintenance" ? { ...yacht, status: "available" as const } : yacht;
-      return occupancyCell(probe, week, bookings, today).tone === "free";
-    }),
-    yard: yacht.status === "maintenance",
-    sample: true,
-  }));
+      if (yacht.status === "maintenance" && today >= week.startIso && today < week.endIso) return false;
+      const probe = yacht.status === "on_charter" || yacht.status === "turnaround" ? { ...yacht, status: "available" as const } : yacht;
+      const cell = occupancyCell(probe, week, bookings, today);
+      return cell.tone === "free" || cell.tone === "service";
+    });
+    return {
+      id: yacht.id,
+      name: yacht.name,
+      model: yacht.model,
+      year: yacht.year,
+      loaM: yacht.loaM,
+      berths: yacht.berths,
+      cabins: yacht.cabins,
+      base: yacht.base,
+      hull: yacht.hull,
+      weeklyEur: yacht.weeklyFromEur,
+      skipper: yacht.skipper,
+      operator: "THALVO sample",
+      photos: [samplePhoto(yacht.id)].filter((url): url is string => !!url),
+      openDays: openDays.slice().sort(),
+      yard: yacht.status === "maintenance",
+      sample: true,
+    };
+  });
   const wider: Listing[] = [
-    { id: "yt-bogaz", name: "Boğaz", model: "Motor yacht 18 m", year: 2018, loaM: 18, berths: 8, cabins: 4, base: "İstanbul", hull: "motor", kind: "crewed", weeklyEur: 9800, skipper: "Capt. Kerem Y.", operator: "THALVO sample", photos: [], openWeeks: saturdays, yard: false, sample: true },
-    { id: "yt-dalmatia", name: "Dalmatia", model: "Bavaria C42", year: 2021, loaM: 12.8, berths: 8, cabins: 3, base: "Split", hull: "sail", kind: "bareboat", weeklyEur: 3600, skipper: null, operator: "THALVO sample", photos: [], openWeeks: saturdays, yard: false, sample: true },
-    { id: "yt-saronic", name: "Saronic", model: "Oceanis 46.1", year: 2022, loaM: 14.6, berths: 8, cabins: 4, base: "Atina", hull: "sail", kind: "bareboat", weeklyEur: 4400, skipper: null, operator: "THALVO sample", photos: [], openWeeks: saturdays, yard: false, sample: true },
-    { id: "yt-palma", name: "Palma Noon", model: "Lagoon 40", year: 2023, loaM: 11.7, berths: 10, cabins: 4, base: "Palma", hull: "catamaran", kind: "bareboat", weeklyEur: 6100, skipper: null, operator: "THALVO sample", photos: [], openWeeks: saturdays, yard: false, sample: true },
+    { id: "yt-bogaz", name: "Boğaz", model: "Motor yacht 18 m", year: 2018, loaM: 18, berths: 8, cabins: 4, base: "İstanbul", hull: "motor", weeklyEur: 9800, skipper: "Capt. Kerem Y.", operator: "THALVO sample", photos: [], openDays: days, yard: false, sample: true },
+    { id: "yt-dalmatia", name: "Dalmatia", model: "Bavaria C42", year: 2021, loaM: 12.8, berths: 8, cabins: 3, base: "Split", hull: "sail", weeklyEur: 3600, skipper: null, operator: "THALVO sample", photos: [], openDays: days, yard: false, sample: true },
+    { id: "yt-saronic", name: "Saronic", model: "Oceanis 46.1", year: 2022, loaM: 14.6, berths: 8, cabins: 4, base: "Atina", hull: "sail", weeklyEur: 4400, skipper: null, operator: "THALVO sample", photos: [], openDays: days, yard: false, sample: true },
+    { id: "yt-palma", name: "Palma Noon", model: "Lagoon 40", year: 2023, loaM: 11.7, berths: 10, cabins: 4, base: "Palma", hull: "catamaran", weeklyEur: 6100, skipper: null, operator: "THALVO sample", photos: [], openDays: days, yard: false, sample: true },
   ];
   return [...fromSeed, ...wider];
 }
@@ -131,12 +133,11 @@ function fromStored(yacht: StoredYacht): Listing {
     cabins: yacht.cabins,
     base: yacht.base,
     hull: yacht.hull,
-    kind: yacht.kind,
     weeklyEur: yacht.weeklyEur,
     skipper: yacht.skipper,
     operator: yacht.operatorName,
     photos: yacht.photos,
-    openWeeks: openStarts(yacht).slice().sort(),
+    openDays: openStarts(yacht).slice().sort(),
     yard: false,
     sample: false,
   };
@@ -161,7 +162,6 @@ export function CharterCatalogue() {
   const [party, setParty] = useState(1);
   const [minCabins, setMinCabins] = useState(1);
   const [hull, setHull] = useState<CharterHull | "all">("all");
-  const [kind, setKind] = useState<CharterKind | "all">("all");
   const [budget, setBudget] = useState<Budget>("all");
   const [sort, setSort] = useState<CatalogueSort>("open");
   const [live, setLive] = useState<Listing[]>([]);
@@ -183,7 +183,7 @@ export function CharterCatalogue() {
   }, []);
 
   const money = budgetRange(budget);
-  const query: CatalogueQuery = { place, week: "", checkIn, checkOut, party, minCabins, ...money, hull, kind };
+  const query: CatalogueQuery = { place, checkIn, checkOut, party, minCabins, ...money, hull };
   const relaxed: CatalogueQuery = { ...query, place: "" };
   const pool = [...live, ...samples];
   const exact = sortCatalogue(pool.filter((row) => catalogueMatch(row, query)), sort);
@@ -213,7 +213,6 @@ export function CharterCatalogue() {
     setParty(1);
     setMinCabins(1);
     setHull("all");
-    setKind("all");
     setBudget("all");
   };
 
@@ -224,7 +223,6 @@ export function CharterCatalogue() {
     party > 1 ||
     minCabins > 1 ||
     hull !== "all" ||
-    kind !== "all" ||
     budget !== "all";
 
   return (
@@ -244,8 +242,10 @@ export function CharterCatalogue() {
         </div>
       </header>
 
-      <section className="relative overflow-hidden">
-        <PiriChartBackdrop />
+      <section className="relative z-20">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <PiriChartBackdrop />
+        </div>
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-14 pt-12 sm:pt-16">
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#F5B942]/85">{t("charter.guest_eyebrow")}</p>
           <h1 className="thalvo-display mt-3 max-w-3xl text-[clamp(2.6rem,8vw,4.6rem)] leading-[0.92] tracking-[0.04em]">
@@ -257,7 +257,7 @@ export function CharterCatalogue() {
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-white/70">{t("charter.guest_body")}</p>
 
           <form
-            className="mt-8 grid gap-2 rounded-3xl border border-white/15 bg-[#06101c]/70 p-3 backdrop-blur-md sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_6.5rem_auto]"
+            className="mt-8 grid gap-3 rounded-[1.75rem] border border-white/12 bg-[#06101c]/72 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-md lg:grid-cols-[1.1fr_1.4fr_6.5rem_auto]"
             onSubmit={(event) => {
               event.preventDefault();
               document.getElementById("charter-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -266,16 +266,23 @@ export function CharterCatalogue() {
             <Field label={t("charter.search_place")}>
               <input value={place} onChange={(event) => setPlace(event.target.value)} placeholder={t("charter.search_place_ph")} className={fieldCls} />
             </Field>
-            <Field label={t("charter.search_in")}>
-              <input type="date" value={checkIn} onChange={(event) => setCheckIn(event.target.value)} className={fieldCls} />
-            </Field>
-            <Field label={t("charter.search_out")}>
-              <input type="date" value={checkOut} min={checkIn || undefined} onChange={(event) => setCheckOut(event.target.value)} className={fieldCls} />
-            </Field>
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/45">{t("charter.stay_label")}</span>
+              <div className="mt-1">
+                <CharterStayPicker
+                  checkIn={checkIn}
+                  checkOut={checkOut}
+                  onChange={({ checkIn: nextIn, checkOut: nextOut }) => {
+                    setCheckIn(nextIn);
+                    setCheckOut(nextOut);
+                  }}
+                />
+              </div>
+            </div>
             <Field label={t("charter.search_party")}>
               <input type="number" min={1} max={24} value={party} onChange={(event) => setParty(Math.min(24, Math.max(1, Math.floor(Number(event.target.value) || 1))))} className={fieldCls} />
             </Field>
-            <button type="submit" className="h-11 self-end rounded-full bg-[#F5B942] px-5 text-sm font-semibold text-[#1a1203]">
+            <button type="submit" className="h-12 self-end rounded-2xl bg-[#F5B942] px-5 text-sm font-semibold text-[#1a1203] transition-transform duration-200 hover:scale-[1.01]">
               {t("charter.search_go")}
             </button>
           </form>
@@ -394,16 +401,6 @@ export function CharterCatalogue() {
             </div>
 
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40">{t("charter.field_kind")}</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Chip active={kind === "all"} onClick={() => setKind("all")}>{t("charter.status_all")}</Chip>
-                {KINDS.map((value) => (
-                  <Chip key={value} active={kind === value} onClick={() => setKind(value)}>{t(`charter.kind_${value}`)}</Chip>
-                ))}
-              </div>
-            </div>
-
-            <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40">{t("charter.budget_title")}</p>
               <div className="mt-2 flex flex-col gap-1">
                 {(["all", "low", "mid", "high"] as const).map((value) => (
@@ -430,8 +427,7 @@ export function CharterCatalogue() {
           <h2 className="text-lg font-semibold">{t("charter.faq_title")}</h2>
           <div className="mt-4 divide-y divide-white/10 border-y border-white/10">
             <Faq q={t("charter.faq_price_q")} a={t("charter.faq_price_a")} />
-            <Faq q={t("charter.faq_licence_q")} a={t("charter.faq_licence_a")} />
-            <Faq q={t("charter.faq_saturday_q")} a={t("charter.faq_saturday_a")} />
+            <Faq q={t("charter.faq_stay_q")} a={t("charter.faq_stay_a")} />
             <Faq q={t("charter.faq_pay_q")} a={t("charter.faq_pay_a")} />
           </div>
         </section>
@@ -444,13 +440,21 @@ export function CharterCatalogue() {
       </main>
 
       <PublicFooter />
-      {open && <BoatSheet boat={open} locale={i18n.language} onClose={() => setOpen(null)} />}
+      {open && (
+        <BoatSheet
+          boat={open}
+          locale={i18n.language}
+          checkIn={checkIn}
+          checkOut={checkOut}
+          onClose={() => setOpen(null)}
+        />
+      )}
     </div>
   );
 }
 
 const fieldCls =
-  "h-11 w-full rounded-xl border border-white/15 bg-[#06101c]/80 px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#F5B942]/60";
+  "h-12 w-full rounded-2xl border border-white/15 bg-[#06101c]/80 px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#F5B942]/60";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -464,7 +468,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 function BoatCard({ boat, locale, onOpen }: { boat: Listing; locale: string; onOpen: () => void }) {
   const { t } = useTranslation();
   const photo = boat.photos[0];
-  const next = boat.openWeeks[0];
+  const next = boat.openDays[0];
   return (
     <button type="button" onClick={onOpen} className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] text-left transition-colors hover:border-[#F5B942]/45">
       <div className="relative aspect-[16/10] bg-[#0A192F]">
@@ -484,26 +488,41 @@ function BoatCard({ boat, locale, onOpen }: { boat: Listing; locale: string; onO
       <div className="space-y-2 p-4">
         <p className="text-[13px] text-white/55">{boat.model} · {formatLoa(boat.loaM)} · {t(`charter.hull_${boat.hull}`)}</p>
         <p className="text-[12px] text-white/60">
-          {t(`charter.kind_${boat.kind}`)} · {boat.cabins} {t("charter.cabins")} · {boat.berths} {t("charter.berths")}
+          {boat.cabins} {t("charter.cabins")} · {boat.berths} {t("charter.berths")}
         </p>
         <p className="text-[15px]">
           <MoneyAmount value={boat.weeklyEur} currency="EUR" tone="gold" />
           <span className="text-white/40"> / {t("charter.per_week")} · {t("charter.simulated")}</span>
         </p>
-        <p className="text-[12px] leading-relaxed text-white/50">{t(`charter.include_${boat.kind}`)}</p>
+        <p className="text-[12px] leading-relaxed text-white/50">{t("charter.include_rate")}</p>
         {boat.yard && <p className="text-[12px] text-[#F5B942]">{t("charter.yard_note")}</p>}
         <p className="text-[12px] text-white/45">
-          {next ? `${t("charter.next_open")} ${formatDay(next, locale)} · ${t("charter.open_count", { count: boat.openWeeks.length })}` : t("charter.no_open_week")}
+          {next ? `${t("charter.next_open")} ${formatDay(next, locale)} · ${t("charter.open_count", { count: boat.openDays.length })}` : t("charter.no_open_week")}
         </p>
       </div>
     </button>
   );
 }
 
-function BoatSheet({ boat, locale, onClose }: { boat: Listing; locale: string; onClose: () => void }) {
+function BoatSheet({
+  boat,
+  locale,
+  checkIn: preferredIn,
+  checkOut: preferredOut,
+  onClose,
+}: {
+  boat: Listing;
+  locale: string;
+  checkIn: string;
+  checkOut: string;
+  onClose: () => void;
+}) {
   const { t } = useTranslation();
   const [photo, setPhoto] = useState(0);
-  const [week, setWeek] = useState(boat.openWeeks[0] ?? "");
+  const initialIn = preferredIn && preferredOut && stayFullyOpen(boat.openDays, preferredIn, preferredOut) ? preferredIn : boat.openDays[0] ?? "";
+  const initialOut = preferredIn && preferredOut && stayFullyOpen(boat.openDays, preferredIn, preferredOut) ? preferredOut : "";
+  const [checkIn, setCheckIn] = useState(initialIn);
+  const [checkOut, setCheckOut] = useState(initialOut);
   const [guestName, setGuestName] = useState("");
   const [contact, setContact] = useState("");
   const [party, setParty] = useState("2");
@@ -511,6 +530,7 @@ function BoatSheet({ boat, locale, onClose }: { boat: Listing; locale: string; o
   const [busy, setBusy] = useState(false);
   const fix = placeFix(boat.base);
   const src = boat.photos[photo] ?? boat.photos[0];
+  const nights = stayNights(checkIn, checkOut).length;
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -526,10 +546,23 @@ function BoatSheet({ boat, locale, onClose }: { boat: Listing; locale: string; o
   }, [onClose]);
 
   const submit = async () => {
-    const input = { guestName, contact, party: Number(party), startIso: week, note };
-    const error = !week ? "week" : inquiryInputError(input);
+    const input = { guestName, contact, party: Number(party), startIso: checkIn, endIso: checkOut, note };
+    const error = inquiryInputError(input);
+    if (!error && !stayFullyOpen(boat.openDays, checkIn, checkOut)) {
+      toast.error(t("charter.inquiry_need_dates"));
+      return;
+    }
     if (error) {
-      const key = error === "name" ? "inquiry_need_name" : error === "contact" ? "inquiry_need_contact" : error === "party" ? "inquiry_need_party" : error === "week" ? "inquiry_need_week" : "inquiry_invalid";
+      const key =
+        error === "name"
+          ? "inquiry_need_name"
+          : error === "contact"
+            ? "inquiry_need_contact"
+            : error === "party"
+              ? "inquiry_need_party"
+              : error === "dates"
+                ? "inquiry_need_dates"
+                : "inquiry_invalid";
       toast.error(t(`charter.${key}`));
       return;
     }
@@ -589,27 +622,28 @@ function BoatSheet({ boat, locale, onClose }: { boat: Listing; locale: string; o
               <span className="inline-flex items-center gap-1 rounded-full border border-white/10 px-3 py-1"><Anchor className="size-3" /> {boat.cabins} {t("charter.cabins")}</span>
               <span className="inline-flex items-center gap-1 rounded-full border border-white/10 px-3 py-1"><Users className="size-3" /> {boat.berths} {t("charter.berths")}</span>
               <span className="rounded-full border border-white/10 px-3 py-1">{t(`charter.hull_${boat.hull}`)}</span>
-              <span className="rounded-full border border-white/10 px-3 py-1">{t(`charter.kind_${boat.kind}`)}</span>
             </div>
             {fix && <p className="font-mono text-[12px] text-white/50">{formatDm(fix.lat, fix.lng)}</p>}
-            <p className="text-[14px] text-white/75">{boat.skipper ? `${t("charter.skipper")}: ${boat.skipper}` : t("charter.bareboat_note")}</p>
+            {boat.skipper && <p className="text-[14px] text-white/75">{t("charter.skipper")}: {boat.skipper}</p>}
             <div className="rounded-2xl border border-[#F5B942]/30 bg-[#F5B942]/10 p-4">
               <p className="text-[15px]">
                 <MoneyAmount value={boat.weeklyEur} currency="EUR" tone="gold" />
                 <span className="text-white/50"> / {t("charter.per_week")} · {t("charter.simulated")}</span>
               </p>
-              <p className="mt-2 text-[13px] leading-relaxed text-white/75">{t(`charter.include_${boat.kind}`)}</p>
+              <p className="mt-2 text-[13px] leading-relaxed text-white/75">{t("charter.include_rate")}</p>
+              {nights > 0 && <p className="mt-1 text-[12px] text-[#00F0FF]/90">{t("charter.nights_count", { count: nights })}</p>}
             </div>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">{t("charter.open_days")}</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {boat.openWeeks.length === 0 && <p className="text-[13px] text-white/45">{t("charter.no_open_week")}</p>}
-                {boat.openWeeks.map((iso) => (
-                  <button key={iso} type="button" onClick={() => setWeek(iso)} className={"rounded-full border px-3 py-1.5 text-[12px] " + (week === iso ? "border-[#F5B942] bg-[#F5B942]/15 text-[#F5B942]" : "border-white/10 text-white/70")}>
-                    {formatDay(iso, locale)}
-                  </button>
-                ))}
-              </div>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">{t("charter.stay_label")}</p>
+              <CharterStayPicker
+                checkIn={checkIn}
+                checkOut={checkOut}
+                openDays={boat.openDays}
+                onChange={({ checkIn: nextIn, checkOut: nextOut }) => {
+                  setCheckIn(nextIn);
+                  setCheckOut(nextOut);
+                }}
+              />
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
               <SheetField label={t("charter.field_name")} value={guestName} onChange={setGuestName} />
@@ -617,7 +651,7 @@ function BoatSheet({ boat, locale, onClose }: { boat: Listing; locale: string; o
               <SheetField label={t("charter.field_party")} value={party} onChange={setParty} />
               <SheetField label={t("charter.field_note")} value={note} onChange={setNote} />
             </div>
-            <button type="button" disabled={busy || !week} onClick={() => void submit()} className="h-11 w-full rounded-full bg-[#F5B942] text-sm font-semibold text-[#1a1203] disabled:opacity-40">
+            <button type="button" disabled={busy || !checkIn || !checkOut} onClick={() => void submit()} className="h-11 w-full rounded-full bg-[#F5B942] text-sm font-semibold text-[#1a1203] disabled:opacity-40">
               {t("charter.ask_week")}
             </button>
             <p className="text-[11px] leading-relaxed text-white/40">{boat.sample ? t("charter.sample_note") : t("charter.inquiry_note")}</p>

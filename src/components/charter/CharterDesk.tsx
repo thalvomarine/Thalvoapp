@@ -345,12 +345,11 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               <StatusBadge tone={YACHT_TONE[yacht.status]}>{t(`charter.yacht_${yacht.status}`)}</StatusBadge>
-              <DataPill label={t(`charter.kind_${yacht.kind as CharterKind}`)} />
               <DataPill icon={<Anchor className="size-3" />} label={t("charter.cabins")} value={String(yacht.cabins)} />
             </div>
             <p className="mt-3 font-mono text-[11px] text-white/55">{formatDm(BASE_FIX[yacht.base].lat, BASE_FIX[yacht.base].lng)}</p>
             <p className="mt-3 text-[13px] text-white/75">
-              {yacht.skipper ? `${t("charter.skipper")}: ${yacht.skipper}` : t("charter.bareboat_note")}
+              {yacht.skipper ? `${t("charter.skipper")}: ${yacht.skipper}` : t("charter.skipper_optional")}
             </p>
             <p className="mt-2 text-[13px] text-white/80">
               {t("charter.from_week")} <MoneyAmount value={yacht.weeklyFromEur} currency="EUR" tone="gold" />

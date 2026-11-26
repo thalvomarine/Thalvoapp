@@ -4,10 +4,10 @@ import { toast } from "sonner";
 import { ImageUploader } from "@/components/ImageUploader";
 import { MoneyAmount, StatusBadge } from "@/components/core";
 import { GlassPanel } from "@/components/mission/GlassPanel";
-import { type CharterHull, type CharterKind } from "@/lib/charter-desk";
+import { type CharterHull } from "@/lib/charter-desk";
 import { createYacht, markInquiryQuoted, setWeekStatus, setYachtListed, setYachtPhotos } from "@/lib/charter-fleet-api";
 import {
-  upcomingSaturdays,
+  upcomingDays,
   yachtInputError,
   type FleetYachtInput,
   type StoredInquiry,
@@ -23,7 +23,7 @@ const EMPTY: FleetYachtInput = {
   cabins: 3,
   base: "",
   hull: "sail",
-  kind: "bareboat",
+  kind: "crewed",
   weeklyEur: 4000,
   skipper: "",
   listed: true,
@@ -45,7 +45,7 @@ export function CharterFleetEditor({
   const { t, i18n } = useTranslation();
   const [form, setForm] = useState<FleetYachtInput>(EMPTY);
   const [busy, setBusy] = useState(false);
-  const saturdays = upcomingSaturdays(undefined, 8);
+  const days = upcomingDays(undefined, 28);
 
   const save = async () => {
     const error = yachtInputError(form);
@@ -108,12 +108,6 @@ export function CharterFleetEditor({
               {(["sail", "catamaran", "motor", "gulet"] as const).map((hull) => <option key={hull} value={hull}>{t(`charter.hull_${hull}`)}</option>)}
             </select>
           </label>
-          <label className="block">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">{t("charter.field_kind")}</span>
-            <select value={form.kind} onChange={(event) => setForm({ ...form, kind: event.target.value as CharterKind })} className="mt-1 h-10 w-full rounded-xl border border-white/10 bg-[#071422] px-3 text-sm text-white">
-              {(["bareboat", "crewed", "cabin"] as const).map((kind) => <option key={kind} value={kind}>{t(`charter.kind_${kind}`)}</option>)}
-            </select>
-          </label>
         </div>
         <button type="button" disabled={busy} onClick={() => void save()} className="mt-4 h-10 rounded-full bg-[#F5B942] px-5 text-sm font-semibold text-[#1a1203] disabled:opacity-40">
           {t("charter.fleet_add")}
@@ -144,7 +138,7 @@ export function CharterFleetEditor({
           )}
           <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{t("charter.open_days")}</p>
           <div className="mt-2 flex flex-wrap gap-1.5">
-            {saturdays.map((iso) => {
+            {days.map((iso) => {
               const open = yacht.weeks.some((week) => week.startIso === iso && week.status === "open");
               return (
                 <button key={iso} type="button" onClick={() => void toggleWeek(yacht, iso)} className={"rounded-full border px-2.5 py-1 text-[11px] " + (open ? "border-emerald-300/40 text-emerald-100" : "border-white/10 text-white/40")}>
@@ -167,7 +161,7 @@ export function CharterFleetEditor({
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="text-sm font-semibold text-white">{row.guestName}</p>
-                      <p className="text-[12px] text-white/55">{yacht?.name} · {formatDay(row.startIso, i18n.language)} · {row.party}</p>
+                      <p className="text-[12px] text-white/55">{yacht?.name} · {formatDay(row.startIso, i18n.language)}{row.endIso ? ` → ${formatDay(row.endIso, i18n.language)}` : ""} · {row.party}</p>
                       <p className="text-[12px] text-white/70">{row.contact}</p>
                     </div>
                     <StatusBadge tone={row.status === "new" ? "info" : "warning"}>{t(`charter.inquiry_${row.status}`)}</StatusBadge>

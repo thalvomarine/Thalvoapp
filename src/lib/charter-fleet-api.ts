@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { CharterBase, CharterKind, InquiryStatus } from "@/lib/charter-desk";
 import {
-  upcomingSaturdays,
+  upcomingDays,
   type FleetYachtInput,
   type StoredInquiry,
   type StoredWeek,
@@ -40,6 +40,7 @@ interface InquiryRow {
   contact: string;
   party: number;
   start_iso: string;
+  end_iso: string;
   note: string | null;
   status: string;
 }
@@ -127,12 +128,12 @@ export async function createYacht(ownerId: string, operatorName: string, input: 
     .single();
   if (error) throw error;
   const id = (data as { id: string }).id;
-  const weeks = upcomingSaturdays().map((startIso) => ({
+  const days = upcomingDays(undefined, 42).map((startIso) => ({
     yacht_id: id,
     start_iso: startIso,
     status: "open" as const,
   }));
-  const saved = await supabase.from("charter_weeks").insert(weeks);
+  const saved = await supabase.from("charter_weeks").insert(days);
   if (saved.error) throw saved.error;
   return id;
 }
@@ -155,13 +156,17 @@ export async function setWeekStatus(yachtId: string, startIso: string, status: "
   if (error) throw error;
 }
 
-export async function sendInquiry(yachtId: string, input: { guestName: string; contact: string; party: number; startIso: string; note: string }): Promise<void> {
+export async function sendInquiry(
+  yachtId: string,
+  input: { guestName: string; contact: string; party: number; startIso: string; endIso: string; note: string },
+): Promise<void> {
   const { error } = await supabase.from("charter_inquiries").insert({
     yacht_id: yachtId,
     guest_name: input.guestName.trim(),
     contact: input.contact.trim(),
     party: input.party,
     start_iso: input.startIso,
+    end_iso: input.endIso,
     note: input.note.trim() || null,
     status: "new",
   });
@@ -172,7 +177,7 @@ export async function loadOwnerInquiries(yachtIds: string[]): Promise<StoredInqu
   if (yachtIds.length === 0) return [];
   const { data, error } = await supabase
     .from("charter_inquiries")
-    .select("id,yacht_id,guest_name,contact,party,start_iso,note,status")
+    .select("id,yacht_id,guest_name,contact,party,start_iso,end_iso,note,status")
     .in("yacht_id", yachtIds)
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -183,6 +188,7 @@ export async function loadOwnerInquiries(yachtIds: string[]): Promise<StoredInqu
     contact: row.contact,
     party: row.party,
     startIso: row.start_iso,
+    endIso: row.end_iso,
     note: row.note,
     status: row.status as InquiryStatus,
   }));
