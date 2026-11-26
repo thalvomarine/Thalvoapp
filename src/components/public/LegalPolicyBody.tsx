@@ -30,6 +30,9 @@ export function LegalPolicyBody() {
         <p className="mt-3 text-sm leading-relaxed text-white/70">
           {t("public.privacy_account_note")}
         </p>
+        <p className="mt-3 text-sm leading-relaxed text-white/70">
+          {t("public.privacy_account_delete")}
+        </p>
       </section>
       <section>
         <h2 className="text-base font-bold">{t("public.privacy_payment_title")}</h2>

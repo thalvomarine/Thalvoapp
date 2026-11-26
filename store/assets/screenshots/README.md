@@ -2,10 +2,14 @@
 
 Capture from a real device or simulator after `npm run build:mobile`.
 
-## Apple (required for iPhone)
+## Apple (required)
 
-- 6.7" (e.g. 1290×2796) — at least 3 frames: chart, cockpit, auth/landing
-- 6.1" (e.g. 1179×2556) — same set
+The app runs on iPhone and iPad. App Store Connect rejects the version without both of these classes. PNG or JPEG, no transparency.
+
+- iPhone with Dynamic Island (medium): **1179×2556** or **1206×2622** — chart, cockpit, sign-in
+- iPad 13-inch: **2064×2752** or **2048×2732** — same frames
+
+Smaller iPhone sizes are optional; Connect scales the medium Dynamic Island set down.
 
 ## Google Play
 

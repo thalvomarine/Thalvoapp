@@ -23,3 +23,4 @@ description: >-
 - `routeTree.gen.ts` is generated. Do not hand-edit it.
 - Live site: push `main`. GitHub deploys thalvo.org. Do not redeploy an old TanStack Start build.
 - App Store / Play launch package: `docs/STORE_LAUNCH.md` and `store/`. Bundle id `com.thalvo.marineos`. Keep Capgo `autoUpdate` false until a production OTA is verified. Payments stay simulated in review notes.
+- Account deletion stays in Profile → Account settings and calls `delete_own_account`. Do not replace it with an email-only request.

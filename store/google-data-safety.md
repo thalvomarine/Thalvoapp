@@ -3,7 +3,7 @@
 Privacy policy URL: https://thalvo.org/privacy  
 App collects user data: **Yes** (for signed-in features)  
 Data encrypted in transit: **Yes** (HTTPS)  
-Users can request deletion: **Yes** — via support@thalvo.org (document process; wire in-app delete later if required)
+Users can request deletion: **Yes** — in the app: Profile → Account settings → Delete account (`delete_own_account`). Also https://thalvo.org/privacy and support@thalvo.org.
 
 ## Collected data
 
