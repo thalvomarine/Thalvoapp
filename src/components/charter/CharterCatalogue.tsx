@@ -326,6 +326,23 @@ export function CharterCatalogue() {
             </button>
           </form>
           <p className="mt-3 text-[12px] text-white/45">{t("charter.date_hint")}</p>
+
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] p-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("charter.door_guest_kicker")}</p>
+              <p className="mt-2 text-[15px] font-semibold text-white">{t("charter.door_guest_title")}</p>
+              <p className="mt-1 text-[13px] leading-relaxed text-white/60">{t("charter.door_guest_body")}</p>
+            </div>
+            <Link
+              to="/auth"
+              search={{ next: "/app/charter" }}
+              className="rounded-[1.25rem] border border-[#F5B942]/30 bg-[#F5B942]/10 p-4 transition-colors hover:border-[#F5B942]/55"
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#F5B942]">{t("charter.door_owner_kicker")}</p>
+              <p className="mt-2 text-[15px] font-semibold text-white">{t("charter.door_owner_title")}</p>
+              <p className="mt-1 text-[13px] leading-relaxed text-white/70">{t("charter.door_owner_body")}</p>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -552,9 +569,15 @@ function BoatCard({ boat, locale, onOpen }: { boat: Listing; locale: string; onO
             </p>
             <p className="text-[11px] uppercase tracking-[0.12em] text-white/35">{t("charter.simulated")}</p>
           </div>
-          <p className="max-w-[9rem] text-right text-[11px] leading-snug text-white/45">
-            {next ? `${t("charter.next_open")} ${formatDay(next, locale)}` : t("charter.no_open_week")}
-          </p>
+          {next ? (
+            <span className="rounded-full border border-emerald-300/35 bg-emerald-400/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-100">
+              {t("charter.next_open")} {formatDay(next, locale)}
+            </span>
+          ) : (
+            <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-white/40">
+              {t("charter.no_open_week")}
+            </span>
+          )}
         </div>
         {boat.yard && <p className="text-[12px] text-[#F5B942]">{t("charter.yard_note")}</p>}
       </div>
