@@ -253,6 +253,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          job_id: string | null
           lat: number
           lng: number
           status: string
@@ -267,6 +268,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          job_id?: string | null
           lat: number
           lng: number
           status?: string
@@ -281,6 +283,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          job_id?: string | null
           lat?: number
           lng?: number
           status?: string
@@ -301,6 +304,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "emergency_service_requests_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
         ]
@@ -1690,7 +1700,19 @@ export type Database = {
       /** True when caller is the seeded platform operator; never returns the email. */
       is_platform_operator: { Args: never; Returns: boolean }
       claim_open_job: { Args: { _job_id: string }; Returns: undefined }
-      approve_part: { Args: { _part_id: string }; Returns: undefined }
+      submit_offer: {
+        Args: {
+          _job_id: string
+          _price: number
+          _eta_minutes: number
+          _note?: string | null
+        }
+        Returns: string
+      }
+      approve_part: {
+        Args: { _part_id: string; _demo_ack?: boolean }
+        Returns: undefined
+      }
       book_service_package: {
         Args: {
           _psp_id: string

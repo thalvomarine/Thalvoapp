@@ -23,6 +23,7 @@ import { createRealtimeBuffer, runWhenIdle } from "@/lib/schedule";
 import { noteSchemaMiss, skipMissing } from "@/lib/schema-gap";
 import { getFix, readLastFix } from "@/lib/geolocation";
 import { autoEtaMinutesBetween, calculateMarineEta } from "@/lib/geo-eta";
+import { toast } from "sonner";
 import { Anchor, Wrench, Radio, Gauge, Activity, Loader2, Send, ChevronRight } from "lucide-react";
 import { TrustMark } from "@/components/brand/ProductMarks";
 
@@ -224,7 +225,8 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
           .select(
             "id, problem_category, description, marina, service_type, lat, lng, profiles!jobs_client_id_fkey(full_name, boat_name)",
           )
-          .eq("status", "Pending")
+          .in("status", ["Pending", "Offered"])
+          .is("provider_id", null)
           .order("created_at", { ascending: false });
         if (pending.error) console.warn("[cockpit] jobs pending unavailable", pending.error.message);
         setRequests((pending.data as never) ?? []);
@@ -611,26 +613,29 @@ function RequestCard({
   const submit = async () => {
     if (!user || !price || !eta) return;
     setBusy(true);
-    // TODO(payments): once escrow is live, treat this as a bid on a funded mission,
-    // and surface availability + certifications to the captain server-side.
     const notePayload = [available === "standby" ? "[On standby]" : "[Available now]", note.trim()]
       .filter(Boolean)
       .join(" ");
-    await supabase.from("job_offers").insert({
-      job_id: request.id,
-      provider_id: user.id,
-      price: parseGrouped(price),
-      eta_minutes: parseGrouped(eta),
-      note: notePayload || null,
+    const offerPrice = parseGrouped(price);
+    const offerEta = parseGrouped(eta);
+    const { data: offerId, error } = await supabase.rpc("submit_offer", {
+      _job_id: request.id,
+      _price: offerPrice,
+      _eta_minutes: offerEta,
+      _note: notePayload || null,
     });
-    // M7: best-effort — server should emit once offer submission moves into an RPC.
+    setBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     emitEvent({
       type: "offer.submitted",
       subject_type: "offer",
-      subject_id: request.id,
-      metadata: { job_id: request.id, price: parseGrouped(price), eta_minutes: parseGrouped(eta) },
+      subject_id: typeof offerId === "string" ? offerId : request.id,
+      metadata: { job_id: request.id, price: offerPrice, eta_minutes: offerEta },
     });
-    setBusy(false);
+    toast.success(t("ops_alerts.offer_sent"));
     setOpen(false);
     setPrice("");
     setEta("");

@@ -275,7 +275,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
   }, []);
 
   useEffect(() => {
-    if (job.status !== "Pending") {
+    if (job.status !== "Pending" && job.status !== "Offered") {
       setOffers([]);
       return;
     }
@@ -570,7 +570,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
   // Escrow UI state derived from job status.
   // TODO(payments): replace with real Stripe/escrow ledger events.
   const escrowUi: EscrowUiState = (() => {
-    if (job.status === "Pending") return "awaiting";
+    if (job.status === "Pending" || job.status === "Offered") return "awaiting";
     if (job.status === "PartsPending") return "extras_pending";
     if (job.status === "Completed") return "released";
     return "secured";
@@ -594,7 +594,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
               tone={
                 job.status === "Completed"
                   ? "success"
-                  : job.status === "Pending"
+                  : job.status === "Pending" || job.status === "Offered"
                     ? "warning"
                     : "info"
               }
@@ -633,17 +633,23 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
       </GlassPanel>
       <JobBrief description={job.description} photoPath={job.photo_url} problem={job.problem_category} />
 
-      {providerPos && (
+      {!closed && Number.isFinite(job.lat) && Number.isFinite(job.lng) && (
         <div className="rounded-2xl overflow-hidden border border-white/10">
           <MockMap
-            providers={[providerPos]}
+            providers={providerPos ? [providerPos] : []}
             jobs={[{ id: job.id, lat: job.lat, lng: job.lng, marina: job.marina }]}
             overridePositions={overridePos}
           />
+          {job.status === "EnRoute" && enRouteEta !== null && (
+            <div className="border-t border-white/10 bg-black/40 px-3 py-2 text-[11px] text-cyan-100/90">
+              {t("owner.arriving_in", { min: enRouteEta })}
+              {liveProviderFresh ? ` · ${t("ops.live_position")}` : ""}
+            </div>
+          )}
         </div>
       )}
 
-      {job.status === "Pending" && (
+      {(job.status === "Pending" || job.status === "Offered") && (
         <section>
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40 mb-2 px-1">
             {t("owner.offers_title")} · {offers.length}
@@ -700,7 +706,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
         </section>
       )}
 
-      {job.status !== "Pending" && (
+      {job.status !== "Pending" && job.status !== "Offered" && (
         <EscrowPanel
           state={escrowUi}
           amountLabel={formatTL(Number(job.total_escrow_pool))}
@@ -735,7 +741,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
         </EscrowPanel>
       )}
 
-      {job.status !== "Pending" && (
+      {job.status !== "Pending" && job.status !== "Offered" && (
         <details className="group rounded-2xl border border-white/10 bg-white/[0.02]">
           <summary className="list-none cursor-pointer select-none px-4 py-3 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60 hover:text-white/80">
             <span>{t("mission.details")}</span>
@@ -748,7 +754,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
         </details>
       )}
 
-      {["OnSite", "InProgress", "PartsPending"].includes(job.status) && (
+      {["OnSite", "InProgress"].includes(job.status) && !pendingPart && (
         <button
           onClick={complete}
           disabled={completing}
@@ -761,6 +767,11 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
           )}
           {t("owner.confirm_complete")} · {t("mission.release_escrow")}
         </button>
+      )}
+      {job.status === "PartsPending" && pendingPart && (
+        <GlassPanel className="text-sm text-amber-100/90">
+          {t("owner.approve_extras_before_complete")}
+        </GlassPanel>
       )}
 
       {job.provider_id && <JobChat jobId={job.id} meId={meId} />}
@@ -863,7 +874,10 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
           onClose={() => setCheckout(null)}
           onPaid={async () => {
             const partId = checkout.part.id;
-            const { error } = await supabase.rpc("approve_part", { _part_id: partId });
+            const { error } = await supabase.rpc("approve_part", {
+              _part_id: partId,
+              _demo_ack: true,
+            });
             if (error) throw new Error(error.message);
             // Eagerly refetch parts so the outer "pending part" overlay
             // disappears immediately instead of waiting on realtime; without
@@ -913,6 +927,12 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   const [partPhoto, setPartPhoto] = useState("");
   const [source, setSource] = useState("Tedarikçi Firma (Local Supplier)");
   const [busy, setBusy] = useState(false);
+  const [bidPrice, setBidPrice] = useState("");
+  const [bidEta, setBidEta] = useState("");
+  const [bidNote, setBidNote] = useState("");
+  const [bidding, setBidding] = useState(false);
+  const openForBid =
+    !job.provider_id && (job.status === "Pending" || job.status === "Offered");
   const tracking =
     job.provider_id === meId &&
     ["Accepted", "EnRoute", "OnSite", "InProgress", "PartsPending"].includes(job.status);
@@ -988,6 +1008,34 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   }, [job.id, meId]);
   const providerCommission = computeCommission(Number(job.total_escrow_pool));
 
+  const submitBid = async () => {
+    if (!bidPrice || !bidEta) return;
+    setBidding(true);
+    const res = await getFix();
+    if (res.ok) {
+      await supabase.rpc("refresh_own_provider_position", {
+        _lat: res.fix.lat,
+        _lng: res.fix.lng,
+        _accuracy_m: Number.isFinite(res.fix.accuracy) ? Math.round(res.fix.accuracy) : undefined,
+      });
+    }
+    const { error } = await supabase.rpc("submit_offer", {
+      _job_id: job.id,
+      _price: parseGrouped(bidPrice),
+      _eta_minutes: parseGrouped(bidEta),
+      _note: bidNote.trim() || null,
+    });
+    setBidding(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(t("ops_alerts.offer_sent"));
+    setBidPrice("");
+    setBidEta("");
+    setBidNote("");
+  };
+
   const setSail = async () => {
     // Seed provider_details with a fresh fix so set_sail can auto-fill ETA.
     const res = await getFix();
@@ -998,10 +1046,12 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
         _accuracy_m: Number.isFinite(res.fix.accuracy) ? Math.round(res.fix.accuracy) : undefined,
       });
     }
-    await supabase.rpc("set_sail", { _job_id: job.id });
+    const { error } = await supabase.rpc("set_sail", { _job_id: job.id });
+    if (error) toast.error(error.message);
   };
   const arrived = async () => {
-    await supabase.rpc("mark_arrived", { _job_id: job.id });
+    const { error } = await supabase.rpc("mark_arrived", { _job_id: job.id });
+    if (error) toast.error(error.message);
   };
   const addPart = async () => {
     if (!partName || !partPrice) return;
@@ -1048,22 +1098,72 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
         <VesselRange lat={job.lat} lng={job.lng} />
       )}
 
-      <details className="group rounded-2xl border border-white/10 bg-white/[0.02]">
-        <summary className="list-none cursor-pointer select-none px-4 py-3 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60 hover:text-white/80">
-          <span>{t("mission.details")}</span>
-          <span className="text-white/40 group-open:rotate-180 transition-transform">▾</span>
-        </summary>
-        <div className="p-3 pt-1 space-y-3">
-          <ProviderPayoutPanel
-            payout={payout}
-            expectedNet={providerCommission.net}
-            feeAmount={providerCommission.fee}
+      {openForBid && (
+        <GlassPanel className="space-y-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-200/80">
+            {t("ops_alerts.bid")}
+          </p>
+          <p className="text-sm text-white/70">{t("ops_alerts.pool_bid_hint")}</p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <input
+              value={bidPrice}
+              onChange={(e) => {
+                const next = groupThousands(e.target.value);
+                setBidPrice(next);
+                requestAnimationFrame(() => {
+                  const el = e.target;
+                  const caret = caretAfterGrouping(e.target.value, next, el.selectionStart);
+                  el.setSelectionRange(caret, caret);
+                });
+              }}
+              inputMode="decimal"
+              placeholder={t("ops_alerts.bid_price", { defaultValue: "Price (TRY)" })}
+              className="h-11 rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white"
+            />
+            <input
+              value={bidEta}
+              onChange={(e) => setBidEta(groupThousands(e.target.value))}
+              inputMode="numeric"
+              placeholder={t("ops_alerts.bid_eta", { defaultValue: "ETA (min)" })}
+              className="h-11 rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white"
+            />
+          </div>
+          <input
+            value={bidNote}
+            onChange={(e) => setBidNote(e.target.value)}
+            placeholder={t("ops_alerts.bid_note", { defaultValue: "Note (optional)" })}
+            className="h-11 w-full rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white"
           />
-          <CommissionBreakdown gross={providerCommission.gross} />
-        </div>
-      </details>
+          <button
+            type="button"
+            disabled={bidding || !bidPrice || !bidEta}
+            onClick={() => void submitBid()}
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 text-[12px] font-black uppercase tracking-wider text-[#0A192F] disabled:opacity-50"
+          >
+            {bidding ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+            {t("ops_alerts.send_offer")}
+          </button>
+        </GlassPanel>
+      )}
 
-      {job.status === "Accepted" && (
+      {!openForBid && (
+        <details className="group rounded-2xl border border-white/10 bg-white/[0.02]">
+          <summary className="list-none cursor-pointer select-none px-4 py-3 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60 hover:text-white/80">
+            <span>{t("mission.details")}</span>
+            <span className="text-white/40 group-open:rotate-180 transition-transform">▾</span>
+          </summary>
+          <div className="p-3 pt-1 space-y-3">
+            <ProviderPayoutPanel
+              payout={payout}
+              expectedNet={providerCommission.net}
+              feeAmount={providerCommission.fee}
+            />
+            <CommissionBreakdown gross={providerCommission.gross} />
+          </div>
+        </details>
+      )}
+
+      {job.status === "Accepted" && job.provider_id === meId && (
         <button
           onClick={setSail}
           className="w-full h-14 rounded-2xl amber-gradient text-warning-foreground font-bold inline-flex items-center justify-center gap-2"
