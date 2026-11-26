@@ -8,8 +8,8 @@ can pick them up without re-discovering.
 - **Server-side leak enforcement.** DB `mask_job_message` rejects high-risk
   chat. Client `recordSecurityEvent` also writes `security_events` for
   preflight blocks. AdminSecurityPanel merges both.
-- **`MaskedContact` reveal.** Still UI-only; must be gated by a server RPC
-  that checks role and logs the reveal.
+- **`MaskedContact` reveal.** UI stays masked until `reveal_contact_allowed`
+  returns true for an admin. The RPC does not write an audit row for the reveal.
 - **Simulated payments (gated).** Mode in `platform_settings.payments.mode`
   (`simulated` default). Client must pass `_demo_ack` from CheckoutModal.
   Live mode stays `pending` until a PSP webhook. See
