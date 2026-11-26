@@ -198,6 +198,19 @@ export function BrandLanding() {
             <Feature n="02" title={t("landing.feat_parts_title")} body={t("landing.feat_parts_body")} />
             <Feature n="03" title={t("landing.feat_chart_title")} body={t("landing.feat_chart_body")} />
           </div>
+          <div className="mt-10 grid gap-3 sm:grid-cols-2">
+            <Link to="/charter" className="rounded-3xl border border-[#F5B942]/30 bg-[#F5B942]/10 p-5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F5B942]">{t("charter.door_charter")}</p>
+              <p className="mt-2 text-sm text-white/80">{t("charter.door_charter_body")}</p>
+            </Link>
+            <div className="rounded-3xl border border-white/10 p-5">
+              <Link to="/services" className="block">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55">{t("charter.door_service")}</p>
+                <p className="mt-2 text-sm text-white/70">{t("charter.door_service_body")}</p>
+              </Link>
+              <Link to="/marketplace" className="mt-3 inline-flex text-[12px] font-semibold text-[#F5B942]">{t("charter.door_parts")}</Link>
+            </div>
+          </div>
         </div>
       </section>
 

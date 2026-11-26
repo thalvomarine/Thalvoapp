@@ -26,6 +26,7 @@
     { "source": "/marketplace", "destination": "/index.html" },
     { "source": "/marketplace-preview", "destination": "/index.html" },
     { "source": "/charter-preview", "destination": "/index.html" },
+    { "source": "/charter", "destination": "/index.html" },
     { "source": "/offline", "destination": "/index.html" },
     { "source": "/privacy", "destination": "/index.html" },
     { "source": "/services", "destination": "/index.html" },

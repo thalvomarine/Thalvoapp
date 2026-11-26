@@ -461,7 +461,7 @@ export function saturdayWeeks(now = new Date(), count = 4): OccupancyWeek[] {
   return weeks;
 }
 
-export type OccupancyTone = "free" | "option" | "booked" | "one_way" | "service";
+export type OccupancyTone = "free" | "option" | "booked" | "one_way" | "service" | "closed";
 
 export interface OccupancyCell {
   tone: OccupancyTone;
@@ -473,6 +473,7 @@ export function occupancyCell(
   week: OccupancyWeek,
   bookings: CharterBooking[],
   today: string,
+  blockedStarts: readonly string[] = [],
 ): OccupancyCell {
   if (yacht.status === "maintenance") return { tone: "service" };
   const hits = bookings.filter(
@@ -489,6 +490,7 @@ export function occupancyCell(
     if (hit.baseOut !== hit.baseIn) return { tone: "one_way", booking: hit };
     return { tone: "booked", booking: hit };
   }
+  if (blockedStarts.includes(week.startIso)) return { tone: "closed" };
   if (yacht.status === "turnaround" && today >= week.startIso && today < week.endIso) {
     return { tone: "service" };
   }

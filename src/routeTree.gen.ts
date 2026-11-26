@@ -15,6 +15,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BoatshowRouteImport } from './routes/boatshow'
 import { Route as ChartRouteImport } from './routes/chart'
+import { Route as CharterRouteImport } from './routes/charter'
 import { Route as CharterPreviewRouteImport } from './routes/charter-preview'
 import { Route as CoverageRouteImport } from './routes/coverage'
 import { Route as DeliveryReturnsRouteImport } from './routes/delivery-returns'
@@ -71,6 +72,11 @@ const BoatshowRoute = BoatshowRouteImport.update({
 const ChartRoute = ChartRouteImport.update({
   id: '/chart',
   path: '/chart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CharterRoute = CharterRouteImport.update({
+  id: '/charter',
+  path: '/charter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CharterPreviewRoute = CharterPreviewRouteImport.update({
@@ -226,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
+  '/charter': typeof CharterRoute
   '/charter-preview': typeof CharterPreviewRoute
   '/coverage': typeof CoverageRoute
   '/delivery-returns': typeof DeliveryReturnsRoute
@@ -261,6 +268,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
+  '/charter': typeof CharterRoute
   '/charter-preview': typeof CharterPreviewRoute
   '/coverage': typeof CoverageRoute
   '/delivery-returns': typeof DeliveryReturnsRoute
@@ -298,6 +306,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/boatshow': typeof BoatshowRoute
   '/chart': typeof ChartRoute
+  '/charter': typeof CharterRoute
   '/charter-preview': typeof CharterPreviewRoute
   '/coverage': typeof CoverageRoute
   '/delivery-returns': typeof DeliveryReturnsRoute
@@ -335,6 +344,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boatshow'
     | '/chart'
+    | '/charter'
     | '/charter-preview'
     | '/coverage'
     | '/delivery-returns'
@@ -370,6 +380,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boatshow'
     | '/chart'
+    | '/charter'
     | '/charter-preview'
     | '/coverage'
     | '/delivery-returns'
@@ -406,6 +417,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boatshow'
     | '/chart'
+    | '/charter'
     | '/charter-preview'
     | '/coverage'
     | '/delivery-returns'
@@ -443,6 +455,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BoatshowRoute: typeof BoatshowRoute
   ChartRoute: typeof ChartRoute
+  CharterRoute: typeof CharterRoute
   CharterPreviewRoute: typeof CharterPreviewRoute
   CoverageRoute: typeof CoverageRoute
   DeliveryReturnsRoute: typeof DeliveryReturnsRoute
@@ -499,6 +512,13 @@ declare module '@tanstack/react-router' {
       path: '/chart'
       fullPath: '/chart'
       preLoaderRoute: typeof ChartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/charter': {
+      id: '/charter'
+      path: '/charter'
+      fullPath: '/charter'
+      preLoaderRoute: typeof CharterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/charter-preview': {
@@ -748,6 +768,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BoatshowRoute: BoatshowRoute,
   ChartRoute: ChartRoute,
+  CharterRoute: CharterRoute,
   CharterPreviewRoute: CharterPreviewRoute,
   CoverageRoute: CoverageRoute,
   DeliveryReturnsRoute: DeliveryReturnsRoute,

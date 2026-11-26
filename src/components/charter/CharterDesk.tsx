@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Anchor, Ship, Users, X } from "lucide-react";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import {
 } from "@/components/core";
 import { GlassPanel } from "@/components/mission/GlassPanel";
 import { formatDm } from "@/lib/formatters";
+import { blockedStarts, toDeskYacht, type StoredYacht } from "@/lib/charter-fleet";
 import {
   CHARTER_BASES,
   SEED_FLEET,
@@ -76,8 +77,9 @@ const INQUIRY_TONE: Record<InquiryStatus, "info" | "warning" | "success" | "neut
 
 type Tab = "sheet" | "today" | "fleet" | "bookings" | "inquiries";
 type YachtFilter = YachtStatus | "all";
+const NO_COMPANY_YACHTS: StoredYacht[] = [];
 
-export function CharterDesk() {
+export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYachts?: StoredYacht[] }) {
   const { t, i18n } = useTranslation();
   const [base, setBase] = useState<CharterBase | "all">("all");
   const [tab, setTab] = useState<Tab>("sheet");
@@ -85,7 +87,7 @@ export function CharterDesk() {
   const [yachtFilter, setYachtFilter] = useState<YachtFilter>("all");
   const [openYacht, setOpenYacht] = useState<string | null>(null);
   const [bookings, setBookings] = useState<CharterBooking[]>(() => buildSeedBookings());
-  const [fleetRows, setFleetRows] = useState(SEED_FLEET);
+  const [fleetRows, setFleetRows] = useState(() => [...SEED_FLEET, ...companyYachts.map(toDeskYacht)]);
   const [inquiries, setInquiries] = useState<CharterInquiry[]>(SEED_INQUIRIES);
   const [handover, setHandover] = useState<Record<string, HandoverItem[]>>({});
 
@@ -102,6 +104,15 @@ export function CharterDesk() {
     : undefined;
   const openInquiries = inquiries.filter((q) => q.status === "new" || q.status === "quoted" || q.status === "hold");
   const weeks = useMemo(() => saturdayWeeks(), []);
+  const closedWeeks = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const yacht of companyYachts) map.set(yacht.id, blockedStarts(yacht));
+    return map;
+  }, [companyYachts]);
+
+  useEffect(() => {
+    setFleetRows([...SEED_FLEET, ...companyYachts.map(toDeskYacht)]);
+  }, [companyYachts]);
   const sheetFleet = filterFleet(fleetRows, base, "all");
 
   const checkIn = (booking: CharterBooking) => {
@@ -220,6 +231,7 @@ export function CharterDesk() {
           bookings={scopedBookings}
           today={today}
           locale={i18n.language}
+          closedWeeks={closedWeeks}
           onOpen={setOpenYacht}
         />
       )}
@@ -368,6 +380,7 @@ const CELL_CLASS: Record<OccupancyTone, string> = {
   option: "border-amber-300/50 bg-amber-400/15 text-amber-50",
   one_way: "border-cyan-200/30 bg-cyan-400/10 text-cyan-50",
   service: "border-rose-400/30 bg-rose-500/10 text-rose-100",
+  closed: "border-white/10 bg-white/[0.04] text-white/40",
 };
 
 function OccupancySheet({
@@ -376,6 +389,7 @@ function OccupancySheet({
   bookings,
   today,
   locale,
+  closedWeeks,
   onOpen,
 }: {
   fleet: CharterYacht[];
@@ -383,6 +397,7 @@ function OccupancySheet({
   bookings: CharterBooking[];
   today: string;
   locale: string;
+  closedWeeks: Map<string, string[]>;
   onOpen: (id: string) => void;
 }) {
   const { t } = useTranslation();
@@ -421,7 +436,7 @@ function OccupancySheet({
                 </button>
               </th>
               {weeks.map((week) => {
-                const cell = occupancyCell(boat, week, bookings, today);
+                const cell = occupancyCell(boat, week, bookings, today, closedWeeks.get(boat.id) ?? []);
                 const guest = cell.booking?.guest.split(" ")[0] ?? t(`charter.cell_${cell.tone}`);
                 return (
                   <td key={week.startIso} className="p-1">

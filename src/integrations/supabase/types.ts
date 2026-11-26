@@ -1564,6 +1564,123 @@ export type Database = {
         }
         Relationships: []
       }
+      charter_yachts: {
+        Row: {
+          id: string
+          owner_id: string
+          operator_name: string
+          name: string
+          model: string
+          year: number
+          loa_m: number
+          berths: number
+          cabins: number
+          base: string
+          kind: string
+          weekly_eur: number
+          skipper: string | null
+          listed: boolean
+          photos: string[]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          owner_id: string
+          operator_name: string
+          name: string
+          model: string
+          year: number
+          loa_m: number
+          berths: number
+          cabins: number
+          base: string
+          kind: string
+          weekly_eur: number
+          skipper?: string | null
+          listed?: boolean
+          photos?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          owner_id?: string
+          operator_name?: string
+          name?: string
+          model?: string
+          year?: number
+          loa_m?: number
+          berths?: number
+          cabins?: number
+          base?: string
+          kind?: string
+          weekly_eur?: number
+          skipper?: string | null
+          listed?: boolean
+          photos?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      charter_weeks: {
+        Row: {
+          id: string
+          yacht_id: string
+          start_iso: string
+          status: string
+        }
+        Insert: {
+          id?: string
+          yacht_id: string
+          start_iso: string
+          status: string
+        }
+        Update: {
+          id?: string
+          yacht_id?: string
+          start_iso?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      charter_inquiries: {
+        Row: {
+          id: string
+          yacht_id: string
+          guest_name: string
+          contact: string
+          party: number
+          start_iso: string
+          note: string | null
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          yacht_id: string
+          guest_name: string
+          contact: string
+          party: number
+          start_iso: string
+          note?: string | null
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          yacht_id?: string
+          guest_name?: string
+          contact?: string
+          party?: number
+          start_iso?: string
+          note?: string | null
+          status?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       public_parts_catalog: {

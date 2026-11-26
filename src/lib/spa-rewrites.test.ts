@@ -37,6 +37,7 @@ test("vercel SPA rewrites are an allowlist, not a catch-all", () => {
     "/auth/forgot",
     "/auth/reset",
     "/charter-preview",
+    "/charter",
     "/app",
     "/app/:path*",
     "/admin",
