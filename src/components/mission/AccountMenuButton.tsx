@@ -98,11 +98,6 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
             </Link>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem asChild>
-          <Link to="/app/charter">
-            <Ship className="size-4 mr-2" /> {t("charter.menu")}
-          </Link>
-        </DropdownMenuItem>
         {isSuper && (
           <DropdownMenuItem asChild>
             <Link
@@ -125,6 +120,11 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/app/charter">
+            <Ship className="size-4 mr-2" /> {t("charter.menu")}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={signOut}>
           <LogOut className="size-4 mr-2" /> Sign out
         </DropdownMenuItem>

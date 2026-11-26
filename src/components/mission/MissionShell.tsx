@@ -15,7 +15,7 @@ import { createPortal } from "react-dom";
 import { Wordmark } from "@/components/Wordmark";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccountMenuButton } from "@/components/mission/AccountMenuButton";
-import { ClipboardList, Map as MapIcon, Store, UserCircle2, AlertOctagon, X } from "lucide-react";
+import { ClipboardList, Map as MapIcon, Ship, Store, UserCircle2, AlertOctagon, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useFirstRun } from "@/components/onboarding/useFirstRun";
 
@@ -252,7 +252,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
             <div
               className={
                 "grid w-full items-center px-1 " +
-                (isSupplier ? "grid-cols-3" : isProvider ? "grid-cols-6" : "grid-cols-5")
+                (isSupplier ? "grid-cols-3" : "grid-cols-6")
               }
               style={{ height: 56 }}
             >
@@ -352,6 +352,12 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                     active={path.startsWith("/app/passport") || path.startsWith("/app/reputation")}
                     icon={<PassportMark size={18} />}
                     label={t("nav.dock_vessel")}
+                  />
+                  <NavTab
+                    to="/app/charter"
+                    active={path.startsWith("/app/charter")}
+                    icon={<Ship className="size-[16px]" />}
+                    label={t("charter.door_charter")}
                   />
                 </>
               )}

@@ -29,7 +29,7 @@ import {
   handoverItems,
   handoverWindow,
   occupancyCell,
-  saturdayWeeks,
+  occupancyDays,
   todayIso,
   todaysOps,
   yachtById,
@@ -104,8 +104,8 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
     ? bookings.find((b) => b.yachtId === yacht.id && b.status !== "cancelled" && b.status !== "checked_out")
     : undefined;
   const openInquiries = inquiries.filter((q) => q.status === "new" || q.status === "quoted" || q.status === "hold");
-  const weeks = useMemo(() => saturdayWeeks(), []);
-  const closedWeeks = useMemo(() => {
+  const days = useMemo(() => occupancyDays(undefined, 21), []);
+  const closedDays = useMemo(() => {
     const map = new Map<string, string[]>();
     for (const yacht of companyYachts) map.set(yacht.id, blockedStarts(yacht));
     return map;
@@ -228,11 +228,11 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
       {tab === "sheet" && (
         <OccupancySheet
           fleet={sheetFleet}
-          weeks={weeks}
+          days={days}
           bookings={scopedBookings}
           today={today}
           locale={i18n.language}
-          closedWeeks={closedWeeks}
+          closedDays={closedDays}
           onOpen={setOpenYacht}
         />
       )}
@@ -385,19 +385,19 @@ const CELL_CLASS: Record<OccupancyTone, string> = {
 
 function OccupancySheet({
   fleet,
-  weeks,
+  days,
   bookings,
   today,
   locale,
-  closedWeeks,
+  closedDays,
   onOpen,
 }: {
   fleet: CharterYacht[];
-  weeks: ReturnType<typeof saturdayWeeks>;
+  days: ReturnType<typeof occupancyDays>;
   bookings: CharterBooking[];
   today: string;
   locale: string;
-  closedWeeks: Map<string, string[]>;
+  closedDays: Map<string, string[]>;
   onOpen: (id: string) => void;
 }) {
   const { t } = useTranslation();
@@ -407,20 +407,19 @@ function OccupancySheet({
     <GlassPanel padded={false} className="overflow-hidden">
       <p className="px-3 pt-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">{t("charter.sheet_label")}</p>
       <div className="overflow-x-auto px-0 pb-3">
-      <table className="w-full min-w-[640px] border-collapse text-left">
+      <table className="w-full min-w-[720px] border-collapse text-left">
         <thead>
           <tr>
             <th className="sticky left-0 z-10 w-36 bg-[#071422] py-2 pl-3 pr-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{t("charter.tab_fleet")}</th>
-            {weeks.map((week) => {
-              const start = week.startIso.split("-").map(Number);
-              const end = week.endIso.split("-").map(Number);
-              const current = today >= week.startIso && today < week.endIso;
+            {days.map((day) => {
+              const start = day.startIso.split("-").map(Number);
+              const current = today === day.startIso;
               return (
                 <th
-                  key={week.startIso}
-                  className={"px-1 py-1 text-[10px] font-semibold uppercase tracking-wider " + (current ? "text-cyan-200" : "text-white/40")}
+                  key={day.startIso}
+                  className={"min-w-[3.25rem] px-1 py-1 text-center text-[10px] font-semibold uppercase tracking-wider " + (current ? "text-cyan-200" : "text-white/40")}
                 >
-                  {fmt.format(new Date(start[0]!, start[1]! - 1, start[2]!))}–{fmt.format(new Date(end[0]!, end[1]! - 1, end[2]!))}
+                  {fmt.format(new Date(start[0]!, start[1]! - 1, start[2]!))}
                 </th>
               );
             })}
@@ -435,18 +434,18 @@ function OccupancySheet({
                   <span className="block truncate text-[10px] font-normal text-white/45">{boat.base}</span>
                 </button>
               </th>
-              {weeks.map((week) => {
-                const cell = occupancyCell(boat, week, bookings, today, closedWeeks.get(boat.id) ?? []);
+              {days.map((day) => {
+                const cell = occupancyCell(boat, day, bookings, today, closedDays.get(boat.id) ?? []);
                 const guest = cell.booking?.guest.split(" ")[0] ?? t(`charter.cell_${cell.tone}`);
                 return (
-                  <td key={week.startIso} className="p-1">
+                  <td key={day.startIso} className="p-1">
                     <button
                       type="button"
                       onClick={() => onOpen(boat.id)}
-                      className={"h-12 w-full rounded-lg border px-2 text-left text-[11px] font-semibold " + CELL_CLASS[cell.tone]}
+                      className={"h-12 w-full rounded-lg border px-1 text-left text-[10px] font-semibold " + CELL_CLASS[cell.tone]}
                     >
                       <span className="block truncate">{guest}</span>
-                      <span className="block truncate text-[9px] font-medium uppercase tracking-wider opacity-70">
+                      <span className="block truncate text-[8px] font-medium uppercase tracking-wider opacity-70">
                         {t(`charter.cell_${cell.tone}`)}
                       </span>
                     </button>
