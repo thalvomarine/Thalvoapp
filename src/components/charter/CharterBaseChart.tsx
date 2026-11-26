@@ -17,6 +17,8 @@ export type CharterPortPin = {
   count: number;
 };
 
+const CHARTER_MAX_ZOOM = 10;
+
 function FitPorts({ ports }: { ports: CharterPortPin[] }) {
   const map = useMap();
   useEffect(() => {
@@ -26,7 +28,7 @@ function FitPorts({ ports }: { ports: CharterPortPin[] }) {
       return;
     }
     if (ports.length === 1) {
-      map.setView([ports[0]!.lat, ports[0]!.lng], 9, { animate: false });
+      map.setView([ports[0]!.lat, ports[0]!.lng], 8, { animate: false });
       return;
     }
     const bounds = L.latLngBounds(ports.map((port) => [port.lat, port.lng] as [number, number]));
@@ -54,22 +56,36 @@ export function CharterBaseChart({
   }
 
   return (
-    <div className={"overflow-hidden rounded-3xl border border-white/10 " + className}>
+    <div
+      className={
+        "charter-base-chart relative z-0 isolate h-[220px] overflow-hidden rounded-[1.5rem] border border-white/10 sm:h-[300px] " +
+        className
+      }
+    >
       <MapContainer
         key={key || "empty"}
         center={[37.0, 27.5]}
         zoom={5}
-        className="h-[220px] w-full sm:h-[280px]"
+        maxZoom={CHARTER_MAX_ZOOM}
+        minZoom={3}
+        className="charter-base-chart-map h-full w-full"
         zoomControl={false}
         attributionControl={false}
         scrollWheelZoom={false}
+        doubleClickZoom={false}
       >
         <TileLayer
           url={MARINE_PUBLIC_BASE_URL}
-          maxNativeZoom={MARINE_DARK_TILE_MAX_NATIVE_ZOOM}
+          maxZoom={CHARTER_MAX_ZOOM}
+          maxNativeZoom={Math.min(MARINE_DARK_TILE_MAX_NATIVE_ZOOM, CHARTER_MAX_ZOOM)}
           attribution="Tiles © Esri"
         />
-        <TileLayer url={MARINE_SEAMARK_TILE_URL} opacity={0.85} />
+        <TileLayer
+          url={MARINE_SEAMARK_TILE_URL}
+          opacity={0.85}
+          maxZoom={CHARTER_MAX_ZOOM}
+          maxNativeZoom={CHARTER_MAX_ZOOM}
+        />
         <FitPorts ports={ports} />
         {ports.map((port) => {
           const selected = active.trim().toLocaleLowerCase("tr") === port.name.toLocaleLowerCase("tr");

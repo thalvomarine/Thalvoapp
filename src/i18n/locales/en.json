@@ -2452,7 +2452,10 @@
     "nights_count": "{{count}} nights",
     "skipper_optional": "Skipper optional — the firm writes it.",
     "stay_save": "Save",
-    "matrix_hint": "Open days stay bright; the selected stay is amber. No live boats.",
-    "party_count": "{{count}} pax"
+    "matrix_hint": "Green is open, amber is your stay. Tap a day to set check-in and check-out.",
+    "party_count": "{{count}} pax",
+    "day_open": "Open · {{count}}",
+    "day_closed": "Closed · {{count}}",
+    "day_selected": "Selected stay"
   }
 }

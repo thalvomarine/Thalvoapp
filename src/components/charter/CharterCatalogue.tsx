@@ -340,9 +340,9 @@ export function CharterCatalogue() {
                 </div>
                 <p className="max-w-xs text-[12px] text-white/45">{t("charter.map_body")}</p>
               </div>
-              <div className="mt-3 overflow-hidden rounded-[1.5rem] border border-white/10">
-                <ClientOnly fallback={<MapPlaceholder className="h-[220px] sm:h-[300px]" style={{ minHeight: 220 }} />}>
-                  <Suspense fallback={<MapPlaceholder className="h-[220px] sm:h-[300px]" style={{ minHeight: 220 }} />}>
+              <div className="relative z-0 mt-3 isolate">
+                <ClientOnly fallback={<MapPlaceholder className="h-[220px] rounded-[1.5rem] border border-white/10 sm:h-[300px]" style={{ minHeight: 220 }} />}>
+                  <Suspense fallback={<MapPlaceholder className="h-[220px] rounded-[1.5rem] border border-white/10 sm:h-[300px]" style={{ minHeight: 220 }} />}>
                     <CharterBaseChart ports={ports} active={place} onSelect={setPlace} />
                   </Suspense>
                 </ClientOnly>
@@ -686,9 +686,9 @@ function BoatSheet({
   );
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/65 p-0 sm:items-center sm:p-5" onClick={onClose}>
+    <div className="fixed inset-0 z-[1200] flex items-end justify-center bg-black/65 p-0 sm:items-center sm:p-5" onClick={onClose}>
       <div
-        className="thalvo-dark flex max-h-[96dvh] w-full max-w-5xl flex-col overflow-hidden rounded-t-[1.6rem] border border-white/10 bg-[#071422] shadow-2xl sm:rounded-[1.6rem]"
+        className="thalvo-dark relative z-[1201] flex max-h-[96dvh] w-full max-w-5xl flex-col overflow-hidden rounded-t-[1.6rem] border border-white/10 bg-[#071422] shadow-2xl sm:rounded-[1.6rem]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="relative shrink-0 bg-[#0A192F]">
@@ -734,33 +734,27 @@ function BoatSheet({
             {fix && <p className="font-mono text-[12px] text-white/50">{formatDm(fix.lat, fix.lng)}</p>}
             {boat.skipper && <p className="text-[14px] text-white/75">{t("charter.skipper")}: {boat.skipper}</p>}
 
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">{t("charter.open_days")}</p>
-              <div className="mt-3 grid grid-cols-7 gap-1 sm:grid-cols-[repeat(14,minmax(0,1fr))]">
-                {matrixDays.map((iso) => {
-                  const openDay = openSet.has(iso);
-                  const inStay = checkIn && checkOut && iso >= checkIn && iso < checkOut;
-                  const dayNum = Number(iso.slice(8));
-                  return (
-                    <div
-                      key={iso}
-                      title={iso}
-                      className={
-                        "grid aspect-square place-items-center rounded-md text-[10px] font-medium " +
-                        (inStay
-                          ? "bg-[#F5B942] text-[#1a1203]"
-                          : openDay
-                            ? "bg-white/[0.06] text-white/85"
-                            : "bg-white/[0.02] text-white/20")
-                      }
-                    >
-                      {dayNum}
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="mt-2 text-[11px] text-white/40">{t("charter.matrix_hint")}</p>
-            </div>
+            <OpenDaysBoard
+              days={matrixDays}
+              openSet={openSet}
+              checkIn={checkIn}
+              checkOut={checkOut}
+              locale={locale}
+              onPick={(iso) => {
+                if (!openSet.has(iso)) return;
+                if (!checkIn || (checkIn && checkOut)) {
+                  setCheckIn(iso);
+                  setCheckOut("");
+                  return;
+                }
+                if (iso <= checkIn) {
+                  setCheckIn(iso);
+                  setCheckOut("");
+                  return;
+                }
+                setCheckOut(iso);
+              }}
+            />
 
             <div className="lg:hidden">{command}</div>
           </div>
@@ -772,7 +766,7 @@ function BoatSheet({
       </div>
 
       {gallery && src && (
-        <div className="fixed inset-0 z-[100] flex bg-black/90" onClick={() => setGallery(false)}>
+        <div className="fixed inset-0 z-[1300] flex bg-black/90" onClick={() => setGallery(false)}>
           <div className="relative m-auto flex max-h-[92dvh] w-full max-w-5xl flex-col gap-3 p-4 lg:flex-row" onClick={(event) => event.stopPropagation()}>
             <div className="min-w-0 flex-1 overflow-hidden rounded-2xl">
               <img src={boat.photos[photo] ?? src} alt="" className="max-h-[70dvh] w-full object-contain" />
@@ -794,6 +788,114 @@ function BoatSheet({
         </div>
       )}
     </div>
+  );
+}
+
+function OpenDaysBoard({
+  days,
+  openSet,
+  checkIn,
+  checkOut,
+  locale,
+  onPick,
+}: {
+  days: string[];
+  openSet: Set<string>;
+  checkIn: string;
+  checkOut: string;
+  locale: string;
+  onPick: (iso: string) => void;
+}) {
+  const { t } = useTranslation();
+  const today = todayIso();
+  const months = useMemo(() => {
+    const groups: Array<{ key: string; label: string; days: string[] }> = [];
+    for (const iso of days) {
+      const key = iso.slice(0, 7);
+      const last = groups[groups.length - 1];
+      if (!last || last.key !== key) {
+        const [y, m] = iso.split("-").map(Number);
+        const tag = locale.startsWith("tr") ? "tr-TR" : locale.startsWith("el") ? "el-GR" : "en-GB";
+        groups.push({
+          key,
+          label: new Intl.DateTimeFormat(tag, { month: "long", year: "numeric" }).format(new Date(y!, m! - 1, 1)),
+          days: [iso],
+        });
+      } else {
+        last.days.push(iso);
+      }
+    }
+    return groups;
+  }, [days, locale]);
+
+  const openCount = days.filter((iso) => openSet.has(iso)).length;
+  const closedCount = days.length - openCount;
+
+  return (
+    <div className="rounded-[1.25rem] border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">{t("charter.open_days")}</p>
+          <p className="mt-1 text-[13px] text-white/65">{t("charter.matrix_hint")}</p>
+        </div>
+        <div className="flex flex-wrap gap-3 text-[11px]">
+          <LegendSwatch className="bg-emerald-400/90" label={t("charter.day_open", { count: openCount })} />
+          <LegendSwatch className="bg-[#F5B942]" label={t("charter.day_selected")} />
+          <LegendSwatch className="bg-white/15 ring-1 ring-inset ring-white/20" label={t("charter.day_closed", { count: closedCount })} />
+        </div>
+      </div>
+
+      <div className="mt-4 space-y-4">
+        {months.map((month) => (
+          <div key={month.key}>
+            <p className="mb-2 text-[12px] font-semibold capitalize tracking-wide text-[#00F0FF]/85">{month.label}</p>
+            <div className="grid grid-cols-7 gap-1.5">
+              {month.days.map((iso) => {
+                const openDay = openSet.has(iso);
+                const inStay = Boolean(checkIn && checkOut && iso >= checkIn && iso < checkOut);
+                const isEdge = iso === checkIn || iso === checkOut;
+                const isToday = iso === today;
+                const dayNum = Number(iso.slice(8));
+                return (
+                  <button
+                    key={iso}
+                    type="button"
+                    disabled={!openDay}
+                    title={iso}
+                    onClick={() => onPick(iso)}
+                    className={
+                      "relative grid aspect-square place-items-center rounded-lg text-[11px] font-semibold transition-[transform,background-color,color,box-shadow] duration-150 " +
+                      (isEdge
+                        ? "bg-[#F5B942] text-[#1a1203] shadow-[0_0_0_1px_rgba(245,185,66,0.55)] "
+                        : inStay
+                          ? "bg-[#F5B942]/25 text-[#F5B942] "
+                          : openDay
+                            ? "bg-emerald-400/15 text-emerald-100 ring-1 ring-inset ring-emerald-300/35 hover:bg-emerald-400/25 hover:text-white "
+                            : "cursor-not-allowed bg-white/[0.03] text-white/25 line-through decoration-white/25 ") +
+                      (isToday && !isEdge ? "ring-1 ring-[#00F0FF]/70 " : "")
+                    }
+                  >
+                    {dayNum}
+                    {isToday && !isEdge && (
+                      <span className="absolute inset-x-[30%] bottom-1 h-0.5 rounded-full bg-[#00F0FF]/80" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LegendSwatch({ className, label }: { className: string; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-white/55">
+      <span className={"size-2.5 rounded-sm " + className} />
+      {label}
+    </span>
   );
 }
 
