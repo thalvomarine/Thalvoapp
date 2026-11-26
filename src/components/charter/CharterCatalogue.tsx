@@ -75,9 +75,9 @@ type Listing = {
   sample: boolean;
 };
 
-function weekOf(iso: string): OccupancyWeek {
+function dayWindow(iso: string): OccupancyWeek {
   const start = parseIsoDate(iso);
-  const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 7);
+  const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
   const y = end.getFullYear();
   const m = String(end.getMonth() + 1).padStart(2, "0");
   const d = String(end.getDate()).padStart(2, "0");
@@ -90,10 +90,10 @@ function sampleListings(now = new Date()): Listing[] {
   const days = upcomingDays(now, 42);
   const fromSeed = SEED_FLEET.map((yacht) => {
     const openDays = days.filter((iso) => {
-      const week = weekOf(iso);
-      if (yacht.status === "maintenance" && today >= week.startIso && today < week.endIso) return false;
+      if (yacht.status === "maintenance") return false;
+      const day = dayWindow(iso);
       const probe = yacht.status === "on_charter" || yacht.status === "turnaround" ? { ...yacht, status: "available" as const } : yacht;
-      const cell = occupancyCell(probe, week, bookings, today);
+      const cell = occupancyCell(probe, day, bookings, today);
       return cell.tone === "free" || cell.tone === "service";
     });
     return {

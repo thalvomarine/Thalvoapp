@@ -37,14 +37,6 @@ export function LiveOpsPanel() {
         eyebrow={t("ops.eyebrow")}
         title={t("ops.title")}
         subtitle={t("ops.subtitle")}
-        actions={
-          <Link
-            to="/app/charter"
-            className="rounded-full border border-amber-300/40 px-3 py-1 text-[11px] font-semibold text-amber-100"
-          >
-            {t("charter.menu")}
-          </Link>
-        }
       />
 
       <div className="grid grid-cols-3 gap-2">
@@ -89,6 +81,24 @@ export function LiveOpsPanel() {
             <p className="mt-1 text-[12px] leading-snug text-white/60">
               {t("transfer.entry_body")}
             </p>
+          </div>
+        </div>
+      </Link>
+
+      <Link
+        to="/app/charter"
+        className="block overflow-hidden rounded-2xl border border-amber-300/35 bg-amber-400/[0.08] px-4 py-3 transition-colors hover:border-amber-200/50"
+      >
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl border border-amber-300/30 bg-amber-400/15 text-amber-100">
+            <Ship className="size-4" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-200/80">
+              {t("charter.menu")}
+            </p>
+            <p className="mt-1 text-[14px] font-semibold text-white">{t("charter.fleet_title")}</p>
+            <p className="mt-1 text-[12px] leading-snug text-white/60">{t("charter.fleet_body")}</p>
           </div>
         </div>
       </Link>

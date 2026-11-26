@@ -458,22 +458,25 @@ export interface OccupancyWeek {
   label: string;
 }
 
-/** Saturday-to-Saturday columns, starting with the Saturday that opened this week. */
-export function saturdayWeeks(now = new Date(), count = 4): OccupancyWeek[] {
+/** One calendar day per column — guests and firms pick any open night, not Saturday weeks. */
+export function occupancyDays(now = new Date(), count = 21): OccupancyWeek[] {
   const today = startOfDay(now);
-  const sinceSat = (today.getDay() + 1) % 7;
-  const first = addDays(today, -sinceSat);
-  const weeks: OccupancyWeek[] = [];
+  const days: OccupancyWeek[] = [];
   for (let i = 0; i < count; i++) {
-    const start = addDays(first, i * 7);
-    const end = addDays(start, 7);
-    weeks.push({
+    const start = addDays(today, i);
+    const end = addDays(start, 1);
+    days.push({
       startIso: toIsoDate(start),
       endIso: toIsoDate(end),
       label: String(start.getDate()),
     });
   }
-  return weeks;
+  return days;
+}
+
+/** @deprecated Use occupancyDays — Saturday lock removed. */
+export function saturdayWeeks(now = new Date(), count = 21): OccupancyWeek[] {
+  return occupancyDays(now, count);
 }
 
 export type OccupancyTone = "free" | "option" | "booked" | "one_way" | "service" | "closed";

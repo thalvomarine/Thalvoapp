@@ -12,7 +12,7 @@ import {
   formatLoa,
   handoverItems,
   occupancyCell,
-  saturdayWeeks,
+  occupancyDays,
   todayIso,
   todaysOps,
   yachtById,
@@ -66,30 +66,31 @@ describe("charter-desk", () => {
     assert.ok(nights >= 1);
   });
 
-  it("builds Saturday occupancy the way a charter base reads the week", () => {
+  it("builds daily occupancy so any open night can be asked", () => {
     const now = new Date(2026, 10, 26, 9, 0, 0); // Thu 26 Nov 2026
-    const weeks = saturdayWeeks(now, 4);
-    assert.equal(weeks.length, 4);
-    assert.equal(weeks[0]?.startIso, "2026-11-21");
-    assert.equal(weeks[0]?.endIso, "2026-11-28");
-    assert.equal(weeks[1]?.startIso, "2026-11-28");
+    const days = occupancyDays(now, 4);
+    assert.equal(days.length, 4);
+    assert.equal(days[0]?.startIso, "2026-11-26");
+    assert.equal(days[0]?.endIso, "2026-11-27");
+    assert.equal(days[1]?.startIso, "2026-11-27");
 
     const bookings = buildSeedBookings(now);
     const today = todayIso(now);
     const twin = yachtById(SEED_FLEET, "yt-twin-coast")!;
-    assert.equal(occupancyCell(twin, weeks[0]!, bookings, today).tone, "service");
+    assert.equal(occupancyCell(twin, days[0]!, bookings, today).tone, "service");
 
     const pearl = yachtById(SEED_FLEET, "yt-aegean-pearl")!;
-    const pearlCell = occupancyCell(pearl, weeks[0]!, bookings, today);
+    const pearlCell = occupancyCell(pearl, days[0]!, bookings, today);
     assert.equal(pearlCell.tone, "booked");
     assert.equal(pearlCell.booking?.guest, "Helena & Markus W.");
 
     const gulet = yachtById(SEED_FLEET, "yt-blue-anatolia")!;
-    assert.equal(occupancyCell(gulet, weeks[0]!, bookings, today).tone, "one_way");
+    assert.equal(occupancyCell(gulet, days[0]!, bookings, today).tone, "one_way");
 
     const wind = yachtById(SEED_FLEET, "yt-lycian-wind")!;
-    const optionWeek = weeks.find((week) => occupancyCell(wind, week, bookings, today).tone === "option");
-    assert.ok(optionWeek);
+    const optionDay = days.find((day) => occupancyCell(wind, day, bookings, today).tone === "option")
+      ?? occupancyDays(now, 14).find((day) => occupancyCell(wind, day, bookings, today).tone === "option");
+    assert.ok(optionDay);
 
     const meltemi = yachtById(SEED_FLEET, "yt-meltemi")!;
     const sophie = bookings.find((b) => b.yachtId === "yt-meltemi")!;
