@@ -1,6 +1,7 @@
 import { StrictMode, startTransition } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { StartClient } from "@tanstack/react-start/client";
+import { clearStaleChunkReloadFlag } from "@/lib/stale-chunk";
 
 declare global {
   interface Window {
@@ -19,6 +20,9 @@ declare global {
 // Dual handshake with the SPA boot script in prepare-web-spa.mjs is
 // intentional — Capgo rolls back if neither fires within appReadyTimeout.
 void import("@/lib/capgo").then((m) => m.notifyCapgoAppReady()).catch(() => {});
+
+// Fresh boot succeeded — allow another one-shot recovery after the next deploy.
+clearStaleChunkReloadFlag();
 
 /**
  * Static Vercel / Capacitor `index.html` is a CSR shell (`#thalvo-root`),
