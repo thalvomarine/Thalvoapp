@@ -462,7 +462,7 @@
     "subtitle": "Request quotes from certified technicians and divers — no fixed list prices.",
     "filter_mech": "Marine Mechanics",
     "filter_diver": "Divers",
-    "no_offers": "No workshops offering this package yet.",
+    "no_offers": "Waiting for bids.",
     "book_now": "Get a quote",
     "eta_short": "ETA",
     "empty_title": "No packages yet",
@@ -472,7 +472,10 @@
     "request_quote": "Get a quote",
     "quote_sent": "Quote request sent.",
     "quote_failed": "Could not send the quote request.",
-    "no_offers_body": "No approved provider for this job yet. Continue via SOS or a fault report."
+    "no_offers_body": "Your request was sent to approved providers. Incoming bids appear on the mission page.",
+    "quote_broadcast_body": "Your request goes to approved mechanics / workshops / divers for this job type. They bid with price and ETA; you accept. Payment stays simulated.",
+    "quote_provider_count": "{{count}} approved providers registered in this category.",
+    "quote_no_providers": "No approved providers in this category yet; the request still opens and bids can arrive after approval."
   },
   "shop": {
     "title": "Spare Parts Marketplace",

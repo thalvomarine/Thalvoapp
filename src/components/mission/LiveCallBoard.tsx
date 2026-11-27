@@ -29,6 +29,7 @@ interface PoolJob {
   problem_category: string;
   description: string | null;
   marina: string | null;
+  service_type: string | null;
   lat: number | null;
   lng: number | null;
 }
@@ -50,7 +51,7 @@ export function LiveCallBoard({ userId }: Props) {
   const [bidding, setBidding] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    const [callsRes, jobsRes, poolRes] = await Promise.all([
+    const [callsRes, jobsRes, poolRes, detailRes] = await Promise.all([
       supabase
         .from("emergency_service_requests")
         .select("*")
@@ -66,12 +67,14 @@ export function LiveCallBoard({ userId }: Props) {
         .limit(20),
       supabase
         .from("jobs")
-        .select("id, problem_category, description, marina, lat, lng")
+        .select("id, problem_category, description, marina, service_type, lat, lng")
         .in("status", ["Pending", "Offered"])
         .is("provider_id", null)
         .order("created_at", { ascending: false })
         .limit(40),
+      supabase.from("provider_details").select("service_type").eq("id", userId).maybeSingle(),
     ]);
+    const myType = (detailRes.data?.service_type as string | null) ?? null;
     const calls = ((callsRes.data as EmergencyServiceRequest[] | null) ?? []).filter(
       (row) => !row.assigned_provider_id || row.assigned_provider_id === userId,
     );
@@ -84,9 +87,11 @@ export function LiveCallBoard({ userId }: Props) {
     );
     setOpenCalls(visibleCalls);
     setPool(
-      ((poolRes.data as PoolJob[] | null) ?? []).filter(
-        (job) => !linked.has(job.id) && !assignedIds.has(job.id),
-      ),
+      ((poolRes.data as PoolJob[] | null) ?? []).filter((job) => {
+        if (linked.has(job.id) || assignedIds.has(job.id)) return false;
+        if (!myType || !job.service_type) return true;
+        return job.service_type === myType;
+      }),
     );
     setMine((jobsRes.data as AssignedJob[] | null) ?? []);
   }, [userId]);
