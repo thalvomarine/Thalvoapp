@@ -11,6 +11,7 @@ import { useThalvoTheme, type ThalvoTheme } from "@/lib/theme";
 import { useSessionUser } from "@/lib/session";
 import { emailMatchesAccount } from "@/lib/account-deletion";
 import { OPS_CONTACT_EMAIL } from "@/lib/superadmin";
+import { CockpitSkinPicker } from "@/components/mission/CockpitSkinPicker";
 
 const THEMES: ThalvoTheme[] = ["system", "day", "night"];
 
@@ -73,6 +74,7 @@ export function AccountSettings() {
         </div>
         <p className="mt-2 text-[11px] leading-snug text-white/45">{t(`profile.theme_${theme}_hint`)}</p>
       </div>
+      <CockpitSkinPicker />
       {email && (
         <p className="truncate text-[12px] text-white/55">
           <span className="text-white/35">{t("auth.email")} · </span>

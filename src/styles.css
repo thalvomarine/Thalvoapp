@@ -1491,3 +1491,153 @@ html[data-thalvo-theme="day"] .thalvo-risk-low {
 
 
 
+
+/* ── Cockpit design skins (signed-in) ───────────────────── */
+html[data-thalvo-skin="ecdis"] .thalvo-cockpit {
+  --skin-dock-radius: 18px;
+  --skin-dock-bg: rgb(6 16 28 / 0.92);
+  --skin-active: #00f0ff;
+  --skin-command: #f5b942;
+  --skin-danger: #ef4444;
+  --skin-fab-radius: 10px;
+  --skin-ops-radius: 18px;
+}
+html[data-thalvo-skin="bridge"] .thalvo-cockpit {
+  background: #000000;
+  --skin-dock-radius: 8px;
+  --skin-dock-bg: rgb(8 8 8 / 0.94);
+  --skin-active: #f5b942;
+  --skin-command: #f5b942;
+  --skin-danger: #ef4444;
+  --skin-fab-radius: 6px;
+  --skin-ops-radius: 10px;
+}
+html[data-thalvo-skin="bridge"] .thalvo-chart-sheet {
+  --sheet-bg: rgb(0 0 0 / 0.96);
+  --sheet-active-ink: #f5b942;
+  --sheet-active-border: rgb(245 185 66 / 0.55);
+  --sheet-active-bg: rgb(245 185 66 / 0.16);
+}
+html[data-thalvo-skin="dayplot"] .thalvo-cockpit {
+  background: linear-gradient(180deg, #f4f7fb 0%, #e8eef5 100%);
+  color: #0a192f;
+  --skin-dock-radius: 16px;
+  --skin-dock-bg: rgb(255 255 255 / 0.94);
+  --skin-active: #d97706;
+  --skin-command: #b45309;
+  --skin-danger: #dc2626;
+  --skin-fab-radius: 12px;
+  --skin-ops-radius: 16px;
+}
+html[data-thalvo-skin="dayplot"] .thalvo-chart-sheet,
+html[data-thalvo-skin="dayplot"] .thalvo-provider-ops {
+  --sheet-bg: rgb(255 255 255 / 0.96);
+  --sheet-ink: #0a192f;
+  --sheet-muted: #64748b;
+  --sheet-faint: #94a3b8;
+  --sheet-border: rgb(15 23 42 / 0.12);
+  --sheet-chip: rgb(15 23 42 / 0.04);
+  --sheet-chip-hover: rgb(15 23 42 / 0.07);
+  --sheet-active-bg: rgb(217 119 6 / 0.12);
+  --sheet-active-border: rgb(217 119 6 / 0.45);
+  --sheet-active-ink: #b45309;
+}
+html[data-thalvo-skin="rail"] .thalvo-cockpit {
+  background: linear-gradient(180deg, #071525 0%, #040a12 100%);
+  --skin-dock-radius: 999px;
+  --skin-dock-bg: rgb(8 18 32 / 0.9);
+  --skin-active: #00f0ff;
+  --skin-command: #f5b942;
+  --skin-danger: #ef4444;
+  --skin-fab-radius: 999px;
+  --skin-ops-radius: 20px;
+}
+html[data-thalvo-skin="harbour"] .thalvo-cockpit {
+  background:
+    radial-gradient(90% 60% at 20% 0%, rgb(20 60 80 / 0.35) 0%, transparent 55%),
+    linear-gradient(180deg, #0a1624 0%, #071018 100%);
+  --skin-dock-radius: 22px;
+  --skin-dock-bg: rgb(12 28 40 / 0.78);
+  --skin-active: #5ec8d8;
+  --skin-command: #f5b942;
+  --skin-danger: #ef4444;
+  --skin-fab-radius: 14px;
+  --skin-ops-radius: 22px;
+}
+html[data-thalvo-skin="harbour"] .thalvo-chart-sheet,
+html[data-thalvo-skin="harbour"] .thalvo-provider-ops {
+  --sheet-bg: rgb(12 28 40 / 0.82);
+  --sheet-active-ink: #5ec8d8;
+  --sheet-active-border: rgb(94 200 216 / 0.45);
+  --sheet-active-bg: rgb(94 200 216 / 0.12);
+}
+
+.thalvo-dock-shell {
+  border-radius: var(--skin-dock-radius, 18px);
+  background: var(--skin-dock-bg, rgb(6 16 28 / 0.92));
+}
+.thalvo-fab-latch {
+  border-radius: var(--skin-fab-radius, 10px);
+}
+.thalvo-nav-active-rail {
+  background: var(--skin-active, #00f0ff);
+}
+
+/* Usta / servis map ops deck */
+.thalvo-provider-ops {
+  --sheet-bg: rgb(10 25 47 / 0.94);
+  --sheet-ink: #f8fafc;
+  --sheet-muted: rgb(248 250 252 / 0.58);
+  --sheet-faint: rgb(248 250 252 / 0.4);
+  --sheet-border: rgb(255 255 255 / 0.14);
+  --sheet-chip: rgb(255 255 255 / 0.06);
+  --sheet-chip-hover: rgb(255 255 255 / 0.1);
+  --sheet-active-bg: rgb(245 185 66 / 0.16);
+  --sheet-active-border: rgb(245 185 66 / 0.5);
+  --sheet-active-ink: #f5b942;
+  border-radius: var(--skin-ops-radius, 18px);
+  border-color: var(--sheet-border);
+  background: var(--sheet-bg);
+  color: var(--sheet-ink);
+}
+.thalvo-radar-sweep {
+  pointer-events: none;
+  position: absolute;
+  inset: -40%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in srgb, var(--sheet-active-ink, #f5b942) 28%, transparent) 48deg,
+    transparent 90deg
+  );
+  animation: thalvo-radar-spin 3.6s linear infinite;
+  opacity: 0.55;
+}
+.thalvo-radar-empty {
+  border-color: var(--sheet-border);
+  background: var(--sheet-chip);
+  min-height: 4.5rem;
+}
+.thalvo-radar-flash {
+  animation: thalvo-radar-pulse 0.9s ease-in-out 2;
+}
+@keyframes thalvo-radar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes thalvo-radar-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 36px -6px rgba(239, 68, 68, 0.65);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .thalvo-radar-sweep,
+  .thalvo-radar-flash {
+    animation: none;
+  }
+}

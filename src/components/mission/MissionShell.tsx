@@ -63,6 +63,7 @@ import { runWhenIdle } from "@/lib/schedule";
 import { consumeSignupWelcome } from "@/lib/signup-welcome";
 import { activateKeepAwake, releaseKeepAwake } from "@/lib/keep-awake";
 import { pushNativeBackHandler, wireNativeBackButton } from "@/lib/native-app";
+import { bootCockpitSkin } from "@/lib/cockpit-skins";
 
 interface Props {
   profile: Profile;
@@ -109,6 +110,9 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
   const sosLock = useRef(0);
   useLayoutEffect(() => {
     setSheetHostReady(true);
+  }, []);
+  useEffect(() => {
+    bootCockpitSkin();
   }, []);
   useEffect(() => {
     setWelcomeBanner(consumeSignupWelcome());
@@ -267,7 +271,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
         }}
       >
         <div className="pointer-events-auto mx-auto w-full max-w-lg px-3">
-          <div className="rounded-[18px] border border-white/12 bg-[#06101c]/92 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur-xl">
+          <div className="thalvo-dock-shell border border-white/12 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur-xl">
             <div
               className={
                 "grid w-full items-center px-1.5 " +
@@ -509,7 +513,7 @@ function SosNavButton({
       className="relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-visible px-0.5 text-[9px] font-semibold uppercase tracking-tight text-[#FCA5A5]"
       style={{ pointerEvents: "auto" }}
     >
-      <span className="grid size-9 place-items-center rounded-[10px] border border-[#EF4444]/55 bg-[#EF4444]/15">
+      <span className="thalvo-fab-latch grid size-9 place-items-center border border-[#EF4444]/55 bg-[#EF4444]/15">
         <SosMark size={22} />
       </span>
       <span>SOS</span>
@@ -537,13 +541,13 @@ function NavTab({
       }
     >
       {active ? (
-        <span className="absolute top-0 h-[2px] w-7 rounded-full bg-[#00F0FF]" />
+        <span className="thalvo-nav-active-rail absolute top-0 h-[2px] w-7 rounded-full" />
       ) : null}
       <span
         className={
-          "grid size-9 place-items-center rounded-[10px] border transition-colors " +
+          "thalvo-fab-latch grid size-9 place-items-center border transition-colors " +
           (active
-            ? "border-[#00F0FF]/35 bg-[#00F0FF]/10"
+            ? "border-[color:color-mix(in_srgb,var(--skin-active,#00F0FF)_35%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#00F0FF)_10%,transparent)]"
             : "border-transparent bg-transparent")
         }
       >

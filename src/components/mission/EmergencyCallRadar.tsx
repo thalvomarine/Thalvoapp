@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Send, Ship } from "lucide-react";
+import { MapPin, Radio, Send, Ship } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { VesselRange } from "@/components/mission/VesselRange";
 import {
@@ -18,12 +18,14 @@ import { createRealtimeBuffer } from "@/lib/schedule";
 interface Props {
   userId: string;
   hideChart?: boolean;
+  /** When true, omit outer sheet chrome (parent deck owns the frame). */
+  embedded?: boolean;
 }
 
 /**
  * Provider SOS radar — shows linked missions; bidding happens on the job, not via free accept.
  */
-export function EmergencyCallRadar({ userId, hideChart = false }: Props) {
+export function EmergencyCallRadar({ userId, hideChart = false, embedded = false }: Props) {
   const { t } = useTranslation();
   const [pending, setPending] = useState<EmergencyServiceRequest[]>([]);
   const [mine, setMine] = useState<EmergencyServiceRequest[]>([]);
@@ -91,54 +93,51 @@ export function EmergencyCallRadar({ userId, hideChart = false }: Props) {
   const active = mine[0] ?? null;
   const activeLat = active ? asCoordinate(active.lat) : null;
   const activeLng = active ? asCoordinate(active.lng) : null;
+  const total = pending.length + mine.length;
 
-  return (
-    <section
-      className={
-        "thalvo-chart-sheet space-y-3 rounded-2xl border p-3 transition-shadow " +
-        (flash
-          ? "border-red-400/70 bg-red-500/10 shadow-[0_0_40px_-8px_rgba(239,68,68,0.7)]"
-          : "")
-      }
-    >
-      <div className="flex items-center justify-between gap-2">
-        <div>
-          <p
-            className="text-[10px] font-semibold uppercase tracking-[0.2em]"
-            style={{ color: "var(--sheet-active-ink)" }}
-          >
-            {t("esvc.radar_eyebrow")}
-          </p>
-          <h2 className="text-sm font-semibold" style={{ color: "var(--sheet-ink)" }}>
-            {t("esvc.radar_title")}
-          </h2>
-          <p className="mt-1 text-[11px]" style={{ color: "var(--sheet-muted)" }}>
-            {t("esvc.radar_bid_hint")}
-          </p>
-        </div>
-        <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-400">
-          <span className="relative flex size-1.5">
-            <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-70" />
-            <span className="relative size-1.5 rounded-full bg-emerald-400" />
+  const body = (
+    <>
+      {!embedded ? (
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p
+              className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em]"
+              style={{ color: "var(--sheet-active-ink)" }}
+            >
+              <Radio className="size-3.5 shrink-0" />
+              {t("esvc.radar_eyebrow")}
+            </p>
+            <h2 className="mt-0.5 text-sm font-semibold" style={{ color: "var(--sheet-ink)" }}>
+              {t("esvc.radar_title")}
+            </h2>
+            <p className="mt-1 text-[11px] leading-snug" style={{ color: "var(--sheet-muted)" }}>
+              {t("esvc.radar_bid_hint")}
+            </p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-400/35 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-emerald-300">
+            <span className="relative flex size-1.5">
+              <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-70" />
+              <span className="relative size-1.5 rounded-full bg-emerald-400" />
+            </span>
+            LIVE · {total}
           </span>
-          LIVE
-        </span>
-      </div>
-
-      {activeLat != null && activeLng != null && (
-        <VesselRange lat={activeLat} lng={activeLng} />
+        </div>
+      ) : (
+        <p className="text-[11px] leading-snug" style={{ color: "var(--sheet-muted)" }}>
+          {t("esvc.radar_bid_hint")}
+        </p>
       )}
 
+      {activeLat != null && activeLng != null && !embedded ? (
+        <VesselRange lat={activeLat} lng={activeLng} />
+      ) : null}
+
       {pending.length === 0 && mine.length === 0 ? (
-        <div
-          className="rounded-xl border px-3 py-3 text-sm"
-          style={{
-            borderColor: "var(--sheet-border)",
-            background: "var(--sheet-chip)",
-            color: "var(--sheet-muted)",
-          }}
-        >
-          {t("esvc.radar_empty")}
+        <div className="thalvo-radar-empty relative overflow-hidden rounded-xl border px-3 py-5 text-center">
+          <span className="thalvo-radar-sweep" aria-hidden />
+          <p className="relative text-[12px] leading-relaxed" style={{ color: "var(--sheet-muted)" }}>
+            {t("esvc.radar_empty")}
+          </p>
         </div>
       ) : (
         <ul className="space-y-2">
@@ -154,6 +153,23 @@ export function EmergencyCallRadar({ userId, hideChart = false }: Props) {
           ))}
         </ul>
       )}
+    </>
+  );
+
+  if (embedded) {
+    return (
+      <div className={"space-y-3 " + (flash ? "thalvo-radar-flash" : "")}>{body}</div>
+    );
+  }
+
+  return (
+    <section
+      className={
+        "thalvo-chart-sheet relative space-y-3 overflow-hidden rounded-2xl border p-3 transition-shadow " +
+        (flash ? "thalvo-radar-flash border-red-400/70 shadow-[0_0_40px_-8px_rgba(239,68,68,0.7)]" : "")
+      }
+    >
+      {body}
     </section>
   );
 }
@@ -176,12 +192,26 @@ function CallCard({
       ? calculateMarineEta({ lat, lng }, origin)
       : null;
   const jobId = row.job_id;
+  const urgent = row.urgency_level === "urgent";
 
   return (
     <article
-      className="rounded-2xl border px-4 py-3"
-      style={{ borderColor: "var(--sheet-border)", background: "var(--sheet-chip)" }}
+      className={
+        "relative overflow-hidden rounded-xl border px-3.5 py-3 " +
+        (urgent ? "border-red-400/40 bg-red-500/[0.08]" : "")
+      }
+      style={
+        urgent
+          ? undefined
+          : { borderColor: "var(--sheet-border)", background: "var(--sheet-chip)" }
+      }
     >
+      {urgent ? (
+        <span
+          className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#EF4444]"
+          aria-hidden
+        />
+      ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold" style={{ color: "var(--sheet-ink)" }}>
@@ -190,7 +220,8 @@ function CallCard({
           <p className="mt-0.5 text-[12px]" style={{ color: "var(--sheet-active-ink)" }}>
             {t(EMERGENCY_CATEGORY_LABEL_KEYS[row.category])}
           </p>
-          <p className="mt-0.5 truncate text-[11px]" style={{ color: "var(--sheet-muted)" }}>
+          <p className="mt-0.5 flex items-center gap-1 truncate text-[11px]" style={{ color: "var(--sheet-muted)" }}>
+            <MapPin className="size-3 shrink-0" />
             {row.bay_name ? row.bay_name : t("esvc.open_water")}
           </p>
           {position ? (
@@ -214,8 +245,8 @@ function CallCard({
         </div>
         <span
           className={
-            "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] " +
-            (row.urgency_level === "urgent"
+            "shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] " +
+            (urgent
               ? "border-red-400/40 bg-red-500/15 text-red-200"
               : "border-amber-400/30 bg-amber-400/10 text-amber-100")
           }
@@ -223,8 +254,8 @@ function CallCard({
           {t(`esvc.urgency_${row.urgency_level}`)}
         </span>
       </div>
-      <div className="mt-2 flex items-center justify-between gap-2">
-        <p className="font-mono text-[12px]" style={{ color: "var(--sheet-active-ink)" }}>
+      <div className="mt-2.5 flex items-center justify-between gap-2">
+        <p className="font-mono text-[12px] tabular-nums" style={{ color: "var(--sheet-active-ink)" }}>
           {eta?.label ?? t("esvc.eta_waiting_fix")}
         </p>
         {assigned ? (
@@ -247,7 +278,7 @@ function CallCard({
           <Link
             to="/app/job/$id"
             params={{ id: jobId }}
-            className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-amber-400 px-3 text-[11px] font-black uppercase tracking-wider text-[#0A192F]"
+            className="inline-flex h-9 items-center gap-1.5 rounded-[10px] bg-[#F5B942] px-3 text-[11px] font-black uppercase tracking-wider text-[#0A192F]"
           >
             <Send className="size-3.5" />
             {t("esvc.bid")}
@@ -259,7 +290,9 @@ function CallCard({
         )}
       </div>
       {row.description ? (
-        <p className="mt-2 line-clamp-2 text-[12px] text-white/55">{row.description}</p>
+        <p className="mt-2 line-clamp-2 text-[12px]" style={{ color: "var(--sheet-muted)" }}>
+          {row.description}
+        </p>
       ) : null}
     </article>
   );

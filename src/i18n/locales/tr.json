@@ -235,6 +235,7 @@
   },
   "ops_alerts": {
     "pool_title": "Aktif iş havuzu / radar",
+    "pool_short": "Havuz",
     "pool_empty": "Havuzda açık iş yok.",
     "pool_bid_hint": "Teklif atın. Kaptan kabul edip ödedikten sonra yola çıkarsınız.",
     "your_missions": "Görevleriniz",
@@ -913,6 +914,8 @@
     "settings": "Hesap ayarları",
     "language": "Dil",
     "appearance": "Görünüm",
+    "design_lab": "Tasarım laboratuvarı",
+    "design_lab_hint": "Beş kokpit dili. Anında harita ve dock’a uygulanır; seçiminizi kaydederiz.",
     "theme_system": "Sistem",
     "theme_day": "Gündüz",
     "theme_night": "Gece",

@@ -235,6 +235,7 @@
   },
   "ops_alerts": {
     "pool_title": "Active job pool / radar",
+    "pool_short": "Pool",
     "pool_empty": "No open jobs in the pool.",
     "pool_bid_hint": "Submit a bid. You sail only after the captain accepts and pays.",
     "your_missions": "Your missions",
@@ -913,6 +914,8 @@
     "settings": "Account settings",
     "language": "Language",
     "appearance": "Appearance",
+    "design_lab": "Design lab",
+    "design_lab_hint": "Five cockpit languages. Applies instantly to chart and dock; we remember your pick.",
     "theme_system": "System",
     "theme_day": "Day",
     "theme_night": "Night",
