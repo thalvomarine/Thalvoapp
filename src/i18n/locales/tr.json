@@ -2518,7 +2518,13 @@
     "door_guest_body": "Haritadan liman seçin, açık günlerde aralık sorun. Ödeme simüle kalır.",
     "door_owner_kicker": "Tekne sahibi",
     "door_owner_title": "Filoyu MarineOS’ta yönet",
-    "door_owner_body": "Tekne, fotoğraf, açık gün ve gelen talepler. Firma girişi ile açılır."
+    "door_owner_body": "Tekne, fotoğraf, açık gün ve gelen talepler. Firma girişi ile açılır.",
+    "dock_rent": "Kirala",
+    "dock_rent_body": "Misafir olarak tekne ara, açık günlerde talep gönder.",
+    "dock_list": "Kiraya ver",
+    "dock_list_body": "Filonu MarineOS masasından yayınla ve talepleri yönet.",
+    "dock_sheet_eyebrow": "Charter kapısı",
+    "dock_sheet_title": "Ne yapmak istiyorsun?"
   },
   "partner_pending": {
     "kicker": "Onay bekleniyor",

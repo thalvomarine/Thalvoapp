@@ -1,4 +1,4 @@
-import { Link, Navigate, useRouterState } from "@tanstack/react-router";
+import { Link, Navigate, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   lazy,
   Suspense,
@@ -15,7 +15,7 @@ import { createPortal } from "react-dom";
 import { Wordmark } from "@/components/Wordmark";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccountMenuButton } from "@/components/mission/AccountMenuButton";
-import { X } from "lucide-react";
+import { Ship, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useFirstRun } from "@/components/onboarding/useFirstRun";
 
@@ -98,6 +98,8 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
   const hasSos = !isSupplier;
   const [isAdmin, setIsAdmin] = useState(false);
   const [sosOpen, setSosOpen] = useState(false);
+  const [charterDoorOpen, setCharterDoorOpen] = useState(false);
+  const navigate = useNavigate();
   const [sosCat, setSosCat] = useState<"mechanic" | "diver">("mechanic");
   const [sosDetails, setSosDetails] = useState<string | undefined>();
   const [svcOpen, setSvcOpen] = useState(false);
@@ -376,11 +378,10 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                     icon={<PassportMark size={20} />}
                     label={t("nav.dock_vessel")}
                   />
-                  <NavTab
-                    to="/app/charter"
-                    active={path.startsWith("/app/charter")}
-                    icon={<CharterMark size={20} />}
+                  <CharterNavButton
+                    active={path.startsWith("/app/charter") || path.startsWith("/charter")}
                     label={t("charter.door_charter")}
+                    onOpen={() => setCharterDoorOpen(true)}
                   />
                 </>
               )}
@@ -389,6 +390,23 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
         </div>
       </nav>
       )}
+
+      {sheetHostReady &&
+        charterDoorOpen &&
+        createPortal(
+          <CharterDoorSheet
+            onClose={() => setCharterDoorOpen(false)}
+            onRent={() => {
+              setCharterDoorOpen(false);
+              void navigate({ to: "/charter" });
+            }}
+            onList={() => {
+              setCharterDoorOpen(false);
+              void navigate({ to: "/app/charter" });
+            }}
+          />,
+          document.body,
+        )}
 
       <main
         className={
@@ -510,10 +528,10 @@ function SosNavButton({
       onTouchStart={onActivate}
       onTouchEnd={onActivate}
       aria-label="SOS"
-      className="relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-visible px-0.5 text-[9px] font-semibold uppercase tracking-tight text-[#FCA5A5]"
+      className="relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-visible px-0.5 text-[9px] font-semibold uppercase tracking-tight text-[#E08A8A]"
       style={{ pointerEvents: "auto" }}
     >
-      <span className="thalvo-fab-latch grid size-9 place-items-center border border-[#EF4444]/55 bg-[#EF4444]/15">
+      <span className="thalvo-fab-latch grid size-9 place-items-center border border-[#C45C5C]/55 bg-[#C45C5C]/15">
         <SosMark size={22} />
       </span>
       <span>SOS</span>
@@ -555,5 +573,119 @@ function NavTab({
       </span>
       <span className="max-w-full truncate whitespace-nowrap leading-none">{label}</span>
     </Link>
+  );
+}
+
+function CharterNavButton({
+  active,
+  icon,
+  label,
+  onOpen,
+}: {
+  active: boolean;
+  icon?: ReactNode;
+  label: string;
+  onOpen: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className={
+        "relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden px-0.5 text-[9px] font-semibold uppercase tracking-tight transition-colors " +
+        (active ? "text-white" : "text-white/45 hover:text-white/75")
+      }
+    >
+      {active ? (
+        <span className="thalvo-nav-active-rail absolute top-0 h-[2px] w-7 rounded-full" />
+      ) : null}
+      <span
+        className={
+          "thalvo-fab-latch grid size-9 place-items-center border transition-colors " +
+          (active
+            ? "border-[color:color-mix(in_srgb,var(--skin-active,#C9B896)_35%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#C9B896)_10%,transparent)]"
+            : "border-transparent bg-transparent")
+        }
+      >
+        {icon ?? <CharterMark size={20} />}
+      </span>
+      <span className="max-w-full truncate whitespace-nowrap leading-none">{label}</span>
+    </button>
+  );
+}
+
+function CharterDoorSheet({
+  onClose,
+  onRent,
+  onList,
+}: {
+  onClose: () => void;
+  onRent: () => void;
+  onList: () => void;
+}) {
+  const { t } = useTranslation();
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/55 p-3 sm:items-center" onClick={onClose}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("charter.dock_sheet_title")}
+        className="w-full max-w-md overflow-hidden rounded-3xl border border-[#C9B896]/25 bg-[#0C2226] shadow-[0_24px_60px_-24px_rgba(0,0,0,0.75)]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-3 border-b border-white/10 px-5 py-4">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C9B896]/80">
+              {t("charter.dock_sheet_eyebrow")}
+            </p>
+            <h2 className="mt-1 text-base font-semibold text-white">{t("charter.dock_sheet_title")}</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("common.close")}
+            className="grid size-9 place-items-center rounded-full text-white/55 hover:bg-white/10 hover:text-white"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+        <div className="space-y-2 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <button
+            type="button"
+            onClick={onRent}
+            className="flex w-full items-start gap-3 rounded-2xl border border-[#C9B896]/30 bg-[#C9B896]/10 px-4 py-3.5 text-left transition-colors hover:bg-[#C9B896]/16"
+          >
+            <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl border border-[#C9B896]/35 bg-[#0C2226]/60 text-[#C9B896]">
+              <CharterMark size={22} />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[14px] font-semibold text-white">{t("charter.dock_rent")}</span>
+              <span className="mt-1 block text-[12px] leading-relaxed text-white/60">{t("charter.dock_rent_body")}</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={onList}
+            className="flex w-full items-start gap-3 rounded-2xl border border-white/12 bg-white/[0.03] px-4 py-3.5 text-left transition-colors hover:border-[#C9B896]/30 hover:bg-white/[0.06]"
+          >
+            <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl border border-white/12 bg-[#0C2226]/60 text-[#C9B896]">
+              <Ship className="size-5" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[14px] font-semibold text-white">{t("charter.dock_list")}</span>
+              <span className="mt-1 block text-[12px] leading-relaxed text-white/60">{t("charter.dock_list_body")}</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -2518,7 +2518,13 @@
     "door_guest_body": "Pick a home port on the chart and ask for open days. Payment stays simulated.",
     "door_owner_kicker": "Boat owner",
     "door_owner_title": "Run the fleet in MarineOS",
-    "door_owner_body": "Yacht, photographs, open days and inbound inquiries. Opens with firm sign-in."
+    "door_owner_body": "Yacht, photographs, open days and inbound inquiries. Opens with firm sign-in.",
+    "dock_rent": "Rent a yacht",
+    "dock_rent_body": "Browse as a guest and inquire on open days.",
+    "dock_list": "List your yacht",
+    "dock_list_body": "Publish your fleet from the MarineOS desk and manage inquiries.",
+    "dock_sheet_eyebrow": "Charter door",
+    "dock_sheet_title": "What do you want to do?"
   },
   "partner_pending": {
     "kicker": "Awaiting approval",
