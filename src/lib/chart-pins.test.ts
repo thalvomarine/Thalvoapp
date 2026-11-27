@@ -40,12 +40,12 @@ test("usta wrench and captain cap keep their alarm tones", () => {
   const brass = actorPinHtml("wrench", "cyan");
   const alarm = actorPinHtml("wrench", "red");
   assert.notEqual(brass, alarm);
-  assert.match(brass, /#E4C98A/);
-  assert.match(alarm, /#C45C4A/);
+  assert.match(brass, /#3EE7F2/);
+  assert.match(alarm, /#EF4444/);
 
   const day = actorPinHtml("cap", "gold");
   const night = actorPinHtml("cap", "red");
   assert.notEqual(day, night);
-  assert.match(night, /#C45C4A/);
-  assert.match(day, /#C4923A/);
+  assert.match(night, /#EF4444/);
+  assert.match(day, /#F5B942/);
 });
