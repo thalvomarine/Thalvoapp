@@ -1848,6 +1848,18 @@ export type Database = {
         }
         Returns: string
       }
+      request_service_quote: {
+        Args: {
+          _package_id: string
+          _lat: number
+          _lng: number
+          _marina?: string
+          _description?: string | null
+          _location_accuracy_m?: number
+          _location_captured_at?: string
+        }
+        Returns: string
+      }
       approve_role_request: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]

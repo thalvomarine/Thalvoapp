@@ -462,7 +462,7 @@
     "subtitle": "Sertifikalı usta ve dalgıçlardan teklif alın — sabit fiyat yok.",
     "filter_mech": "Motor Servisleri",
     "filter_diver": "Dalgıçlar",
-    "no_offers": "Bu paket için henüz teklif yok.",
+    "no_offers": "Teklif bekleniyor.",
     "book_now": "Teklif al",
     "eta_short": "Süre",
     "empty_title": "Henüz paket yok",
@@ -472,7 +472,10 @@
     "request_quote": "Teklif al",
     "quote_sent": "Teklif talebi gönderildi.",
     "quote_failed": "Teklif talebi gönderilemedi.",
-    "no_offers_body": "Bu iş için henüz onaylı usta yok. SOS veya arıza bildirimi ile devam edebilirsiniz."
+    "no_offers_body": "Talebiniz onaylı sağlayıcılara iletildi. Gelen teklifleri görev sayfasında görürsünüz.",
+    "quote_broadcast_body": "Talep, bu iş tipindeki onaylı usta / servis / dalgıçlara düşer. Onlar fiyat ve ETA ile teklif gönderir; siz kabul edersiniz. Ödeme simüle kalır.",
+    "quote_provider_count": "{{count}} onaylı sağlayıcı bu kategoride kayıtlı.",
+    "quote_no_providers": "Bu kategoride henüz onaylı sağlayıcı yok; talep yine açılır, onay sonrası teklif gelebilir."
   },
   "shop": {
     "title": "Yedek Parça Pazaryeri",

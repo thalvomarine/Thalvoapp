@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionUser } from "@/lib/session";
 
-import { Wrench, Anchor, Star, Loader2 } from "lucide-react";
+import { Wrench, Anchor, Loader2, Radio } from "lucide-react";
 import { toast } from "sonner";
 import { emitEvent } from "@/lib/events";
 import { sanitizePlainText } from "@/lib/sanitize";
@@ -27,14 +27,6 @@ interface Pkg {
   title_en: string;
   category: "mechanic" | "diver";
   base_duration_min: number;
-}
-interface Offer {
-  id: string;
-  provider_id: string;
-  price: number;
-  eta_minutes: number;
-  profiles: { full_name: string; company_name: string | null } | null;
-  provider_details: { rating: number; service_type: string } | null;
 }
 
 function ServicesPage() {
@@ -96,7 +88,7 @@ function Services() {
           className={
             "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-semibold uppercase tracking-[0.14em] transition-colors " +
             (filter === "mechanic"
-              ? "border-amber-400/50 bg-amber-500/20 text-[#E8DFC8]"
+              ? "border-[#C9B896]/50 bg-[#C9B896]/15 text-[#E8DFC8]"
               : "border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/10")
           }
         >
@@ -107,7 +99,7 @@ function Services() {
           className={
             "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-semibold uppercase tracking-[0.14em] transition-colors " +
             (filter === "diver"
-              ? "border-amber-400/50 bg-amber-500/20 text-[#E8DFC8]"
+              ? "border-[#C9B896]/50 bg-[#C9B896]/15 text-[#E8DFC8]"
               : "border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/10")
           }
         >
@@ -142,7 +134,7 @@ function Services() {
             <li key={p.id}>
               <button
                 onClick={() => setSelected(p)}
-                className="glass-panel flex w-full items-center justify-between rounded-2xl p-4 text-left transition-colors hover:border-amber-400/40"
+                className="glass-panel flex w-full items-center justify-between rounded-2xl p-4 text-left transition-colors hover:border-[#C9B896]/40"
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-white">{label(p)}</p>
@@ -158,7 +150,7 @@ function Services() {
       )}
 
       {selected && (
-        <PackageOffers
+        <PackageQuoteSheet
           pkg={selected}
           label={label(selected)}
           onClose={() => setSelected(null)}
@@ -168,7 +160,12 @@ function Services() {
   );
 }
 
-function PackageOffers({
+/**
+ * Broadcast a package quote to verified providers (mechanic or diver).
+ * Providers bid with submit_offer on the open Pending job — no pre-listed
+ * provider_service_packages required.
+ */
+function PackageQuoteSheet({
   pkg,
   label,
   onClose,
@@ -180,40 +177,28 @@ function PackageOffers({
   const { t } = useTranslation();
   const { user } = useSessionUser();
   const navigate = useNavigate();
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [busyId, setBusyId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const inFlight = useRef(false);
+  const isDiver = pkg.category === "diver";
 
   useSheetChrome(onClose);
 
-  useEffect(() => {
-    supabase
-      .from("provider_service_packages")
-      .select(
-        "id, provider_id, price, eta_minutes, profiles!provider_service_packages_provider_id_fkey(full_name, company_name), provider_details!provider_service_packages_provider_id_fkey(rating, service_type)",
-      )
-      .eq("package_id", pkg.id)
-      .order("price")
-      .then(({ data }) => setOffers((data as never) ?? []));
-  }, [pkg.id]);
-
-  const bookingInFlight = useRef(false);
-  const requestQuote = async (offer: Offer) => {
-    if (!user) return;
-    if (bookingInFlight.current) return;
-    bookingInFlight.current = true;
-    setBusyId(offer.id);
+  const sendQuote = async () => {
+    if (!user || inFlight.current) return;
+    inFlight.current = true;
+    setBusy(true);
     try {
       const res = await getFix();
       if (!res.ok) {
         throw new Error(t(res.failure.messageKey, { defaultValue: res.failure.defaultMessage }));
       }
       const fields = fixToJobFields(res.fix);
-      const { data, error } = await supabase.rpc("book_service_package", {
-        _psp_id: offer.id,
+      const { data, error } = await supabase.rpc("request_service_quote", {
+        _package_id: pkg.id,
         _lat: fields.lat,
         _lng: fields.lng,
         _marina: "Göcek",
-        _description: sanitizePlainText(`Quote request · ${label}`, 400),
+        _description: sanitizePlainText(`Teklif talebi · ${label}`, 400),
         _location_accuracy_m: fields.location_accuracy_m ?? undefined,
         _location_captured_at: fields.location_captured_at ?? undefined,
       });
@@ -223,7 +208,7 @@ function PackageOffers({
         type: "mission.created",
         subject_type: "mission",
         subject_id: jobId,
-        metadata: { source: "service_package_quote", package: pkg.key },
+        metadata: { source: "service_package_quote", package: pkg.key, category: pkg.category },
       });
       toast.success(t("services.quote_sent"));
       onClose();
@@ -232,8 +217,8 @@ function PackageOffers({
       const message = e instanceof Error ? e.message : t("services.quote_failed");
       toast.error(message);
     } finally {
-      bookingInFlight.current = false;
-      setBusyId(null);
+      inFlight.current = false;
+      setBusy(false);
     }
   };
 
@@ -247,47 +232,32 @@ function PackageOffers({
             {t("common.close")}
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-4 pb-[max(2rem,env(safe-area-inset-bottom))]">
-          {offers.length === 0 ? (
-            <EmptyState title={t("services.no_offers")} body={t("services.no_offers_body")} />
-          ) : (
-            <ul className="space-y-2">
-              {offers.map((o) => (
-                <li
-                  key={o.id}
-                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3"
-                >
-                  <div className="grid size-11 place-items-center rounded-xl border border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]">
-                    {o.provider_details?.service_type === "Underwater Diver" ? (
-                      <Anchor className="size-5" />
-                    ) : (
-                      <Wrench className="size-5" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-bold text-white">
-                      {o.profiles?.company_name || o.profiles?.full_name}
-                    </p>
-                    <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-white/50">
-                      <Star className="size-3 fill-amber text-amber" />
-                      {(o.provider_details?.rating ?? 5).toFixed(1)}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={busyId === o.id}
-                    onClick={() => void requestQuote(o)}
-                    className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md bg-[#C9B896] px-3 text-[11px] font-bold tracking-wide text-[#1A1406] transition hover:bg-[#d4c4a8] disabled:opacity-55"
-                  >
-                    {busyId === o.id ? (
-                      <Loader2 className="size-3.5 animate-spin" />
-                    ) : null}
-                    {t("services.request_quote")}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4 pb-[max(2rem,env(safe-area-inset-bottom))]">
+          <div className="rounded-2xl border border-[#C9B896]/25 bg-[#C9B896]/08 px-4 py-3">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl border border-[#C9B896]/35 bg-[#0C2226]/60 text-[#C9B896]">
+                {isDiver ? <Anchor className="size-5" /> : <Wrench className="size-5" />}
+              </span>
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C9B896]/85">
+                  {isDiver ? t("services.filter_diver") : t("services.filter_mech")}
+                </p>
+                <p className="mt-1 text-[13px] leading-relaxed text-white/75">
+                  {t("services.quote_broadcast_body")}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void sendQuote()}
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#C9B896] text-[13px] font-bold uppercase tracking-[0.12em] text-[#0C2226] transition hover:bg-[#d4c4a8] disabled:opacity-55"
+          >
+            {busy ? <Loader2 className="size-4 animate-spin" /> : <Radio className="size-4" />}
+            {t("services.request_quote")}
+          </button>
         </div>
       </div>
     </div>

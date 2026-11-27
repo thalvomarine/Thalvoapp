@@ -265,7 +265,28 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
           .is("provider_id", null)
           .order("created_at", { ascending: false });
         if (pending.error) console.warn("[cockpit] jobs pending unavailable", pending.error.message);
-        setRequests((pending.data as never) ?? []);
+        const { data: myDetail } = await supabase
+          .from("provider_details")
+          .select("service_type")
+          .eq("id", user.id)
+          .maybeSingle();
+        const myType = (myDetail?.service_type as string | null) ?? null;
+        const pendingRowsRaw = (pending.data ?? []) as Array<{
+          id: string;
+          problem_category: string;
+          description: string;
+          marina: string;
+          service_type: string;
+          lat: number | null;
+          lng: number | null;
+          profiles: { full_name: string; boat_name: string | null } | null;
+        }>;
+        // Match usta ↔ mechanic packages and dalgıç ↔ diver packages when typed.
+        setRequests(
+          myType
+            ? pendingRowsRaw.filter((row) => row.service_type === myType)
+            : pendingRowsRaw,
+        );
         const mine = await supabase
           .from("jobs")
           .select("id, problem_category, status, lat, lng, marina")
@@ -300,15 +321,10 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
           .order("created_at", { ascending: false })
           .limit(40);
         if (located.error) console.warn("[cockpit] located calls unavailable", located.error.message);
-        const pendingRows = (pending.data ?? []) as Array<{
-          id: string;
-          lat: unknown;
-          lng: unknown;
-          problem_category: string;
-          marina: string | null;
-          profiles: { boat_name: string | null; full_name: string } | null;
-        }>;
-        const jobAlerts = pendingRows.flatMap((row) => {
+        const poolForMap = myType
+          ? pendingRowsRaw.filter((row) => row.service_type === myType)
+          : pendingRowsRaw;
+        const jobAlerts = poolForMap.flatMap((row) => {
           const lat = asCoordinate(row.lat);
           const lng = asCoordinate(row.lng);
           if (lat == null || lng == null) return [];
@@ -319,6 +335,7 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
             title: row.profiles?.boat_name?.trim() || row.marina?.trim() || row.problem_category,
             kind: "sos" as const,
             detail: row.marina?.trim() || undefined,
+            jobId: row.id,
           }];
         });
         const rows = (located.data ?? []) as Array<{
