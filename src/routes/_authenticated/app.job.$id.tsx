@@ -48,6 +48,7 @@ import { CommissionBreakdown } from "@/components/payments/CommissionBreakdown";
 import { MissionBidForm } from "@/components/mission/MissionBidForm";
 import { computeCommission, readCompleteJobResult } from "@/lib/payments";
 import { sanitizePlainText } from "@/lib/sanitize";
+import { requestMapFocus } from "@/lib/map-focus-bus";
 
 export const Route = createFileRoute("/_authenticated/app/job/$id")({
   ssr: false,
@@ -644,7 +645,13 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
       {!closed && Number.isFinite(job.lat) && Number.isFinite(job.lng) && (
         <button
           type="button"
-          onClick={() => navigate({ to: "/app" })}
+          onClick={() => {
+            const target = providerPos
+              ? { lat: providerPos.lat, lng: providerPos.lng, label: providerPos.name, zoom: 15 }
+              : { lat: job.lat, lng: job.lng, label: job.marina, zoom: 15 };
+            requestMapFocus(target);
+            navigate({ to: "/app" });
+          }}
           className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border border-cyan-300/40 bg-cyan-400/10 text-[12px] font-semibold uppercase tracking-[0.14em] text-cyan-100"
         >
           <PinIcon className="size-4" />
@@ -1113,7 +1120,15 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
         <>
           <button
             type="button"
-            onClick={() => navigate({ to: "/app" })}
+            onClick={() => {
+              requestMapFocus({
+                lat: job.lat,
+                lng: job.lng,
+                zoom: 15,
+                label: job.marina,
+              });
+              navigate({ to: "/app" });
+            }}
             className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border border-cyan-300/40 bg-cyan-400/10 text-[12px] font-semibold uppercase tracking-[0.14em] text-cyan-100"
           >
             <PinIcon className="size-4" />

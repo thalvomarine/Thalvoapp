@@ -46,8 +46,14 @@ export function PaymentTimeline({ currentIndex, reachedFlags, stages = DEFAULT_S
   return (
     <ol className={"relative " + className}>
       {visible.map((s, i) => {
-        const state: "done" | "current" | "todo" =
-          i < currentIndex ? "done" : i === currentIndex ? "current" : "todo";
+        const approved = i === currentIndex && i === visible.length - 1;
+        const state: "done" | "current" | "todo" = approved
+          ? "done"
+          : i < currentIndex
+            ? "done"
+            : i === currentIndex
+              ? "current"
+              : "todo";
         return (
           <li key={s.key} className="relative pl-8 pb-4 last:pb-0">
             {i < visible.length - 1 && (

@@ -197,20 +197,33 @@ const CLEAR_ERROR_TILE =
   "data:image/svg+xml;charset=UTF-8," +
   encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"/>`);
 
-function pinIcon(kind: ChartPinKind) {
+function pinIcon(kind: ChartPinKind, live = false) {
   return L.divIcon({
-    html: chartPinHtml(kind),
+    html: live ? `<div class="thalvo-live-pin">${chartPinHtml(kind)}</div>` : chartPinHtml(kind),
     className: "thalvo-map-marker",
-    iconSize: CHART_PIN_SIZE,
-    iconAnchor: CHART_PIN_ANCHOR,
-    popupAnchor: [0, -42],
+    iconSize: live ? [40, 58] : CHART_PIN_SIZE,
+    iconAnchor: live ? [20, 58] : CHART_PIN_ANCHOR,
+    popupAnchor: [0, live ? -54 : -42],
   });
+}
+
+function sameSpot(
+  a: { lat: number; lng: number } | null | undefined,
+  b: { lat: number; lng: number } | null | undefined,
+) {
+  if (!a || !b) return false;
+  return Math.abs(a.lat - b.lat) < 0.0008 && Math.abs(a.lng - b.lng) < 0.0008;
 }
 
 const mechIcon = pinIcon("marina");
 const diverIcon = pinIcon("anchorage");
 const sosIcon = pinIcon("hazard");
 const faultIcon = pinIcon("fuel");
+const mechLiveIcon = pinIcon("marina", true);
+const diverLiveIcon = pinIcon("anchorage", true);
+const sosLiveIcon = pinIcon("hazard", true);
+const faultLiveIcon = pinIcon("fuel", true);
+const ownLiveIcon = pinIcon("own", true);
 
 const ZONE_ICONS: Record<MarineZoneKind, L.DivIcon> = {
   marina: pinIcon("marina"),
@@ -588,9 +601,22 @@ function ChartRasterLayers({
   return null;
 }
 
-const FleetPinMarker = memo(function FleetPinMarker({ pin }: { pin: LivePin }) {
+const FleetPinMarker = memo(function FleetPinMarker({
+  pin,
+  live,
+}: {
+  pin: LivePin;
+  live?: boolean;
+}) {
+  const icon = pin.kind === "diver"
+    ? live
+      ? diverLiveIcon
+      : diverIcon
+    : live
+      ? mechLiveIcon
+      : mechIcon;
   return (
-    <Marker position={[pin.lat, pin.lng]} icon={pin.kind === "diver" ? diverIcon : mechIcon}>
+    <Marker position={[pin.lat, pin.lng]} icon={icon} zIndexOffset={live ? 900 : 0}>
       <Popup>
         <span className="text-[12px] font-semibold">{pin.name}</span>
       </Popup>
@@ -604,6 +630,7 @@ const ChartOverlays = memo(function ChartOverlays({
   pins,
   alerts,
   routes,
+  emphasis,
   moorings,
   hazards,
   lights,
@@ -619,6 +646,7 @@ const ChartOverlays = memo(function ChartOverlays({
   pins: LivePin[];
   alerts: LiveAlert[];
   routes: LiveRoute[];
+  emphasis: { lat: number; lng: number } | null;
   moorings: MarineZone[];
   hazards: MarineZone[];
   lights: MarineZone[];
@@ -647,11 +675,18 @@ const ChartOverlays = memo(function ChartOverlays({
 
   return (
     <>
-      {fix && <Marker position={[fix.lat, fix.lng]} icon={meIcon} opacity={stale ? 0.5 : 1} />}
+      {fix && (
+        <Marker
+          position={[fix.lat, fix.lng]}
+          icon={sameSpot(fix, emphasis) ? ownLiveIcon : meIcon}
+          zIndexOffset={sameSpot(fix, emphasis) ? 800 : 0}
+          opacity={stale ? 0.5 : 1}
+        />
+      )}
 
       {layers.fleet &&
         poiFilters.service &&
-        pins.map((p) => <FleetPinMarker key={p.id} pin={p} />)}
+        pins.map((p) => <FleetPinMarker key={p.id} pin={p} live={sameSpot(p, emphasis)} />)}
 
       {routes.map((route) => {
         const from = route.from ?? (fix ? { lat: fix.lat, lng: fix.lng } : null);
@@ -671,7 +706,11 @@ const ChartOverlays = memo(function ChartOverlays({
               pathOptions={{ color: "#00F0FF", weight: 2.5, opacity: 0.9, dashArray: "8 10" }}
             />
             {route.from && !own && (
-              <Marker position={[from.lat, from.lng]} icon={mechIcon}>
+              <Marker
+                position={[from.lat, from.lng]}
+                icon={sameSpot(from, emphasis) ? mechLiveIcon : mechIcon}
+                zIndexOffset={sameSpot(from, emphasis) ? 900 : 200}
+              >
                 <Popup>
                   <span className="text-[12px] font-semibold">
                     {route.fromName || t("mission.provider_fallback")}
@@ -700,7 +739,16 @@ const ChartOverlays = memo(function ChartOverlays({
         <Marker
           key={alert.id}
           position={[alert.lat, alert.lng]}
-          icon={alert.kind === "sos" ? sosIcon : faultIcon}
+          zIndexOffset={sameSpot(alert, emphasis) ? 900 : 100}
+          icon={
+            sameSpot(alert, emphasis)
+              ? alert.kind === "sos"
+                ? sosLiveIcon
+                : faultLiveIcon
+              : alert.kind === "sos"
+                ? sosIcon
+                : faultIcon
+          }
         >
           <Popup>
             <div className="text-[12px] leading-snug">
@@ -909,6 +957,9 @@ function LiveMapCanvas({
   const started = useRef(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [selectedPoint, setSelectedPoint] = useState<ChartPoint | null>(null);
+  const [emphasis, setEmphasis] = useState<{ lat: number; lng: number; label?: string } | null>(
+    null,
+  );
 
   const [tileProgress, setTileProgress] = useState<DownloadProgress | null>(null);
   const prefetchRef = useRef<PrefetchController | null>(null);
@@ -917,6 +968,7 @@ function LiveMapCanvas({
     if (!map) return;
     const apply = (target: MapFocusTarget) => {
       if (!isValidCoordinate(target.lat, target.lng)) return;
+      setEmphasis({ lat: target.lat, lng: target.lng, label: target.label });
       map.flyTo([target.lat, target.lng], target.zoom ?? 15, { duration: 1.15 });
     };
     const pending = consumeMapFocus();
@@ -1216,6 +1268,25 @@ function LiveMapCanvas({
           .map((route) => route.id)
           .sort()
           .join(",")}:${framePoints.length}`;
+  const parties = useMemo(() => {
+    const list: { id: string; lat: number; lng: number; label: string }[] = [];
+    const push = (id: string, lat: number, lng: number, label: string) => {
+      if (!isValidCoordinate(lat, lng)) return;
+      if (list.some((item) => sameSpot(item, { lat, lng }))) return;
+      list.push({ id, lat, lng, label: label.trim() || id });
+    };
+    for (const alert of alerts) push(alert.id, alert.lat, alert.lng, alert.title);
+    for (const route of routes) {
+      if (!route.from) continue;
+      push(
+        `${route.id}-responder`,
+        route.from.lat,
+        route.from.lng,
+        route.fromName || t("mission.provider_fallback"),
+      );
+    }
+    return list;
+  }, [alerts, routes, t]);
   const moorings = useMemo(
     () =>
       zones.filter((z) => {
@@ -1459,6 +1530,7 @@ function LiveMapCanvas({
           pins={pins}
           alerts={pickValidCoordinates(alerts)}
           routes={routes}
+          emphasis={emphasis}
           moorings={moorings}
           hazards={hazards}
           lights={lights}
@@ -1582,6 +1654,31 @@ function LiveMapCanvas({
                       {drawing && <ChartDrawHint kind="admin" inline />}
                       {picking && <ChartDrawHint kind="report" inline />}
                       {brand ? <div className="pointer-events-auto w-fit max-w-full">{brand}</div> : null}
+                      {parties.length > 0 && (
+                        <div className="pointer-events-auto flex max-w-full gap-1.5 overflow-x-auto">
+                          {parties.map((party) => {
+                            const selected = sameSpot(emphasis, party);
+                            return (
+                              <button
+                                key={party.id}
+                                type="button"
+                                onClick={() => {
+                                  setEmphasis(party);
+                                  map?.flyTo([party.lat, party.lng], 15, { duration: 0.7 });
+                                }}
+                                className={
+                                  "shrink-0 rounded-full border px-3 py-1 text-[11px] font-semibold backdrop-blur-md " +
+                                  (selected
+                                    ? "border-cyan-300 bg-cyan-400/25 text-cyan-50 shadow-[0_0_16px_rgba(0,240,255,0.45)]"
+                                    : "border-white/15 bg-black/45 text-white/80")
+                                }
+                              >
+                                {party.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                       <div
                         className={
                           "pointer-events-auto w-fit max-w-full transition-opacity duration-200 " +

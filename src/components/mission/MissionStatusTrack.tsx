@@ -55,8 +55,14 @@ export function MissionStatusTrack({ stage, className = "", compact = false }: P
   return (
     <ol className={"relative flex items-center gap-1 " + className}>
       {STAGES.map((s, i) => {
-        const state: "done" | "current" | "todo" =
-          i < activeIdx ? "done" : i === activeIdx ? "current" : "todo";
+        const finished = stage === "completed" && i === activeIdx;
+        const state: "done" | "current" | "todo" = finished
+          ? "done"
+          : i < activeIdx
+            ? "done"
+            : i === activeIdx
+              ? "current"
+              : "todo";
         return (
           <li key={s.key} className="flex-1 flex items-center gap-1 min-w-0">
             <div className="flex flex-col items-center gap-1 min-w-0 flex-1">
@@ -79,7 +85,7 @@ export function MissionStatusTrack({ stage, className = "", compact = false }: P
                   <Circle className={compact ? "size-2" : "size-2.5"} />
                 )}
               </span>
-              {!compact && state === "current" && (
+              {!compact && (state === "current" || finished) && (
                 <span className="text-[9px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-amber-300">
                   {t(s.labelKey)}
                 </span>
