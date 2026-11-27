@@ -1656,6 +1656,7 @@ export type Database = {
           contact: string
           party: number
           start_iso: string
+          end_iso: string
           note: string | null
           status: string
           created_at: string
@@ -1667,6 +1668,7 @@ export type Database = {
           contact: string
           party: number
           start_iso: string
+          end_iso: string
           note?: string | null
           status?: string
           created_at?: string
@@ -1678,6 +1680,7 @@ export type Database = {
           contact?: string
           party?: number
           start_iso?: string
+          end_iso?: string
           note?: string | null
           status?: string
           created_at?: string

@@ -103,13 +103,9 @@
 @layer base {
   * { border-color: var(--color-border); }
   html, body {
-    /* The native WebView/window canvas behind everything — always the deep
-       ECDIS navy, never a flash of white, whether that's the initial paint
-       before hydration, iOS rubber-band bounce past a scroll edge, or a
-       stray horizontal-overflow gutter on a page that hasn't fully clipped
-       one of its own children yet. Actual page content still paints its
-       own (light or dark) surface on top of this canvas as normal. */
-    background-color: #0a192f;
+    /* Marina Concierge canvas — teal harbour floor, never a white or ECDIS
+       navy flash on boot, overscroll, or tab pending. */
+    background-color: #0c2226;
     color: var(--color-foreground);
     -webkit-tap-highlight-color: transparent;
     /* Native-app feel on mobile/Capacitor: no browser pull-to-refresh and no
@@ -203,24 +199,24 @@
 .thalvo-route-pin-via {
   width: 16px;
   height: 16px;
-  background: #f5b942;
+  background: #C9B896;
   border: 2px solid #0b1528;
-  filter: drop-shadow(0 2px 4px rgba(245, 185, 66, 0.45));
+  filter: drop-shadow(0 2px 4px rgba(201, 184, 150, 0.45));
 }
 .thalvo-route-pin-end {
   width: 20px;
   height: 20px;
   background: #0b1528;
-  border: 2px solid #f5b942;
-  box-shadow: 0 0 10px rgba(245, 185, 66, 0.45), 0 0 0 1px rgba(245, 197, 66, 0.35);
+  border: 2px solid #C9B896;
+  box-shadow: 0 0 10px rgba(201, 184, 150, 0.45), 0 0 0 1px rgba(245, 197, 66, 0.35);
 }
 .leaflet-marker-dragging .thalvo-route-pin-via,
 .thalvo-route-hit.is-dragging .thalvo-route-pin-via,
 .thalvo-route-pin-via.is-dragging,
 .leaflet-marker-icon.is-dragging .thalvo-route-pin-via {
   transform: scale(1.25);
-  box-shadow: 0 0 14px rgba(245, 185, 66, 0.85);
-  filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.9));
+  box-shadow: 0 0 14px rgba(201, 184, 150, 0.85);
+  filter: drop-shadow(0 0 8px rgba(201, 184, 150, 0.9));
 }
 .thalvo-route-mid-core {
   width: 24px;
@@ -229,8 +225,8 @@
   display: grid;
   place-items: center;
   background: rgba(11, 21, 40, 0.8);
-  border: 1px solid rgba(245, 185, 66, 0.45);
-  color: #f5b942;
+  border: 1px solid rgba(201, 184, 150, 0.45);
+  color: #C9B896;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
@@ -286,19 +282,18 @@
   --ring: oklch(0.7 0.13 210);
 }
 
-/* Cockpit surface — deep radial vignette behind everything */
+/* Cockpit surface — ECDIS navy plane (no candy glow) */
 .thalvo-cockpit {
   background:
-    radial-gradient(120% 80% at 50% -10%, oklch(0.24 0.05 245) 0%, transparent 55%),
-    radial-gradient(90% 60% at 100% 100%, oklch(0.22 0.04 220 / 0.6) 0%, transparent 60%),
-    oklch(0.11 0.015 250);
+    radial-gradient(80% 50% at 10% 0%, rgb(30 70 78 / 0.35) 0%, transparent 55%),
+    linear-gradient(180deg, #0c2226 0%, #071416 100%);
 }
 
 /* Marketplace showroom — MarineOS skill tokens + light motion */
 .thalvo-catalog {
-  --mos-navy: #0a192f;
-  --mos-cyan: #f5b942;
-  --mos-amber: #f5b942;
+  --mos-navy: #0c2226;
+  --mos-cyan: #8BA8A3;
+  --mos-amber: #C9B896;
 }
 
 /*
@@ -306,37 +301,37 @@
  * system / default = ECDIS navy; day = paper; night = black.
  */
 .thalvo-desk {
-  --desk-canvas: #0c1829;
-  --desk-paper: #12233a;
-  --desk-ink: #e8f4ff;
-  --desk-muted: rgb(230 246 255 / 0.58);
-  --desk-subtle: rgb(230 246 255 / 0.4);
-  --desk-border: rgb(230 246 255 / 0.12);
-  --desk-input: #071422;
-  --desk-chip: rgb(230 246 255 / 0.06);
-  --desk-price: #f5b942;
-  --desk-accent: #0a192f;
-  --desk-accent-fg: #ffffff;
-  --desk-active: #f5b942;
+  --desk-canvas: #0c2226;
+  --desk-paper: #12282c;
+  --desk-ink: #f4efe6;
+  --desk-muted: rgb(210 200 180 / 0.62);
+  --desk-subtle: rgb(210 200 180 / 0.4);
+  --desk-border: rgb(201 184 150 / 0.22);
+  --desk-input: #0a1c20;
+  --desk-chip: rgb(201 184 150 / 0.08);
+  --desk-price: #c9b896;
+  --desk-accent: #0c2226;
+  --desk-accent-fg: #f4efe6;
+  --desk-active: #c9b896;
   --desk-active-ink: #0a192f;
   --desk-shadow: 0 14px 36px -22px rgb(0 0 0 / 0.55);
   --desk-overlay: rgb(0 0 0 / 0.55);
   color: var(--desk-ink);
 }
-/* system = cockpit (same as default desk tokens on html[data-thalvo-theme="system"]). */
+/* system = Marina Concierge desk (locked skin). */
 html[data-thalvo-theme="system"] .thalvo-desk {
-  --desk-canvas: #0c1829;
-  --desk-paper: #12233a;
-  --desk-ink: #e8f4ff;
-  --desk-muted: rgb(230 246 255 / 0.58);
-  --desk-subtle: rgb(230 246 255 / 0.4);
-  --desk-border: rgb(230 246 255 / 0.12);
-  --desk-input: #071422;
-  --desk-chip: rgb(230 246 255 / 0.06);
-  --desk-price: #f5b942;
-  --desk-accent: #0a192f;
-  --desk-accent-fg: #ffffff;
-  --desk-active: #f5b942;
+  --desk-canvas: #0c2226;
+  --desk-paper: #12282c;
+  --desk-ink: #f4efe6;
+  --desk-muted: rgb(210 200 180 / 0.62);
+  --desk-subtle: rgb(210 200 180 / 0.4);
+  --desk-border: rgb(201 184 150 / 0.22);
+  --desk-input: #0a1c20;
+  --desk-chip: rgb(201 184 150 / 0.08);
+  --desk-price: #c9b896;
+  --desk-accent: #0c2226;
+  --desk-accent-fg: #f4efe6;
+  --desk-active: #c9b896;
   --desk-active-ink: #0a192f;
   --desk-shadow: 0 14px 36px -22px rgb(0 0 0 / 0.55);
   --desk-overlay: rgb(0 0 0 / 0.55);
@@ -353,7 +348,7 @@ html[data-thalvo-theme="day"] .thalvo-desk {
   --desk-price: #d97706;
   --desk-accent: #0a192f;
   --desk-accent-fg: #ffffff;
-  --desk-active: #f5b942;
+  --desk-active: #C9B896;
   --desk-active-ink: #0a192f;
   --desk-shadow: 0 14px 36px -22px rgb(15 23 42 / 0.18);
   --desk-overlay: rgb(15 23 42 / 0.4);
@@ -367,10 +362,10 @@ html[data-thalvo-theme="night"] .thalvo-desk {
   --desk-border: rgb(245 247 251 / 0.14);
   --desk-input: #000000;
   --desk-chip: rgb(245 247 251 / 0.06);
-  --desk-price: #f5b942;
+  --desk-price: #C9B896;
   --desk-accent: #111111;
   --desk-accent-fg: #f5f7fb;
-  --desk-active: #f5b942;
+  --desk-active: #C9B896;
   --desk-active-ink: #000000;
   --desk-shadow: 0 14px 36px -22px rgb(0 0 0 / 0.8);
   --desk-overlay: rgb(0 0 0 / 0.7);
@@ -387,16 +382,16 @@ html[data-thalvo-theme="night"] .thalvo-desk {
  * Used by the mobile bottom sheet and desktop command panel.
  */
 .thalvo-chart-sheet {
-  --sheet-bg: rgb(10 25 47 / 0.97);
-  --sheet-ink: #f8fafc;
-  --sheet-muted: rgb(248 250 252 / 0.58);
-  --sheet-faint: rgb(248 250 252 / 0.4);
-  --sheet-border: rgb(255 255 255 / 0.14);
-  --sheet-chip: rgb(255 255 255 / 0.06);
-  --sheet-chip-hover: rgb(255 255 255 / 0.1);
-  --sheet-active-bg: rgb(245 185 66 / 0.16);
-  --sheet-active-border: rgb(245 185 66 / 0.5);
-  --sheet-active-ink: #f5b942;
+  --sheet-bg: rgb(14 36 40 / 0.92);
+  --sheet-ink: #f4efe6;
+  --sheet-muted: rgb(210 200 180 / 0.62);
+  --sheet-faint: rgb(210 200 180 / 0.4);
+  --sheet-border: rgb(201 184 150 / 0.28);
+  --sheet-chip: rgb(201 184 150 / 0.08);
+  --sheet-chip-hover: rgb(201 184 150 / 0.14);
+  --sheet-active-bg: rgb(201 184 150 / 0.14);
+  --sheet-active-border: rgb(201 184 150 / 0.48);
+  --sheet-active-ink: #c9b896;
   --sheet-overlay: rgb(0 0 0 / 0.55);
   --sheet-switch-off: rgb(255 255 255 / 0.12);
   --sheet-handle: rgb(255 255 255 / 0.22);
@@ -406,16 +401,16 @@ html[data-thalvo-theme="night"] .thalvo-desk {
   color-scheme: dark;
 }
 html[data-thalvo-theme="system"] .thalvo-chart-sheet {
-  --sheet-bg: rgb(10 25 47 / 0.97);
-  --sheet-ink: #f8fafc;
-  --sheet-muted: rgb(248 250 252 / 0.58);
-  --sheet-faint: rgb(248 250 252 / 0.4);
-  --sheet-border: rgb(255 255 255 / 0.14);
-  --sheet-chip: rgb(255 255 255 / 0.06);
-  --sheet-chip-hover: rgb(255 255 255 / 0.1);
-  --sheet-active-bg: rgb(245 185 66 / 0.16);
-  --sheet-active-border: rgb(245 185 66 / 0.5);
-  --sheet-active-ink: #f5b942;
+  --sheet-bg: rgb(14 36 40 / 0.92);
+  --sheet-ink: #f4efe6;
+  --sheet-muted: rgb(210 200 180 / 0.62);
+  --sheet-faint: rgb(210 200 180 / 0.4);
+  --sheet-border: rgb(201 184 150 / 0.28);
+  --sheet-chip: rgb(201 184 150 / 0.08);
+  --sheet-chip-hover: rgb(201 184 150 / 0.14);
+  --sheet-active-bg: rgb(201 184 150 / 0.14);
+  --sheet-active-border: rgb(201 184 150 / 0.48);
+  --sheet-active-ink: #c9b896;
   --sheet-overlay: rgb(0 0 0 / 0.55);
   --sheet-switch-off: rgb(255 255 255 / 0.12);
   --sheet-handle: rgb(255 255 255 / 0.22);
@@ -431,7 +426,7 @@ html[data-thalvo-theme="night"] .thalvo-chart-sheet {
   --sheet-chip-hover: rgb(245 247 251 / 0.1);
   --sheet-active-bg: rgb(245 185 66 / 0.18);
   --sheet-active-border: rgb(245 185 66 / 0.55);
-  --sheet-active-ink: #f5b942;
+  --sheet-active-ink: #C9B896;
   --sheet-overlay: rgb(0 0 0 / 0.72);
   --sheet-switch-off: rgb(245 247 251 / 0.12);
   --sheet-handle: rgb(245 247 251 / 0.28);
@@ -470,7 +465,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-white\/40 {
   color: var(--sheet-muted) !important;
 }
 html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-amber-200,
-html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-amber-100,
+html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-[#E8DFC8],
 html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-amber-50 {
   color: var(--sheet-active-ink) !important;
 }
@@ -660,7 +655,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #f5b942;
+  color: #C9B896;
 }
 .landing-cta-primary {
   display: inline-flex;
@@ -669,7 +664,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
   justify-content: center;
   gap: 0.45rem;
   border-radius: 0.5rem;
-  background: #f5b942;
+  background: #C9B896;
   padding: 0 1.75rem;
   font-size: 0.875rem;
   font-weight: 700;
@@ -677,7 +672,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
   transition: background 160ms ease, transform 160ms ease;
 }
 .landing-cta-primary:hover {
-  background: #ffc857;
+  background: #d4c4a8;
 }
 .landing-cta-primary:disabled {
   opacity: 0.55;
@@ -861,7 +856,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
 }
 
 .leaflet-container {
-  background: #06101c;
+  background: #0C2226;
 }
 
 /* Charter catalogue chart: contain Leaflet pane z-index and kill the global
@@ -876,7 +871,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
   min-height: 0 !important;
   height: 100% !important;
   width: 100%;
-  background: #06101c;
+  background: #0C2226;
 }
 .charter-base-chart .leaflet-pane,
 .charter-base-chart .leaflet-control,
@@ -920,10 +915,9 @@ html[data-thalvo-theme="night"] .thalvo-premium {
   background: #000 !important;
   color: #f5f7fb;
 }
-html[data-thalvo-theme="night"] .bg-\[\#071422\],
+html[data-thalvo-theme="night"] .bg-\[\#0C2226\],
 html[data-thalvo-theme="night"] .bg-\[\#0A192F\],
-html[data-thalvo-theme="night"] .bg-\[\#0a192f\],
-html[data-thalvo-theme="night"] .bg-\[\#06101c\] {
+html[data-thalvo-theme="night"] .bg-\[\#0a192f\] {
   background-color: #000 !important;
 }
 html[data-thalvo-theme="night"] .bg-\[\#0A192F\]\/90,
@@ -934,7 +928,10 @@ html[data-thalvo-theme="night"] .bg-\[\#0A192F\]\/95,
 html[data-thalvo-theme="night"] .bg-\[\#0a192f\]\/95,
 html[data-thalvo-theme="night"] .bg-\[\#0A192F\]\/85,
 html[data-thalvo-theme="night"] .bg-\[\#0a192f\]\/85,
-html[data-thalvo-theme="night"] .bg-\[\#071422\]\/92 {
+html[data-thalvo-theme="night"] .bg-\[\#0C2226\]\/90,
+html[data-thalvo-theme="night"] .bg-\[\#0C2226\]\/92,
+html[data-thalvo-theme="night"] .bg-\[\#0C2226\]\/94,
+html[data-thalvo-theme="night"] .bg-\[\#0C2226\]\/95 {
   background-color: rgb(0 0 0 / 0.92) !important;
 }
 
@@ -1078,24 +1075,24 @@ html[data-thalvo-theme="day"] .placeholder\:text-white\/60::placeholder {
 
 /* Thalvo amber accents become darker gold ink on white (day). */
 html[data-thalvo-theme="day"] .text-amber-50,
-html[data-thalvo-theme="day"] .text-amber-100,
-html[data-thalvo-theme="day"] .text-amber-100\/90,
-html[data-thalvo-theme="day"] .text-amber-100\/80,
-html[data-thalvo-theme="day"] .text-amber-100\/70,
+html[data-thalvo-theme="day"] .text-[#E8DFC8],
+html[data-thalvo-theme="day"] .text-[#E8DFC8]\/90,
+html[data-thalvo-theme="day"] .text-[#E8DFC8]\/80,
+html[data-thalvo-theme="day"] .text-[#E8DFC8]\/70,
 html[data-thalvo-theme="day"] .text-amber-200,
 html[data-thalvo-theme="day"] .text-amber-200\/90,
 html[data-thalvo-theme="day"] .text-amber-200\/80,
 html[data-thalvo-theme="day"] .text-amber-200\/70 {
   color: #b45309 !important;
 }
-html[data-thalvo-theme="day"] .text-amber-300,
-html[data-thalvo-theme="day"] .text-amber-300\/90,
-html[data-thalvo-theme="day"] .text-amber-300\/85,
-html[data-thalvo-theme="day"] .text-amber-300\/80,
-html[data-thalvo-theme="day"] .text-amber-300\/70 {
+html[data-thalvo-theme="day"] .text-[#C9B896],
+html[data-thalvo-theme="day"] .text-[#C9B896]\/90,
+html[data-thalvo-theme="day"] .text-[#C9B896]\/85,
+html[data-thalvo-theme="day"] .text-[#C9B896]\/80,
+html[data-thalvo-theme="day"] .text-[#C9B896]\/70 {
   color: #92400e !important;
 }
-html[data-thalvo-theme="day"] .text-\[\#F5B942\] {
+html[data-thalvo-theme="day"] .text-\[\#C9B896\] {
   color: #b45309 !important;
 }
 html[data-thalvo-theme="day"] .hover\:text-amber-200:hover {
@@ -1103,17 +1100,17 @@ html[data-thalvo-theme="day"] .hover\:text-amber-200:hover {
 }
 
 /* Navy / ECDIS surfaces → paper white (every casing + opacity used in the shell). */
-html[data-thalvo-theme="day"] .bg-\[\#071422\],
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\],
 html[data-thalvo-theme="day"] .bg-\[\#0A192F\],
 html[data-thalvo-theme="day"] .bg-\[\#0a192f\],
-html[data-thalvo-theme="day"] .bg-\[\#06101c\],
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\],
 html[data-thalvo-theme="day"] .bg-\[\#0c1b30\],
 html[data-thalvo-theme="day"] .bg-\[\#0F2440\],
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/88,
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/90,
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/92,
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/95,
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/96,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/88,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/90,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/92,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/95,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/96,
 html[data-thalvo-theme="day"] .bg-\[\#0A192F\]\/90,
 html[data-thalvo-theme="day"] .bg-\[\#0A192F\]\/95,
 html[data-thalvo-theme="day"] .bg-\[\#0a192f\]\/70,
@@ -1135,9 +1132,9 @@ html[data-thalvo-theme="day"] .hover\:text-white\/85:hover,
 html[data-thalvo-theme="day"] .hover\:text-white\/80:hover {
   color: #0f172a !important;
 }
-html[data-thalvo-theme="day"] .text-amber-100,
+html[data-thalvo-theme="day"] .text-[#E8DFC8],
 html[data-thalvo-theme="day"] .text-sky-200,
-html[data-thalvo-theme="day"] .text-amber-300 {
+html[data-thalvo-theme="day"] .text-[#C9B896] {
   color: #0369a1 !important;
 }
 html[data-thalvo-theme="day"] .text-emerald-100,
@@ -1278,22 +1275,22 @@ html[data-thalvo-theme="day"] .thalvo-on-dark .text-white\/35 {
   color: rgb(255 255 255 / 0.55) !important;
 }
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-50,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-100,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-100\/90,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-100\/80,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-100\/70,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#E8DFC8],
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#E8DFC8]\/90,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#E8DFC8]\/80,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#E8DFC8]\/70,
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-200,
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-200\/90,
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-200\/80,
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-200\/70 {
   color: #fde68a !important;
 }
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/90,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/85,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/80,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/70,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/55 {
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896],
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/90,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/85,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/80,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/70,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/55 {
   color: rgb(245 185 66 / 0.9) !important;
 }
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-400\/50 {
@@ -1301,8 +1298,8 @@ html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-400\/50 {
 }
 html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0A192F\],
 html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0a192f\],
-html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#071422\],
-html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#06101c\] {
+html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0C2226\],
+html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0C2226\] {
   background-color: #0a192f !important;
 }
 html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0A192F\]\/90,
@@ -1436,7 +1433,7 @@ html[data-thalvo-theme="day"] .thalvo-brand-mark {
   border-radius: 14px;
   border: 1px solid rgb(245 185 66 / 0.35);
   background: rgb(245 185 66 / 0.1);
-  color: #f5b942;
+  color: #C9B896;
 }
 @media (prefers-reduced-motion: reduce) {
   .auth-rise,
@@ -1517,6 +1514,136 @@ html[data-thalvo-theme="day"] .thalvo-risk-low {
   color: #334155 !important;
   background-color: #f8fafc !important;
   border-color: rgb(15 23 42 / 0.14) !important;
+}
+
+
+
+
+/* ── Cockpit skin: Marina Concierge only ─────────────────── */
+
+.thalvo-provider-ops {
+  --sheet-bg: rgb(14 36 40 / 0.84);
+  --sheet-ink: #f4efe6;
+  --sheet-muted: rgb(210 200 180 / 0.62);
+  --sheet-faint: rgb(210 200 180 / 0.4);
+  --sheet-border: rgb(201 184 150 / 0.28);
+  --sheet-chip: rgb(201 184 150 / 0.08);
+  --sheet-chip-hover: rgb(201 184 150 / 0.14);
+  --sheet-active-bg: rgb(201 184 150 / 0.14);
+  --sheet-active-border: rgb(201 184 150 / 0.48);
+  --sheet-active-ink: #c9b896;
+  border-radius: var(--skin-ops-radius, 20px);
+  border-color: var(--sheet-border);
+  background: var(--sheet-bg);
+  color: var(--sheet-ink);
+}
+.thalvo-dock-shell {
+  border-radius: var(--skin-dock-radius, 20px);
+  background: var(--skin-dock-bg, rgb(16 40 44 / 0.9));
+  border-color: rgb(201 184 150 / 0.32);
+  backdrop-filter: blur(16px);
+}
+.thalvo-dock-label {
+  font-family: "Barlow Condensed", "Avenir Next Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+.thalvo-fab-latch {
+  border-radius: var(--skin-fab-radius, 14px);
+}
+.thalvo-nav-active-rail {
+  background: var(--skin-active, #d4c4a0);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--skin-active, #d4c4a0) 35%, transparent);
+}
+.thalvo-skin-badge {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: calc(env(safe-area-inset-top) + 0.65rem);
+  z-index: 55;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--skin-active, #c9b896) 40%, transparent);
+  background: color-mix(in srgb, var(--skin-dock-bg, rgb(16 40 44 / 0.82)) 94%, transparent);
+  color: var(--skin-active, #c9b896);
+  padding: 0.35rem 0.8rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+}
+
+html[data-thalvo-skin="marina"] .thalvo-cockpit,
+html:not([data-thalvo-skin]) .thalvo-cockpit {
+  background:
+    radial-gradient(80% 50% at 10% 0%, rgb(30 70 78 / 0.4) 0%, transparent 55%),
+    linear-gradient(180deg, #0c2226 0%, #071416 100%);
+  --skin-dock-radius: 20px;
+  --skin-dock-bg: rgb(16 40 44 / 0.82);
+  --skin-active: #c9b896;
+  --skin-command: #c9b896;
+  --skin-danger: #c45c5c;
+  --skin-fab-radius: 14px;
+  --skin-ops-radius: 20px;
+}
+html[data-thalvo-skin="marina"] .thalvo-chart-sheet,
+html[data-thalvo-skin="marina"] .thalvo-provider-ops,
+html:not([data-thalvo-skin]) .thalvo-chart-sheet,
+html:not([data-thalvo-skin]) .thalvo-provider-ops {
+  --sheet-bg: rgb(14 36 40 / 0.84);
+  --sheet-ink: #f4efe6;
+  --sheet-muted: rgb(210 200 180 / 0.62);
+  --sheet-faint: rgb(210 200 180 / 0.4);
+  --sheet-border: rgb(201 184 150 / 0.28);
+  --sheet-chip: rgb(201 184 150 / 0.08);
+  --sheet-chip-hover: rgb(201 184 150 / 0.14);
+  --sheet-active-bg: rgb(201 184 150 / 0.14);
+  --sheet-active-border: rgb(201 184 150 / 0.48);
+  --sheet-active-ink: #c9b896;
+}
+html[data-thalvo-skin="marina"] .thalvo-provider-ops,
+html:not([data-thalvo-skin]) .thalvo-provider-ops {
+  border-color: rgb(201 184 150 / 0.28);
+  backdrop-filter: blur(16px);
+}
+
+.thalvo-radar-sweep {
+  pointer-events: none;
+  position: absolute;
+  inset: -40%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in srgb, var(--sheet-active-ink, #c9b896) 22%, transparent) 48deg,
+    transparent 90deg
+  );
+  animation: thalvo-radar-spin 4.2s linear infinite;
+  opacity: 0.45;
+}
+.thalvo-radar-empty {
+  border-color: var(--sheet-border);
+  background: var(--sheet-chip);
+  min-height: 4.5rem;
+}
+.thalvo-radar-flash {
+  animation: thalvo-radar-pulse 0.9s ease-in-out 2;
+}
+@keyframes thalvo-radar-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes thalvo-radar-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 28px -8px rgba(196, 92, 92, 0.55); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .thalvo-radar-sweep,
+  .thalvo-radar-flash {
+    animation: none;
+  }
 }
 
 

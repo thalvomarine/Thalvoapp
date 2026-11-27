@@ -101,7 +101,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
     return (
       <div className={SHEET_SCRIM + " p-4"} onClick={onClose}>
         <div
-          className="thalvo-dark w-full max-w-md space-y-4 rounded-3xl border border-white/10 bg-[#071422] p-6 text-center shadow-2xl"
+          className="thalvo-dark w-full max-w-md space-y-4 rounded-3xl border border-white/10 bg-[#0C2226] p-6 text-center shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
           <p className="text-lg font-semibold tracking-tight text-white">{t("shop_cart.order_submitted")}</p>
@@ -109,7 +109,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
           <Link
             to="/app/orders"
             onClick={onClose}
-            className="grid h-12 w-full place-items-center rounded-2xl bg-sky-500 text-sm font-semibold tracking-tight text-slate-900 transition-colors hover:bg-amber-400"
+            className="grid h-12 w-full place-items-center rounded-2xl bg-[#C9B896] text-sm font-semibold tracking-tight text-[#1A1406] transition-colors hover:bg-[#d4c4a8]"
           >
             {t("shop_cart.open_order_tracking")}
           </Link>
@@ -123,7 +123,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
 
   return (
     <div className={SHEET_SCRIM} onClick={onClose}>
-      <div className={SHEET_PANEL + " border-amber-500/20"} onClick={(e) => e.stopPropagation()}>
+      <div className={SHEET_PANEL + " border-[#C9B896]/25"} onClick={(e) => e.stopPropagation()}>
         <SheetHandle />
         <div className="flex items-center justify-between border-b border-white/10 px-5 pb-3 pt-2 sm:pt-5">
           <div>
@@ -139,7 +139,29 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
 
         <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           {cart.items.length === 0 ? (
-            <p className="py-12 text-center text-sm text-white/50">{t("shop.empty_cart")}</p>
+            <div className="flex flex-col items-center gap-3 py-10 text-center">
+              <span
+                className="grid size-14 place-items-center rounded-2xl border"
+                style={{
+                  borderColor: "var(--desk-border, rgba(201,184,150,0.28))",
+                  background: "var(--desk-chip, rgba(201,184,150,0.08))",
+                  color: "var(--desk-price, #c9b896)",
+                }}
+              >
+                <Package className="size-6" />
+              </span>
+              <p className="text-sm" style={{ color: "var(--desk-muted, rgba(210,200,180,0.62))" }}>
+                {t("shop.empty_cart")}
+              </p>
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-1 inline-flex h-10 items-center rounded-xl px-4 text-[12px] font-bold uppercase tracking-[0.12em] text-[#0a192f]"
+                style={{ background: "var(--desk-active, #c9b896)" }}
+              >
+                {t("shop.browse_parts", { defaultValue: "Pazara dön" })}
+              </button>
+            </div>
           ) : (
             <>
               <ul className="space-y-2">
@@ -200,7 +222,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
                     <select
                       value={vesselId}
                       onChange={(e) => setVesselId(e.target.value)}
-                      className="mt-1.5 h-11 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white outline-none focus:border-amber-400/60"
+                      className="mt-1.5 h-11 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white outline-none focus:border-[#C9B896]/50"
                     >
                       {vessels.map((v) => (
                         <option key={v.id} value={v.id} className="bg-slate-900">
@@ -218,7 +240,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
                   <input
                     value={marina}
                     onChange={(e) => setMarina(e.target.value)}
-                    className="mt-1.5 h-11 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white outline-none focus:border-amber-400/60"
+                    className="mt-1.5 h-11 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white outline-none focus:border-[#C9B896]/50"
                   />
                 </div>
 
@@ -234,7 +256,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
                         ? t("shop_cart.pickup_placeholder")
                         : t("shop_cart.berth_placeholder")
                     }
-                    className="mt-1.5 h-11 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-amber-400/60"
+                    className="mt-1.5 h-11 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#C9B896]/50"
                   />
                 </div>
 
@@ -247,7 +269,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
                     onChange={(e) => setNotes(e.target.value)}
                     rows={2}
                     placeholder={t("shop_cart.notes_placeholder")}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-amber-400/60"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#C9B896]/50"
                   />
                 </div>
 
@@ -258,7 +280,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
         </div>
 
         {cart.items.length > 0 && (
-          <div className="space-y-3 border-t border-white/10 bg-[#06101c] px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <div className="space-y-3 border-t border-white/10 bg-[#0C2226] px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
             <div className="flex items-center justify-between text-xs text-white/60">
               <span>{t("shop_cart.eta")}</span>
               <span className="tabular-nums">
@@ -275,7 +297,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
             </div>
             <button
               onClick={() => setPay(true)}
-              className="h-12 w-full rounded-2xl bg-sky-500 text-sm font-semibold tracking-tight text-slate-900 transition-colors hover:bg-amber-400"
+              className="h-12 w-full rounded-2xl bg-[#C9B896] text-sm font-semibold tracking-tight text-[#1A1406] transition-colors hover:bg-[#d4c4a8]"
             >
               {t("shop_cart.confirm_order")}
             </button>

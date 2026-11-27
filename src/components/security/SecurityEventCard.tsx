@@ -13,7 +13,7 @@ export interface SecurityEvent {
 const TONE: Record<LeakRisk, { border: string; icon: React.ReactNode; label: string; text: string }> = {
   safe:   { border: "border-emerald-400/25", icon: <ShieldCheck className="size-3.5 text-emerald-300" />, label: "Safe", text: "text-emerald-300" },
   low:    { border: "border-white/10",       icon: <ShieldAlert className="size-3.5 text-white/60" />,   label: "Low",  text: "text-white/70" },
-  medium: { border: "border-amber-400/30",   icon: <AlertTriangle className="size-3.5 text-amber-300" />, label: "Warning", text: "text-amber-300" },
+  medium: { border: "border-[#C9B896]/30",   icon: <AlertTriangle className="size-3.5 text-[#C9B896]" />, label: "Warning", text: "text-[#C9B896]" },
   high:   { border: "border-rose-500/40",    icon: <AlertTriangle className="size-3.5 text-rose-300" />,  label: "Blocked", text: "text-rose-300" },
 };
 

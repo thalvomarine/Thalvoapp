@@ -23,6 +23,7 @@ export function MetoceanHud() {
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
     const target = WEATHER_REGIONS.find((r) => r.key === region) ?? WEATHER_REGIONS[0];
@@ -51,7 +52,7 @@ export function MetoceanHud() {
       controller.abort();
       window.clearInterval(interval);
     };
-  }, [region]);
+  }, [region, refreshTick]);
 
   useEffect(() => {
     if (!snapshot || !Number.isFinite(snapshot.windSpeedKts)) return;
@@ -93,7 +94,7 @@ export function MetoceanHud() {
                 setRegion((r) => (r === "aegean" ? "mediterranean" : "aegean"));
               }}
               title={t("chart.metocean_switch_region")}
-              className="shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-semibold"
+              className="shrink-0 rounded-[3px] border px-2 py-0.5 text-[9px] font-semibold"
               style={{
                 borderColor: "var(--sheet-active-border)",
                 background: "var(--sheet-active-bg)",
@@ -105,18 +106,16 @@ export function MetoceanHud() {
           </div>
           <button
             type="button"
-            onClick={() => {
-              setRegion((r) => (r === "aegean" ? "mediterranean" : "aegean"));
-            }}
-            title={t("chart.metocean_switch_region")}
-            className="grid size-6 shrink-0 place-items-center rounded-lg border"
+            onClick={() => setRefreshTick((n) => n + 1)}
+            title={t("chart.metocean_refresh", { defaultValue: t("common.refresh", { defaultValue: "Refresh" }) })}
+            className="grid size-7 shrink-0 place-items-center rounded-md border"
             style={{
               borderColor: "var(--sheet-border)",
               background: "var(--sheet-chip)",
               color: "var(--sheet-muted)",
             }}
           >
-            <RefreshCw className={"size-2.5 " + (loading ? "animate-spin" : "")} />
+            <RefreshCw className={"size-3 " + (loading ? "animate-spin" : "")} />
           </button>
         </div>
 
@@ -162,7 +161,7 @@ export function MetoceanHud() {
             {t("chart.metocean_shelter_label")}:{" "}
             <span
               className={
-                shelter.sheltered ? "font-medium text-emerald-500" : "font-medium text-amber-500"
+                shelter.sheltered ? "font-medium text-emerald-500" : "font-medium text-[#E8DFC8]0"
               }
             >
               {t(shelter.labelKey)}

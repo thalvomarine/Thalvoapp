@@ -30,7 +30,7 @@ export function PanelLoadState({
   return (
     <GlassPanel className="min-h-[120px] text-center grid place-items-center">
       <div>
-        <AlertTriangle className="size-5 mx-auto text-amber-300" />
+        <AlertTriangle className="size-5 mx-auto text-[#C9B896]" />
         <p className="mt-2 text-[12px] font-semibold text-white">{t("admin.tower.error_title")}</p>
         <p className="mt-1 text-[11px] text-white/70 max-w-xs">{t("admin.tower.error_body")}</p>
         {onRetry && (

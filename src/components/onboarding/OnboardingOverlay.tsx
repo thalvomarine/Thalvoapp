@@ -8,7 +8,7 @@ import {
 import i18n, { ensureLanguage, normalizeAppLng, type AppLng } from "@/i18n";
 import type { Profile } from "@/lib/session";
 import {
-  RescueMark, PassportMark, MarketplaceMark, ControlTowerMark,
+  RescueMark, PassportMark, MarketplaceMark, ControlTowerMark, SosMark,
 } from "@/components/brand/ProductMarks";
 import { requestOpsNotificationPermission } from "@/lib/ops-alerts";
 
@@ -124,9 +124,9 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
           >
             <ul className="mt-6 space-y-3 text-sm text-white/80">
               <Bullet icon={<RescueMark size={18} />}>{t("onboarding.welcome_b1")}</Bullet>
-              <Bullet icon={<Compass className="size-4 text-amber-300" />}>{t("onboarding.welcome_b2")}</Bullet>
+              <Bullet icon={<Compass className="size-4 text-[#C9B896]" />}>{t("onboarding.welcome_b2")}</Bullet>
               <Bullet icon={<PassportMark size={18} />}>{t("onboarding.welcome_b3")}</Bullet>
-              <Bullet icon={<Sparkles className="size-4 text-amber-300" />}>{t("onboarding.welcome_b4")}</Bullet>
+              <Bullet icon={<Sparkles className="size-4 text-[#C9B896]" />}>{t("onboarding.welcome_b4")}</Bullet>
             </ul>
             <PrimaryCta onClick={next}>{t("onboarding.get_started")}</PrimaryCta>
             <SecondaryCta onClick={finish}>{t("onboarding.skip_for_now")}</SecondaryCta>
@@ -249,7 +249,7 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
                 onClick={() => { finish(); navigate({ to: "/app/profile" }); }}
                 className="rounded-2xl border border-amber-400/40 bg-amber-500/10 p-5 text-left hover:bg-amber-500/15 transition-colors"
               >
-                <Ship className="size-5 text-amber-300" />
+                <Ship className="size-5 text-[#C9B896]" />
                 <p className="mt-3 text-sm font-semibold">{t("onboarding.captain_yes")}</p>
                 <p className="mt-1 text-xs text-white/60">{t("onboarding.captain_yes_hint")}</p>
               </button>
@@ -272,9 +272,9 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
             subtitle={t("onboarding.tour_subtitle")}
           >
             <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <TourItem icon={<MapPin className="size-4 text-amber-300" />} title={t("onboarding.tour_map")} body={t("onboarding.tour_map_body")} />
-              <TourItem icon={<RescueMark size={18} />} title={t("onboarding.tour_sos")} body={t("onboarding.tour_sos_body")} />
-              <TourItem icon={<Compass className="size-4 text-amber-300" />} title={t("onboarding.tour_compass")} body={t("onboarding.tour_compass_body")} />
+              <TourItem icon={<MapPin className="size-4 text-[#C9B896]" />} title={t("onboarding.tour_map")} body={t("onboarding.tour_map_body")} />
+              <TourItem icon={<SosMark size={18} />} title={t("onboarding.tour_sos")} body={t("onboarding.tour_sos_body")} />
+              <TourItem icon={<Compass className="size-4 text-[#C9B896]" />} title={t("onboarding.tour_compass")} body={t("onboarding.tour_compass_body")} />
               <TourItem icon={<MarketplaceMark size={18} />} title={t("onboarding.tour_market")} body={t("onboarding.tour_market_body")} />
               <TourItem icon={<PassportMark size={18} />} title={t("onboarding.tour_passport")} body={t("onboarding.tour_passport_body")} />
             </ul>
@@ -296,7 +296,7 @@ function StepShell({
 }: { eyebrow: string; title: string; subtitle?: string; id?: string; children: ReactNode }) {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-300/80">{eyebrow}</p>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/80">{eyebrow}</p>
       <h2 id={id} className="mt-2 text-3xl sm:text-4xl font-black tracking-tight text-white">{title}</h2>
       {subtitle && <p className="mt-3 text-sm sm:text-base text-white/70 max-w-lg">{subtitle}</p>}
       {children}
@@ -328,11 +328,11 @@ function RoleCard({ active, onClick, icon, label, hint }: {
       }
     >
       <div className="flex items-center gap-2">
-        <span className={"grid place-items-center size-9 rounded-xl " + (active ? "bg-amber-500/30 text-amber-100" : "bg-white/5 text-white/80")}>
+        <span className={"grid place-items-center size-9 rounded-xl " + (active ? "bg-amber-500/30 text-[#E8DFC8]" : "bg-white/5 text-white/80")}>
           {icon}
         </span>
         <span className="text-sm font-bold">{label}</span>
-        {active && <Check className="ml-auto size-4 text-amber-300" />}
+        {active && <Check className="ml-auto size-4 text-[#C9B896]" />}
       </div>
       <p className="mt-2 text-[12px] text-white/60">{hint}</p>
     </button>
@@ -356,7 +356,7 @@ function LangCard({ active, onClick, label, hint, selectedLabel }: {
       <p className="text-lg font-bold">{label}</p>
       <p className="mt-1 text-xs text-white/60">{hint}</p>
       {active && (
-        <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-300">
+        <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#C9B896]">
           <Check className="size-3" /> {selectedLabel}
         </span>
       )}
@@ -369,7 +369,7 @@ function PermCard({ icon, label, body, enableLabel, onEnable }: {
 }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-      <span className="grid place-items-center size-10 rounded-xl bg-white/5 text-amber-300 shrink-0">{icon}</span>
+      <span className="grid place-items-center size-10 rounded-xl bg-white/5 text-[#C9B896] shrink-0">{icon}</span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold">{label}</p>
         <p className="text-[12px] text-white/60">{body}</p>
@@ -400,7 +400,7 @@ function PrimaryCta({ children, onClick }: { children: ReactNode; onClick: () =>
   return (
     <button
       onClick={onClick}
-      className="mt-8 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#F5B942] text-[#1A1406] font-bold tracking-wide px-8 h-12 min-w-[220px]"
+      className="mt-8 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#C9B896] text-[#1A1406] font-bold tracking-wide px-8 h-12 min-w-[220px]"
     >
       {children}
       <ChevronRight className="size-4" />

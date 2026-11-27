@@ -130,7 +130,8 @@
       "err_mersis": "Το MERSİS πρέπει να έχει 16 ψηφία.",
       "err_kep": "Το KEP πρέπει να είναι name@domain.kep.tr.",
       "err_iban": "Εισαγάγετε έγκυρο TR IBAN.",
-      "err_terms": "Αποδεχτείτε τους όρους για συνέχεια."
+      "err_terms": "Αποδεχτείτε τους όρους για συνέχεια.",
+      "err_docs_required": "Απαιτούνται φορολογική πινακίδα και κυκλική υπογραφής· για ΑΕ/ΕΠΕ και εμπορικό μητρώο."
     },
     "service_type": "Τύπος υπηρεσίας",
     "sm_mechanic": "Ναυτικός μηχανικός",
@@ -234,6 +235,7 @@
   },
   "ops_alerts": {
     "pool_title": "Ενεργή δεξαμενή εργασιών / ραντάρ",
+    "pool_short": "Δεξαμενή",
     "pool_empty": "Δεν υπάρχουν ανοιχτές εργασίες στη δεξαμενή.",
     "pool_bid_hint": "Υποβάλετε προσφορά. Αναχωρείτε μόνο μετά την αποδοχή και πληρωμή.",
     "your_missions": "Οι αποστολές σας",
@@ -457,14 +459,20 @@
   "services": {
     "eyebrow": "THALVO · Υποστήριξη ακτής",
     "title": "Πακέτα τακτικής συντήρησης",
-    "subtitle": "Συγκρίνετε σταθερές τιμές από πιστοποιημένα συνεργεία & δύτες.",
+    "subtitle": "Ζητήστε προσφορές από πιστοποιημένους τεχνικούς και δύτες — χωρίς σταθερές τιμές.",
     "filter_mech": "Ναυτικοί μηχανικοί",
     "filter_diver": "Δύτες",
     "no_offers": "Δεν υπάρχουν ακόμη συνεργεία για αυτό το πακέτο.",
-    "book_now": "Κράτηση τώρα",
+    "book_now": "Ζήτα προσφορά",
     "eta_short": "ETA",
     "empty_title": "Δεν υπάρχουν πακέτα ακόμη",
-    "empty_body": "Τα τυπικά πακέτα υπηρεσιών θα εμφανιστούν εδώ."
+    "empty_body": "Τα τυπικά πακέτα υπηρεσιών θα εμφανιστούν εδώ.",
+    "load_error_title": "Αποτυχία φόρτωσης πακέτων",
+    "load_error_body": "Ελέγξτε τη σύνδεση και δοκιμάστε ξανά.",
+    "request_quote": "Ζήτα προσφορά",
+    "quote_sent": "Το αίτημα προσφοράς στάλθηκε.",
+    "quote_failed": "Αποτυχία αποστολής αιτήματος.",
+    "no_offers_body": "Δεν υπάρχει ακόμη εγκεκριμένος πάροχος. Συνεχίστε με SOS ή αναφορά βλάβης."
   },
   "shop": {
     "title": "Spare Parts Marketplace",
@@ -930,6 +938,8 @@
     "settings": "Ρυθμίσεις λογαριασμού",
     "language": "Γλώσσα",
     "appearance": "Εμφάνιση",
+    "design_lab": "Εργαστήριο σχεδίασης",
+    "design_lab_hint": "Κλειδωμένη γλώσσα: Marina Concierge. Οι άλλες δοκιμές αφαιρέθηκαν.",
     "theme_system": "Σύστημα",
     "theme_day": "Ημέρα",
     "theme_night": "Νύχτα",
@@ -977,7 +987,12 @@
     "eq_boat": "Own Service Boat",
     "eq_crane": "Onboard Crane / Winch",
     "eq_night": "Night Dive Rated",
-    "review_pending": "Review pending"
+    "review_pending": "Review pending",
+    "no_vessels_title": "Δεν υπάρχουν σκάφη",
+    "no_vessels_body": "Προσθέστε σκάφος για διαβατήριο και SOS.",
+    "replay_tour_title": "Επανάληψη ξενάγησης",
+    "replay_tour_body": "Ανοίξτε ξανά την πρώτη εμπειρία THALVO.",
+    "replay_tour_cta": "Επανεκκίνηση"
   },
   "ai": {
     "subtitle": "Ο ναυτικός σας βοηθός",
@@ -1384,7 +1399,8 @@
     "new_order_toast_title": "New order received",
     "new_order_toast_body": "A customer placed a spare-parts order.",
     "badge_new": "New",
-    "field_image_advanced": "Advanced: paste URL"
+    "field_image_advanced": "Advanced: paste URL",
+    "apply_cta": "Αίτηση αντιπροσώπου"
   },
   "mission": {
     "details": "Mission details",
@@ -2176,7 +2192,10 @@
     "partner_point_2": "Μάρκα, μαρίνα, έμπορος ή τεχνικός",
     "partner_point_3": "Απάντηση εντός 24 ωρών",
     "partner_thanks_title": "Ευχαριστούμε",
-    "partner_kind_hint": "Επιλέξτε ρόλο — το lead καταγράφεται ανάλογα."
+    "partner_kind_hint": "Επιλέξτε ρόλο — το lead καταγράφεται ανάλογα.",
+    "partner_account_hint": "Ανοίξτε λογαριασμό απευθείας:",
+    "partner_door_usta": "Εγγραφή τεχνικού",
+    "partner_door_bayi": "Αίτηση αντιπροσώπου"
   },
   "onboarding": {
     "back": "Πίσω",
@@ -2528,6 +2547,23 @@
     "door_guest_body": "Διάλεξε λιμάνι στον χάρτη και ζήτα ανοιχτές μέρες. Η πληρωμή μένει προσομοίωση.",
     "door_owner_kicker": "Ιδιοκτήτης",
     "door_owner_title": "Διαχείρισε στόλο στο MarineOS",
-    "door_owner_body": "Σκάφος, φωτογραφίες, ανοιχτές μέρες και αιτήματα. Ανοίγει με είσοδο εταιρείας."
+    "door_owner_body": "Σκάφος, φωτογραφίες, ανοιχτές μέρες και αιτήματα. Ανοίγει με είσοδο εταιρείας.",
+    "dock_rent": "Ενοικίαση",
+    "dock_rent_body": "Δες σκάφη ως επισκέπτης και ζήτα ανοιχτές μέρες.",
+    "dock_list": "Διαθέστε το σκάφος",
+    "dock_list_body": "Δημοσίευσε τον στόλο από το MarineOS και διαχειρίσου αιτήματα.",
+    "dock_sheet_eyebrow": "Πόρτα charter",
+    "dock_sheet_title": "Τι θέλεις να κάνεις;"
+  },
+  "partner_pending": {
+    "kicker": "Σε αναμονή έγκρισης",
+    "title": "Αίτηση {{role}} υπό εξέταση",
+    "body": "Ο λογαριασμός σας είναι ενεργός ως ιδιοκτήτης σκάφους. Η THALVO πρέπει να εγκρίνει το αίτημα πριν ανοίξει το γραφείο τεχνικού ή αντιπροσώπου.",
+    "point_review": "Η αίτηση και τα έγγραφα εξετάζονται από την THALVO.",
+    "point_wait": "Μέχρι τότε μπορείτε να χρησιμοποιείτε τον χάρτη και τα εργαλεία καπετάνιου.",
+    "open_chart": "Πίσω στον χάρτη",
+    "desk_after": "Το γραφείο αντιπροσώπου ανοίγει εδώ μετά την έγκριση.",
+    "banner_title": "Εκκρεμεί επαλήθευση {{role}}",
+    "banner_body": "Το αίτημα καταγράφηκε. Παραμένετε στο cockpit καπετάνιου μέχρι την έγκριση."
   }
 }

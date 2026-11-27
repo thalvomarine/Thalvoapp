@@ -40,7 +40,7 @@ export function NetworkStatusBanner() {
           "pointer-events-auto mx-3 mt-2 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-lg backdrop-blur-md " +
           (online
             ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-100"
-            : "border-amber-400/40 bg-amber-500/15 text-amber-100")
+            : "border-amber-400/40 bg-amber-500/15 text-[#E8DFC8]")
         }
       >
         {online ? <Wifi className="size-3.5" /> : <WifiOff className="size-3.5" />}

@@ -206,7 +206,7 @@ export function CharterStayPicker({
               id={panelId}
               role="dialog"
               aria-label={t("charter.stay_label")}
-              className="charter-stay-panel fixed z-[2210] overflow-hidden border border-white/12 bg-[#071422] shadow-[0_28px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:rounded-t-[1.75rem] max-sm:border-b-0 sm:rounded-3xl"
+              className="charter-stay-panel fixed z-[2210] overflow-hidden border border-white/12 bg-[#0C2226] shadow-[0_28px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:rounded-t-[1.75rem] max-sm:border-b-0 sm:rounded-3xl"
               style={desktop ? { top: anchor.top, left: anchor.left, width: anchor.width } : undefined}
             >
               <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-white/20 sm:hidden" />
@@ -217,7 +217,7 @@ export function CharterStayPicker({
                     onClick={() => setPick("in")}
                     className={
                       "rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-wide transition-colors duration-200 " +
-                      (pick === "in" ? "bg-[#F5B942] text-[#1a1203]" : "text-white/55 hover:text-white/85")
+                      (pick === "in" ? "bg-[#C9B896] text-[#1a1203]" : "text-white/55 hover:text-white/85")
                     }
                   >
                     {t("charter.search_in")}
@@ -229,7 +229,7 @@ export function CharterStayPicker({
                     }}
                     className={
                       "rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-wide transition-colors duration-200 " +
-                      (pick === "out" ? "bg-[#F5B942] text-[#1a1203]" : "text-white/55 hover:text-white/85")
+                      (pick === "out" ? "bg-[#C9B896] text-[#1a1203]" : "text-white/55 hover:text-white/85")
                     }
                   >
                     {t("charter.search_out")}
@@ -247,7 +247,7 @@ export function CharterStayPicker({
 
               <p className="px-4 pt-3 text-[12px] text-white/50">
                 {pick === "out" ? t("charter.stay_pick_out") : t("charter.stay_pick_in")}
-                {draftNights > 0 && <span className="ml-2 text-[#00F0FF]/90">{t("charter.nights_count", { count: draftNights })}</span>}
+                {draftNights > 0 && <span className="ml-2 text-[#8BA8A3]/90">{t("charter.nights_count", { count: draftNights })}</span>}
               </p>
 
               <div className="grid max-h-[min(58dvh,30rem)] gap-5 overflow-y-auto p-4 sm:grid-cols-2 sm:max-h-none">
@@ -263,7 +263,7 @@ export function CharterStayPicker({
                   <button type="button" onClick={clear} className="h-9 rounded-full px-3 text-[12px] font-semibold text-white/60 hover:text-white">
                     {t("charter.stay_clear")}
                   </button>
-                  <button type="button" disabled={!canSave} onClick={save} className="h-9 rounded-full bg-[#F5B942] px-4 text-[12px] font-semibold text-[#1a1203] disabled:opacity-35">
+                  <button type="button" disabled={!canSave} onClick={save} className="h-9 rounded-full bg-[#C9B896] px-4 text-[12px] font-semibold text-[#1a1203] disabled:opacity-35">
                     {t("charter.stay_save")}
                   </button>
                 </div>
@@ -281,9 +281,9 @@ export function CharterStayPicker({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => (open ? setOpen(false) : openPanel())}
-        className="group flex h-12 w-full items-center gap-3 rounded-2xl border border-white/15 bg-[#06101c]/85 px-3 text-left transition-[border-color,box-shadow,background-color] duration-250 hover:border-[#F5B942]/40 focus:border-[#F5B942]/65 focus:outline-none focus:shadow-[0_0_0_3px_rgba(245,185,66,0.12)]"
+        className="group flex h-12 w-full items-center gap-3 rounded-2xl border border-white/15 bg-[#0C2226]/85 px-3 text-left transition-[border-color,box-shadow,background-color] duration-250 hover:border-[#C9B896]/40 focus:border-[#C9B896]/65 focus:outline-none focus:shadow-[0_0_0_3px_rgba(201,184,150,0.12)]"
       >
-        <span className="grid size-9 place-items-center rounded-xl bg-[#F5B942]/12 text-[#F5B942] transition-colors duration-250 group-hover:bg-[#F5B942]/18">
+        <span className="grid size-9 place-items-center rounded-xl bg-[#C9B896]/12 text-[#C9B896] transition-colors duration-250 group-hover:bg-[#C9B896]/18">
           <CalendarRange className="size-4" />
         </span>
         <span className="min-w-0 flex-1">
@@ -292,7 +292,7 @@ export function CharterStayPicker({
             <span className={checkIn ? "text-white" : "text-white/35"}>{checkIn ? dayLabel(checkIn, i18n.language) : t("charter.search_in")}</span>
             <span aria-hidden className="text-white/20">→</span>
             <span className={checkOut ? "text-white" : "text-white/35"}>{checkOut ? dayLabel(checkOut, i18n.language) : t("charter.search_out")}</span>
-            {committedNights > 0 && <span className="text-[12px] text-[#00F0FF]/90">{t("charter.nights_count", { count: committedNights })}</span>}
+            {committedNights > 0 && <span className="text-[12px] text-[#8BA8A3]/90">{t("charter.nights_count", { count: committedNights })}</span>}
           </span>
         </span>
       </button>
@@ -354,14 +354,14 @@ function MonthGrid({
                 "relative h-10 text-[13px] font-medium transition-[color,background-color] duration-150 ease-out " +
                 (!cell.inMonth ? "text-white/12 " : "") +
                 (disabled && cell.inMonth ? "cursor-not-allowed text-white/18 " : "") +
-                (!disabled && kind === "idle" ? "text-white/85 hover:text-[#F5B942] " : "")
+                (!disabled && kind === "idle" ? "text-white/85 hover:text-[#C9B896] " : "")
               }
             >
               {inRange && cell.inMonth && (
                 <span
                   className={
                     "absolute inset-y-1 left-0 right-0 " +
-                    (kind === "preview" ? "bg-[#00F0FF]/10 " : "bg-[#F5B942]/18 ") +
+                    (kind === "preview" ? "bg-[#8BA8A3]/10 " : "bg-[#C9B896]/18 ") +
                     (rangeStart ? "left-1 rounded-l-full " : "") +
                     (rangeEnd ? "right-1 rounded-r-full " : "")
                   }
@@ -371,18 +371,18 @@ function MonthGrid({
                 className={
                   "relative z-[1] mx-auto grid size-9 place-items-center rounded-full transition-colors duration-150 " +
                   (kind === "edge-in" || kind === "edge-out"
-                    ? "bg-[#F5B942] text-[#1a1203]"
+                    ? "bg-[#C9B896] text-[#1a1203]"
                     : kind === "mid"
-                      ? "text-[#F5B942]"
+                      ? "text-[#C9B896]"
                       : kind === "preview"
-                        ? "text-[#00F0FF]"
+                        ? "text-[#8BA8A3]"
                         : "")
                 }
               >
                 {Number(cell.iso.slice(8))}
               </span>
               {cell.iso === today && cell.inMonth && kind !== "edge-in" && kind !== "edge-out" && (
-                <span className="absolute inset-x-[38%] bottom-1 z-[1] h-0.5 rounded-full bg-[#00F0FF]/75" />
+                <span className="absolute inset-x-[38%] bottom-1 z-[1] h-0.5 rounded-full bg-[#8BA8A3]/75" />
               )}
             </button>
           );

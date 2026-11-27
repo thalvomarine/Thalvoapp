@@ -51,7 +51,7 @@ export function EscrowLedgerPanel({ rows, title, className = "" }: Props) {
                   className={
                     "mt-0.5 size-7 rounded-full grid place-items-center border " +
                     (inflow
-                      ? "text-amber-300 bg-amber-400/10 border-amber-400/25"
+                      ? "text-[#C9B896] bg-[#C9B896]/10 border-[#C9B896]/25"
                       : "text-emerald-300 bg-emerald-400/10 border-emerald-400/25")
                   }
                 >

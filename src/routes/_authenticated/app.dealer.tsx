@@ -8,6 +8,7 @@ import { MarketplaceShell } from "@/components/marketplace/MarketplaceShell";
 import { DealerStockPanel, type DealerStockRow } from "@/components/marketplace/DealerStockPanel";
 import { DealerOrderQueue, type DealerOrderRow } from "@/components/orders/DealerOrderQueue";
 import { GlassPanel } from "@/components/mission/GlassPanel";
+import { PartnerPendingPanel } from "@/components/mission/PartnerPendingPanel";
 import { StatusChip } from "@/components/mission/StatusChip";
 import { Loader2, Plus, Store, X, Package } from "lucide-react";
 import { toast } from "sonner";
@@ -55,22 +56,33 @@ function DealerPage() {
   }
   if (!profile) return null;
   const isDealer = profile.role === "Supplier";
+  const pendingDealer = profile.role === "Client" && profile.requested_role === "Supplier";
   return isDealer ? (
     <DealerConsole userId={user.id} businessName={profile.business_name} marina={profile.home_marina} />
   ) : (
-    <NotDealer />
+    <NotDealer pending={pendingDealer} />
   );
 }
 
-function NotDealer() {
+function NotDealer({ pending }: { pending: boolean }) {
   const { t } = useTranslation();
   return (
     <MarketplaceShell eyebrow={t("dealer.eyebrow")} title={t("dealer.title")}>
-      <GlassPanel className="text-center">
-        <Store className="mx-auto size-8 text-white/40 mb-2" />
-        <p className="text-sm text-white/70 font-semibold">{t("dealer.access_only_title")}</p>
-        <p className="text-[12px] text-white/50 mt-1">{t("dealer.access_only_body")}</p>
-      </GlassPanel>
+      {pending ? (
+        <PartnerPendingPanel requestedRole="Supplier" />
+      ) : (
+        <GlassPanel className="text-center">
+          <Store className="mx-auto size-8 text-white/40 mb-2" />
+          <p className="text-sm text-white/70 font-semibold">{t("dealer.access_only_title")}</p>
+          <p className="text-[12px] text-white/50 mt-1">{t("dealer.access_only_body")}</p>
+          <a
+            href="/auth?intent=dealer"
+            className="mt-4 inline-flex h-10 items-center justify-center rounded-md border border-[#C9B896]/40 px-4 text-[12px] font-semibold text-[#C9B896] hover:bg-[#C9B896]/10"
+          >
+            {t("dealer.apply_cta")}
+          </a>
+        </GlassPanel>
+      )}
     </MarketplaceShell>
   );
 }
@@ -220,7 +232,7 @@ function DealerConsole({ userId, businessName, marina }: { userId: string; busin
         <StatMini label={t("dealer.stat_open")} value={String(openOrders)} tone={openOrders > 0 ? "warning" : "neutral"} />
       </div>
       {(lowSkus > 0 || outSkus > 0) && (
-        <p className="text-[12px] font-medium text-amber-200">
+        <p className="text-[12px] font-medium text-[#C9B896]">
           {t("dealer.stock_watch", { low: lowSkus, out: outSkus })}
         </p>
       )}
@@ -255,7 +267,7 @@ function DealerConsole({ userId, businessName, marina }: { userId: string; busin
                   className={
                     "h-11 rounded-xl border px-3 text-[12px] font-semibold " +
                     (stockFilter === key
-                      ? "border-amber-300 bg-amber-400/15 text-amber-50"
+                      ? "border-amber-300 bg-amber-400/15 text-[#E8DFC8]"
                       : "border-white/10 bg-white/5 text-white/60")
                   }
                 >
@@ -307,7 +319,7 @@ function StatMini({ label, value, tone = "neutral" }: { label: string; value: st
   return (
     <GlassPanel className="!p-3">
       <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{label}</p>
-      <p className={"text-lg font-semibold mt-1 tabular-nums " + (tone === "warning" ? "text-amber-300" : "text-white")}>{value}</p>
+      <p className={"text-lg font-semibold mt-1 tabular-nums " + (tone === "warning" ? "text-[#C9B896]" : "text-white")}>{value}</p>
     </GlassPanel>
   );
 }
@@ -389,10 +401,10 @@ function PartForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="thalvo-dark w-full max-w-lg rounded-3xl bg-[#071422] border border-amber-400/25 shadow-2xl overflow-hidden max-h-[90dvh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div className="thalvo-dark w-full max-w-lg rounded-3xl bg-[#0C2226] border border-[#C9B896]/25 shadow-2xl overflow-hidden max-h-[90dvh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="p-4 flex items-center justify-between border-b border-amber-400/15">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-300">THALVO</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C9B896]">THALVO</p>
             <p className="text-sm font-semibold text-white">{existing ? t("dealer.edit_part") : t("dealer.add_part")}</p>
           </div>
           <button onClick={onClose} className="size-8 grid place-items-center rounded-lg text-white/60 hover:bg-white/10">
@@ -450,7 +462,7 @@ function PartForm({
                   className={
                     "h-10 rounded-xl border text-[12px] font-semibold " +
                     (condition === item
-                      ? "border-amber-300 bg-amber-400/15 text-amber-100"
+                      ? "border-amber-300 bg-amber-400/15 text-[#E8DFC8]"
                       : "border-white/10 bg-white/5 text-white/70")
                   }
                 >
@@ -528,7 +540,7 @@ function PartForm({
   );
 }
 
-const inputCls = "w-full h-11 rounded-xl border border-amber-400/25 bg-[#0A192F] text-white placeholder:text-white/35 px-3 text-sm outline-none focus:border-amber-300";
+const inputCls = "w-full h-11 rounded-xl border border-[#C9B896]/25 bg-[#0C2226] text-white placeholder:text-white/35 px-3 text-sm outline-none focus:border-amber-300";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

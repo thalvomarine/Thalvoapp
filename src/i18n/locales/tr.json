@@ -130,7 +130,8 @@
       "err_mersis": "MERSİS 16 haneli olmalı.",
       "err_kep": "KEP adresi …@…kep.tr formatında olmalı.",
       "err_iban": "Geçerli bir TR IBAN girin.",
-      "err_terms": "Devam etmek için koşulları kabul edin."
+      "err_terms": "Devam etmek için koşulları kabul edin.",
+      "err_docs_required": "Vergi levhası ve imza sirküleri zorunlu; limited/AŞ için ticaret sicili de gerekir."
     },
     "service_type": "Hizmet tipi",
     "sm_mechanic": "Deniz Motoru Ustası",
@@ -234,6 +235,7 @@
   },
   "ops_alerts": {
     "pool_title": "Aktif iş havuzu / radar",
+    "pool_short": "Havuz",
     "pool_empty": "Havuzda açık iş yok.",
     "pool_bid_hint": "Teklif atın. Kaptan kabul edip ödedikten sonra yola çıkarsınız.",
     "your_missions": "Görevleriniz",
@@ -457,14 +459,20 @@
   "services": {
     "eyebrow": "THALVO · Kıyı destek",
     "title": "Rutin Servis Paketleri",
-    "subtitle": "Sertifikalı atölye ve dalgıçlardan sabit fiyat karşılaştır.",
+    "subtitle": "Sertifikalı usta ve dalgıçlardan teklif alın — sabit fiyat yok.",
     "filter_mech": "Motor Servisleri",
     "filter_diver": "Dalgıçlar",
     "no_offers": "Bu paket için henüz teklif yok.",
-    "book_now": "Hemen Rezerve Et",
+    "book_now": "Teklif al",
     "eta_short": "Süre",
     "empty_title": "Henüz paket yok",
-    "empty_body": "Standart servis paketleri burada görünecek."
+    "empty_body": "Standart servis paketleri burada görünecek.",
+    "load_error_title": "Servis paketleri yüklenemedi",
+    "load_error_body": "Bağlantıyı kontrol edip yeniden deneyin.",
+    "request_quote": "Teklif al",
+    "quote_sent": "Teklif talebi gönderildi.",
+    "quote_failed": "Teklif talebi gönderilemedi.",
+    "no_offers_body": "Bu iş için henüz onaylı usta yok. SOS veya arıza bildirimi ile devam edebilirsiniz."
   },
   "shop": {
     "title": "Yedek Parça Pazaryeri",
@@ -930,6 +938,8 @@
     "settings": "Hesap ayarları",
     "language": "Dil",
     "appearance": "Görünüm",
+    "design_lab": "Tasarım laboratuvarı",
+    "design_lab_hint": "Seçilen dil: Marina Concierge. Diğer denemeler kaldırıldı; iyileştirme bu dil üzerinde.",
     "theme_system": "Sistem",
     "theme_day": "Gündüz",
     "theme_night": "Gece",
@@ -977,7 +987,12 @@
     "eq_boat": "Kendi Servis Teknesi",
     "eq_crane": "Vinç / Bumba",
     "eq_night": "Gece Dalışı Sertifikalı",
-    "review_pending": "Değerlendirme bekleniyor"
+    "review_pending": "Değerlendirme bekleniyor",
+    "no_vessels_title": "Kayıtlı tekne yok",
+    "no_vessels_body": "Pasaport ve SOS için tekne ekleyin.",
+    "replay_tour_title": "Karşılama turunu yeniden aç",
+    "replay_tour_body": "THALVO ilk kullanım deneyimini tekrar göster.",
+    "replay_tour_cta": "Yeniden başlat"
   },
   "ai": {
     "subtitle": "Deniz asistanınız",
@@ -1384,7 +1399,8 @@
     "new_order_toast_title": "Yeni sipariş geldi",
     "new_order_toast_body": "Bir müşteri yedek parça siparişi oluşturdu.",
     "badge_new": "Yeni",
-    "field_image_advanced": "Gelişmiş: URL yapıştır"
+    "field_image_advanced": "Gelişmiş: URL yapıştır",
+    "apply_cta": "Bayi başvurusu yap"
   },
   "mission": {
     "details": "Görev detayları",
@@ -2171,7 +2187,10 @@
     "partner_point_2": "Marka, marina, bayi veya teknisyen",
     "partner_point_3": "Pilot ekip 24 saat içinde döner",
     "partner_thanks_title": "Teşekkürler",
-    "partner_kind_hint": "Rolünüzü seçin — form buna göre kayda geçer."
+    "partner_kind_hint": "Rolünüzü seçin — form buna göre kayda geçer.",
+    "partner_account_hint": "Doğrudan hesap aç:",
+    "partner_door_usta": "Usta / teknisyen kaydı",
+    "partner_door_bayi": "Bayi başvurusu"
   },
   "onboarding": {
     "back": "Geri",
@@ -2523,6 +2542,23 @@
     "door_guest_body": "Haritadan liman seçin, açık günlerde aralık sorun. Ödeme simüle kalır.",
     "door_owner_kicker": "Tekne sahibi",
     "door_owner_title": "Filoyu MarineOS’ta yönet",
-    "door_owner_body": "Tekne, fotoğraf, açık gün ve gelen talepler. Firma girişi ile açılır."
+    "door_owner_body": "Tekne, fotoğraf, açık gün ve gelen talepler. Firma girişi ile açılır.",
+    "dock_rent": "Kirala",
+    "dock_rent_body": "Misafir olarak tekne ara, açık günlerde talep gönder.",
+    "dock_list": "Kiraya ver",
+    "dock_list_body": "Filonu MarineOS masasından yayınla ve talepleri yönet.",
+    "dock_sheet_eyebrow": "Charter kapısı",
+    "dock_sheet_title": "Ne yapmak istiyorsun?"
+  },
+  "partner_pending": {
+    "kicker": "Onay bekleniyor",
+    "title": "{{role}} başvurusu incelenirken",
+    "body": "Hesabınız tekne sahibi olarak aktif. THALVO operasyon başvurunuzu doğruladıktan sonra usta veya bayi masanız açılır — otomatik onay yok.",
+    "point_review": "Başvuru ve belgeler THALVO tarafından incelenir.",
+    "point_wait": "Onaya kadar harita ve kaptan araçlarını kullanabilirsiniz.",
+    "open_chart": "Haritaya dön",
+    "desk_after": "Onay sonrası bayi masası burada açılır.",
+    "banner_title": "{{role}} doğrulaması bekleniyor",
+    "banner_body": "Talep kaydedildi. Onaylanana kadar kaptan kokpitindesiniz."
   }
 }

@@ -14,7 +14,16 @@ export function normalizeUserRole(role: unknown): UserRole {
 }
 
 function asProfile(data: Profile): Profile {
-  return { ...data, role: normalizeUserRole(data.role) };
+  const rawRequested = data.requested_role as UserRole | string | null | undefined;
+  const requested =
+    rawRequested == null || String(rawRequested).trim() === ""
+      ? null
+      : normalizeUserRole(rawRequested);
+  return {
+    ...data,
+    role: normalizeUserRole(data.role),
+    requested_role: requested === "Client" ? null : requested,
+  };
 }
 
 export interface Profile {
@@ -22,6 +31,8 @@ export interface Profile {
   full_name: string;
   boat_name: string | null;
   role: UserRole;
+  /** Set at partner signup; cleared when admin approves or rejects. */
+  requested_role: UserRole | null;
   wallet_balance: number;
   preferred_language: "tr" | "en";
   phone: string | null;
@@ -100,6 +111,7 @@ export function cockpitFallbackProfile(userId: string, role: UserRole = "Client"
     full_name: "Captain",
     boat_name: null,
     role,
+    requested_role: null,
     wallet_balance: 0,
     preferred_language: "tr",
     phone: null,

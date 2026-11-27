@@ -26,6 +26,7 @@ import { NetworkStatusBanner } from "@/components/pwa/NetworkStatusBanner";
 import { initNativeShell } from "@/lib/native";
 import { registerPwa } from "@/lib/pwa-register";
 import { applyThalvoTheme, readThalvoTheme } from "@/lib/theme";
+import { bootCockpitSkin } from "@/lib/cockpit-skins";
 import { initGoogleAds, trackGoogleAdsConversion, trackGoogleAdsPageView } from "@/lib/google-ads";
 
 function NotFoundComponent() {
@@ -183,13 +184,13 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html
       lang="tr"
-      className="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]"
+      className="min-h-dvh w-full max-w-[100vw] bg-[#0C2226]"
       suppressHydrationWarning
     >
       <head>
         <HeadContent />
       </head>
-      <body className="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
+      <body className="min-h-dvh w-full max-w-[100vw] bg-[#0C2226]" suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -200,10 +201,12 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const href = useRouterState({ select: (s) => s.location.href });
 
   useEffect(() => {
     applyPreferredLanguage();
     applyThalvoTheme(readThalvoTheme());
+    bootCockpitSkin();
     initGoogleAds();
     const showConfirmed = () => {
       try {
@@ -239,6 +242,10 @@ function RootComponent() {
   useEffect(() => {
     trackGoogleAdsPageView(pathname);
   }, [pathname]);
+
+  useEffect(() => {
+    bootCockpitSkin();
+  }, [href]);
 
   return (
     <QueryClientProvider client={queryClient}>

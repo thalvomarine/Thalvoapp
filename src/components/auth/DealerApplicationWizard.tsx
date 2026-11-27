@@ -53,6 +53,7 @@ export function DealerApplicationWizard({
   const { t } = useTranslation();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [stepErrors, setStepErrors] = useState<DealerStepErrors>({});
+  const [docGate, setDocGate] = useState(false);
 
   const patch = (partial: Partial<DealerApplicationDraft>) =>
     onDraftChange({ ...draft, ...partial });
@@ -100,6 +101,15 @@ export function DealerApplicationWizard({
       setStepErrors(errors);
       return;
     }
+    const missingRequiredDocs =
+      !docs.tax_plate ||
+      !docs.signature_doc ||
+      (needsTradeRegistry(draft.entityType) && !docs.trade_registry);
+    if (missingRequiredDocs) {
+      setDocGate(true);
+      return;
+    }
+    setDocGate(false);
     onSubmit();
   };
 
@@ -113,10 +123,10 @@ export function DealerApplicationWizard({
       <button
         type="button"
         onClick={onChangeRole}
-        className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/25 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-100"
+        className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/25 bg-[#C9B896]/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E8DFC8]"
       >
         {t("auth.role_supplier")}
-        <span className="text-amber-100/50">·</span>
+        <span className="text-[#E8DFC8]/50">·</span>
         {t("auth.change_role")}
       </button>
 
@@ -465,13 +475,15 @@ export function DealerApplicationWizard({
         </div>
       )}
 
-      {err && (
+      {(docGate || err) && (
         <div className="rounded-xl border border-destructive/40 bg-destructive/10 px-3.5 py-3 text-xs leading-relaxed">
           <div className="flex items-start gap-2.5">
             <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
             <div className="min-w-0 space-y-1">
               <p className="font-bold text-destructive">{t("auth.error_generic_title")}</p>
-              <p className="text-foreground/80">{err}</p>
+              <p className="text-foreground/80">
+                {docGate ? t("auth.dealer.err_docs_required") : err}
+              </p>
             </div>
           </div>
         </div>

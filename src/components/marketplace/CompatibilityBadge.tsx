@@ -34,7 +34,7 @@ export function CompatibilityBadge({ compatibility, vesselEngine, vesselType, cl
   }
   if (result === false) {
     return (
-      <span className={"inline-flex items-center gap-1 rounded-full border border-amber-400/25 bg-amber-400/10 text-amber-300 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] " + className}>
+      <span className={"inline-flex items-center gap-1 rounded-full border border-[#C9B896]/25 bg-[#C9B896]/10 text-[#C9B896] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] " + className}>
         <CircleAlert className="size-2.5" /> Check compatibility
       </span>
     );

@@ -95,9 +95,9 @@ export function CharterBaseChart({
               center={[port.lat, port.lng]}
               radius={selected ? 10 : 7}
               pathOptions={{
-                color: selected ? "#F5B942" : "#00F0FF",
+                color: selected ? "#C9B896" : "#8BA8A3",
                 weight: 2,
-                fillColor: selected ? "#F5B942" : "#0A192F",
+                fillColor: selected ? "#C9B896" : "#0A192F",
                 fillOpacity: selected ? 0.95 : 0.85,
               }}
               eventHandlers={{

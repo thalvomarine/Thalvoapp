@@ -12,8 +12,8 @@ interface Props {
 
 const SCORE_TONE: Record<string, string> = {
   reliable: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
-  building: "text-amber-300 border-amber-400/30 bg-amber-400/10",
-  watch:    "text-amber-300 border-amber-400/30 bg-amber-400/10",
+  building: "text-[#C9B896] border-[#C9B896]/30 bg-[#C9B896]/10",
+  watch:    "text-[#C9B896] border-[#C9B896]/30 bg-[#C9B896]/10",
   risk:     "text-rose-300 border-rose-500/30 bg-rose-500/10",
 };
 
@@ -31,7 +31,7 @@ export function DealerTrustBadge({ verified = true, name, marina, score, classNa
       <span className="text-white/80 truncate max-w-[120px]">{name ?? "Dealer"}</span>
       {marina && <span className="text-white/40">· {marina}</span>}
       {verified && (
-        <span className="inline-flex items-center gap-0.5 text-amber-300">
+        <span className="inline-flex items-center gap-0.5 text-[#C9B896]">
           <BadgeCheck className="size-2.5" />
         </span>
       )}

@@ -852,7 +852,7 @@ function BoatDetailSheet({
               <button
                 type="button"
                 onClick={() => toast.message(t("boats.contact_in_app_toast"))}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#F5B942] text-[14px] font-semibold text-[#1A1406]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#C9B896] text-[14px] font-semibold text-[#1A1406]"
               >
                 <MessageCircle className="size-3.5" />
                 {t("boats.contact_in_app")}
@@ -910,7 +910,7 @@ function ListingPlate({
       />
       <div className="relative flex h-full flex-col justify-between p-4">
         <div className="flex items-start justify-between gap-2">
-          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-amber-100/80">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-[#E8DFC8]/80">
             {listingClassLabel(boat, t)}
           </p>
           {badge ? (

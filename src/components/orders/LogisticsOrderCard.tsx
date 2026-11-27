@@ -63,7 +63,7 @@ export function LogisticsOrderCard(p: LogisticsOrder) {
         <p className="text-[11px] text-white/60 inline-flex items-center gap-1.5">
           <Package className="size-3.5" />
           {t(p.itemCount === 1 ? "orders.parts_count_one" : "orders.parts_count_other", { count: p.itemCount })}
-          {p.vesselName ? <span className="text-white/40"> · ⚓ {p.vesselName}</span> : null}
+          {p.vesselName ? <span className="text-white/40"> · {p.vesselName}</span> : null}
         </p>
         <p className="text-sm font-semibold text-white tabular-nums">{p.currency(p.total)}</p>
       </div>
@@ -73,7 +73,7 @@ export function LogisticsOrderCard(p: LogisticsOrder) {
           {p.onOpen ? (
             <button
               onClick={p.onOpen}
-              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-300 hover:text-sky-200"
+              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C9B896] hover:text-sky-200"
             >
               {t("orders.open_tracking")}
             </button>

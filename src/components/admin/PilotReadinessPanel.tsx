@@ -34,7 +34,7 @@ export function PilotReadinessPanel({
     <GlassPanel padded={false}>
       <div className="border-b border-white/[0.06] p-4">
         <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/45">
-          <Flag className="size-3.5 text-amber-300" /> {t("admin.pilot.title")}
+          <Flag className="size-3.5 text-[#C9B896]" /> {t("admin.pilot.title")}
         </p>
         <p className="mt-1.5 text-[12px] leading-snug text-white/55">{t("admin.pilot.subtitle")}</p>
       </div>
@@ -98,12 +98,12 @@ function Stat({
     tone === "ok"
       ? "text-emerald-300"
       : tone === "warn"
-        ? "text-amber-200"
+        ? "text-[#C9B896]"
         : tone === "danger"
           ? "text-rose-300"
           : "text-white";
   return (
-    <div className="bg-[#0A192F]/90 px-3 py-3">
+    <div className="bg-[#0C2226]/90 px-3 py-3">
       <p className="text-[10px] uppercase tracking-[0.14em] text-white/40">{label}</p>
       <p className={`mt-1 text-[13px] font-semibold tabular-nums ${valueTone}`}>{value}</p>
       {hint ? <p className="mt-0.5 text-[10px] text-white/35">{hint}</p> : null}

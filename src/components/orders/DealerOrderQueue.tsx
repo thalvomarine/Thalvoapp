@@ -300,7 +300,7 @@ function DealerRow({
             <button
               onClick={saveNote}
               disabled={busy}
-              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-300 hover:text-sky-200 disabled:opacity-40"
+              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C9B896] hover:text-sky-200 disabled:opacity-40"
             >
               {t("dealer.save_note")}
             </button>
@@ -311,7 +311,7 @@ function DealerRow({
               <button
                 onClick={advance}
                 disabled={busy}
-                className="h-10 px-4 rounded-2xl bg-sky-500 hover:bg-amber-400 text-slate-900 font-semibold text-[12px] uppercase tracking-[0.14em] disabled:opacity-40"
+                className="h-10 px-4 rounded-2xl bg-[#C9B896] hover:bg-[#d4c4a8] text-[#1A1406] font-semibold text-[12px] uppercase tracking-[0.14em] disabled:opacity-40"
               >
                 {t(ctaKey)}
               </button>

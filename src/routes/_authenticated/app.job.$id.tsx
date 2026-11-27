@@ -672,7 +672,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
           </p>
           {offers.length === 0 ? (
             <GlassPanel className="text-center">
-              <Loader2 className="mx-auto size-5 animate-spin text-amber-300 mb-2" />
+              <Loader2 className="mx-auto size-5 animate-spin text-[#C9B896] mb-2" />
               <p className="text-sm text-white/60">{t("owner.no_offers")}</p>
               <p className="text-[11px] text-white/40 mt-1">{t("mission.broadcasting_hint")}</p>
             </GlassPanel>
@@ -785,7 +785,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
         </button>
       )}
       {job.status === "PartsPending" && pendingPart && (
-        <GlassPanel className="text-sm text-amber-100/90">
+        <GlassPanel className="text-sm text-[#E8DFC8]/90">
           {t("owner.approve_extras_before_complete")}
         </GlassPanel>
       )}
@@ -1140,7 +1140,7 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
 
       {openForBid && (
         <GlassPanel className="space-y-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-200/80">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C9B896]/80">
             {t("ops_alerts.bid")}
           </p>
           <p className="text-sm text-white/70">{t("ops_alerts.pool_bid_hint")}</p>

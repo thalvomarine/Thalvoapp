@@ -216,7 +216,7 @@ export const RouteInteractionLayer = memo(function RouteInteractionLayer({
               <Popup>
                 <button
                   type="button"
-                  className="rounded border border-rose-400/40 bg-[#0B1528] px-2 py-1 text-[11px] font-semibold text-rose-200"
+                  className="rounded border border-rose-400/40 bg-[#0C2226] px-2 py-1 text-[11px] font-semibold text-rose-200"
                   onClick={() => onRemovePin(i)}
                 >
                   {t("chart.route_deck_remove_point")}

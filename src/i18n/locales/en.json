@@ -130,7 +130,8 @@
       "err_mersis": "MERSİS must be 16 digits.",
       "err_kep": "KEP must look like name@domain.kep.tr.",
       "err_iban": "Enter a valid TR IBAN.",
-      "err_terms": "Accept the terms to continue."
+      "err_terms": "Accept the terms to continue.",
+      "err_docs_required": "Tax plate and signature circular are required; limited/JSC also need trade registry."
     },
     "service_type": "Service type",
     "sm_mechanic": "Marine Mechanic",
@@ -234,6 +235,7 @@
   },
   "ops_alerts": {
     "pool_title": "Active job pool / radar",
+    "pool_short": "Pool",
     "pool_empty": "No open jobs in the pool.",
     "pool_bid_hint": "Submit a bid. You sail only after the captain accepts and pays.",
     "your_missions": "Your missions",
@@ -457,14 +459,20 @@
   "services": {
     "eyebrow": "THALVO · Shore support",
     "title": "Routine Service Packages",
-    "subtitle": "Compare fixed prices from certified workshops & divers.",
+    "subtitle": "Request quotes from certified technicians and divers — no fixed list prices.",
     "filter_mech": "Marine Mechanics",
     "filter_diver": "Divers",
     "no_offers": "No workshops offering this package yet.",
-    "book_now": "Book Now",
+    "book_now": "Get a quote",
     "eta_short": "ETA",
     "empty_title": "No packages yet",
-    "empty_body": "Standard service packages will appear here."
+    "empty_body": "Standard service packages will appear here.",
+    "load_error_title": "Could not load service packages",
+    "load_error_body": "Check the connection and try again.",
+    "request_quote": "Get a quote",
+    "quote_sent": "Quote request sent.",
+    "quote_failed": "Could not send the quote request.",
+    "no_offers_body": "No approved provider for this job yet. Continue via SOS or a fault report."
   },
   "shop": {
     "title": "Spare Parts Marketplace",
@@ -930,6 +938,8 @@
     "settings": "Account settings",
     "language": "Language",
     "appearance": "Appearance",
+    "design_lab": "Design lab",
+    "design_lab_hint": "Locked language: Marina Concierge. Other trials removed; polish continues on this one.",
     "theme_system": "System",
     "theme_day": "Day",
     "theme_night": "Night",
@@ -977,7 +987,12 @@
     "eq_boat": "Own Service Boat",
     "eq_crane": "Onboard Crane / Winch",
     "eq_night": "Night Dive Rated",
-    "review_pending": "Review pending"
+    "review_pending": "Review pending",
+    "no_vessels_title": "No vessels yet",
+    "no_vessels_body": "Add a vessel for passport and SOS context.",
+    "replay_tour_title": "Replay welcome tour",
+    "replay_tour_body": "Re-open the THALVO first-run experience.",
+    "replay_tour_cta": "Restart"
   },
   "ai": {
     "subtitle": "Your marine assistant",
@@ -1384,7 +1399,8 @@
     "new_order_toast_title": "New order received",
     "new_order_toast_body": "A customer placed a spare-parts order.",
     "badge_new": "New",
-    "field_image_advanced": "Advanced: paste URL"
+    "field_image_advanced": "Advanced: paste URL",
+    "apply_cta": "Apply as dealer"
   },
   "mission": {
     "details": "Mission details",
@@ -2171,7 +2187,10 @@
     "partner_point_2": "Brand, marina, dealer or technician",
     "partner_point_3": "Pilot team replies within 24 hours",
     "partner_thanks_title": "Thank you",
-    "partner_kind_hint": "Choose your role — the lead is tagged accordingly."
+    "partner_kind_hint": "Choose your role — the lead is tagged accordingly.",
+    "partner_account_hint": "Open an account directly:",
+    "partner_door_usta": "Technician signup",
+    "partner_door_bayi": "Dealer application"
   },
   "onboarding": {
     "back": "Back",
@@ -2523,6 +2542,23 @@
     "door_guest_body": "Pick a home port on the chart and ask for open days. Payment stays simulated.",
     "door_owner_kicker": "Boat owner",
     "door_owner_title": "Run the fleet in MarineOS",
-    "door_owner_body": "Yacht, photographs, open days and inbound inquiries. Opens with firm sign-in."
+    "door_owner_body": "Yacht, photographs, open days and inbound inquiries. Opens with firm sign-in.",
+    "dock_rent": "Rent a yacht",
+    "dock_rent_body": "Browse as a guest and inquire on open days.",
+    "dock_list": "List your yacht",
+    "dock_list_body": "Publish your fleet from the MarineOS desk and manage inquiries.",
+    "dock_sheet_eyebrow": "Charter door",
+    "dock_sheet_title": "What do you want to do?"
+  },
+  "partner_pending": {
+    "kicker": "Awaiting approval",
+    "title": "{{role}} application under review",
+    "body": "Your account is active as a boat owner. THALVO operations must approve your request before the technician or dealer desk opens — nothing is auto-verified.",
+    "point_review": "Your application and documents are reviewed by THALVO.",
+    "point_wait": "Until then you can use the chart and captain tools.",
+    "open_chart": "Back to chart",
+    "desk_after": "Your dealer desk opens here after approval.",
+    "banner_title": "{{role}} verification pending",
+    "banner_body": "Request recorded. You stay in the captain cockpit until approved."
   }
 }

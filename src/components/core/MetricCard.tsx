@@ -14,9 +14,9 @@ interface Props {
 const TONE: Record<StatusTone, string> = {
   neutral: "text-white/80",
   success: "text-emerald-300",
-  warning: "text-amber-300",
+  warning: "text-[#C9B896]",
   danger: "text-rose-300",
-  info: "text-amber-300",
+  info: "text-[#C9B896]",
 };
 
 /**

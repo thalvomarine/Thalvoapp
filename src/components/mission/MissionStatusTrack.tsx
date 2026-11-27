@@ -71,7 +71,7 @@ export function MissionStatusTrack({ stage, className = "", compact = false }: P
                   "grid place-items-center rounded-full transition-all " +
                   (compact ? "size-4" : "size-5") + " " +
                   (state === "done"
-                    ? "bg-amber-400/20 text-amber-300 border border-amber-400/40"
+                    ? "bg-[#C9B896]/15 text-[#C9B896] border border-amber-400/40"
                     : state === "current"
                       ? "bg-amber-400 text-slate-900 shadow-[0_0_18px_theme(colors.amber.400)]"
                       : "bg-white/5 text-white/30 border border-white/10")
@@ -86,7 +86,7 @@ export function MissionStatusTrack({ stage, className = "", compact = false }: P
                 )}
               </span>
               {!compact && (state === "current" || finished) && (
-                <span className="text-[9px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-amber-300">
+                <span className="text-[9px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-[#C9B896]">
                   {t(s.labelKey)}
                 </span>
               )}

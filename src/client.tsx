@@ -2,6 +2,15 @@ import { StrictMode, startTransition } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { StartClient } from "@tanstack/react-start/client";
 import { clearStaleChunkReloadFlag } from "@/lib/stale-chunk";
+import { bootCockpitSkin } from "@/lib/cockpit-skins";
+
+// Design Lab deep-links (`?skin=harbour`) must land before auth redirects
+// strip the query — persist to localStorage on the first paint.
+try {
+  bootCockpitSkin();
+} catch {
+  /* ignore */
+}
 
 declare global {
   interface Window {

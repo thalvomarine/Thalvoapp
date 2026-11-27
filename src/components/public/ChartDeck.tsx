@@ -27,7 +27,7 @@ const SHELVES = [
 ] as const;
 
 const LEGEND = [
-  { id: "marina", color: "#f5b942" },
+  { id: "marina", color: "#C9B896" },
   { id: "anchorage", color: "#fbbf24" },
   { id: "fuel", color: "#34d399" },
   { id: "hazard", color: "#fb7185" },
@@ -59,20 +59,20 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
   };
 
   return (
-    <div className="thalvo-dark flex h-svh max-h-svh w-full max-w-[100vw] flex-col overflow-hidden bg-[#06101c] text-white">
-      <header className="z-[1100] shrink-0 overflow-hidden border-b border-white/[0.08] bg-[#071422] pt-[env(safe-area-inset-top)]">
+    <div className="thalvo-dark flex h-svh max-h-svh w-full max-w-[100vw] flex-col overflow-hidden bg-[#0C2226] text-white">
+      <header className="z-[1100] shrink-0 overflow-hidden border-b border-white/[0.08] bg-[#0C2226] pt-[env(safe-area-inset-top)]">
         <div className="flex h-11 min-w-0 items-center gap-2 px-2">
           <Link to="/" className="flex min-w-0 shrink items-center gap-2">
             <Wordmark size="sm" className="text-white" decorative />
             <span className="thalvo-display hidden text-[14px] tracking-[0.18em] text-white min-[420px]:inline">THALVO</span>
           </Link>
           <p className="hidden min-w-0 truncate text-[11px] text-white/40 sm:block">{t("public.panel_kicker")}</p>
-          <p className="thalvo-num hidden min-w-0 truncate text-[12px] text-amber-100/90 md:block">{position}</p>
+          <p className="thalvo-num hidden min-w-0 truncate text-[12px] text-[#E8DFC8]/90 md:block">{position}</p>
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
             <LanguageSwitcher tone="dark" />
             <Link
               to="/auth"
-              className="inline-flex h-8 max-w-[6.5rem] items-center truncate rounded-md bg-[#F5B942] px-2.5 text-[12px] font-semibold text-[#1A1406]"
+              className="inline-flex h-8 max-w-[6.5rem] items-center truncate rounded-md bg-[#C9B896] px-2.5 text-[12px] font-semibold text-[#1A1406]"
             >
               {t("auth.sign_in")}
             </Link>
@@ -98,13 +98,13 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
               </button>
             );
           })}
-          <p className="thalvo-num mb-2 ml-auto shrink-0 pr-2 text-[11px] text-amber-100/80 md:hidden">{position}</p>
+          <p className="thalvo-num mb-2 ml-auto shrink-0 pr-2 text-[11px] text-[#E8DFC8]/80 md:hidden">{position}</p>
         </div>
       </header>
 
       <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden">
         {unconfirmed && (
-          <div className="absolute inset-x-2 top-2 z-[1200] flex items-start gap-2 rounded-xl border border-amber-300/50 bg-[#3a2a08]/95 px-3 py-2 text-[13px] font-medium leading-snug text-amber-50">
+          <div className="absolute inset-x-2 top-2 z-[1200] flex items-start gap-2 rounded-xl border border-amber-300/50 bg-[#3a2a08]/95 px-3 py-2 text-[13px] font-medium leading-snug text-[#E8DFC8]">
             <p className="min-w-0 flex-1">{t("auth.email_unconfirmed_banner")}</p>
             <button
               type="button"
@@ -113,7 +113,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
                 clearEmailUnconfirmed();
                 setUnconfirmed(false);
               }}
-              className="grid size-7 shrink-0 place-items-center rounded-full text-amber-100"
+              className="grid size-7 shrink-0 place-items-center rounded-full text-[#E8DFC8]"
             >
               <X className="size-3.5" />
             </button>
@@ -128,7 +128,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
             aria-label={t("chart.locate_me")}
             title={t("chart.locate_me")}
             className={
-              "absolute right-3 z-[1100] grid size-11 place-items-center rounded-full border border-white/15 bg-[#071422]/92 text-amber-100 disabled:opacity-60 " +
+              "absolute right-3 z-[1100] grid size-11 place-items-center rounded-full border border-white/15 bg-[#0C2226]/92 text-[#E8DFC8] disabled:opacity-60 " +
               (unconfirmed ? "top-16" : "top-3")
             }
           >
@@ -140,7 +140,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
           </button>
         )}
         {!panel && locError && (
-          <div className="absolute left-3 right-16 top-3 z-[1100] flex items-start gap-2 rounded-md bg-[#071422]/92 px-3 py-2 text-[12px] text-amber-100">
+          <div className="absolute left-3 right-16 top-3 z-[1100] flex items-start gap-2 rounded-md bg-[#0C2226]/92 px-3 py-2 text-[12px] text-[#E8DFC8]">
             <p className="min-w-0 flex-1">{locError}</p>
             {locDenied && isNativeWebView() && (
               <button
@@ -148,7 +148,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
                 onClick={() => void openNativeAppSettings()}
                 aria-label={t("common.open_settings")}
                 title={t("common.open_settings")}
-                className="grid size-7 shrink-0 place-items-center rounded-full text-amber-100/80 hover:text-amber-50"
+                className="grid size-7 shrink-0 place-items-center rounded-full text-[#E8DFC8]/80 hover:text-[#E8DFC8]"
               >
                 <Settings className="size-3.5" />
               </button>
@@ -159,7 +159,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
         {!panel && (
           <div className="pointer-events-none absolute inset-x-2 bottom-2 z-[1100] flex max-w-full items-end justify-between gap-2">
             {/* Legend chips stay on dark glass so they read over the chart tiles. */}
-            <ul className="flex max-w-full flex-wrap gap-x-2 gap-y-1 rounded-md bg-[#071422]/88 px-2 py-1 shadow-sm">
+            <ul className="flex max-w-full flex-wrap gap-x-2 gap-y-1 rounded-md bg-[#0C2226]/88 px-2 py-1 shadow-sm">
               {LEGEND.map((item) => (
                 <li key={item.id} className="flex items-center gap-1.5 text-[10px] text-white/75">
                   <span className="size-1.5 rounded-full" style={{ background: item.color }} />
@@ -167,7 +167,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
                 </li>
               ))}
             </ul>
-            <div className="hidden max-w-[min(100%,22rem)] shrink-0 flex-wrap gap-x-3 gap-y-1 rounded-md bg-[#071422]/88 px-2 py-1 text-[11px] shadow-sm sm:flex">
+            <div className="hidden max-w-[min(100%,22rem)] shrink-0 flex-wrap gap-x-3 gap-y-1 rounded-md bg-[#0C2226]/88 px-2 py-1 text-[11px] shadow-sm sm:flex">
               <Link to="/about" className="pointer-events-auto text-white/70 hover:text-white">
                 {t("public.footer_about")}
               </Link>
@@ -191,7 +191,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
         {panel === "services" && <ServicesPanel />}
       </div>
 
-      <nav className="z-[1200] shrink-0 border-t border-white/[0.08] bg-[#071422] pb-[env(safe-area-inset-bottom)]">
+      <nav className="z-[1200] shrink-0 border-t border-white/[0.08] bg-[#0C2226] pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto grid h-14 max-w-lg grid-cols-3">
           <DockLink panel={undefined} active={!panel} icon={<MapIcon className="size-4" />} label={t("nav.map")} />
           <DockLink
@@ -229,7 +229,7 @@ function DockLink({
       search={{ panel }}
       className={
         "flex h-full min-w-0 flex-col items-center justify-center gap-0.5 border-t-2 px-1 text-[11px] font-semibold " +
-        (active ? "border-amber-300 text-amber-100" : "border-transparent text-white/65")
+        (active ? "border-amber-300 text-[#E8DFC8]" : "border-transparent text-white/65")
       }
     >
       {icon}
@@ -249,10 +249,10 @@ function PanelFrame({
 }) {
   const { t } = useTranslation();
   return (
-    <aside className="pointer-events-auto absolute z-[1100] flex flex-col overflow-hidden border border-white/10 bg-[#071422]/96 shadow-2xl backdrop-blur-xl max-lg:inset-x-0 max-lg:bottom-0 max-lg:max-h-[78%] max-lg:rounded-t-2xl lg:bottom-3 lg:left-3 lg:top-3 lg:w-[400px] lg:rounded-2xl">
+    <aside className="pointer-events-auto absolute z-[1100] flex flex-col overflow-hidden border border-white/10 bg-[#0C2226]/96 shadow-2xl backdrop-blur-xl max-lg:inset-x-0 max-lg:bottom-0 max-lg:max-h-[78%] max-lg:rounded-t-2xl lg:bottom-3 lg:left-3 lg:top-3 lg:w-[400px] lg:rounded-2xl">
       <div className="flex items-start justify-between gap-3 px-5 pb-3 pt-4">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/80">{kicker}</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#C9B896]/80">{kicker}</p>
           <h1 className="thalvo-display mt-1 text-[28px] leading-none text-white">{title}</h1>
         </div>
         <Link
@@ -301,14 +301,11 @@ function ServicesPanel() {
                         defaultValue: isTr ? pkg.title_tr : pkg.title_en,
                       })}
                     </p>
-                    {pkg.base_duration_min != null && (
-                      <p className="thalvo-num shrink-0 text-[12px] text-amber-100/80">
-                        {t("public.duration_min", { count: pkg.base_duration_min })}
-                      </p>
-                    )}
+                    <p className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C9B896]/85">
+                      {t("services.request_quote")}
+                    </p>
                   </div>
                   {scope ? <p className="mt-1.5 text-[13px] leading-snug text-white/55">{scope}</p> : null}
-                  <p className="mt-2 text-[11px] tracking-wide text-white/40">{t("public.price_on_request")}</p>
                 </Link>
               </li>
             );

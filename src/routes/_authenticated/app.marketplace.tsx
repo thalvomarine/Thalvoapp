@@ -245,7 +245,7 @@ function Marketplace({ userId }: { userId: string }) {
               setEditingBoat(null);
               setCreateOpen(true);
             }}
-            className="inline-flex h-11 min-w-0 w-full items-center justify-center gap-1.5 rounded-xl bg-[color:var(--mos-amber,#F5B942)] px-4 text-[13px] font-semibold text-[#0A192F] sm:w-auto"
+            className="inline-flex h-11 min-w-0 w-full items-center justify-center gap-1.5 rounded-xl bg-[color:var(--mos-amber,#C9B896)] px-4 text-[13px] font-semibold text-[#0A192F] sm:w-auto"
           >
             <Plus className="size-4 shrink-0" />
             {t("boats.create_listing")}
@@ -256,7 +256,7 @@ function Marketplace({ userId }: { userId: string }) {
         !me ? (
           <div
             role="status"
-            className="w-full min-w-0 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-[11px] font-semibold leading-snug text-amber-200"
+            className="w-full min-w-0 rounded-xl border border-[#C9B896]/30 bg-[#C9B896]/10 px-3 py-2 text-[11px] font-semibold leading-snug text-[#C9B896]"
           >
             {geoFailure
               ? t(geoFailure.messageKey, { defaultValue: geoFailure.defaultMessage })
@@ -429,11 +429,11 @@ Answer in three short bullets (max 2 sentences each):
       >
         <div className="p-4 flex items-start justify-between gap-3 border-b border-white/10">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="size-8 rounded-lg bg-amber-400/15 border border-amber-400/30 grid place-items-center text-amber-300">
+            <span className="size-8 rounded-lg bg-amber-400/15 border border-[#C9B896]/30 grid place-items-center text-[#C9B896]">
               <Sparkles className="size-4" />
             </span>
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-300">{t("marketplace.ai_thalvo")}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#C9B896]">{t("marketplace.ai_thalvo")}</p>
               <p className="text-sm font-semibold text-white truncate">{part.name}</p>
             </div>
           </div>

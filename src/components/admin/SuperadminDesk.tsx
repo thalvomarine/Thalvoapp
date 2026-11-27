@@ -201,7 +201,7 @@ export function SuperadminDesk() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-300/80">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/80">
           {t("admin.super.eyebrow")}
         </p>
         <h1 className="mt-1 text-xl font-semibold text-white">{t("admin.super.title")}</h1>
@@ -222,7 +222,7 @@ export function SuperadminDesk() {
         ) : (
           <div className="max-h-[420px] overflow-auto">
             <table className="w-full min-w-[720px] text-left text-[12px]">
-              <thead className="sticky top-0 bg-[#0a192f] text-[10px] uppercase tracking-[0.14em] text-white/40">
+              <thead className="sticky top-0 bg-[#0C2226] text-[10px] uppercase tracking-[0.14em] text-white/40">
                 <tr>
                   <th className="px-3 py-2 font-semibold">{t("admin.super.col_name")}</th>
                   <th className="px-3 py-2 font-semibold">{t("admin.email")}</th>
@@ -340,7 +340,7 @@ export function SuperadminDesk() {
                 className={
                   "h-8 rounded-full border px-3 text-[10px] font-bold uppercase tracking-[0.12em] " +
                   (filter === id
-                    ? "border-amber-300/50 bg-amber-400/20 text-amber-50"
+                    ? "border-amber-300/50 bg-[#C9B896]/15 text-[#E8DFC8]"
                     : "border-white/10 bg-white/[0.04] text-white/50")
                 }
               >
@@ -404,7 +404,7 @@ export function SuperadminDesk() {
                       type="button"
                       disabled={busy === j.id}
                       onClick={() => void run(j.id, () => supabase.rpc("admin_close_job", { _job_id: j.id }))}
-                      className="inline-flex h-8 items-center gap-1 rounded-lg border border-amber-400/30 bg-amber-400/10 px-2 text-[10px] font-bold uppercase tracking-[0.1em] text-amber-100"
+                      className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#C9B896]/30 bg-[#C9B896]/10 px-2 text-[10px] font-bold uppercase tracking-[0.1em] text-[#E8DFC8]"
                     >
                       <XCircle className="size-3.5" /> {t("admin.super.close")}
                     </button>

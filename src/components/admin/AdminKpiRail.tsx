@@ -14,9 +14,9 @@ export interface KpiItem {
 const TONE: Record<NonNullable<KpiItem["tone"]>, string> = {
   neutral: "text-white/80",
   success: "text-emerald-300",
-  warning: "text-amber-300",
+  warning: "text-[#C9B896]",
   danger:  "text-rose-300",
-  info:    "text-amber-300",
+  info:    "text-[#C9B896]",
 };
 
 const DEFAULT_ICON: Record<string, ReactNode> = {

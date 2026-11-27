@@ -5,6 +5,7 @@ import { LeafletPointerGuard, stopMapEvent } from "@/lib/leaflet-dom";
 import {
   chartPointCoords,
   chartPointName,
+  formatDegrees,
   ZONE_KIND_LABEL_KEYS,
   REPORT_CATEGORY_LABEL_KEYS,
   type ChartPoint,
@@ -64,21 +65,30 @@ export function ChartSearchBar({
     <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex flex-col gap-1.5 px-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
       <LeafletPointerGuard className="pointer-events-none relative z-[10] flex min-w-0 items-center gap-2">
         <div className="pointer-events-auto relative z-0 min-w-0 flex-1">
-          <div className="thalvo-on-dark flex h-11 min-w-0 items-center gap-2.5 overflow-hidden rounded-xl border border-white/15 bg-[#0a192f]/92 px-3 shadow-2xl backdrop-blur-md">
+          <div
+            className="thalvo-chart-sheet flex h-11 min-w-0 items-center gap-2.5 overflow-hidden rounded-xl border px-3 shadow-2xl backdrop-blur-md"
+          >
             {headerLeft ? (
               <>
                 <div className="flex shrink-0 items-center gap-1.5">
                   <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden [&>span]:!size-7 [&>span>img]:!size-7">
                     {headerLeft}
                   </span>
-                  <span className="hidden text-[11px] font-bold tracking-[0.14em] text-white sm:inline">
+                  <span
+                    className="hidden text-[11px] font-bold tracking-[0.14em] sm:inline"
+                    style={{ color: "var(--sheet-ink)" }}
+                  >
                     THALVO
                   </span>
                 </div>
-                <span className="h-4 w-px shrink-0 bg-white/15" aria-hidden />
+                <span
+                  className="h-4 w-px shrink-0"
+                  style={{ background: "var(--sheet-border)" }}
+                  aria-hidden
+                />
               </>
             ) : null}
-            <Search className="size-3.5 shrink-0 text-amber-300/90" />
+            <Search className="size-3.5 shrink-0" style={{ color: "var(--sheet-active-ink)" }} />
             <input
               ref={inputRef}
               value={query}
@@ -86,7 +96,8 @@ export function ChartSearchBar({
               onFocus={() => setFocused(true)}
               onBlur={() => window.setTimeout(() => setFocused(false), 120)}
               placeholder={t("chart.search_placeholder")}
-              className="min-w-0 flex-1 bg-transparent text-[12px] text-white placeholder:text-white/40 outline-none"
+              className="min-w-0 flex-1 bg-transparent text-[12px] outline-none"
+              style={{ color: "var(--sheet-ink)" }}
             />
             {query ? (
               <button
@@ -97,18 +108,29 @@ export function ChartSearchBar({
                   inputRef.current?.focus();
                 }}
                 aria-label={t("common.clear")}
-                className="grid size-5 shrink-0 place-items-center rounded-full text-white/40 hover:text-white/80"
+                className="grid size-7 shrink-0 place-items-center rounded-md border"
+                style={{
+                  borderColor: "var(--sheet-border)",
+                  color: "var(--sheet-muted)",
+                }}
               >
-                <X className="size-3" />
+                <X className="size-3.5" />
               </button>
             ) : null}
-            <span className="shrink-0 rounded-full border border-amber-300/40 bg-amber-400/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-amber-100">
+            <span
+              className="shrink-0 rounded-md border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em]"
+              style={{
+                borderColor: "var(--sheet-active-border)",
+                background: "var(--sheet-active-bg)",
+                color: "var(--sheet-active-ink)",
+              }}
+            >
               {t("chart.live_pill")}
             </span>
           </div>
 
           {showDropdown && (
-            <div className="thalvo-on-dark mt-1.5 max-h-[40vh] overflow-y-auto rounded-xl border border-white/12 bg-[#0a192f]/95 shadow-2xl backdrop-blur-md">
+            <div className="thalvo-on-dark mt-1.5 max-h-[40vh] overflow-y-auto rounded-xl border border-white/12 bg-[#0C2226]/95 shadow-2xl backdrop-blur-md">
               {results.length === 0 ? (
                 <p className="px-3.5 py-3 text-[11px] text-white/40">
                   {t("chart.search_no_results")}
@@ -133,9 +155,9 @@ export function ChartSearchBar({
                             setFocused(false);
                             onSelect(point);
                           }}
-                          className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left transition-colors hover:bg-amber-400/10"
+                          className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left transition-colors hover:bg-[#C9B896]/10"
                         >
-                          <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-white/[0.06] text-amber-200">
+                          <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-white/[0.06] text-[#C9B896]">
                             <Anchor className="size-3.5" />
                           </span>
                           <span className="min-w-0 flex-1">
@@ -146,8 +168,8 @@ export function ChartSearchBar({
                               {t(labelKey)}
                             </span>
                           </span>
-                          <span className="shrink-0 font-mono text-[9px] text-white/30">
-                            {coords.lat.toFixed(2)}°, {coords.lng.toFixed(2)}°
+                          <span className="shrink-0 font-mono text-[9px] text-white/35">
+                            {formatDegrees(coords.lat, coords.lng)}
                           </span>
                         </button>
                       </li>

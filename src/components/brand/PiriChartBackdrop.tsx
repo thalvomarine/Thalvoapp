@@ -17,9 +17,9 @@ export function PiriChartBackdrop({ className = "" }: { className?: string }) {
         className="landing-hero-img absolute inset-0 size-full object-cover object-center"
       />
       {/* Keep headlines readable without flattening the chart */}
-      <div className="absolute inset-0 bg-[#06101c]/42" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#06101c]/75 via-transparent to-[#06101c]/92" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#06101c]/35 via-transparent to-[#06101c]/25" />
+      <div className="absolute inset-0 bg-[#0C2226]/42" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0C2226]/75 via-transparent to-[#0C2226]/92" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0C2226]/35 via-transparent to-[#0C2226]/25" />
     </div>
   );
 }

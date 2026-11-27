@@ -12,13 +12,13 @@ export const Route = createFileRoute("/charter-preview")({
 function CharterPreviewPage() {
   const { t } = useTranslation();
   return (
-    <div className="thalvo-dark thalvo-cockpit min-h-dvh bg-[#06101c] text-white">
+    <div className="thalvo-dark thalvo-cockpit min-h-dvh bg-[#0C2226] text-white">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 pt-5">
         <Link to="/">
           <Wordmark size="sm" className="text-white" />
         </Link>
         <div className="flex items-center gap-2">
-          <Link to="/charter" className="text-[12px] font-semibold text-[#F5B942]">
+          <Link to="/charter" className="text-[12px] font-semibold text-[#C9B896]">
             {t("charter.guest_link")}
           </Link>
           <LanguageSwitcher tone="dark" />

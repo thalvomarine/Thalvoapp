@@ -57,11 +57,11 @@ export function PartCard({ part, currencyFormat, onAdd, onNotify, onAskAi, actio
             })
           : t("marketplace.product.stock_ready");
 
-  const stockDot = outOfStock ? "bg-rose-400" : lowStock ? "bg-amber-400" : "bg-emerald-400";
+  const stockDot = outOfStock ? "bg-rose-400" : lowStock ? "bg-[#C9B896]" : "bg-emerald-400";
   const stockTone = outOfStock
     ? "border-rose-400/25 bg-rose-500/10 text-rose-200"
     : lowStock
-      ? "border-amber-400/25 bg-amber-400/10 text-amber-200"
+      ? "border-[#C9B896]/25 bg-[#C9B896]/10 text-[#C9B896]"
       : "border-emerald-400/25 bg-emerald-400/10 text-emerald-200";
 
   const compat = publicCompatibility(part.compatibility);
@@ -73,9 +73,9 @@ export function PartCard({ part, currencyFormat, onAdd, onNotify, onAskAi, actio
     : t("marketplace.product.verified_dealer");
 
   return (
-    <article className="rounded-2xl border border-amber-500/20 bg-slate-900/80 p-4 backdrop-blur-md transition-all hover:border-amber-400/40">
+    <article className="rounded-2xl border border-[#C9B896]/25 bg-[#0C2226]/88 p-4 backdrop-blur-md transition-all hover:border-[#C9B896]/40">
       <div className="flex gap-4">
-        <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-xl border-2 border-amber-400/35 bg-[#132337] shadow-[inset_0_0_18px_rgba(245, 185, 66,0.08)]">
+        <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-xl border border-[#C9B896]/30 bg-[#132a2e]">
           {part.imageUrl ? (
             <img
               src={part.imageUrl}
@@ -85,7 +85,7 @@ export function PartCard({ part, currencyFormat, onAdd, onNotify, onAskAi, actio
             />
           ) : (
             <div
-              className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[#1a2f4a] text-amber-300"
+              className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[#163036] text-[#C9B896]"
               aria-label={t("marketplace.product.no_image")}
             >
               <Ship className="size-7" />
@@ -97,7 +97,7 @@ export function PartCard({ part, currencyFormat, onAdd, onNotify, onAskAi, actio
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               {part.brand && (
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-400">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#C9B896]">
                   {part.brand}
                 </p>
               )}
@@ -114,12 +114,12 @@ export function PartCard({ part, currencyFormat, onAdd, onNotify, onAskAi, actio
                   type="button"
                   onClick={() => onAskAi(part)}
                   aria-label="Ask AI"
-                  className="grid size-8 place-items-center rounded-lg border border-white/10 bg-slate-800/80 text-amber-300 transition-colors hover:bg-slate-700/80"
+                  className="grid size-8 place-items-center rounded-lg border border-white/10 bg-slate-800/80 text-[#C9B896] transition-colors hover:bg-slate-700/80"
                 >
                   <Sparkles className="size-3.5" />
                 </button>
               )}
-              <p className="text-lg font-bold tabular-nums text-amber-400">
+              <p className="text-lg font-bold tabular-nums text-[#C9B896]">
                 {currencyFormat(part.price)}
               </p>
             </div>
@@ -136,7 +136,7 @@ export function PartCard({ part, currencyFormat, onAdd, onNotify, onAskAi, actio
               <span className="truncate">{stockLabel}</span>
             </span>
             {condition && (
-              <span className="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-100">
+              <span className="inline-flex items-center rounded-full border border-[#C9B896]/30 bg-[#C9B896]/10 px-2 py-0.5 text-[10px] font-semibold text-[#E8DFC8]">
                 {t(`dealer.condition_${condition}`)}
               </span>
             )}
@@ -166,7 +166,7 @@ export function PartCard({ part, currencyFormat, onAdd, onNotify, onAskAi, actio
                 key={c}
                 className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-medium text-slate-300"
               >
-                <Cpu className="size-2.5 text-amber-300/70" /> {c}
+                <Cpu className="size-2.5 text-[#C9B896]/70" /> {c}
               </span>
             ))}
             {compatMore > 0 && (
@@ -194,7 +194,7 @@ export function PartCard({ part, currencyFormat, onAdd, onNotify, onAskAi, actio
               <button
                 type="button"
                 onClick={() => onAdd(part)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-blue-600 px-3.5 py-2 text-xs font-semibold text-white shadow-lg shadow-amber-950/40 transition-transform hover:from-amber-400 hover:to-blue-500 active:scale-95"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#C9B896] px-3.5 py-2 text-xs font-semibold text-[#0C2226] transition-colors hover:bg-[#d4c4a8] active:scale-95"
               >
                 <Plus className="size-3.5" />
                 {t("marketplace.product.add_to_cart")}

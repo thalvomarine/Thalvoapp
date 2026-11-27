@@ -289,7 +289,7 @@ export function ThalvoAiFab({ hideLauncher = false }: { hideLauncher?: boolean }
                 marginBottom: keyboardInset,
                 background:
                   "radial-gradient(120% 60% at 50% -10%, rgba(0,180,216,0.10) 0%, transparent 60%), linear-gradient(180deg, #0B1B33 0%, #081426 100%)",
-                borderTop: "1px solid rgba(245, 185, 66,0.18)",
+                borderTop: "1px solid rgba(201, 184, 150,0.18)",
               }}
               onClick={(e) => e.stopPropagation()}
             >

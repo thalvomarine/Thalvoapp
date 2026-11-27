@@ -62,7 +62,7 @@ function ChartCrashFallback({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="flex h-full min-h-[400px] w-full flex-col items-center justify-center gap-3 bg-[#0A192F] px-4 text-center">
+    <div className="flex h-full min-h-[400px] w-full flex-col items-center justify-center gap-3 bg-[#0C2226] px-4 text-center">
       <p className="max-w-md text-sm text-slate-300">{t("chart.crash_title")}</p>
       {detail ? (
         <p className="max-w-lg break-words font-mono text-[11px] text-rose-300/80" aria-hidden>
@@ -71,7 +71,7 @@ function ChartCrashFallback({
       ) : null}
       <button
         type="button"
-        className="rounded-md border border-amber-400/40 bg-amber-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-amber-100"
+        className="rounded-md border border-amber-400/40 bg-[#C9B896]/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#E8DFC8]"
         onClick={onRetry}
       >
         {staleChunk ? t("chart.crash_reload") : t("chart.crash_retry")}

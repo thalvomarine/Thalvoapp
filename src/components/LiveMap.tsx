@@ -1652,7 +1652,7 @@ function LiveMapCanvas({
                   headerRight={headerRight}
                   banner={
                     hud && !fix && !requesting && failure && !failureDismissed ? (
-                      <div className="flex w-full min-w-0 items-start gap-1.5 rounded-xl border border-amber-300/40 bg-amber-400/15 px-2.5 py-1.5 text-[10px] font-semibold leading-snug text-amber-100 shadow-2xl backdrop-blur-md">
+                      <div className="flex w-full min-w-0 items-start gap-1.5 rounded-xl border border-amber-300/40 bg-amber-400/15 px-2.5 py-1.5 text-[10px] font-semibold leading-snug text-[#E8DFC8] shadow-2xl backdrop-blur-md">
                         <MapPinOff className="mt-0.5 size-3 shrink-0" />
                         <span className="min-w-0 flex-1 whitespace-normal">
                           {t(failure.messageKey, { defaultValue: failure.defaultMessage })}
@@ -1663,7 +1663,7 @@ function LiveMapCanvas({
                             onClick={() => void openNativeAppSettings()}
                             aria-label={t("common.open_settings")}
                             title={t("common.open_settings")}
-                            className="grid size-5 shrink-0 place-items-center rounded-full text-amber-100/70 hover:text-amber-50"
+                            className="grid size-5 shrink-0 place-items-center rounded-full text-[#E8DFC8]/70 hover:text-[#E8DFC8]"
                           >
                             <Settings className="size-3" />
                           </button>
@@ -1674,7 +1674,7 @@ function LiveMapCanvas({
                           disabled={requesting}
                           aria-label={t("common.retry")}
                           title={t("common.retry")}
-                          className="grid size-5 shrink-0 place-items-center rounded-full text-amber-100/70 hover:text-amber-50 disabled:opacity-50"
+                          className="grid size-5 shrink-0 place-items-center rounded-full text-[#E8DFC8]/70 hover:text-[#E8DFC8] disabled:opacity-50"
                         >
                           <RefreshCw className={"size-3 " + (requesting ? "animate-spin" : "")} />
                         </button>
@@ -1683,7 +1683,7 @@ function LiveMapCanvas({
                           onClick={() => setFailureDismissed(true)}
                           aria-label={t("common.close")}
                           title={t("common.close")}
-                          className="grid size-5 shrink-0 place-items-center rounded-full text-amber-100/70 hover:text-amber-50"
+                          className="grid size-5 shrink-0 place-items-center rounded-full text-[#E8DFC8]/70 hover:text-[#E8DFC8]"
                         >
                           <X className="size-3" />
                         </button>
@@ -1729,7 +1729,7 @@ function LiveMapCanvas({
                         <MetoceanHud />
                       </div>
                       {requesting && !fix && (
-                        <span className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-amber-300/40 bg-amber-400/20 px-2.5 py-1 text-[10px] font-bold text-amber-200 shadow backdrop-blur-md">
+                        <span className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-amber-300/40 bg-[#C9B896]/15 px-2.5 py-1 text-[10px] font-bold text-[#C9B896] shadow backdrop-blur-md">
                           <Loader2 className="size-3 animate-spin" />
                           {t("geo.locating")}
                         </span>
@@ -1784,7 +1784,7 @@ function LiveMapCanvas({
 
             {tileProgress && (
               <div className="pointer-events-none absolute top-[calc(env(safe-area-inset-top)+0.75rem)] left-1/2 z-[460] -translate-x-1/2 px-3">
-                <div className="pointer-events-auto rounded-full border border-amber-400/35 bg-[#0B1528]/92 px-3.5 py-1.5 font-mono text-[11px] text-amber-100 shadow-2xl backdrop-blur-md">
+                <div className="pointer-events-auto rounded-full border border-amber-400/35 bg-[#0C2226]/92 px-3.5 py-1.5 font-mono text-[11px] text-[#E8DFC8] shadow-2xl backdrop-blur-md">
                   {tileProgress.percent >= 100 && !tileProgress.cancelled
                     ? t("chart.offline_download_done")
                     : t("chart.offline_download_progress", {
@@ -1809,7 +1809,7 @@ function LiveMapCanvas({
                       className={
                         "inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold shadow backdrop-blur-md " +
                         (warn
-                          ? "border-amber-300/40 bg-amber-400/20 text-amber-200"
+                          ? "border-amber-300/40 bg-[#C9B896]/15 text-[#C9B896]"
                           : variant === "dark"
                             ? "border-white/15 bg-white/10 text-white"
                             : "border-border bg-white/90 text-foreground")
@@ -1826,7 +1826,7 @@ function LiveMapCanvas({
                 )}
                 {!fix && (
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/40 bg-amber-400/20 px-2.5 py-1 text-[10px] font-bold text-amber-200 shadow backdrop-blur-md">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/40 bg-[#C9B896]/15 px-2.5 py-1 text-[10px] font-bold text-[#C9B896] shadow backdrop-blur-md">
                       {requesting ? (
                         <>
                           <Loader2 className="size-3 animate-spin" />
