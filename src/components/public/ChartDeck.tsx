@@ -60,7 +60,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
 
   return (
     <div className="thalvo-dark flex h-svh max-h-svh w-full max-w-[100vw] flex-col overflow-hidden bg-[#0C2226] text-white">
-      <header className="z-[1100] shrink-0 overflow-hidden border-b border-white/[0.08] bg-[#0C2226] pt-[env(safe-area-inset-top)]">
+      <header className="thalvo-safe-top z-[1100] shrink-0 overflow-hidden border-b border-white/[0.08] bg-[#0C2226]">
         <div className="flex h-11 min-w-0 items-center gap-2 px-2">
           <Link to="/" className="flex min-w-0 shrink items-center gap-2">
             <Wordmark size="sm" className="text-white" decorative />

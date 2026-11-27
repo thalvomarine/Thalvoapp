@@ -1549,6 +1549,32 @@ html[data-thalvo-theme="day"] .thalvo-risk-low {
   border-color: rgb(201 184 150 / 0.32);
   backdrop-filter: blur(16px);
 }
+
+/* Safe-area helpers — constant() for older iOS, env() thereafter.
+   Prefer these over Tailwind arbitrary env() so Dynamic Island / notch
+   insets always resolve (viewport-fit=cover is set in __root). */
+.thalvo-safe-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.thalvo-safe-top-bar {
+  padding-top: calc(constant(safe-area-inset-top) + 0.5rem);
+  padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+}
+.thalvo-safe-bottom-pad {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+/* Map chrome above dock (68px) + home indicator */
+.thalvo-map-above-dock {
+  bottom: calc(4.75rem + constant(safe-area-inset-bottom));
+  bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+/* Map chrome above dock + collapsed ops strip (~4.25rem) */
+.thalvo-map-above-ops {
+  bottom: calc(9.25rem + constant(safe-area-inset-bottom));
+  bottom: calc(9.25rem + env(safe-area-inset-bottom, 0px));
+}
 .thalvo-dock-label {
   font-family: "Barlow Condensed", "Avenir Next Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
   font-size: 11px;

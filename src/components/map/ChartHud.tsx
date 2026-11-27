@@ -605,7 +605,7 @@ export function ChartReadout({
         (concealed ? "pointer-events-none opacity-0" : "pointer-events-auto opacity-100") +
         " " +
         (viewportPinned
-          ? "absolute left-4 bottom-28 max-w-[min(18rem,calc(100vw-6.5rem))] text-left"
+          ? "thalvo-map-above-ops absolute left-3 max-w-[min(11rem,calc(100vw-6.5rem))] text-left"
           : "absolute bottom-3 right-3 max-w-[min(14rem,calc(100vw-5.5rem))] text-left")
       }
     >
@@ -813,7 +813,7 @@ export function ChartFabStack({
 
       <div
         className={
-          "pointer-events-none absolute right-3 bottom-28 z-[500] flex flex-col items-end gap-3 transition-opacity duration-200 " +
+          "thalvo-map-above-dock pointer-events-none absolute right-3 z-[500] flex flex-col items-end gap-3 transition-opacity duration-200 " +
           (concealed || layersOpen ? "opacity-0" : "opacity-100")
         }
       >
