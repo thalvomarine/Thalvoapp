@@ -84,7 +84,16 @@ import {
   THALVO_MAP_FOCUS_EVENT,
   type MapFocusTarget,
 } from "@/lib/map-focus-bus";
-import { CHART_PIN_ANCHOR, CHART_PIN_SIZE, chartPinHtml, type ChartPinKind } from "@/lib/chart-pins";
+import {
+  CHART_PIN_ANCHOR,
+  CHART_PIN_SIZE,
+  CHART_POPUP_ANCHOR,
+  actorPinHtml,
+  chartPinHtml,
+  type ActorPin,
+  type ActorTone,
+  type ChartPinKind,
+} from "@/lib/chart-pins";
 import { setMapChromeOverlay } from "@/lib/map-chrome";
 import { publishCockpitContext } from "@/lib/ai-captain-context-bus";
 import { THALVO_LAYER_FILTER_EVENT, type LayerFilterRequest } from "@/lib/map-layers-bus";
@@ -167,6 +176,11 @@ interface Props {
   onRequestEmergency?: () => void;
   /** Enable mouse-wheel zoom — safe once the map owns the whole viewport. */
   scrollZoom?: boolean;
+  /**
+   * Who an alert pin stands for.
+   * `captain` is the hat the master sees. `vessel` is the boat on the captain's own chart.
+   */
+  alertMark?: "vessel" | "captain";
 }
 
 /** Default viewport: Göcek bay. Used until a real GPS fix arrives. */
@@ -197,14 +211,25 @@ const CLEAR_ERROR_TILE =
   "data:image/svg+xml;charset=UTF-8," +
   encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"/>`);
 
-function pinIcon(kind: ChartPinKind, live = false) {
+function markIcon(html: string, live = false, ring = "#00F0FF") {
   return L.divIcon({
-    html: live ? `<div class="thalvo-live-pin">${chartPinHtml(kind)}</div>` : chartPinHtml(kind),
+    html: live
+      ? `<div class="thalvo-live-pin" style="--ring:${ring}">${html}<span class="thalvo-live-ring"></span><span class="thalvo-live-ring is-late"></span></div>`
+      : html,
     className: "thalvo-map-marker",
-    iconSize: live ? [40, 58] : CHART_PIN_SIZE,
-    iconAnchor: live ? [20, 58] : CHART_PIN_ANCHOR,
-    popupAnchor: [0, live ? -54 : -42],
+    iconSize: CHART_PIN_SIZE,
+    iconAnchor: CHART_PIN_ANCHOR,
+    popupAnchor: CHART_POPUP_ANCHOR,
   });
+}
+
+function pinIcon(kind: ChartPinKind, live = false, ring?: string) {
+  return markIcon(chartPinHtml(kind), live, ring);
+}
+
+function actorIcon(actor: ActorPin, tone: ActorTone, live = false) {
+  const ring = tone === "gold" ? "#F5B942" : tone === "red" ? "#FB7185" : "#00F0FF";
+  return markIcon(actorPinHtml(actor, tone), live, ring);
 }
 
 function sameSpot(
@@ -215,15 +240,19 @@ function sameSpot(
   return Math.abs(a.lat - b.lat) < 0.0008 && Math.abs(a.lng - b.lng) < 0.0008;
 }
 
-const mechIcon = pinIcon("marina");
-const diverIcon = pinIcon("anchorage");
-const sosIcon = pinIcon("hazard");
-const faultIcon = pinIcon("fuel");
-const mechLiveIcon = pinIcon("marina", true);
-const diverLiveIcon = pinIcon("anchorage", true);
-const sosLiveIcon = pinIcon("hazard", true);
-const faultLiveIcon = pinIcon("fuel", true);
-const ownLiveIcon = pinIcon("own", true);
+const wrenchIcon = actorIcon("wrench", "cyan");
+const wrenchLiveIcon = actorIcon("wrench", "cyan", true);
+const capGoldIcon = actorIcon("cap", "gold");
+const capGoldLiveIcon = actorIcon("cap", "gold", true);
+const capRedIcon = actorIcon("cap", "red");
+const capRedLiveIcon = actorIcon("cap", "red", true);
+const diverIcon = pinIcon("diver", false, "#22D3EE");
+const diverLiveIcon = pinIcon("diver", true, "#22D3EE");
+const vesselIcon = pinIcon("vessel", false, "#7DD3FC");
+const vesselLiveIcon = pinIcon("vessel", true, "#7DD3FC");
+const sosIcon = pinIcon("hazard", false, "#FB7185");
+const sosLiveIcon = pinIcon("hazard", true, "#FB7185");
+const ownLiveIcon = pinIcon("own", true, "#00F0FF");
 
 const ZONE_ICONS: Record<MarineZoneKind, L.DivIcon> = {
   marina: pinIcon("marina"),
@@ -234,8 +263,8 @@ const ZONE_ICONS: Record<MarineZoneKind, L.DivIcon> = {
   anchorage: pinIcon("anchorage"),
 };
 
-const meIcon = pinIcon("own");
-const reportIcon = pinIcon("lighthouse");
+const meIcon = pinIcon("own", false, "#00F0FF");
+const reportIcon = pinIcon("report", false, "#F8FAFC");
 
 function Recenter({
   center,
@@ -613,8 +642,8 @@ const FleetPinMarker = memo(function FleetPinMarker({
       ? diverLiveIcon
       : diverIcon
     : live
-      ? mechLiveIcon
-      : mechIcon;
+      ? wrenchLiveIcon
+      : wrenchIcon;
   return (
     <Marker position={[pin.lat, pin.lng]} icon={icon} zIndexOffset={live ? 900 : 0}>
       <Popup>
@@ -638,6 +667,7 @@ const ChartOverlays = memo(function ChartOverlays({
   layers,
   poiFilters,
   enableDetailSheet,
+  alertMark,
   onSelectZone,
   onSelectReport,
 }: {
@@ -654,6 +684,7 @@ const ChartOverlays = memo(function ChartOverlays({
   layers: ChartLayers;
   poiFilters: Record<PoiFilterKey, boolean>;
   enableDetailSheet: boolean;
+  alertMark: "vessel" | "captain";
   onSelectZone: (zone: MarineZone) => void;
   onSelectReport: (report: CommunityReport) => void;
 }) {
@@ -708,7 +739,7 @@ const ChartOverlays = memo(function ChartOverlays({
             {route.from && !own && (
               <Marker
                 position={[from.lat, from.lng]}
-                icon={sameSpot(from, emphasis) ? mechLiveIcon : mechIcon}
+                icon={sameSpot(from, emphasis) ? wrenchLiveIcon : wrenchIcon}
                 zIndexOffset={sameSpot(from, emphasis) ? 900 : 200}
               >
                 <Popup>
@@ -741,13 +772,21 @@ const ChartOverlays = memo(function ChartOverlays({
           position={[alert.lat, alert.lng]}
           zIndexOffset={sameSpot(alert, emphasis) ? 900 : 100}
           icon={
-            sameSpot(alert, emphasis)
-              ? alert.kind === "sos"
-                ? sosLiveIcon
-                : faultLiveIcon
-              : alert.kind === "sos"
-                ? sosIcon
-                : faultIcon
+            alertMark === "captain"
+              ? sameSpot(alert, emphasis)
+                ? alert.kind === "sos"
+                  ? capRedLiveIcon
+                  : capGoldLiveIcon
+                : alert.kind === "sos"
+                  ? capRedIcon
+                  : capGoldIcon
+              : sameSpot(alert, emphasis)
+                ? alert.kind === "sos"
+                  ? sosLiveIcon
+                  : vesselLiveIcon
+                : alert.kind === "sos"
+                  ? sosIcon
+                  : vesselIcon
           }
         >
           <Popup>
@@ -932,6 +971,7 @@ function LiveMapCanvas({
   enableDetailSheet = false,
   onRequestEmergency,
   scrollZoom = false,
+  alertMark = "vessel",
 }: Props) {
   const { t } = useTranslation();
   const online = useOnlineStatus();
@@ -1538,6 +1578,7 @@ function LiveMapCanvas({
           layers={layers}
           poiFilters={poiFilters}
           enableDetailSheet={enableDetailSheet}
+          alertMark={alertMark}
           onSelectZone={onSelectZone}
           onSelectReport={onSelectReport}
         />

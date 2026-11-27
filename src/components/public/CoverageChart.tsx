@@ -9,7 +9,13 @@ import {
   MARINE_PUBLIC_BASE_URL,
   MARINE_SEAMARK_TILE_URL,
 } from "@/lib/chart-tiles";
-import { CHART_PIN_ANCHOR, CHART_PIN_SIZE, chartPinHtml, type ChartPinKind } from "@/lib/chart-pins";
+import {
+  CHART_PIN_ANCHOR,
+  CHART_PIN_SIZE,
+  CHART_POPUP_ANCHOR,
+  chartPinHtml,
+  type ChartPinKind,
+} from "@/lib/chart-pins";
 import {
   fetchMarineZones,
   ZONE_KIND_LABEL_KEYS,
@@ -92,7 +98,7 @@ function coveragePin(kind: ChartPinKind) {
     className: "thalvo-map-marker",
     iconSize: CHART_PIN_SIZE,
     iconAnchor: CHART_PIN_ANCHOR,
-    popupAnchor: [0, -42],
+    popupAnchor: CHART_POPUP_ANCHOR,
   });
   PIN_ICONS.set(kind, icon);
   return icon;

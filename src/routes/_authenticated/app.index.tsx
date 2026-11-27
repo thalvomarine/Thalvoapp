@@ -467,6 +467,7 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
       <LiveMap
         providers={EMPTY_PINS}
         alerts={alerts}
+        alertMark="captain"
         routes={assignedRoutes}
         frameRoutes={assignedRoutes.length > 0}
         variant="dark"
