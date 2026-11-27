@@ -288,7 +288,7 @@ function AuthPage() {
         : t("auth.role_supplier");
 
   return (
-    <div className="thalvo-premium thalvo-dark relative flex min-h-dvh flex-col overflow-hidden bg-black">
+    <div className="thalvo-premium thalvo-dark relative flex min-h-dvh flex-col overflow-hidden bg-[#0C2226]">
       <AuthPassageBackdrop />
 
       <header className="relative z-50 flex items-center justify-between px-5 pt-[calc(env(safe-area-inset-top)+1rem)]">
@@ -299,22 +299,22 @@ function AuthPage() {
       </header>
 
       <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-8 px-5 py-8 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:py-12">
-        {/* Brand plane — D4 star passage: mark + wordmark, ports only */}
+        {/* Brand plane — Marina Concierge: mark + wordmark, ports only */}
         <section className="auth-rise text-center lg:text-left">
-          <p className="text-[11px] font-semibold tracking-[0.28em] text-[color:var(--pm-gold)]">
+          <p className="text-[12px] font-bold tracking-[0.28em] text-[#C9B896]">
             {t("auth.brand_kicker")}
           </p>
           <div className="mt-4 flex items-center justify-center gap-3 sm:gap-4 lg:justify-start">
             <Wordmark
               size="nav"
               decorative
-              className="shrink-0 drop-shadow-[0_0_28px_rgba(201,184,150,0.22)]"
+              className="shrink-0 drop-shadow-[0_8px_28px_rgba(201,184,150,0.18)]"
             />
             <h1 className="thalvo-display text-[2.75rem] leading-none tracking-[0.16em] text-white sm:text-5xl lg:text-[4.25rem]">
               THALVO
             </h1>
           </div>
-          <p className="mt-7 text-[11px] font-semibold tracking-[0.22em] text-[color:var(--pm-gold)] max-lg:hidden">
+          <p className="mt-7 text-[12px] font-semibold tracking-[0.22em] text-[#8BA8A3] max-lg:hidden">
             {t("auth.coverage_ports")}
           </p>
         </section>
@@ -411,10 +411,10 @@ function AuthPage() {
                     <button
                       type="button"
                       onClick={() => setRoleReady(false)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/25 bg-[#C9B896]/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E8DFC8]"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-[#C9B896]/30 bg-[#C9B896]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#E8DFC8]"
                     >
                       {roleLabel}
-                      <span className="text-[#E8DFC8]/50">·</span>
+                      <span className="text-[#8BA8A3]">·</span>
                       {t("auth.change_role")}
                     </button>
 
@@ -451,8 +451,8 @@ function AuthPage() {
                               className={
                                 "inline-flex items-center justify-center gap-1.5 rounded-xl border px-2.5 py-3 text-[11px] font-semibold uppercase tracking-[0.08em] " +
                                 (serviceType === "Marine Mechanic"
-                                  ? "border-[color:var(--pm-gold)] bg-[color:var(--pm-gold)]/20 text-[color:var(--pm-text)]"
-                                  : "border-white/10 bg-white/[0.03] text-white/65")
+                                  ? "border-[#C9B896]/55 bg-[#C9B896]/15 text-[#E8DFC8]"
+                                  : "border-white/10 bg-black/20 text-white/65")
                               }
                             >
                               <Wrench className="size-3.5" /> {t("auth.sm_mechanic")}
@@ -463,8 +463,8 @@ function AuthPage() {
                               className={
                                 "inline-flex items-center justify-center gap-1.5 rounded-xl border px-2.5 py-3 text-[11px] font-semibold uppercase tracking-[0.08em] " +
                                 (serviceType === "Underwater Diver"
-                                  ? "border-[color:var(--pm-gold)] bg-[color:var(--pm-gold)]/20 text-[color:var(--pm-text)]"
-                                  : "border-white/10 bg-white/[0.03] text-white/65")
+                                  ? "border-[#C9B896]/55 bg-[#C9B896]/15 text-[#E8DFC8]"
+                                  : "border-white/10 bg-black/20 text-white/65")
                               }
                             >
                               <Anchor className="size-3.5" /> {t("auth.sm_diver")}
@@ -483,7 +483,7 @@ function AuthPage() {
                                   className={
                                     "rounded-full border px-2.5 py-1 text-xs " +
                                     (brands.includes(b)
-                                      ? "border-[color:var(--pm-gold)] bg-[color:var(--pm-gold)]/20 text-[color:var(--pm-text)]"
+                                      ? "border-[#C9B896]/55 bg-[#C9B896]/15 text-[#E8DFC8]"
                                       : "border-white/10 text-white/60")
                                   }
                                 >
@@ -538,7 +538,7 @@ function AuthPage() {
                   <div className="-mt-1 flex justify-end">
                     <Link
                       to="/auth/forgot"
-                      className="text-[11px] font-semibold text-white/45 underline underline-offset-2 hover:text-[color:var(--pm-gold)]"
+                      className="text-[11px] font-semibold text-[#8BA8A3] underline underline-offset-2 hover:text-[#C9B896]"
                     >
                       {t("auth.forgot_link")}
                     </Link>
@@ -567,7 +567,7 @@ function AuthPage() {
                           <button
                             type="button"
                             onClick={() => switchMode("signup")}
-                            className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[color:var(--pm-gold)] underline underline-offset-2"
+                            className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#C9B896] underline underline-offset-2"
                           >
                             {t("auth.sign_up")} →
                           </button>
@@ -580,7 +580,7 @@ function AuthPage() {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="pm-gold-cta mt-1 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[14px] font-bold tracking-wide disabled:opacity-60"
+                  className="pm-gold-cta mt-1 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[13px] font-bold uppercase tracking-[0.12em] disabled:opacity-60"
                 >
                   {busy && <Loader2 className="size-4 animate-spin" />}
                   {mode === "signup" ? t("auth.submit_signup") : t("auth.submit_signin")}
@@ -592,7 +592,7 @@ function AuthPage() {
         </section>
 
         <p
-          className="auth-rise mx-auto inline-flex items-center justify-center rounded-xl border border-[color:var(--pm-gold)]/35 bg-black/25 px-4 py-2 text-center text-[11px] font-semibold tracking-[0.22em] text-[color:var(--pm-gold)] lg:hidden"
+          className="auth-rise mx-auto inline-flex items-center justify-center rounded-xl border border-[#C9B896]/30 bg-[#0C2226]/55 px-4 py-2 text-center text-[11px] font-semibold tracking-[0.22em] text-[#C9B896] lg:hidden"
           style={{ animationDelay: "120ms" }}
         >
           {t("auth.coverage_ports", { defaultValue: "Ege · Akdeniz" })}

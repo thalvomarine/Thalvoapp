@@ -519,40 +519,41 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
 }
 
 /* ---------------------------------------------------------------------------
- * Scoped premium palette — ONLY used by `/` and `/auth`.
- * Deliberately additive: it does not touch --deep/--amber/--aqua, .thalvo-dark
- * or .thalvo-cockpit, so every other screen renders byte-identically.
+ * Scoped Marina Concierge palette — used by `/auth` (and recovery desks).
+ * Teal harbour #0C2226 · champagne #C9B896 · sea-glass #8BA8A3.
+ * Does not touch .thalvo-dark / .thalvo-cockpit tokens.
  * ------------------------------------------------------------------------- */
 .thalvo-premium {
   color-scheme: dark;
-  /* surface base gradient #06101F -> #0B1B33 */
-  --pm-base-from: oklch(0.1723 0.0352 257.2);
-  --pm-base-to: oklch(0.2228 0.0519 258.3);
-  /* accent gold #D9B86A */
-  --pm-gold: oklch(0.7949 0.1045 87.1);
-  /* secondary platinum #9FB8C8 */
-  --pm-platinum: oklch(0.7689 0.0358 236);
-  /* text #F2F6F8 */
-  --pm-text: oklch(0.9707 0.005 228.8);
-  --pm-panel: rgb(255 255 255 / 0.06);
-  --pm-panel-border: rgb(255 255 255 / 0.1);
+  --pm-base-from: #0a1c20;
+  --pm-base-to: #0c2226;
+  --pm-gold: #c9b896;
+  --pm-platinum: #8ba8a3;
+  --pm-text: #f2f4f3;
+  --pm-panel: rgb(255 255 255 / 0.05);
+  --pm-panel-border: rgb(201 184 150 / 0.18);
 
   background:
-    radial-gradient(120% 90% at 50% -10%, oklch(0.26 0.06 250 / 0.55) 0%, transparent 60%),
+    radial-gradient(90% 70% at 78% -8%, rgb(139 168 163 / 0.16) 0%, transparent 55%),
+    radial-gradient(70% 55% at 12% 100%, rgb(201 184 150 / 0.1) 0%, transparent 50%),
     linear-gradient(180deg, var(--pm-base-from) 0%, var(--pm-base-to) 100%);
   background-attachment: fixed;
   color: var(--pm-text);
 }
 
 @utility pm-panel {
-  background: rgb(255 255 255 / 0.06);
-  border: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(201 184 150 / 0.16);
   backdrop-filter: blur(18px) saturate(130%);
 }
 
 @utility pm-gold-cta {
-  background-image: linear-gradient(135deg, oklch(0.84 0.1 88) 0%, oklch(0.7408 0.1036 85.1) 100%);
-  color: oklch(0.19 0.04 258);
+  background: #c9b896;
+  color: #0c2226;
+  transition: background 160ms ease;
+  &:hover {
+    background: #d4c4a8;
+  }
 }
 
 /* Feature balloons — transform-only drift, six desynchronised tracks. */
@@ -975,8 +976,11 @@ html[data-thalvo-theme="day"] .thalvo-cockpit {
 }
 html[data-thalvo-theme="day"] .thalvo-premium {
   background:
-    radial-gradient(120% 90% at 50% -10%, rgb(14 116 144 / 0.1) 0%, transparent 60%),
-    linear-gradient(180deg, #f8fafc 0%, #eef4f8 100%) !important;
+    radial-gradient(90% 70% at 80% -10%, rgb(139 168 163 / 0.18) 0%, transparent 55%),
+    radial-gradient(70% 50% at 10% 100%, rgb(201 184 150 / 0.12) 0%, transparent 50%),
+    linear-gradient(180deg, #f5f7f6 0%, #e8efed 100%) !important;
+  --pm-gold: #8a7348;
+  --pm-platinum: #5a6f74;
 }
 /* Opaque paper cards — never leave dark glass over a white page. */
 html[data-thalvo-theme="day"] .thalvo-surface,
@@ -1327,7 +1331,7 @@ html[data-thalvo-theme="day"] .thalvo-brand-mark {
   box-shadow: 0 1px 6px rgb(15 23 42 / 0.22);
 }
 
-/* ----- Auth desk (signup / sign-in) -------------------------------------- */
+/* ----- Auth desk (signup / sign-in) — Marina Concierge ------------------ */
 @keyframes auth-rise {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -1336,15 +1340,15 @@ html[data-thalvo-theme="day"] .thalvo-brand-mark {
   animation: auth-rise 480ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 .auth-desk {
-  border: 1px solid rgb(255 255 255 / 0.12);
+  border: 1px solid rgb(201 184 150 / 0.22);
   background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.05) 0%, transparent 42%),
-    rgb(7 20 34 / 0.88);
+    linear-gradient(180deg, rgb(201 184 150 / 0.08) 0%, transparent 44%),
+    rgb(12 34 38 / 0.9);
   backdrop-filter: blur(22px) saturate(140%);
   -webkit-backdrop-filter: blur(22px) saturate(140%);
   box-shadow:
-    0 1px 0 0 rgb(255 255 255 / 0.06) inset,
-    0 28px 80px -36px rgb(0 0 0 / 0.75);
+    0 1px 0 0 rgb(201 184 150 / 0.1) inset,
+    0 28px 80px -36px rgb(0 0 0 / 0.65);
 }
 .auth-mode {
   display: grid;
@@ -1352,56 +1356,58 @@ html[data-thalvo-theme="day"] .thalvo-brand-mark {
   gap: 4px;
   padding: 4px;
   border-radius: 14px;
-  background: rgb(255 255 255 / 0.04);
-  border: 1px solid rgb(255 255 255 / 0.08);
+  background: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(139 168 163 / 0.2);
 }
 .auth-mode button {
   height: 40px;
   border-radius: 10px;
-  font-size: 13px;
+  font-family: "Barlow Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.06em;
   /* No CSS uppercase — tr locale turns Latin "i" into "İ". */
-  color: rgb(255 255 255 / 0.55);
+  color: rgb(210 216 222 / 0.65);
   transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
 .auth-mode button[aria-pressed="true"] {
-  background: rgb(245 185 66 / 0.18);
-  color: #f8e7b0;
-  box-shadow: 0 0 0 1px rgb(245 185 66 / 0.35) inset;
+  background: rgb(201 184 150 / 0.18);
+  color: #e8dfc8;
+  box-shadow: 0 0 0 1px rgb(201 184 150 / 0.4) inset;
 }
 .auth-mode button:hover:not([aria-pressed="true"]) {
-  color: rgb(255 255 255 / 0.85);
+  color: rgb(242 244 243 / 0.9);
   background: rgb(255 255 255 / 0.04);
 }
 .auth-field {
   width: 100%;
   height: 48px;
   border-radius: 14px;
-  border: 1px solid rgb(255 255 255 / 0.12);
-  background: rgb(255 255 255 / 0.035);
+  border: 1px solid rgb(139 168 163 / 0.28);
+  background: rgb(0 0 0 / 0.28);
   padding: 0 14px;
   font-size: 14px;
-  color: #f2f6f8;
+  color: #f2f4f3;
   outline: none;
   transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
 }
 .auth-field:focus {
-  border-color: rgb(245 185 66 / 0.55);
-  background: rgb(255 255 255 / 0.055);
-  box-shadow: 0 0 0 3px rgb(245 185 66 / 0.12);
+  border-color: rgb(201 184 150 / 0.55);
+  background: rgb(0 0 0 / 0.36);
+  box-shadow: 0 0 0 3px rgb(201 184 150 / 0.12);
 }
 .auth-field::placeholder {
-  color: rgb(255 255 255 / 0.35);
+  color: rgb(210 216 222 / 0.4);
 }
 .auth-label {
   display: block;
   margin-bottom: 6px;
-  font-size: 10px;
+  font-family: "Barlow Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgb(255 255 255 / 0.45);
+  color: #8ba8a3;
 }
 .auth-role {
   display: flex;
@@ -1409,19 +1415,19 @@ html[data-thalvo-theme="day"] .thalvo-brand-mark {
   align-items: center;
   gap: 14px;
   border-radius: 18px;
-  border: 1px solid rgb(255 255 255 / 0.1);
-  background: rgb(255 255 255 / 0.03);
+  border: 1px solid rgb(139 168 163 / 0.22);
+  background: rgb(0 0 0 / 0.22);
   padding: 14px 14px;
   text-align: left;
   transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
 }
 .auth-role:hover {
-  border-color: rgb(245 185 66 / 0.45);
-  background: rgb(245 185 66 / 0.08);
+  border-color: rgb(201 184 150 / 0.45);
+  background: rgb(201 184 150 / 0.08);
   transform: translateY(-1px);
 }
 .auth-role:focus-visible {
-  outline: 2px solid rgb(245 185 66 / 0.55);
+  outline: 2px solid rgb(201 184 150 / 0.55);
   outline-offset: 2px;
 }
 .auth-role-icon {
@@ -1431,9 +1437,9 @@ html[data-thalvo-theme="day"] .thalvo-brand-mark {
   height: 42px;
   flex-shrink: 0;
   border-radius: 14px;
-  border: 1px solid rgb(245 185 66 / 0.35);
-  background: rgb(245 185 66 / 0.1);
-  color: #C9B896;
+  border: 1px solid rgb(201 184 150 / 0.35);
+  background: rgb(201 184 150 / 0.1);
+  color: #c9b896;
 }
 @media (prefers-reduced-motion: reduce) {
   .auth-rise,
@@ -1445,53 +1451,53 @@ html[data-thalvo-theme="day"] .thalvo-brand-mark {
 
 html[data-thalvo-theme="day"] .auth-desk {
   background: #ffffff !important;
-  border-color: rgb(15 23 42 / 0.12) !important;
+  border-color: rgb(12 34 38 / 0.12) !important;
   box-shadow:
-    0 1px 0 0 rgb(15 23 42 / 0.04) inset,
-    0 24px 60px -32px rgb(15 23 42 / 0.28) !important;
+    0 1px 0 0 rgb(12 34 38 / 0.04) inset,
+    0 24px 60px -32px rgb(12 34 38 / 0.22) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 html[data-thalvo-theme="day"] .auth-mode {
-  background: rgb(15 23 42 / 0.04) !important;
-  border-color: rgb(15 23 42 / 0.1) !important;
+  background: rgb(12 34 38 / 0.04) !important;
+  border-color: rgb(12 34 38 / 0.1) !important;
 }
 html[data-thalvo-theme="day"] .auth-mode button {
-  color: #64748b !important;
+  color: #5a6f74 !important;
 }
 html[data-thalvo-theme="day"] .auth-mode button[aria-pressed="true"] {
-  background: rgb(180 83 9 / 0.12) !important;
-  color: #92400e !important;
-  box-shadow: 0 0 0 1px rgb(180 83 9 / 0.28) inset !important;
+  background: rgb(201 184 150 / 0.28) !important;
+  color: #3d3420 !important;
+  box-shadow: 0 0 0 1px rgb(201 184 150 / 0.45) inset !important;
 }
 html[data-thalvo-theme="day"] .auth-field {
-  color: #0f172a !important;
-  background: #f8fafc !important;
-  border-color: rgb(15 23 42 / 0.16) !important;
+  color: #0c2226 !important;
+  background: #f4f7f6 !important;
+  border-color: rgb(12 34 38 / 0.14) !important;
 }
 html[data-thalvo-theme="day"] .auth-field:focus {
-  border-color: rgb(180 83 9 / 0.45) !important;
+  border-color: rgb(201 184 150 / 0.7) !important;
   background: #ffffff !important;
-  box-shadow: 0 0 0 3px rgb(180 83 9 / 0.12) !important;
+  box-shadow: 0 0 0 3px rgb(201 184 150 / 0.18) !important;
 }
 html[data-thalvo-theme="day"] .auth-field::placeholder {
-  color: #94a3b8 !important;
+  color: #8ba8a3 !important;
 }
 html[data-thalvo-theme="day"] .auth-label {
-  color: #64748b !important;
+  color: #5a6f74 !important;
 }
 html[data-thalvo-theme="day"] .auth-role {
-  background: rgb(15 23 42 / 0.03) !important;
-  border-color: rgb(15 23 42 / 0.12) !important;
+  background: rgb(12 34 38 / 0.03) !important;
+  border-color: rgb(12 34 38 / 0.12) !important;
 }
 html[data-thalvo-theme="day"] .auth-role:hover {
-  background: rgb(217 119 6 / 0.08) !important;
-  border-color: rgb(217 119 6 / 0.35) !important;
+  background: rgb(201 184 150 / 0.14) !important;
+  border-color: rgb(201 184 150 / 0.45) !important;
 }
 html[data-thalvo-theme="day"] .auth-role-icon {
-  background: rgb(217 119 6 / 0.1) !important;
-  border-color: rgb(217 119 6 / 0.3) !important;
-  color: #b45309 !important;
+  background: rgb(201 184 150 / 0.18) !important;
+  border-color: rgb(201 184 150 / 0.4) !important;
+  color: #6b5a3a !important;
 }
 
 /* Risk / health banners: dark ink on tinted paper (never pale-on-pale). */

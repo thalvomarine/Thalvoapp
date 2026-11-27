@@ -42,7 +42,7 @@ function ForgotPasswordPage() {
     <AuthPassageShell kicker={t("auth.forgot_kicker")}>
       {sent ? (
         <div className="space-y-5">
-          <div className="flex size-12 items-center justify-center rounded-2xl border border-[color:var(--pm-gold)]/35 bg-[color:var(--pm-gold)]/10 text-[color:var(--pm-gold)]">
+          <div className="flex size-12 items-center justify-center rounded-2xl border border-[#C9B896]/35 bg-[#C9B896]/10 text-[#C9B896]">
             <MailCheck className="size-5" aria-hidden />
           </div>
           <div>
@@ -56,7 +56,7 @@ function ForgotPasswordPage() {
           <Link
             to="/auth"
             search={{}}
-            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[color:var(--pm-gold)] underline underline-offset-2"
+            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#C9B896] underline underline-offset-2"
           >
             <ArrowLeft className="size-3.5" aria-hidden />
             {t("auth.back_to_sign_in")}
@@ -97,7 +97,7 @@ function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={busy}
-            className="pm-gold-cta mt-1 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[14px] font-bold tracking-wide disabled:opacity-60"
+            className="pm-gold-cta mt-1 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[13px] font-bold uppercase tracking-[0.12em] disabled:opacity-60"
           >
             {busy && <Loader2 className="size-4 animate-spin" />}
             {t("auth.forgot_submit")}
@@ -106,7 +106,7 @@ function ForgotPasswordPage() {
           <Link
             to="/auth"
             search={{}}
-            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-white/50 hover:text-[color:var(--pm-gold)]"
+            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#8BA8A3] hover:text-[#C9B896]"
           >
             <ArrowLeft className="size-3.5" aria-hidden />
             {t("auth.back_to_sign_in")}
