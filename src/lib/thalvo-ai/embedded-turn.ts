@@ -10,7 +10,7 @@ import {
   rankNearbyPoints,
 } from "@/lib/aiCaptainService";
 import type { CaptainAction, CaptainCockpitContext, NearbyChartPoint } from "@/lib/ai-captain-types";
-import { answerFromTraining, retrieveMarineNotes } from "@/lib/thalvo-ai/domain";
+import { answerFromTraining, retrieveMarineNotes, shouldTailorMachinery } from "@/lib/thalvo-ai/domain";
 import { fetchMarineWeatherAt } from "@/lib/thalvo-ai/marine-weather";
 import { loadMemoryBlock, rememberFact, saveChatLine } from "@/lib/thalvo-ai/memory-store";
 import { platformRouteCatalog, resolvePlatformRoute, type AppPath } from "@/lib/thalvo-ai/platform-routes";
@@ -76,7 +76,9 @@ export async function runEmbeddedTurn(input: {
   );
 
   const apiKey = (process.env.THALVO_AI_API_KEY ?? process.env.LOVABLE_API_KEY ?? "").trim();
-  const needsModel = Boolean(apiKey) && Boolean(input.image || !trained.confident);
+  const needsModel =
+    Boolean(apiKey) &&
+    Boolean(input.image || !trained.confident || shouldTailorMachinery(last.content, trained.domain));
   if (!needsModel) {
     const photo =
       input.image && !apiKey
@@ -109,7 +111,7 @@ export async function runEmbeddedTurn(input: {
   const notes = retrieveMarineNotes(last.content, input.lang);
   const system = [
     buildChiefEngineerPrompt(input.lang, memoryBlock, formatCockpitBlock(cockpit, nearby, input.lang)),
-    notes ? `Verified notes:\n${notes}` : "",
+    notes,
     trained.text ? `Local specialist draft (prefer these facts, do not invent numbers):\n${trained.text}` : "",
   ]
     .filter(Boolean)
@@ -142,7 +144,7 @@ export async function runEmbeddedTurn(input: {
     ...result.toolResults.map((item) => item.output),
     ...result.steps.flatMap((step) => (step.toolResults ?? []).map((item) => item.output)),
   ]);
-  const emergency = /\[EMERGENCY\]/i.test(result.text);
+  const emergency = trained.emergency || /\[EMERGENCY\]/i.test(result.text);
   const text = result.text.replace(/\[EMERGENCY\]/gi, "").trim() || fallback(input.lang);
   await saveChatLine(input.supabase, input.userId, input.sessionId, "assistant", text);
   return { text, emergency, ...harvested };
