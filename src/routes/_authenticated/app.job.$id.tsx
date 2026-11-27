@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -8,7 +8,7 @@ import { CheckoutModal } from "@/components/CheckoutModal";
 import { JobChat } from "@/components/JobChat";
 import { useProfile, useSessionUser } from "@/lib/session";
 import { formatTL, harborDistanceKm, kmToNm } from "@/lib/filter";
-import { getFix, watchFix } from "@/lib/geolocation";
+import { getFix, isStale, readLastFix, watchFix } from "@/lib/geolocation";
 import { autoEtaMinutesBetween } from "@/lib/geo-eta";
 import { noteSchemaMiss, skipMissing } from "@/lib/schema-gap";
 import { VesselRange } from "@/components/mission/VesselRange";
@@ -962,6 +962,8 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   const [partPhoto, setPartPhoto] = useState("");
   const [source, setSource] = useState("Tedarikçi Firma (Local Supplier)");
   const [busy, setBusy] = useState(false);
+  const [sailing, setSailing] = useState(false);
+  const sailLock = useRef(false);
   const openForBid = !job.provider_id && (job.status === "Pending" || job.status === "Offered");
   const tracking =
     job.provider_id === meId &&
@@ -1055,17 +1057,30 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   };
 
   const setSail = async () => {
-    // Seed provider_details with a fresh fix so set_sail can auto-fill ETA.
-    const res = await getFix();
-    if (res.ok) {
-      await supabase.rpc("refresh_own_provider_position", {
-        _lat: res.fix.lat,
-        _lng: res.fix.lng,
-        _accuracy_m: Number.isFinite(res.fix.accuracy) ? Math.round(res.fix.accuracy) : undefined,
+    if (sailLock.current) return;
+    sailLock.current = true;
+    setSailing(true);
+    // A fresh GPS wait can take 20s. Repeated taps then all call set_sail
+    // after the job has already left Accepted and each one toasts.
+    const last = readLastFix();
+    if (last && !isStale(last)) {
+      void supabase.rpc("refresh_own_provider_position", {
+        _lat: last.lat,
+        _lng: last.lng,
+        _accuracy_m: Number.isFinite(last.accuracy) ? Math.round(last.accuracy) : undefined,
       });
     }
     const { error } = await supabase.rpc("set_sail", { _job_id: job.id });
-    if (error) toast.error(error.message);
+    if (!error) {
+      toast.success(t("status.EnRoute"));
+      return;
+    }
+    const message = error.message ?? "";
+    if (/accepted before sailing/i.test(message)) toast.error(t("provider.sail_needs_accept"));
+    else if (/escrow not secured/i.test(message)) toast.error(t("provider.sail_needs_escrow"));
+    else toast.error(message);
+    sailLock.current = false;
+    setSailing(false);
   };
   const arrived = async () => {
     const { error } = await supabase.rpc("mark_arrived", { _job_id: job.id });
@@ -1149,10 +1164,13 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
 
       {job.status === "Accepted" && job.provider_id === meId && (
         <button
-          onClick={setSail}
-          className="w-full h-14 rounded-2xl amber-gradient text-warning-foreground font-bold inline-flex items-center justify-center gap-2"
+          type="button"
+          disabled={sailing}
+          onClick={() => void setSail()}
+          className="w-full h-14 rounded-2xl amber-gradient text-warning-foreground font-bold inline-flex items-center justify-center gap-2 disabled:opacity-70"
         >
-          <Send className="size-5" /> {t("provider.set_sail")}
+          {sailing ? <Loader2 className="size-5 animate-spin" /> : <Send className="size-5" />}
+          {sailing ? t("provider.sailing") : t("provider.set_sail")}
         </button>
       )}
       {job.status === "EnRoute" && (
