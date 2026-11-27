@@ -297,7 +297,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
                 className="text-[10px] uppercase tracking-[0.18em]"
                 style={{ color: "var(--sheet-active-ink)" }}
               >
-                {lang === "en" ? "Chief engineer" : "Başmühendis"}
+                {lang === "en" ? "Engineer" : "Çarkçı"}
               </p>
             </div>
           </div>
