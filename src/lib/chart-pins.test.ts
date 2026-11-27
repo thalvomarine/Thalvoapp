@@ -21,31 +21,32 @@ const KINDS: ChartPinKind[] = [
   "report",
 ];
 
-test("each live-chart mark is its own 36px svg, centered on the fix", () => {
+test("each live-chart mark is the pre-redraw soft capsule", () => {
   const seen = new Set<string>();
   for (const kind of KINDS) {
     const html = chartPinHtml(kind);
-    assert.match(html, /^<svg width="36" height="36" viewBox="0 0 32 32" /);
+    assert.match(html, /^<div style="width:30px;height:46px/);
+    assert.match(html, /border-radius:15px 15px 12px 12px/);
     assert.equal(html.includes("<script"), false);
-    assert.equal((html.match(/<svg/g) ?? []).length, 1);
-    assert.equal(html.endsWith("</svg>"), true);
     seen.add(html);
   }
   assert.equal(seen.size, KINDS.length);
-  assert.deepEqual(CHART_PIN_SIZE, [36, 36]);
-  assert.deepEqual(CHART_PIN_ANCHOR, [18, 18]);
+  assert.deepEqual(CHART_PIN_SIZE, [30, 46]);
+  assert.deepEqual(CHART_PIN_ANCHOR, [15, 46]);
+  assert.match(chartPinHtml("marina"), /#f5b942/);
+  assert.match(chartPinHtml("hazard"), /#fb7185/);
 });
 
 test("usta wrench and captain cap keep their alarm tones", () => {
   const brass = actorPinHtml("wrench", "cyan");
   const alarm = actorPinHtml("wrench", "red");
   assert.notEqual(brass, alarm);
-  assert.match(brass, /#3EE7F2/);
-  assert.match(alarm, /#EF4444/);
+  assert.match(brass, /#f5b942/);
+  assert.match(alarm, /#fb7185/);
 
   const day = actorPinHtml("cap", "gold");
   const night = actorPinHtml("cap", "red");
   assert.notEqual(day, night);
-  assert.match(night, /#EF4444/);
-  assert.match(day, /#F5B942/);
+  assert.match(night, /#fb7185/);
+  assert.match(day, /#f5b942/);
 });

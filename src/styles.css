@@ -825,8 +825,8 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
 }
 .thalvo-live-pin {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 46px;
 }
 .thalvo-live-ring {
   position: absolute;
