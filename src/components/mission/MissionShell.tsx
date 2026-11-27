@@ -63,7 +63,7 @@ import { runWhenIdle } from "@/lib/schedule";
 import { consumeSignupWelcome } from "@/lib/signup-welcome";
 import { activateKeepAwake, releaseKeepAwake } from "@/lib/keep-awake";
 import { pushNativeBackHandler, wireNativeBackButton } from "@/lib/native-app";
-import { bootCockpitSkin, COCKPIT_SKINS } from "@/lib/cockpit-skins";
+import { bootCockpitSkin, skinMeta } from "@/lib/cockpit-skins";
 
 interface Props {
   profile: Profile;
@@ -114,8 +114,8 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
   const [skinLabel, setSkinLabel] = useState("Atlas Soft");
   useEffect(() => {
     const id = bootCockpitSkin();
-    const meta = COCKPIT_SKINS.find((s) => s.id === id);
-    setSkinLabel(meta?.nameTr ?? meta?.name ?? id);
+    const meta = skinMeta(id);
+    setSkinLabel(meta.nameTr);
   }, []);
   useEffect(() => {
     setWelcomeBanner(consumeSignupWelcome());
