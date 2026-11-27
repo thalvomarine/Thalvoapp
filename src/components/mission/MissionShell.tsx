@@ -111,7 +111,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
   useLayoutEffect(() => {
     setSheetHostReady(true);
   }, []);
-  const [skinLabel, setSkinLabel] = useState("ECDIS Klasik");
+  const [skinLabel, setSkinLabel] = useState("Atlas Soft");
   useEffect(() => {
     const id = bootCockpitSkin();
     const meta = COCKPIT_SKINS.find((s) => s.id === id);

@@ -184,7 +184,7 @@ export function ActiveJobPool({ userId, embedded = false }: Props) {
                       params={{ id: job.id }}
                       className="inline-flex h-9 items-center gap-1.5 rounded-[10px] px-3 text-[11px] font-black uppercase tracking-wider"
                       style={{
-                        background: "#f5b942",
+                        background: "var(--skin-command, #c4a574)",
                         color: "#0a192f",
                       }}
                     >

@@ -12,7 +12,7 @@ export function CockpitSkinPicker() {
   const { i18n, t } = useTranslation();
   const tr = i18n.language?.startsWith("tr");
   const [skin, setSkin] = useState<CockpitSkinId>(() =>
-    typeof document !== "undefined" ? readCockpitSkin() : "ecdis",
+    typeof document !== "undefined" ? readCockpitSkin() : "atlas",
   );
 
   useEffect(() => {
@@ -33,7 +33,8 @@ export function CockpitSkinPicker() {
       </p>
       <p className="mt-1 text-[11px] leading-snug text-white/45">
         {t("profile.design_lab_hint", {
-          defaultValue: "Beş kokpit dili. Anında harita ve dock’a uygulanır; seçiminizi kaydederiz.",
+          defaultValue:
+            "Beş gerçekçi kokpit dili — güven ve okunabilirlik önce. Anında uygulanır.",
         })}
       </p>
       <div className="mt-2 grid gap-1.5">
@@ -47,35 +48,25 @@ export function CockpitSkinPicker() {
               className={
                 "rounded-xl border px-3 py-2.5 text-left transition-colors " +
                 (active
-                  ? "border-amber-300 bg-amber-400/15"
+                  ? "border-white/25 bg-white/10"
                   : "border-white/10 bg-white/5 hover:border-white/20")
               }
             >
               <div className="flex items-center justify-between gap-2">
-                <span
-                  className={
-                    "text-[12px] font-semibold " + (active ? "text-amber-50" : "text-white/80")
-                  }
-                >
+                <span className={"text-[12px] font-semibold " + (active ? "text-white" : "text-white/80")}>
                   {tr ? item.nameTr : item.name}
                 </span>
                 <span
-                  className={
-                    "size-2.5 shrink-0 rounded-full " +
-                    (item.id === "ecdis"
-                      ? "bg-[#00F0FF]"
-                      : item.id === "bridge"
-                        ? "bg-[#F5B942]"
-                        : item.id === "dayplot"
-                          ? "bg-[#d97706]"
-                          : item.id === "rail"
-                            ? "bg-cyan-300"
-                            : "bg-teal-300")
-                  }
+                  className="size-2.5 shrink-0 rounded-full"
+                  style={{ background: item.swatch }}
+                  aria-hidden
                 />
               </div>
-              <p className={"mt-0.5 text-[10px] leading-snug " + (active ? "text-amber-50/70" : "text-white/45")}>
+              <p className={"mt-0.5 text-[10px] leading-snug " + (active ? "text-white/70" : "text-white/45")}>
                 {tr ? item.blurbTr : item.blurb}
+              </p>
+              <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/35">
+                {item.trust}
               </p>
             </button>
           );

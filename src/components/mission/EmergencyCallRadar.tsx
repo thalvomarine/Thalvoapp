@@ -278,7 +278,8 @@ function CallCard({
           <Link
             to="/app/job/$id"
             params={{ id: jobId }}
-            className="inline-flex h-9 items-center gap-1.5 rounded-[10px] bg-[#F5B942] px-3 text-[11px] font-black uppercase tracking-wider text-[#0A192F]"
+            className="inline-flex h-9 items-center gap-1.5 rounded-[10px] px-3 text-[11px] font-black uppercase tracking-wider text-[#0A192F]"
+            style={{ background: "var(--skin-command, #c4a574)" }}
           >
             <Send className="size-3.5" />
             {t("esvc.bid")}

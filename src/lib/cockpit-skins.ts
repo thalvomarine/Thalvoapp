@@ -1,50 +1,60 @@
-/** Signed-in cockpit design skins — pick one in Design Lab before launch polish. */
+/** Signed-in cockpit design skins — trust-first MarineOS languages. */
 
 export const COCKPIT_SKINS = [
   {
-    id: "ecdis",
-    name: "ECDIS Classic",
-    nameTr: "ECDIS Klasik",
+    id: "atlas",
+    name: "Atlas Soft",
+    nameTr: "Atlas Soft",
     blurb:
-      "Deep navy plane, cyan chart ops, amber command. Square dock + latch FABs.",
+      "Calm ECDIS: deep navy, sea-glass readout, brass command — no neon glare.",
     blurbTr:
-      "Derin lacivert, cyan harita, amber komuta. Kare dock ve latch FAB’lar.",
+      "Sakin ECDIS: derin lacivert, deniz camı okuma, pirinç komuta — neon yok.",
+    swatch: "#7EB8C9",
+    trust: "Sertifikalı harita masası hissi",
   },
   {
-    id: "bridge",
-    name: "Night Bridge",
-    nameTr: "Gece Köprüüstü",
+    id: "pilot",
+    name: "Pilot House",
+    nameTr: "Pilot House",
     blurb:
-      "Near-black bridge, amber-only accents, denser instrument chrome, flat SOS.",
+      "Real bridge night: matte black, warm instrument amber, flat SOS, dense HUD.",
     blurbTr:
-      "Siyah köprüüstü, yalnızca amber vurgu, sıkı enstrüman dili, düz SOS.",
+      "Gerçek köprüüstü gecesi: mat siyah, sıcak enstrüman amber, düz SOS, sıkı HUD.",
+    swatch: "#E0A84A",
+    trust: "Gece seyri için köprü dili",
   },
   {
-    id: "dayplot",
-    name: "Day Plotter",
-    nameTr: "Gündüz Plotter",
+    id: "passage",
+    name: "Passage Chart",
+    nameTr: "Seyir Haritası",
     blurb:
-      "Paper-white cockpit, slate ink, amber active rail — chartplotter daylight.",
+      "Day chart table: warm paper ground, navy ink, coastal blue — readable offshore.",
     blurbTr:
-      "Kağıt beyazı kokpit, slate mürekkep, amber aktif ray — gündüz plotter.",
+      "Gündüz harita masası: sıcak kâğıt zemin, lacivert mürekkep, kıyı mavisi.",
+    swatch: "#2F6F8F",
+    trust: "Kağıt harita güveni, dijital netlik",
   },
   {
-    id: "rail",
-    name: "Instrument Rail",
-    nameTr: "Enstrüman Rayı",
+    id: "watch",
+    name: "Watch Desk",
+    nameTr: "Nöbet Masası",
     blurb:
-      "Horizontal capsule dock, cyan instrument pills, compact HUD density.",
+      "Ops desk for usta/servis: slate panels, steel blue live, red only for SOS.",
     blurbTr:
-      "Yatay kapsül dock, cyan enstrüman pill’leri, kompakt HUD yoğunluğu.",
+      "Usta/servis nöbet masası: slate paneller, çelik mavi canlı, kırmızı yalnız SOS.",
+    swatch: "#6B8CAE",
+    trust: "Operasyon masası — triyaj netliği",
   },
   {
-    id: "harbour",
-    name: "Harbour Glass",
-    nameTr: "Liman Camı",
+    id: "marina",
+    name: "Marina Concierge",
+    nameTr: "Marina Concierge",
     blurb:
-      "Soft glass panels, steel-teal accents, rounded sheet language, calm coastal.",
+      "Premium marina desk: deep teal, champagne accents, soft stone glass panels.",
     blurbTr:
-      "Yumuşak cam paneller, çelik-teal vurgu, yuvarlak sheet dili, sakin liman.",
+      "Premium marina masası: derin teal, şampanya vurgu, yumuşak taş-cam paneller.",
+    swatch: "#C9B896",
+    trust: "Liman kalitesi + sakin premium",
   },
 ] as const;
 
@@ -52,19 +62,36 @@ export type CockpitSkinId = (typeof COCKPIT_SKINS)[number]["id"];
 
 export const COCKPIT_SKIN_STORAGE = "thalvo-cockpit-skin";
 
+const LEGACY_SKIN_MAP: Record<string, CockpitSkinId> = {
+  ecdis: "atlas",
+  bridge: "pilot",
+  dayplot: "passage",
+  rail: "watch",
+  harbour: "marina",
+};
+
 export function isCockpitSkinId(value: unknown): value is CockpitSkinId {
   return COCKPIT_SKINS.some((s) => s.id === value);
 }
 
+export function resolveCockpitSkinId(value: unknown): CockpitSkinId | null {
+  if (isCockpitSkinId(value)) return value;
+  if (typeof value === "string" && value in LEGACY_SKIN_MAP) {
+    return LEGACY_SKIN_MAP[value] ?? null;
+  }
+  return null;
+}
+
 export function readCockpitSkin(): CockpitSkinId {
-  if (typeof window === "undefined") return "ecdis";
+  if (typeof window === "undefined") return "atlas";
   try {
     const raw = localStorage.getItem(COCKPIT_SKIN_STORAGE);
-    if (isCockpitSkinId(raw)) return raw;
+    const resolved = resolveCockpitSkinId(raw);
+    if (resolved) return resolved;
   } catch {
     /* private mode */
   }
-  return "ecdis";
+  return "atlas";
 }
 
 export function applyCockpitSkin(id: CockpitSkinId): void {
@@ -78,15 +105,14 @@ export function applyCockpitSkin(id: CockpitSkinId): void {
 }
 
 function skinFromSearchParams(params: URLSearchParams): CockpitSkinId | null {
-  const direct = params.get("skin");
-  if (isCockpitSkinId(direct)) return direct;
-  // Auth gate: /auth?next=/app?skin=harbour — recover skin before login.
+  const direct = resolveCockpitSkinId(params.get("skin"));
+  if (direct) return direct;
+  // Auth gate: /auth?next=/app?skin=marina — recover skin before login.
   const next = params.get("next");
   if (next) {
     try {
       const nested = new URL(next, "https://thalvo.local");
-      const fromNext = nested.searchParams.get("skin");
-      if (isCockpitSkinId(fromNext)) return fromNext;
+      return resolveCockpitSkinId(nested.searchParams.get("skin"));
     } catch {
       /* ignore */
     }
@@ -104,11 +130,15 @@ export function skinFromLocation(search = "", hash = ""): CockpitSkinId | null {
   return skinFromSearchParams(new URLSearchParams(hashQuery));
 }
 
-/** Boot skin from URL override, then storage (call once in signed-in shell). */
+/** Boot skin from URL override, then storage. */
 export function bootCockpitSkin(): CockpitSkinId {
   const fromUrl =
     typeof window !== "undefined" ? skinFromLocation(window.location.search, window.location.hash) : null;
   const id = fromUrl ?? readCockpitSkin();
   applyCockpitSkin(id);
   return id;
+}
+
+export function skinMeta(id: CockpitSkinId) {
+  return COCKPIT_SKINS.find((s) => s.id === id) ?? COCKPIT_SKINS[0];
 }

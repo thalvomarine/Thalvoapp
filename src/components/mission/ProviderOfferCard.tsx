@@ -241,7 +241,8 @@ export function ProviderOfferCard({ request }: { request: ProviderOfferRequest }
               type="button"
               onClick={() => void submit()}
               disabled={busy}
-              className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] bg-[#F5B942] text-sm font-semibold text-[#1A1406] hover:bg-[#ffc857]"
+              className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] text-sm font-semibold text-[#1A1406]"
+              style={{ background: "var(--skin-command, #c4a574)" }}
             >
               {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
               {t("provider.submit_offer")}
