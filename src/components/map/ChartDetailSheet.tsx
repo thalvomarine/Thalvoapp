@@ -193,7 +193,12 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
                   const target = displayPoint;
                   onNavigate(target);
                 }}
-                className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-[#00F0FF]/40 bg-[#00F0FF]/10 text-[12px] font-bold uppercase tracking-[0.06em] text-[#00F0FF] transition-colors hover:bg-[#00F0FF]/18"
+                className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border text-[12px] font-bold uppercase tracking-[0.06em] transition-colors"
+                style={{
+                  borderColor: "var(--sheet-active-border)",
+                  background: "var(--sheet-active-bg)",
+                  color: "var(--sheet-active-ink)",
+                }}
               >
                 <Anchor className="size-4 shrink-0" />
                 <span className="truncate">{t("chart.sheet_navigate")}</span>

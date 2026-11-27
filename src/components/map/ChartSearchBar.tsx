@@ -103,7 +103,14 @@ export function ChartSearchBar({
                 <X className="size-3.5" />
               </button>
             ) : null}
-            <span className="shrink-0 rounded-[3px] border border-[#00F0FF]/40 bg-[#00F0FF]/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#00F0FF]">
+            <span
+              className="shrink-0 rounded-md border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em]"
+              style={{
+                borderColor: "var(--sheet-active-border)",
+                background: "var(--sheet-active-bg)",
+                color: "var(--sheet-active-ink)",
+              }}
+            >
               {t("chart.live_pill")}
             </span>
           </div>

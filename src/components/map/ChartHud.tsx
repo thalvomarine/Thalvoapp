@@ -81,17 +81,17 @@ const LAYER_ROWS: Array<{ key: ChartLayerKey; labelKey: string; dot: string }> =
 function Switch({ on }: { on: boolean }) {
   return (
     <span
-      className="grid size-4 shrink-0 place-items-center rounded-[3px] border transition-colors"
+      className="grid size-4 shrink-0 place-items-center rounded-full border transition-colors"
       style={{
-        borderColor: on ? "rgba(0,240,255,0.55)" : "var(--sheet-border)",
-        background: on ? "rgba(0,240,255,0.18)" : "var(--sheet-switch-off)",
+        borderColor: on ? "var(--sheet-active-border)" : "var(--sheet-border)",
+        background: on ? "var(--sheet-active-bg)" : "var(--sheet-switch-off)",
       }}
       aria-hidden
     >
       <span
-        className="size-1.5 rounded-[1px] transition-opacity"
+        className="size-1.5 rounded-full transition-opacity"
         style={{
-          background: on ? "#00F0FF" : "transparent",
+          background: on ? "var(--sheet-active-ink)" : "transparent",
           opacity: on ? 1 : 0,
         }}
       />
@@ -861,7 +861,7 @@ export function ChartFabStack({
             {locating ? (
               <Loader2
                 className="size-[18px] animate-spin"
-                style={{ color: "var(--skin-active, #00F0FF)" }}
+                style={{ color: "var(--skin-active, #c9b896)" }}
               />
             ) : (
               <LocateMark size={20} />

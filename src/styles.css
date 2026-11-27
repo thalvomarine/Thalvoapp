@@ -304,37 +304,37 @@
  * system / default = ECDIS navy; day = paper; night = black.
  */
 .thalvo-desk {
-  --desk-canvas: #0c1829;
-  --desk-paper: #12233a;
-  --desk-ink: #e8f4ff;
-  --desk-muted: rgb(230 246 255 / 0.58);
-  --desk-subtle: rgb(230 246 255 / 0.4);
-  --desk-border: rgb(230 246 255 / 0.12);
-  --desk-input: #071422;
-  --desk-chip: rgb(230 246 255 / 0.06);
-  --desk-price: #f5b942;
-  --desk-accent: #0a192f;
-  --desk-accent-fg: #ffffff;
-  --desk-active: #f5b942;
+  --desk-canvas: #0c2226;
+  --desk-paper: #12282c;
+  --desk-ink: #f4efe6;
+  --desk-muted: rgb(210 200 180 / 0.62);
+  --desk-subtle: rgb(210 200 180 / 0.4);
+  --desk-border: rgb(201 184 150 / 0.22);
+  --desk-input: #0a1c20;
+  --desk-chip: rgb(201 184 150 / 0.08);
+  --desk-price: #c9b896;
+  --desk-accent: #0c2226;
+  --desk-accent-fg: #f4efe6;
+  --desk-active: #c9b896;
   --desk-active-ink: #0a192f;
   --desk-shadow: 0 14px 36px -22px rgb(0 0 0 / 0.55);
   --desk-overlay: rgb(0 0 0 / 0.55);
   color: var(--desk-ink);
 }
-/* system = cockpit (same as default desk tokens on html[data-thalvo-theme="system"]). */
+/* system = Marina Concierge desk (locked skin). */
 html[data-thalvo-theme="system"] .thalvo-desk {
-  --desk-canvas: #0c1829;
-  --desk-paper: #12233a;
-  --desk-ink: #e8f4ff;
-  --desk-muted: rgb(230 246 255 / 0.58);
-  --desk-subtle: rgb(230 246 255 / 0.4);
-  --desk-border: rgb(230 246 255 / 0.12);
-  --desk-input: #071422;
-  --desk-chip: rgb(230 246 255 / 0.06);
-  --desk-price: #f5b942;
-  --desk-accent: #0a192f;
-  --desk-accent-fg: #ffffff;
-  --desk-active: #f5b942;
+  --desk-canvas: #0c2226;
+  --desk-paper: #12282c;
+  --desk-ink: #f4efe6;
+  --desk-muted: rgb(210 200 180 / 0.62);
+  --desk-subtle: rgb(210 200 180 / 0.4);
+  --desk-border: rgb(201 184 150 / 0.22);
+  --desk-input: #0a1c20;
+  --desk-chip: rgb(201 184 150 / 0.08);
+  --desk-price: #c9b896;
+  --desk-accent: #0c2226;
+  --desk-accent-fg: #f4efe6;
+  --desk-active: #c9b896;
   --desk-active-ink: #0a192f;
   --desk-shadow: 0 14px 36px -22px rgb(0 0 0 / 0.55);
   --desk-overlay: rgb(0 0 0 / 0.55);
@@ -385,16 +385,16 @@ html[data-thalvo-theme="night"] .thalvo-desk {
  * Used by the mobile bottom sheet and desktop command panel.
  */
 .thalvo-chart-sheet {
-  --sheet-bg: rgb(10 25 47 / 0.97);
-  --sheet-ink: #f8fafc;
-  --sheet-muted: rgb(248 250 252 / 0.58);
-  --sheet-faint: rgb(248 250 252 / 0.4);
-  --sheet-border: rgb(255 255 255 / 0.14);
-  --sheet-chip: rgb(255 255 255 / 0.06);
-  --sheet-chip-hover: rgb(255 255 255 / 0.1);
-  --sheet-active-bg: rgb(245 185 66 / 0.16);
-  --sheet-active-border: rgb(245 185 66 / 0.5);
-  --sheet-active-ink: #f5b942;
+  --sheet-bg: rgb(14 36 40 / 0.92);
+  --sheet-ink: #f4efe6;
+  --sheet-muted: rgb(210 200 180 / 0.62);
+  --sheet-faint: rgb(210 200 180 / 0.4);
+  --sheet-border: rgb(201 184 150 / 0.28);
+  --sheet-chip: rgb(201 184 150 / 0.08);
+  --sheet-chip-hover: rgb(201 184 150 / 0.14);
+  --sheet-active-bg: rgb(201 184 150 / 0.14);
+  --sheet-active-border: rgb(201 184 150 / 0.48);
+  --sheet-active-ink: #c9b896;
   --sheet-overlay: rgb(0 0 0 / 0.55);
   --sheet-switch-off: rgb(255 255 255 / 0.12);
   --sheet-handle: rgb(255 255 255 / 0.22);
@@ -404,16 +404,16 @@ html[data-thalvo-theme="night"] .thalvo-desk {
   color-scheme: dark;
 }
 html[data-thalvo-theme="system"] .thalvo-chart-sheet {
-  --sheet-bg: rgb(10 25 47 / 0.97);
-  --sheet-ink: #f8fafc;
-  --sheet-muted: rgb(248 250 252 / 0.58);
-  --sheet-faint: rgb(248 250 252 / 0.4);
-  --sheet-border: rgb(255 255 255 / 0.14);
-  --sheet-chip: rgb(255 255 255 / 0.06);
-  --sheet-chip-hover: rgb(255 255 255 / 0.1);
-  --sheet-active-bg: rgb(245 185 66 / 0.16);
-  --sheet-active-border: rgb(245 185 66 / 0.5);
-  --sheet-active-ink: #f5b942;
+  --sheet-bg: rgb(14 36 40 / 0.92);
+  --sheet-ink: #f4efe6;
+  --sheet-muted: rgb(210 200 180 / 0.62);
+  --sheet-faint: rgb(210 200 180 / 0.4);
+  --sheet-border: rgb(201 184 150 / 0.28);
+  --sheet-chip: rgb(201 184 150 / 0.08);
+  --sheet-chip-hover: rgb(201 184 150 / 0.14);
+  --sheet-active-bg: rgb(201 184 150 / 0.14);
+  --sheet-active-border: rgb(201 184 150 / 0.48);
+  --sheet-active-ink: #c9b896;
   --sheet-overlay: rgb(0 0 0 / 0.55);
   --sheet-switch-off: rgb(255 255 255 / 0.12);
   --sheet-handle: rgb(255 255 255 / 0.22);

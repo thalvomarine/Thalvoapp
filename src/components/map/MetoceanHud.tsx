@@ -96,9 +96,9 @@ export function MetoceanHud() {
               title={t("chart.metocean_switch_region")}
               className="shrink-0 rounded-[3px] border px-2 py-0.5 text-[9px] font-semibold"
               style={{
-                borderColor: "rgba(0,240,255,0.4)",
-                background: "rgba(0,240,255,0.1)",
-                color: "#00F0FF",
+                borderColor: "var(--sheet-active-border)",
+                background: "var(--sheet-active-bg)",
+                color: "var(--sheet-active-ink)",
               }}
             >
               {regionLabel}
