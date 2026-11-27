@@ -321,6 +321,7 @@
     "cancel_done": "Çağrı iptal edildi.",
     "cancel_failed": "İptal kaydı henüz veritabanına işlenmedi. Supabase SQL editöründe son iptal dosyasını çalıştırın.",
     "live_position": "Konumunuz ustaya canlı iletiliyor.",
+    "see_on_chart": "Ana haritada gör",
     "eta_min": "{{min}} dk",
     "eta_assumed": "ETA {{kts}} kts servis süratiyle",
     "eta_live": "ETA ölçülen {{kts}} kts süratle",

@@ -1,4 +1,5 @@
 import {
+  Fragment,
   memo,
   useCallback,
   useEffect,
@@ -13,6 +14,7 @@ import {
   Popup,
   Circle,
   Polygon,
+  Polyline,
   useMap,
   useMapEvents,
 } from "react-leaflet";
@@ -124,12 +126,16 @@ export interface LiveAlert {
   detail?: string;
   /** Linked marketplace job. The pin opens this mission. */
   jobId?: string | null;
+  /** Popup action. Pool calls offer a bid; an assigned mission opens the job. */
+  cta?: "bid" | "open";
 }
 
 /** Dispatch route line: a responding boat's position to the job it's assigned to. */
 export interface LiveRoute {
   id: string;
-  from: { lat: number; lng: number };
+  /** Responder fix. Omit to use this device's own position. */
+  from?: { lat: number; lng: number };
+  fromName?: string;
   to: { lat: number; lng: number };
 }
 
@@ -139,6 +145,8 @@ interface Props {
   alerts?: LiveAlert[];
   /** Active dispatch route lines (see the ETA engine in the admin tower). */
   routes?: LiveRoute[];
+  /** Fit the chart once so both ends of `routes` are on screen. */
+  frameRoutes?: boolean;
   center?: { lat: number; lng: number };
   className?: string;
   height?: number | string;
@@ -241,6 +249,22 @@ function Recenter({
 }
 
 /** First GPS fix recenters once. Later watch updates must not steal the pan. */
+/** One fit when a mission pair exists, so neither party has to hunt the chart. */
+function FramePair({ signature, points }: { signature: string; points: L.LatLngExpression[] }) {
+  const map = useMap();
+  const framed = useRef("");
+  useEffect(() => {
+    if (!signature || signature === framed.current || points.length < 1) return;
+    framed.current = signature;
+    if (points.length === 1) {
+      map.setView(points[0], 13, { animate: false });
+      return;
+    }
+    map.fitBounds(L.latLngBounds(points).pad(0.45), { animate: false, maxZoom: 14 });
+  }, [map, points, signature]);
+  return null;
+}
+
 function BootstrapGps({ fix }: { fix: GeoFix | null }) {
   const map = useMap();
   const done = useRef(false);
@@ -579,6 +603,7 @@ const ChartOverlays = memo(function ChartOverlays({
   stale,
   pins,
   alerts,
+  routes,
   moorings,
   hazards,
   lights,
@@ -628,6 +653,36 @@ const ChartOverlays = memo(function ChartOverlays({
         poiFilters.service &&
         pins.map((p) => <FleetPinMarker key={p.id} pin={p} />)}
 
+      {routes.map((route) => {
+        const from = route.from ?? (fix ? { lat: fix.lat, lng: fix.lng } : null);
+        if (!from || !isValidCoordinate(from.lat, from.lng)) return null;
+        if (!isValidCoordinate(route.to.lat, route.to.lng)) return null;
+        const own =
+          !!fix &&
+          Math.abs(from.lat - fix.lat) < 0.0004 &&
+          Math.abs(from.lng - fix.lng) < 0.0004;
+        return (
+          <Fragment key={route.id}>
+            <Polyline
+              positions={[
+                [from.lat, from.lng],
+                [route.to.lat, route.to.lng],
+              ]}
+              pathOptions={{ color: "#00F0FF", weight: 2.5, opacity: 0.9, dashArray: "8 10" }}
+            />
+            {route.from && !own && (
+              <Marker position={[from.lat, from.lng]} icon={mechIcon}>
+                <Popup>
+                  <span className="text-[12px] font-semibold">
+                    {route.fromName || t("mission.provider_fallback")}
+                  </span>
+                </Popup>
+              </Marker>
+            )}
+          </Fragment>
+        );
+      })}
+
       {alerts.map((alert) => (
         <Circle
           key={`${alert.id}-ring`}
@@ -661,7 +716,7 @@ const ChartOverlays = memo(function ChartOverlays({
                   params={{ id: alert.jobId }}
                   className="mt-2 inline-flex h-8 items-center rounded-lg bg-amber-400 px-3 text-[11px] font-black uppercase tracking-wider text-[#0A192F]"
                 >
-                  {t("esvc.bid")}
+                  {alert.cta === "open" ? t("ops.open_fault") : t("esvc.bid")}
                 </Link>
               ) : null}
             </div>
@@ -816,6 +871,7 @@ function LiveMapCanvas({
   providers,
   alerts = [],
   routes = [],
+  frameRoutes = false,
   center,
   className = "",
   height = 400,
@@ -1142,6 +1198,24 @@ function LiveMapCanvas({
   const effectiveCenter = validCenter ?? fix ?? GOCEK;
 
   const pins = useMemo(() => pickValidCoordinates(providers), [providers]);
+  const framePoints = useMemo(() => {
+    if (!frameRoutes) return [] as L.LatLngExpression[];
+    const pts: L.LatLngExpression[] = [];
+    if (fix && isValidCoordinate(fix.lat, fix.lng)) pts.push([fix.lat, fix.lng]);
+    for (const route of routes) {
+      const from = route.from ?? (fix ? { lat: fix.lat, lng: fix.lng } : null);
+      if (from && isValidCoordinate(from.lat, from.lng)) pts.push([from.lat, from.lng]);
+      if (isValidCoordinate(route.to.lat, route.to.lng)) pts.push([route.to.lat, route.to.lng]);
+    }
+    return pts;
+  }, [frameRoutes, routes, fix]);
+  const frameSignature =
+    framePoints.length === 0
+      ? ""
+      : `${routes
+          .map((route) => route.id)
+          .sort()
+          .join(",")}:${framePoints.length}`;
   const moorings = useMemo(
     () =>
       zones.filter((z) => {
@@ -1370,8 +1444,9 @@ function LiveMapCanvas({
         {validCenter ? (
           <Recenter center={validCenter} />
         ) : (
-          <BootstrapGps fix={fix} />
+          !frameRoutes && <BootstrapGps fix={fix} />
         )}
+        {frameRoutes && <FramePair signature={frameSignature} points={framePoints} />}
         <ChartRasterLayers
           basemap={offline ? "sea" : basemap}
           showSeamarks={layers.seamarks}

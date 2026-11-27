@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { MockMap, type MapPin } from "@/components/MockMap";
+import type { MapPin } from "@/components/MockMap";
 import { CheckoutModal } from "@/components/CheckoutModal";
 import { JobChat } from "@/components/JobChat";
 import { useProfile, useSessionUser } from "@/lib/session";
@@ -542,30 +542,6 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
     tick,
   ]);
 
-  // Live GPS pin wins; only interpolate when the last provider fix is stale.
-  const overridePos = useMemo(() => {
-    if (!providerPos) return undefined;
-    if (liveProviderFresh) {
-      return { [providerPos.id]: { lat: providerPos.lat, lng: providerPos.lng } };
-    }
-    if (!job.dispatched_at || !job.eta_minutes) return undefined;
-    const providerLegacy = Math.abs(providerPos.lat) < 1 && Math.abs(providerPos.lng) < 1;
-    const jobLegacy = Math.abs(job.lat) < 1 && Math.abs(job.lng) < 1;
-    if (providerLegacy !== jobLegacy) {
-      return { [providerPos.id]: { lat: job.lat, lng: job.lng } };
-    }
-    const elapsed = Math.min(
-      1,
-      (Date.now() - new Date(job.dispatched_at).getTime()) / (job.eta_minutes * 60000),
-    );
-    return {
-      [providerPos.id]: {
-        lat: providerPos.lat + (job.lat - providerPos.lat) * elapsed,
-        lng: providerPos.lng + (job.lng - providerPos.lng) * elapsed,
-      },
-    };
-  }, [providerPos, liveProviderFresh, job.dispatched_at, job.eta_minutes, job.lat, job.lng, tick]);
-
   const pendingPart = parts.find((p) => p.payment_status === "Pending");
 
   const navigate = useNavigate();
@@ -666,19 +642,20 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
       />
 
       {!closed && Number.isFinite(job.lat) && Number.isFinite(job.lng) && (
-        <div className="rounded-2xl overflow-hidden border border-white/10">
-          <MockMap
-            providers={providerPos ? [providerPos] : []}
-            jobs={[{ id: job.id, lat: job.lat, lng: job.lng, marina: job.marina }]}
-            overridePositions={overridePos}
-          />
-          {job.status === "EnRoute" && enRouteEta !== null && (
-            <div className="border-t border-white/10 bg-black/40 px-3 py-2 text-[11px] text-cyan-100/90">
-              {t("owner.arriving_in", { min: enRouteEta })}
-              {liveProviderFresh ? ` · ${t("ops.live_position")}` : ""}
-            </div>
-          )}
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/app" })}
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border border-cyan-300/40 bg-cyan-400/10 text-[12px] font-semibold uppercase tracking-[0.14em] text-cyan-100"
+        >
+          <PinIcon className="size-4" />
+          {t("ops.see_on_chart")}
+        </button>
+      )}
+      {job.status === "EnRoute" && enRouteEta !== null && (
+        <p className="text-[11px] text-cyan-100/90">
+          {t("owner.arriving_in", { min: enRouteEta })}
+          {liveProviderFresh ? ` · ${t("ops.live_position")}` : ""}
+        </p>
       )}
 
       {(job.status === "Pending" || job.status === "Offered") && (
@@ -955,6 +932,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
 /* ---------------- PROVIDER ---------------- */
 function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [parts, setParts] = useState<Part[]>([]);
   const [showAdd, setShowAdd] = useState(false);
   const [partName, setPartName] = useState("");
@@ -1132,7 +1110,17 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
         problem={job.problem_category}
       />
       {Number.isFinite(job.lat) && Number.isFinite(job.lng) && Math.abs(job.lat) > 1 && (
-        <VesselRange lat={job.lat} lng={job.lng} />
+        <>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/app" })}
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border border-cyan-300/40 bg-cyan-400/10 text-[12px] font-semibold uppercase tracking-[0.14em] text-cyan-100"
+          >
+            <PinIcon className="size-4" />
+            {t("ops.see_on_chart")}
+          </button>
+          <VesselRange lat={job.lat} lng={job.lng} />
+        </>
       )}
 
       {openForBid && (

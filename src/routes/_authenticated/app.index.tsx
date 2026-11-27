@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { LiveMap, type LiveAlert, type LivePin } from "@/components/LiveMapLazy";
+import { LiveMap, type LiveAlert, type LivePin, type LiveRoute } from "@/components/LiveMapLazy";
 import { asCoordinate } from "@/lib/emergency-service";
 import { pickValidCoordinates } from "@/lib/geolocation";
 import { Wordmark } from "@/components/Wordmark";
@@ -76,8 +76,12 @@ function CaptainCockpit({ profile }: { profile: Profile }) {
       marina: string;
       dispatched_at: string | null;
       eta_minutes: number | null;
+      lat: number | null;
+      lng: number | null;
+      provider_id: string | null;
     }[]
   >([]);
+  const [responder, setResponder] = useState<LivePin | null>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -110,7 +114,9 @@ function CaptainCockpit({ profile }: { profile: Profile }) {
     const load = () =>
       supabase
         .from("jobs")
-        .select("id, problem_category, status, service_type, marina, dispatched_at, eta_minutes")
+        .select(
+          "id, problem_category, status, service_type, marina, dispatched_at, eta_minutes, lat, lng, provider_id",
+        )
         .eq("client_id", user.id)
         .not("status", "in", "(Completed,Cancelled)")
         .order("created_at", { ascending: false })
@@ -142,6 +148,111 @@ function CaptainCockpit({ profile }: { profile: Profile }) {
   }, [user]);
 
   const primaryMission = activeJobs[0] ?? null;
+  const partnerId = activeJobs.find((job) => job.provider_id)?.provider_id ?? null;
+
+  useEffect(() => {
+    if (!partnerId) {
+      setResponder(null);
+      return;
+    }
+    const apply = (
+      row: {
+        id: string;
+        lat: unknown;
+        lng: unknown;
+        service_type: string | null;
+        profiles: { full_name: string | null } | null;
+      } | null,
+    ) => {
+      const lat = asCoordinate(row?.lat);
+      const lng = asCoordinate(row?.lng);
+      if (!row || lat == null || lng == null) {
+        setResponder(null);
+        return;
+      }
+      setResponder({
+        id: row.id,
+        name: row.profiles?.full_name?.trim() || "Provider",
+        lat,
+        lng,
+        kind: row.service_type === "Underwater Diver" ? "diver" : "mechanic",
+      });
+    };
+    void supabase
+      .from("provider_details")
+      .select("id, lat, lng, service_type, profiles(full_name)")
+      .eq("id", partnerId)
+      .maybeSingle()
+      .then(({ data }) => apply(data as never));
+    const ch = supabase
+      .channel(`captain-responder:${partnerId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "provider_details",
+          filter: `id=eq.${partnerId}`,
+        },
+        () => {
+          void supabase
+            .from("provider_details")
+            .select("id, lat, lng, service_type, profiles(full_name)")
+            .eq("id", partnerId)
+            .maybeSingle()
+            .then(({ data }) => apply(data as never));
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [partnerId]);
+
+  const missionAlerts = useMemo<LiveAlert[]>(
+    () =>
+      activeJobs.flatMap((job) => {
+        const lat = asCoordinate(job.lat);
+        const lng = asCoordinate(job.lng);
+        if (lat == null || lng == null) return [];
+        return [
+          {
+            id: `job-${job.id}`,
+            lat,
+            lng,
+            title: job.marina?.trim() || job.problem_category,
+            kind: "fault" as const,
+            detail: job.marina?.trim() || undefined,
+            jobId: job.id,
+            cta: "open" as const,
+          },
+        ];
+      }),
+    [activeJobs],
+  );
+
+  const missionRoutes = useMemo<LiveRoute[]>(() => {
+    if (!responder) return [];
+    return activeJobs.flatMap((job) => {
+      if (job.provider_id !== responder.id) return [];
+      const lat = asCoordinate(job.lat);
+      const lng = asCoordinate(job.lng);
+      if (lat == null || lng == null) return [];
+      return [
+        {
+          id: job.id,
+          from: { lat: responder.lat, lng: responder.lng },
+          fromName: responder.name,
+          to: { lat, lng },
+        },
+      ];
+    });
+  }, [activeJobs, responder]);
+
+  const chartProviders = useMemo(
+    () => providers.filter((pin) => pin.id !== responder?.id),
+    [providers, responder],
+  );
 
   const headerRight = useMemo(() => <MapHeaderActions profile={profile} />, [profile]);
 
@@ -168,7 +279,10 @@ function CaptainCockpit({ profile }: { profile: Profile }) {
   return (
     <div className="relative h-full min-h-[500px] w-full">
       <LiveMap
-        providers={providers}
+        providers={chartProviders}
+        alerts={missionAlerts}
+        routes={missionRoutes}
+        frameRoutes={missionRoutes.length > 0}
         variant="dark"
         fullscreen
         hud
@@ -189,6 +303,7 @@ function CaptainCockpit({ profile }: { profile: Profile }) {
 function OperatorCockpit({ profile }: { profile: Profile }) {
   const { user } = useSessionUser();
   const [alerts, setAlerts] = useState<LiveAlert[]>([]);
+  const [assignedRoutes, setAssignedRoutes] = useState<LiveRoute[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -232,9 +347,16 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
               kind: "fault" as const,
               detail: row.marina?.trim() || undefined,
               jobId: row.id,
+              cta: "open" as const,
             },
           ];
         });
+        setAssignedRoutes(
+          mineAlerts.map((pin) => ({
+            id: pin.id,
+            to: { lat: pin.lat, lng: pin.lng },
+          })),
+        );
         const located = await supabase
           .from("emergency_service_requests")
           .select(
@@ -313,6 +435,7 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
       } catch (e) {
         console.warn("[cockpit] jobs load failed", e);
         setAlerts([]);
+        setAssignedRoutes([]);
       }
     };
     const stopIdle = runWhenIdle(() => {
@@ -344,6 +467,8 @@ function OperatorCockpit({ profile }: { profile: Profile }) {
       <LiveMap
         providers={EMPTY_PINS}
         alerts={alerts}
+        routes={assignedRoutes}
+        frameRoutes={assignedRoutes.length > 0}
         variant="dark"
         fullscreen
         hud

@@ -321,6 +321,7 @@
     "cancel_done": "Call cancelled.",
     "cancel_failed": "Cancel is not on the database yet. Run the latest cancel SQL in the Supabase editor.",
     "live_position": "Your position is going live to the technician.",
+    "see_on_chart": "See on the chart",
     "eta_min": "{{min}} min",
     "eta_assumed": "ETA at {{kts}} kts service speed",
     "eta_live": "ETA at measured {{kts}} kts",

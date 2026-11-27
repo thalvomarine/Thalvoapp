@@ -321,6 +321,7 @@
     "cancel_done": "Η κλήση ακυρώθηκε.",
     "cancel_failed": "Η ακύρωση δεν είναι ακόμα στη βάση.",
     "live_position": "Η θέση σας στέλνεται ζωντανά.",
+    "see_on_chart": "Δες στον χάρτη",
     "eta_min": "{{min}} λεπτά",
     "eta_assumed": "ETA με {{kts}} kts",
     "eta_live": "ETA με μετρημένα {{kts}} kts",
