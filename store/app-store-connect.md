@@ -91,11 +91,11 @@ Follow `store/apple-app-privacy.md`. Tracking: No. Data listed there is linked t
 | Field | Value |
 | --- | --- |
 | Sign-in required | Yes |
-| Demo account | Create a captain, confirm the email, add one vessel, paste the login into the review notes |
+| Demo account | `apple-review@thalvo.org` — already confirmed, vessel Review Tender. Password is in `store/review-notes.md` |
 | Contact | support@thalvo.org and the phone on the Apple ID |
-| Notes | Paste `store/review-notes.md` |
+| Notes | Paste the `BEGIN PASTE` block in `store/review-notes.md` |
 
-Review path to account deletion: account menu → Profile → Account settings → Delete account → type the account email.
+The rejected binary is 1.0.5 (6). Resubmit **1.0.7 (8)**. Account deletion in that build: account icon → Profile → Account settings → Delete account → type the account email. Record that step with `apple-review-delete@thalvo.org` and leave the demo account in place. Attach the physical-iPhone recording before resubmit.
 
 ## 9. Build
 

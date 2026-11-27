@@ -49,8 +49,8 @@ Keep Capgo `autoUpdate: false` until a production OTA bundle is verified (see `s
 5. App Privacy: follow `store/apple-app-privacy.md`.
 6. Export compliance: standard HTTPS only — Info.plist sets `ITSAppUsesNonExemptEncryption=false`.
 7. Screenshots: at least one **1179×2556 or 1206×2622** iPhone frame, and one **2064×2752 or 2048×2732** iPad frame. The target includes iPad (`TARGETED_DEVICE_FAMILY = 1,2`).
-8. Review notes: paste `store/review-notes.md` and add a confirmed captain login before submit.
-9. Account deletion is in the binary: Profile → Account settings → Delete account. It calls `delete_own_account`.
+8. Review notes: paste the `BEGIN PASTE` block in `store/review-notes.md`. The captain login is already confirmed.
+9. Account deletion is in **1.0.7 (8)** and later: account icon → Profile → Account settings → Delete account. It calls `delete_own_account`. Do not resubmit the rejected 1.0.5 (6) binary.
 10. TestFlight internal, then **Submit for Review**.
 
 Primary category: **Navigation** (secondary: Lifestyle).  
