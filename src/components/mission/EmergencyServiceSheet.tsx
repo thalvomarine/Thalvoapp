@@ -10,7 +10,7 @@ import {
   EMERGENCY_SERVICE_CATEGORIES,
   type EmergencyServiceCategory,
 } from "@/lib/emergency-service";
-import { getFix, isValidCoordinate, type GeoFix } from "@/lib/geolocation";
+import { fixToJobFields, getFix, isValidCoordinate, type GeoFix } from "@/lib/geolocation";
 import { sanitizeMultiline, sanitizePlainText } from "@/lib/sanitize";
 import { n, useSessionUser } from "@/lib/session";
 
@@ -85,14 +85,48 @@ export function EmergencyServiceSheet({
     setSending(true);
     const ctx = getCockpitContext();
     const vessel = sanitizePlainText(profile?.boat_name || ctx.vessel?.name || "", 80);
+    const note = sanitizeMultiline(description, 2000);
+    const bay = sanitizePlainText(bayName, 120) || null;
+    // Battery boost and towing stay on the usta desk. There is no electrician trade.
+    const serviceType = category === "diver" ? "Underwater Diver" : "Marine Mechanic";
+    const problem =
+      category === "diver"
+        ? "rope_propeller"
+        : category === "electrician"
+          ? "electrical"
+          : category === "towing"
+            ? "other_mech"
+            : "engine_breakdown";
+    const brief = [vessel ? `${t("ops.vessel")}: ${vessel}` : "", note]
+      .filter(Boolean)
+      .join("\n")
+      .slice(0, 4000);
+    const { data: job, error: jobError } = await supabase
+      .from("jobs")
+      .insert({
+        client_id: user.id,
+        service_type: serviceType,
+        problem_category: problem,
+        description: brief || t(EMERGENCY_CATEGORY_LABEL_KEYS[category]),
+        marina: bay || t("esvc.open_water"),
+        ...fixToJobFields(coords),
+      })
+      .select("id")
+      .single();
+    if (jobError || !job) {
+      setSending(false);
+      toast.error(jobError?.message ?? t("ops.cancel_failed"));
+      return;
+    }
     const { error } = await supabase.from("emergency_service_requests").insert({
       user_id: user.id,
+      job_id: job.id,
       vessel_name: vessel,
       category,
       lat: coords.lat,
       lng: coords.lng,
-      bay_name: sanitizePlainText(bayName, 120) || null,
-      description: sanitizeMultiline(description, 2000),
+      bay_name: bay,
+      description: note,
       urgency_level: urgency,
       status: "pending",
     });
@@ -188,7 +222,11 @@ export function EmergencyServiceSheet({
                 disabled={locating}
                 className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-amber-400/30 px-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-amber-200"
               >
-                {locating ? <Loader2 className="size-3.5 animate-spin" /> : <MapPin className="size-3.5" />}
+                {locating ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <MapPin className="size-3.5" />
+                )}
                 GPS
               </button>
             </div>

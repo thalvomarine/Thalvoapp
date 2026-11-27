@@ -419,7 +419,7 @@ function ActiveFaults() {
     const { error } = await supabase.rpc("cancel_own_call", { _job_id: id });
     if (error) noteSchemaMiss("cancel_own_call", error);
     setCancelling(null);
-    if (error) toast.error(t("ops.cancel_failed"));
+    if (error) toast.error(error.message || t("ops.cancel_failed"));
     else toast.success(t("ops.cancel_done"));
   };
 
@@ -475,7 +475,10 @@ function ActiveFaults() {
 function CaptainEmergencyCalls() {
   const { t } = useTranslation();
   const { user } = useSessionUser();
+  const { profile } = useProfile(user?.id);
   const [rows, setRows] = useState<EmergencyServiceRequest[]>([]);
+  const [cancelling, setCancelling] = useState<string | null>(null);
+  const visible = rows.filter((row) => !row.job_id || profile?.role === "Provider");
 
   useEffect(() => {
     if (!user) return;
@@ -508,7 +511,21 @@ function CaptainEmergencyCalls() {
     };
   }, [user]);
 
-  if (rows.length === 0) return null;
+  const cancel = async (row: EmergencyServiceRequest) => {
+    setCancelling(row.id);
+    if (skipMissing("cancel_own_call")) {
+      setCancelling(null);
+      toast.error(t("ops.cancel_failed"));
+      return;
+    }
+    const { error } = await supabase.rpc("cancel_own_call", { _job_id: row.job_id ?? row.id });
+    if (error) noteSchemaMiss("cancel_own_call", error);
+    setCancelling(null);
+    if (error) toast.error(error.message || t("ops.cancel_failed"));
+    else toast.success(t("ops.cancel_done"));
+  };
+
+  if (visible.length === 0) return null;
 
   return (
     <div className="space-y-2">
@@ -516,7 +533,7 @@ function CaptainEmergencyCalls() {
         {t("esvc.my_calls")}
       </p>
       <ul className="space-y-2">
-        {rows.map((row) => (
+        {visible.map((row) => (
           <li
             key={row.id}
             className="rounded-2xl border border-amber-400/20 bg-white/[0.03] px-4 py-3"
@@ -532,6 +549,14 @@ function CaptainEmergencyCalls() {
             <p className="mt-0.5 text-[11px] text-white/50">
               {row.bay_name ? `⚓ ${row.bay_name}` : t("esvc.open_water")}
             </p>
+            <button
+              type="button"
+              disabled={cancelling === row.id}
+              onClick={() => void cancel(row)}
+              className="mt-3 h-10 w-full rounded-xl border border-red-300/40 text-[11px] font-semibold uppercase tracking-[0.12em] text-red-100 disabled:opacity-50"
+            >
+              {cancelling === row.id ? t("ops.cancelling") : t("ops.cancel_call")}
+            </button>
           </li>
         ))}
       </ul>

@@ -264,7 +264,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
     const { error } = await supabase.rpc("cancel_own_call", { _job_id: job.id });
     if (error) noteSchemaMiss("cancel_own_call", error);
     setCancelling(false);
-    if (error) toast.error(t("ops.cancel_failed"));
+    if (error) toast.error(error.message || t("ops.cancel_failed"));
     else toast.success(t("ops.cancel_done"));
   };
 
