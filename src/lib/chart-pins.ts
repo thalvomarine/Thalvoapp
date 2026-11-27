@@ -14,19 +14,15 @@ export type ActorPin = "wrench" | "cap";
 export type ActorTone = "cyan" | "gold" | "red";
 
 /**
- * Live-chart marks as MarineOS instruments.
- * The object is the mark. Its box center is the chart coordinate.
- *
- * Cockpit cyan, amber, and danger red. A dark keyline so the mark
- * holds on night ECDIS and on pale land. No glow, no badge, no teardrop.
+ * Live-chart marks. One maritime object each, nothing else.
+ * The box center is the chart coordinate.
+ * A dark keyline holds the shape on night water and on pale land.
  */
 const INK = "#041018";
 const CYAN = "#3EE7F2";
-const DEEP = "#0C6F7A";
 const AMBER = "#F5B942";
 const RED = "#EF4444";
-const PLATE = "#E7FBFF";
-const VISOR = "#062028";
+const PAPER = "#F4FBFC";
 
 const SIZE = 36;
 
@@ -34,106 +30,92 @@ function icon(body: string): string {
   return `<svg width="${SIZE}" height="${SIZE}" viewBox="0 0 32 32" fill="none" aria-hidden="true">${body}</svg>`;
 }
 
-/** Fener: tapered shaft, cyan gallery, amber lamp. */
+/** Fener. Lamp, gallery, shaft, base. */
 const lighthouse = icon(`
-  <path d="M16 1.8c1.55 0 2.45.85 2.45 1.75h-4.9C13.55 2.65 14.45 1.8 16 1.8z" fill="${AMBER}" stroke="${INK}" stroke-width="0.55"/>
-  <rect x="12.35" y="3.55" width="7.3" height="3.7" fill="${PLATE}" stroke="${INK}" stroke-width="0.55"/>
-  <path d="M14.15 3.85v3.1M16 3.85v3.1M17.85 3.85v3.1" stroke="${DEEP}" stroke-width="0.55"/>
-  <path d="M10.3 7.25h11.4v1.7H10.3z" fill="${CYAN}" stroke="${INK}" stroke-width="0.5"/>
-  <path d="M13.35 8.95 11.25 25.7h9.5L18.65 8.95z" fill="${PLATE}" stroke="${INK}" stroke-width="0.65" stroke-linejoin="round"/>
-  <path d="M12.7 14h6.7M12.35 18.4h7.35M12 22.8h8" stroke="${DEEP}" stroke-width="0.5"/>
-  <path d="M8.8 25.7h14.4v2.45H8.8z" fill="${CYAN}" stroke="${INK}" stroke-width="0.55"/>
+  <path d="M16 2.2c1.7 0 2.7 1 2.7 1.9h-5.4c0-.9 1-1.9 2.7-1.9z" fill="${AMBER}" stroke="${INK}" stroke-width="0.6"/>
+  <rect x="12.4" y="4.1" width="7.2" height="3.8" fill="${AMBER}" stroke="${INK}" stroke-width="0.6"/>
+  <rect x="10.4" y="7.9" width="11.2" height="1.7" fill="${AMBER}" stroke="${INK}" stroke-width="0.55"/>
+  <path d="M13.5 9.6 11.4 25.8h9.2L18.5 9.6z" fill="${PAPER}" stroke="${INK}" stroke-width="0.7" stroke-linejoin="round"/>
+  <rect x="9.2" y="25.8" width="13.6" height="2.5" fill="${AMBER}" stroke="${INK}" stroke-width="0.55"/>
 `);
 
-/** Liman in plan: control block, mole, entrance return, finger piers. */
+/** Liman. One quay, three piers. */
 const marina = icon(`
-  <g fill="${CYAN}" stroke="${INK}" stroke-width="0.6" stroke-linejoin="miter">
-    <path d="M2.1 3.3h5.5v4.7H2.1z"/>
-    <path d="M2.15 7.7h20.3c2.55 0 4.45 1.55 4.45 3.5v1.9h-2.9v-1.45c0-.75-.65-1.25-1.45-1.25H4.9v1.45H2.15V7.7z"/>
-    <rect x="4.55" y="12.55" width="3.15" height="15.1"/>
-    <rect x="13.45" y="12.55" width="3.15" height="10.4"/>
-    <rect x="22.3" y="12.55" width="3.15" height="15.6"/>
+  <g fill="${CYAN}" stroke="${INK}" stroke-width="0.7">
+    <rect x="2.2" y="4.6" width="27.6" height="5.2"/>
+    <rect x="4.6" y="9.8" width="4.4" height="16.4"/>
+    <rect x="13.8" y="9.8" width="4.4" height="11.2"/>
+    <rect x="23" y="9.8" width="4.4" height="17.2"/>
   </g>
-  <rect x="3.35" y="4.35" width="1.35" height="1.15" fill="${AMBER}"/>
-  <path d="M4.55 17.2h3.15M4.55 21.6h3.15M13.45 17h3.15M22.3 17.6h3.15M22.3 22.2h3.15" stroke="${INK}" stroke-width="0.45" opacity="0.55"/>
 `);
 
-/** Angular demir. Ring, stock, shank, straight arms, flukes. */
+/** Demir. Ring, stock, shank, arms. */
 const anchorage = icon(`
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <g stroke="${INK}" stroke-width="3.25">
-      <circle cx="16" cy="4.7" r="2.3"/>
-      <path d="M16 7v12.7M6.7 9.15h18.6"/>
-      <path d="M16 19.1c0 4.7-6.6 6.15-9.5 3.7M16 19.1c0 4.7 6.6 6.15 9.5 3.7"/>
-      <path d="M6.5 22.8 5.15 19.6M25.5 22.8l1.35-3.2"/>
+    <g stroke="${INK}" stroke-width="3.3">
+      <circle cx="16" cy="4.8" r="2.3"/>
+      <path d="M16 7.1v12.4M6.8 9.3h18.4"/>
+      <path d="M16 18.8c0 4.6-6.4 6-9.2 3.6M16 18.8c0 4.6 6.4 6 9.2 3.6"/>
+      <path d="M6.8 22.4 5.4 19.2M25.2 22.4l1.4-3.2"/>
     </g>
-    <g stroke="${CYAN}" stroke-width="1.85">
-      <circle cx="16" cy="4.7" r="2.3"/>
-      <path d="M16 7v12.7M6.7 9.15h18.6"/>
-      <path d="M16 19.1c0 4.7-6.6 6.15-9.5 3.7M16 19.1c0 4.7 6.6 6.15 9.5 3.7"/>
-      <path d="M6.5 22.8 5.15 19.6M25.5 22.8l1.35-3.2"/>
+    <g stroke="${CYAN}" stroke-width="1.9">
+      <circle cx="16" cy="4.8" r="2.3"/>
+      <path d="M16 7.1v12.4M6.8 9.3h18.4"/>
+      <path d="M16 18.8c0 4.6-6.4 6-9.2 3.6M16 18.8c0 4.6 6.4 6 9.2 3.6"/>
+      <path d="M6.8 22.4 5.4 19.2M25.2 22.4l1.4-3.2"/>
     </g>
   </g>
 `);
 
-/** Quay pump. Amber gauge, cyan hose. */
+/** Yakıt. Pump and hose. */
 const fuel = icon(`
-  <path d="M4.4 25.2h16.6v2.3H4.4z" fill="${CYAN}" stroke="${INK}" stroke-width="0.55"/>
-  <rect x="7.2" y="6.3" width="10.1" height="18.9" rx="1.1" fill="${PLATE}" stroke="${INK}" stroke-width="0.65"/>
-  <rect x="8.9" y="8.3" width="6.7" height="4" fill="${AMBER}" stroke="${INK}" stroke-width="0.4"/>
-  <path d="M17.3 11h3.4c.9 0 1.6.7 1.6 1.6v6.5" stroke="${CYAN}" stroke-width="1.45" stroke-linecap="square"/>
-  <path d="M21.1 19.2h2.5v2h-2.5z" fill="${AMBER}" stroke="${INK}" stroke-width="0.4"/>
+  <rect x="7.6" y="5.2" width="11.2" height="21.2" rx="1.3" fill="${PAPER}" stroke="${INK}" stroke-width="0.7"/>
+  <rect x="9.8" y="7.6" width="6.8" height="4.2" fill="${AMBER}"/>
+  <path d="M18.8 10.6h3.4c.9 0 1.6.7 1.6 1.6v6.2" stroke="${INK}" stroke-width="1.6" stroke-linecap="round"/>
 `);
 
-/** Danger beacon. Chamfered octagon, white cross. SOS uses this mark. */
+/** Tehlike. One red diamond. SOS uses this mark. */
 const hazard = icon(`
-  <path d="M11 3.4h10L28.6 11v10L21 28.6H11L3.4 21V11Z" fill="${RED}" stroke="${INK}" stroke-width="0.7" stroke-linejoin="miter"/>
-  <path d="M16 9.4v13.2M10.8 16h10.4" stroke="${PLATE}" stroke-width="1.8" stroke-linecap="square"/>
+  <path d="M16 3 29 16 16 29 3 16Z" fill="${RED}" stroke="${INK}" stroke-width="0.75" stroke-linejoin="round"/>
 `);
 
-/** Waterfront kiosk: flat canopy, amber panes, dark door. */
+/** Lokanta. A fork. */
 const restaurant = icon(`
-  <path d="M4.2 12.2h23.6v2.35H4.2z" fill="${CYAN}" stroke="${INK}" stroke-width="0.55"/>
-  <path d="M6.6 14.4h18.8V27.3H6.6z" fill="${PLATE}" stroke="${INK}" stroke-width="0.65"/>
-  <rect x="8.7" y="16.6" width="3.1" height="2.5" fill="${AMBER}" stroke="${INK}" stroke-width="0.35"/>
-  <rect x="20.2" y="16.6" width="3.1" height="2.5" fill="${AMBER}" stroke="${INK}" stroke-width="0.35"/>
-  <path d="M13.5 27.3v-6.2h5v6.2z" fill="${INK}"/>
+  <g fill="${PAPER}" stroke="${INK}" stroke-width="0.55">
+    <rect x="11.2" y="3" width="1.8" height="8.4"/>
+    <rect x="15.1" y="3" width="1.8" height="8.4"/>
+    <rect x="19" y="3" width="1.8" height="8.4"/>
+    <rect x="14.5" y="10.8" width="3" height="2.1"/>
+    <rect x="13.6" y="12.6" width="4.8" height="15.2" rx="1.6"/>
+  </g>
 `);
 
-/** Own-ship fix. Cyan ring, amber heading tick. */
+/** Own ship. Ring, dot, one heading tick. */
 const own = icon(`
-  <circle cx="16" cy="16.4" r="7.6" stroke="${INK}" stroke-width="2.5"/>
-  <circle cx="16" cy="16.4" r="7.6" stroke="${CYAN}" stroke-width="1.25"/>
-  <circle cx="16" cy="16.4" r="1.85" fill="${AMBER}" stroke="${INK}" stroke-width="0.4"/>
-  <path d="M16 3.1v4.3" stroke="${INK}" stroke-width="2.9" stroke-linecap="square"/>
-  <path d="M16 3.1v4.3" stroke="${AMBER}" stroke-width="1.7" stroke-linecap="square"/>
-  <path d="M16 25.2v3.7M5.2 16.4H8.4M23.6 16.4h3.2" stroke="${INK}" stroke-width="2.4" stroke-linecap="square"/>
-  <path d="M16 25.2v3.7M5.2 16.4H8.4M23.6 16.4h3.2" stroke="${PLATE}" stroke-width="1.2" stroke-linecap="square"/>
+  <circle cx="16" cy="17.4" r="6.5" stroke="${INK}" stroke-width="2.7"/>
+  <circle cx="16" cy="17.4" r="6.5" stroke="${CYAN}" stroke-width="1.45"/>
+  <circle cx="16" cy="17.4" r="1.7" fill="${CYAN}"/>
+  <path d="M16 4.6v4.6" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>
+  <path d="M16 4.6v4.6" stroke="${CYAN}" stroke-width="1.6" stroke-linecap="round"/>
 `);
 
-/** Diver: helmet, cyan visor, tank, bubbles. */
+/** Diver. Mask and shoulders. */
 const diver = icon(`
-  <rect x="19.5" y="17.5" width="3.4" height="6.5" rx="1.2" fill="${CYAN}" stroke="${INK}" stroke-width="0.5"/>
-  <circle cx="15.1" cy="9.5" r="4.5" fill="${PLATE}" stroke="${INK}" stroke-width="0.65"/>
-  <path d="M11.1 9.6h8v2.15h-8z" fill="${CYAN}"/>
-  <path d="M13.85 13.9h2.5v2.2h-2.5z" fill="${PLATE}" stroke="${INK}" stroke-width="0.5"/>
-  <path d="M7.5 26.5 10.2 16.7h9.7l2.7 9.8Z" fill="${PLATE}" stroke="${INK}" stroke-width="0.65" stroke-linejoin="miter"/>
-  <circle cx="24.5" cy="7.2" r="1.15" fill="none" stroke="${CYAN}" stroke-width="0.7"/>
-  <circle cx="26.9" cy="4.2" r="0.7" fill="none" stroke="${CYAN}" stroke-width="0.55"/>
+  <circle cx="16" cy="12.2" r="5.8" fill="${PAPER}" stroke="${INK}" stroke-width="0.7"/>
+  <rect x="11.2" y="11.4" width="9.6" height="2.5" fill="${CYAN}"/>
+  <path d="M8.4 25.6c1.8-4 4.4-5.8 7.6-5.8s5.8 1.8 7.6 5.8H8.4z" fill="${PAPER}" stroke="${INK}" stroke-width="0.7" stroke-linejoin="round"/>
 `);
 
-/** Plan-view contact. Bow up, centerline, amber bridge. */
+/** Tekne. Hull and cabin. */
 const vessel = icon(`
-  <path d="M16 2.8 26.4 27.4 16 22.2 5.6 27.4Z" fill="${PLATE}" stroke="${INK}" stroke-width="0.7" stroke-linejoin="miter"/>
-  <path d="M16 8.4v10.2" stroke="${DEEP}" stroke-width="0.75"/>
-  <circle cx="16" cy="13.6" r="1.2" fill="${AMBER}"/>
+  <rect x="10.2" y="11.4" width="7.2" height="5.4" fill="${PAPER}" stroke="${INK}" stroke-width="0.7"/>
+  <path d="M3.6 16.8h20.4l4.4 3.4-4 3H6.2L3.6 20.2Z" fill="${PAPER}" stroke="${INK}" stroke-width="0.7" stroke-linejoin="round"/>
 `);
 
-/** Advice marker. Cyan pennant, amber stripe. */
+/** Tavsiye. Staff and pennant. */
 const report = icon(`
-  <path d="M7.2 2.5h1.6V29.5H7.2z" fill="${INK}"/>
-  <path d="M8.8 4.2H22.4L16.6 9.7 22.4 15.2H8.8Z" fill="${CYAN}" stroke="${INK}" stroke-width="0.55" stroke-linejoin="miter"/>
-  <path d="M8.8 8.3h8.4" stroke="${AMBER}" stroke-width="0.9" stroke-linecap="square"/>
+  <rect x="7.6" y="2.8" width="1.7" height="26" fill="${INK}"/>
+  <path d="M9.3 4.4h12.6L16.2 10l5.7 5.4H9.3Z" fill="${CYAN}" stroke="${INK}" stroke-width="0.5" stroke-linejoin="round"/>
 `);
 
 const PLACE: Record<ChartPinKind, string> = {
@@ -159,16 +141,15 @@ export function actorPinHtml(actor: ActorPin, tone: ActorTone = "cyan"): string 
   if (actor === "wrench") {
     const color = tone === "red" ? RED : CYAN;
     return icon(
-      `<g transform="translate(1.2 1.2) scale(1.22)" fill="${color}" stroke="${INK}" stroke-width="0.4" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g>`,
+      `<g transform="translate(1.2 1.2) scale(1.22)" fill="${color}" stroke="${INK}" stroke-width="0.35" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g>`,
     );
   }
-  const crown = tone === "red" ? "#F8D0D0" : PLATE;
+  const crown = tone === "red" ? "#F8D0D0" : PAPER;
   const band = tone === "red" ? RED : AMBER;
   return icon(`
-    <path d="M4.6 19.4V13.1c0-3.5 2.9-5.9 6.5-6.5C12.1 4.6 13.6 3.5 16 3.5c2.4 0 3.9 1.1 4.9 3.1 3.6.6 6.5 3 6.5 6.5v6.3H4.6z" fill="${crown}" stroke="${INK}" stroke-width="0.6" stroke-linejoin="round"/>
-    <circle cx="16" cy="5.35" r="0.95" fill="${CYAN}" stroke="${INK}" stroke-width="0.35"/>
-    <path d="M4.6 15.7h22.8v2.7H4.6z" fill="${band}" stroke="${INK}" stroke-width="0.45"/>
-    <path d="M11.6 17.35H23.4C27.5 17.5 30.2 19.3 30.2 21.15 27.5 24.2 18.8 24.7 14.4 22.15 12.4 21 11.3 18.6 11.6 17.35Z" fill="${VISOR}" stroke="${CYAN}" stroke-width="0.65" stroke-linejoin="round"/>
+    <path d="M5.2 18.8V12.6c0-3 2.6-5.2 6-5.6.6-1.3 1.8-2.1 3.2-2.1 1.5 0 2.7.8 3.3 2.1 3.3.4 5.9 2.6 5.9 5.6v6.2H5.2z" fill="${crown}" stroke="${INK}" stroke-width="0.6" stroke-linejoin="round"/>
+    <path d="M5.2 15.4h21.6v2.5H5.2z" fill="${band}" stroke="${INK}" stroke-width="0.45"/>
+    <path d="M13.2 17.6h9.2c3.2.1 5.6 1.5 5.8 3-2.2 2.4-8.6 3.2-12.6 1.2-1.4-.7-2-2.6-2.4-4.2z" fill="${INK}"/>
   `);
 }
 
