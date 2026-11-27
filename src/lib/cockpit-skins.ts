@@ -77,9 +77,23 @@ export function applyCockpitSkin(id: CockpitSkinId): void {
   }
 }
 
-/** Boot skin from storage (call once in signed-in shell). */
+/** Read `?skin=` / `#skin=` for Design Lab deep-links (preview QA). */
+export function skinFromLocation(search = "", hash = ""): CockpitSkinId | null {
+  const fromSearch = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search).get(
+    "skin",
+  );
+  if (isCockpitSkinId(fromSearch)) return fromSearch;
+  const hashQuery = hash.includes("?") ? hash.slice(hash.indexOf("?") + 1) : hash.replace(/^#/, "");
+  const fromHash = new URLSearchParams(hashQuery).get("skin");
+  if (isCockpitSkinId(fromHash)) return fromHash;
+  return null;
+}
+
+/** Boot skin from URL override, then storage (call once in signed-in shell). */
 export function bootCockpitSkin(): CockpitSkinId {
-  const id = readCockpitSkin();
+  const fromUrl =
+    typeof window !== "undefined" ? skinFromLocation(window.location.search, window.location.hash) : null;
+  const id = fromUrl ?? readCockpitSkin();
   applyCockpitSkin(id);
   return id;
 }
