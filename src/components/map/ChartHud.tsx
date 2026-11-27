@@ -654,7 +654,7 @@ export function ChartReadout({
 }
 
 const FAB_BTN =
-  "thalvo-chart-sheet grid size-11 place-items-center rounded-[10px] border border-[color:var(--sheet-border)] shadow-[0_10px_28px_-14px_rgba(0,0,0,0.7)] backdrop-blur-md transition-colors hover:border-[rgba(0,240,255,0.4)] disabled:opacity-60 text-[color:var(--sheet-active-ink)]";
+  "thalvo-chart-sheet thalvo-fab-latch grid size-11 place-items-center border border-[color:var(--sheet-border)] shadow-[0_10px_28px_-14px_rgba(0,0,0,0.7)] backdrop-blur-md transition-colors hover:border-[color:var(--sheet-active-border)] disabled:opacity-60 text-[color:var(--sheet-active-ink)]";
 
 /**
  * Bottom-right ECDIS latch stack — AI, layers, locate.
@@ -859,7 +859,10 @@ export function ChartFabStack({
             className={FAB_BTN}
           >
             {locating ? (
-              <Loader2 className="size-[18px] animate-spin text-[#00F0FF]" />
+              <Loader2
+                className="size-[18px] animate-spin"
+                style={{ color: "var(--skin-active, #00F0FF)" }}
+              />
             ) : (
               <LocateMark size={20} />
             )}

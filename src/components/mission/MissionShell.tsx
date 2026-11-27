@@ -63,7 +63,7 @@ import { runWhenIdle } from "@/lib/schedule";
 import { consumeSignupWelcome } from "@/lib/signup-welcome";
 import { activateKeepAwake, releaseKeepAwake } from "@/lib/keep-awake";
 import { pushNativeBackHandler, wireNativeBackButton } from "@/lib/native-app";
-import { bootCockpitSkin } from "@/lib/cockpit-skins";
+import { bootCockpitSkin, COCKPIT_SKINS } from "@/lib/cockpit-skins";
 
 interface Props {
   profile: Profile;
@@ -111,8 +111,11 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
   useLayoutEffect(() => {
     setSheetHostReady(true);
   }, []);
+  const [skinLabel, setSkinLabel] = useState("ECDIS Klasik");
   useEffect(() => {
-    bootCockpitSkin();
+    const id = bootCockpitSkin();
+    const meta = COCKPIT_SKINS.find((s) => s.id === id);
+    setSkinLabel(meta?.nameTr ?? meta?.name ?? id);
   }, []);
   useEffect(() => {
     setWelcomeBanner(consumeSignupWelcome());
@@ -397,6 +400,11 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
             : "mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-5 pb-28"
         }
       >
+        {fullBleed ? (
+          <div className="thalvo-skin-badge" aria-hidden>
+            {skinLabel}
+          </div>
+        ) : null}
         {welcomeBanner && (
           <div
             className={

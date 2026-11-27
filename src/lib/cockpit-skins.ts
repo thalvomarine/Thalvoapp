@@ -77,16 +77,31 @@ export function applyCockpitSkin(id: CockpitSkinId): void {
   }
 }
 
-/** Read `?skin=` / `#skin=` for Design Lab deep-links (preview QA). */
-export function skinFromLocation(search = "", hash = ""): CockpitSkinId | null {
-  const fromSearch = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search).get(
-    "skin",
-  );
-  if (isCockpitSkinId(fromSearch)) return fromSearch;
-  const hashQuery = hash.includes("?") ? hash.slice(hash.indexOf("?") + 1) : hash.replace(/^#/, "");
-  const fromHash = new URLSearchParams(hashQuery).get("skin");
-  if (isCockpitSkinId(fromHash)) return fromHash;
+function skinFromSearchParams(params: URLSearchParams): CockpitSkinId | null {
+  const direct = params.get("skin");
+  if (isCockpitSkinId(direct)) return direct;
+  // Auth gate: /auth?next=/app?skin=harbour — recover skin before login.
+  const next = params.get("next");
+  if (next) {
+    try {
+      const nested = new URL(next, "https://thalvo.local");
+      const fromNext = nested.searchParams.get("skin");
+      if (isCockpitSkinId(fromNext)) return fromNext;
+    } catch {
+      /* ignore */
+    }
+  }
   return null;
+}
+
+/** Read `?skin=` / `#skin=` / auth `?next=` for Design Lab deep-links. */
+export function skinFromLocation(search = "", hash = ""): CockpitSkinId | null {
+  const fromSearch = skinFromSearchParams(
+    new URLSearchParams(search.startsWith("?") ? search.slice(1) : search),
+  );
+  if (fromSearch) return fromSearch;
+  const hashQuery = hash.includes("?") ? hash.slice(hash.indexOf("?") + 1) : hash.replace(/^#/, "");
+  return skinFromSearchParams(new URLSearchParams(hashQuery));
 }
 
 /** Boot skin from URL override, then storage (call once in signed-in shell). */
