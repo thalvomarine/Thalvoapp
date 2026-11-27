@@ -25,10 +25,8 @@ BEGIN
   IF auth.uid() IS NULL THEN
     RAISE EXCEPTION 'Not authorized';
   END IF;
-  IF NOT EXISTS (
-    SELECT 1 FROM public.profiles
-    WHERE id = auth.uid() AND role::text = 'Client'
-  ) THEN
+  -- Accept Client and legacy 'captain' (UI normalizeUserRole maps both to Client).
+  IF NOT public.is_captain_client(auth.uid()) THEN
     RAISE EXCEPTION 'Only captains can request a quote';
   END IF;
   IF _lat IS NULL OR _lng IS NULL OR _lat < -90 OR _lat > 90 OR _lng < -180 OR _lng > 180 THEN
