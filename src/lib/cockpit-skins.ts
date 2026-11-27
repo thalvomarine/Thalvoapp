@@ -1,50 +1,6 @@
-/** Signed-in cockpit design skins — trust-first MarineOS languages. */
+/** Signed-in cockpit skin — Marina Concierge only (others retired). */
 
 export const COCKPIT_SKINS = [
-  {
-    id: "atlas",
-    name: "Atlas Soft",
-    nameTr: "Atlas Soft",
-    blurb:
-      "Calm ECDIS: deep navy, sea-glass readout, brass command — no neon glare.",
-    blurbTr:
-      "Sakin ECDIS: derin lacivert, deniz camı okuma, pirinç komuta — neon yok.",
-    swatch: "#7EB8C9",
-    trust: "Sertifikalı harita masası hissi",
-  },
-  {
-    id: "pilot",
-    name: "Pilot House",
-    nameTr: "Pilot House",
-    blurb:
-      "Real bridge night: matte black, warm instrument amber, flat SOS, dense HUD.",
-    blurbTr:
-      "Gerçek köprüüstü gecesi: mat siyah, sıcak enstrüman amber, düz SOS, sıkı HUD.",
-    swatch: "#E0A84A",
-    trust: "Gece seyri için köprü dili",
-  },
-  {
-    id: "passage",
-    name: "Passage Chart",
-    nameTr: "Seyir Haritası",
-    blurb:
-      "Day chart table: warm paper ground, navy ink, coastal blue — readable offshore.",
-    blurbTr:
-      "Gündüz harita masası: sıcak kâğıt zemin, lacivert mürekkep, kıyı mavisi.",
-    swatch: "#2F6F8F",
-    trust: "Kağıt harita güveni, dijital netlik",
-  },
-  {
-    id: "watch",
-    name: "Watch Desk",
-    nameTr: "Nöbet Masası",
-    blurb:
-      "Ops desk for usta/servis: slate panels, steel blue live, red only for SOS.",
-    blurbTr:
-      "Usta/servis nöbet masası: slate paneller, çelik mavi canlı, kırmızı yalnız SOS.",
-    swatch: "#6B8CAE",
-    trust: "Operasyon masası — triyaj netliği",
-  },
   {
     id: "marina",
     name: "Marina Concierge",
@@ -62,16 +18,21 @@ export type CockpitSkinId = (typeof COCKPIT_SKINS)[number]["id"];
 
 export const COCKPIT_SKIN_STORAGE = "thalvo-cockpit-skin";
 
+/** Retired Design Lab ids → Marina Concierge. */
 const LEGACY_SKIN_MAP: Record<string, CockpitSkinId> = {
-  ecdis: "atlas",
-  bridge: "pilot",
-  dayplot: "passage",
-  rail: "watch",
+  atlas: "marina",
+  pilot: "marina",
+  passage: "marina",
+  watch: "marina",
+  ecdis: "marina",
+  bridge: "marina",
+  dayplot: "marina",
+  rail: "marina",
   harbour: "marina",
 };
 
 export function isCockpitSkinId(value: unknown): value is CockpitSkinId {
-  return COCKPIT_SKINS.some((s) => s.id === value);
+  return value === "marina";
 }
 
 export function resolveCockpitSkinId(value: unknown): CockpitSkinId | null {
@@ -83,7 +44,7 @@ export function resolveCockpitSkinId(value: unknown): CockpitSkinId | null {
 }
 
 export function readCockpitSkin(): CockpitSkinId {
-  if (typeof window === "undefined") return "atlas";
+  if (typeof window === "undefined") return "marina";
   try {
     const raw = localStorage.getItem(COCKPIT_SKIN_STORAGE);
     const resolved = resolveCockpitSkinId(raw);
@@ -91,10 +52,10 @@ export function readCockpitSkin(): CockpitSkinId {
   } catch {
     /* private mode */
   }
-  return "atlas";
+  return "marina";
 }
 
-export function applyCockpitSkin(id: CockpitSkinId): void {
+export function applyCockpitSkin(id: CockpitSkinId = "marina"): void {
   if (typeof document === "undefined") return;
   document.documentElement.setAttribute("data-thalvo-skin", id);
   try {
@@ -107,7 +68,6 @@ export function applyCockpitSkin(id: CockpitSkinId): void {
 function skinFromSearchParams(params: URLSearchParams): CockpitSkinId | null {
   const direct = resolveCockpitSkinId(params.get("skin"));
   if (direct) return direct;
-  // Auth gate: /auth?next=/app?skin=marina — recover skin before login.
   const next = params.get("next");
   if (next) {
     try {
@@ -120,7 +80,6 @@ function skinFromSearchParams(params: URLSearchParams): CockpitSkinId | null {
   return null;
 }
 
-/** Read `?skin=` / `#skin=` / auth `?next=` for Design Lab deep-links. */
 export function skinFromLocation(search = "", hash = ""): CockpitSkinId | null {
   const fromSearch = skinFromSearchParams(
     new URLSearchParams(search.startsWith("?") ? search.slice(1) : search),
@@ -130,7 +89,7 @@ export function skinFromLocation(search = "", hash = ""): CockpitSkinId | null {
   return skinFromSearchParams(new URLSearchParams(hashQuery));
 }
 
-/** Boot skin from URL override, then storage. */
+/** Always boots Marina Concierge (URL/legacy aliases map here). */
 export function bootCockpitSkin(): CockpitSkinId {
   const fromUrl =
     typeof window !== "undefined" ? skinFromLocation(window.location.search, window.location.hash) : null;
@@ -139,6 +98,6 @@ export function bootCockpitSkin(): CockpitSkinId {
   return id;
 }
 
-export function skinMeta(id: CockpitSkinId) {
-  return COCKPIT_SKINS.find((s) => s.id === id) ?? COCKPIT_SKINS[0];
+export function skinMeta(_id: CockpitSkinId = "marina") {
+  return COCKPIT_SKINS[0];
 }

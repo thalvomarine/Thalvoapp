@@ -1,30 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  applyCockpitSkin,
-  COCKPIT_SKINS,
-  readCockpitSkin,
-  type CockpitSkinId,
-} from "@/lib/cockpit-skins";
+import { applyCockpitSkin, COCKPIT_SKINS } from "@/lib/cockpit-skins";
 
-/** Design Lab — live skin switcher for signed-in cockpit chrome. */
+/** Design Lab — Marina Concierge locked; other skins retired. */
 export function CockpitSkinPicker() {
-  const { i18n, t } = useTranslation();
-  const tr = i18n.language?.startsWith("tr");
-  const [skin, setSkin] = useState<CockpitSkinId>(() =>
-    typeof document !== "undefined" ? readCockpitSkin() : "atlas",
-  );
+  const { t } = useTranslation();
+  const marina = COCKPIT_SKINS[0];
 
   useEffect(() => {
-    const current = readCockpitSkin();
-    setSkin(current);
-    applyCockpitSkin(current);
+    applyCockpitSkin("marina");
   }, []);
-
-  const choose = (id: CockpitSkinId) => {
-    setSkin(id);
-    applyCockpitSkin(id);
-  };
 
   return (
     <div>
@@ -33,44 +18,20 @@ export function CockpitSkinPicker() {
       </p>
       <p className="mt-1 text-[11px] leading-snug text-white/45">
         {t("profile.design_lab_hint", {
-          defaultValue:
-            "Beş gerçekçi kokpit dili — güven ve okunabilirlik önce. Anında uygulanır.",
+          defaultValue: "Seçilen dil: Marina Concierge. Diğer denemeler kaldırıldı; iyileştirme bu dil üzerinde.",
         })}
       </p>
-      <div className="mt-2 grid gap-1.5">
-        {COCKPIT_SKINS.map((item) => {
-          const active = skin === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => choose(item.id)}
-              className={
-                "rounded-xl border px-3 py-2.5 text-left transition-colors " +
-                (active
-                  ? "border-white/25 bg-white/10"
-                  : "border-white/10 bg-white/5 hover:border-white/20")
-              }
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span className={"text-[12px] font-semibold " + (active ? "text-white" : "text-white/80")}>
-                  {tr ? item.nameTr : item.name}
-                </span>
-                <span
-                  className="size-2.5 shrink-0 rounded-full"
-                  style={{ background: item.swatch }}
-                  aria-hidden
-                />
-              </div>
-              <p className={"mt-0.5 text-[10px] leading-snug " + (active ? "text-white/70" : "text-white/45")}>
-                {tr ? item.blurbTr : item.blurb}
-              </p>
-              <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/35">
-                {item.trust}
-              </p>
-            </button>
-          );
-        })}
+      <div
+        className="mt-2 rounded-xl border border-[color:rgb(201_184_150_/0.35)] bg-[color:rgb(201_184_150_/0.1)] px-3 py-2.5"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[12px] font-semibold text-[#f4efe6]">{marina.nameTr}</span>
+          <span className="size-2.5 shrink-0 rounded-full" style={{ background: marina.swatch }} aria-hidden />
+        </div>
+        <p className="mt-0.5 text-[10px] leading-snug text-white/55">{marina.blurbTr}</p>
+        <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/35">
+          {marina.trust}
+        </p>
       </div>
     </div>
   );

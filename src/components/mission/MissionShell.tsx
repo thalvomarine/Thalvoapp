@@ -111,11 +111,10 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
   useLayoutEffect(() => {
     setSheetHostReady(true);
   }, []);
-  const [skinLabel, setSkinLabel] = useState("Atlas Soft");
+  const [skinLabel, setSkinLabel] = useState("Marina Concierge");
   useEffect(() => {
     const id = bootCockpitSkin();
-    const meta = skinMeta(id);
-    setSkinLabel(meta.nameTr);
+    setSkinLabel(skinMeta(id).nameTr);
   }, []);
   useEffect(() => {
     setWelcomeBanner(consumeSignupWelcome());
