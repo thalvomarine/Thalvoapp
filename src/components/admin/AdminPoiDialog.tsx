@@ -20,9 +20,9 @@ interface Props {
 }
 
 const fieldClass =
-  "w-full h-9 rounded-lg border border-amber-500/25 bg-[#0a192f]/70 px-2.5 text-[12px] text-white outline-none focus:border-amber-400/70";
+  "w-full h-9 rounded-xl border border-[color:var(--sheet-border,#c9b89646)] bg-[color:var(--sheet-chip,rgba(201,184,150,0.08))] px-2.5 text-[12px] text-[color:var(--sheet-ink,#f4efe6)] outline-none focus:border-[color:var(--sheet-active-border)]";
 const labelClass =
-  "mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-300/70";
+  "mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--sheet-active-ink,#c9b896)]";
 
 /**
  * Manual chart-point entry — the Control Tower counterpart to the on-map
@@ -109,10 +109,10 @@ export function AdminPoiDialog({ onSaved }: Props) {
           }
         }}
       >
-        <DialogContent className="thalvo-dark border-amber-500/30 bg-[#0a192f]/95 text-white backdrop-blur-xl sm:max-w-[460px]">
+        <DialogContent className="thalvo-chart-sheet border-[color:var(--sheet-border)] text-[color:var(--sheet-ink)] backdrop-blur-xl sm:max-w-[460px]">
           <DialogHeader>
-            <DialogTitle className="text-white">{t("admin.poi.title")}</DialogTitle>
-            <DialogDescription className="text-white/60">
+            <DialogTitle style={{ color: "var(--sheet-ink)" }}>{t("admin.poi.title")}</DialogTitle>
+            <DialogDescription style={{ color: "var(--sheet-muted)" }}>
               {t("admin.poi.subtitle")}
             </DialogDescription>
           </DialogHeader>
@@ -202,12 +202,12 @@ export function AdminPoiDialog({ onSaved }: Props) {
                 maxLength={600}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-lg border border-amber-500/25 bg-[#0a192f]/70 p-2.5 text-[12px] text-white outline-none focus:border-amber-400/70"
+                className={"w-full rounded-xl p-2.5 " + fieldClass}
               />
             </label>
 
             {error && (
-              <p className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-2 text-[11px] text-rose-200">
+              <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-2 text-[11px] text-rose-200">
                 {error}
               </p>
             )}
@@ -218,7 +218,8 @@ export function AdminPoiDialog({ onSaved }: Props) {
               type="button"
               onClick={() => setOpen(false)}
               disabled={pending}
-              className="h-9 rounded-lg border border-white/15 px-3 text-[11px] font-semibold text-white/70 disabled:opacity-50"
+              className="h-9 rounded-xl border px-3 text-[11px] font-semibold disabled:opacity-50"
+              style={{ borderColor: "var(--sheet-border)", color: "var(--sheet-muted)" }}
             >
               {t("admin.actions.cancel")}
             </button>
@@ -226,7 +227,8 @@ export function AdminPoiDialog({ onSaved }: Props) {
               type="button"
               onClick={() => void save()}
               disabled={pending}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-amber-400 px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-[#0a192f] disabled:opacity-50"
+              className="inline-flex h-9 items-center gap-1.5 rounded-xl px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-[#0a192f] disabled:opacity-50"
+              style={{ background: "var(--skin-command, #c9b896)" }}
             >
               {pending && <Loader2 className="size-3.5 animate-spin" />}
               {t("admin.poi.save")}

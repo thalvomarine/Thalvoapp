@@ -294,11 +294,19 @@ function ChartHudBody({
               stopMapEvent(e);
               onDownloadOfflineTiles();
             }}
-            className={
-              "flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border text-[11px] font-bold uppercase tracking-[0.04em] transition-all " +
-              (tileDownloadActive
-                ? "border-amber-400/50 bg-amber-400/15 text-amber-100"
-                : SHEET_BTN)
+            className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border text-[11px] font-bold uppercase tracking-[0.04em] transition-all"
+            style={
+              tileDownloadActive
+                ? {
+                    borderColor: "var(--sheet-active-border)",
+                    background: "var(--sheet-active-bg)",
+                    color: "var(--sheet-active-ink)",
+                  }
+                : {
+                    borderColor: "var(--sheet-active-border)",
+                    background: "var(--skin-command, #c9b896)",
+                    color: "#0a192f",
+                  }
             }
           >
             {tileDownloadActive ? (

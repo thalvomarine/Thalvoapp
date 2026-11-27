@@ -266,24 +266,37 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
     <div className="fixed inset-0 z-[80]" onClick={() => setOpen(false)}>
       <div className="absolute inset-0 bg-[#020814]/40" />
       <section
-        className="thalvo-ai-panel absolute flex flex-col overflow-hidden rounded-3xl shadow-2xl inset-x-3 sm:inset-x-auto sm:right-4 sm:w-[400px]"
+        className="thalvo-ai-panel thalvo-chart-sheet absolute inset-x-3 flex flex-col overflow-hidden rounded-3xl border shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:right-4 sm:w-[400px]"
         style={{
           bottom: `calc(max(0.75rem, env(safe-area-inset-bottom)) + ${keyboardInset}px)`,
           height: "min(72dvh, 640px)",
-          background: "linear-gradient(180deg, #0B1B33 0%, #0A192F 100%)",
-          border: "1px solid rgba(255,255,255,0.12)",
         }}
         onClick={(event) => event.stopPropagation()}
         aria-label="THALVO AI"
       >
-        <header className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+        <header
+          className="flex items-center justify-between border-b px-4 py-3"
+          style={{ borderColor: "var(--sheet-border)" }}
+        >
           <div className="flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-xl border border-amber-300/40 bg-[#0F2440]">
+            <div
+              className="grid size-10 place-items-center rounded-xl border"
+              style={{
+                borderColor: "var(--sheet-active-border)",
+                background: "var(--sheet-active-bg)",
+                color: "var(--sheet-active-ink)",
+              }}
+            >
               <AiMark size={22} />
             </div>
             <div>
-              <p className="text-[13px] font-semibold tracking-wide text-white">THALVO AI</p>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-amber-100/70">
+              <p className="text-[13px] font-semibold tracking-wide" style={{ color: "var(--sheet-ink)" }}>
+                THALVO AI
+              </p>
+              <p
+                className="text-[10px] uppercase tracking-[0.18em]"
+                style={{ color: "var(--sheet-active-ink)" }}
+              >
                 {lang === "en" ? "Chief engineer" : "Başmühendis"}
               </p>
             </div>
@@ -311,12 +324,30 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
         <div ref={scrollRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
           {messages.length === 0 && (
             <div className="space-y-4">
-              <div className="rounded-xl border border-dashed border-white/12 bg-white/[0.02] px-4 py-5 text-center">
-                <div className="mx-auto grid size-11 place-items-center rounded-full border border-[#F5B942]/30 bg-[#F5B942]/10">
+              <div
+                className="rounded-2xl border px-4 py-5 text-center"
+                style={{
+                  borderColor: "var(--sheet-border)",
+                  background: "var(--sheet-chip)",
+                }}
+              >
+                <div
+                  className="mx-auto grid size-11 place-items-center rounded-full border"
+                  style={{
+                    borderColor: "var(--sheet-active-border)",
+                    background: "var(--sheet-active-bg)",
+                    color: "var(--sheet-active-ink)",
+                  }}
+                >
                   <AiMark size={22} />
                 </div>
-                <p className="thalvo-display mt-3 text-lg tracking-wide text-white">THALVO AI</p>
-                <p className="mt-2 text-[12px] leading-relaxed text-white/55">
+                <p
+                  className="thalvo-display mt-3 text-lg tracking-wide"
+                  style={{ color: "var(--sheet-ink)" }}
+                >
+                  THALVO AI
+                </p>
+                <p className="mt-2 text-[12px] leading-relaxed" style={{ color: "var(--sheet-muted)" }}>
                   {lang === "en"
                     ? "Ask about an engine fault, the sea state, or where to go in THALVO."
                     : "Motor arızası, deniz durumu veya THALVO'da nereye gideceğini sor."}
@@ -328,7 +359,12 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
                     key={pill}
                     type="button"
                     onClick={() => void send(pill)}
-                    className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-left text-[12.5px] leading-snug text-white/90 hover:border-[#F5B942]/35 hover:bg-white/[0.06]"
+                    className="rounded-xl border px-3 py-2.5 text-left text-[12.5px] leading-snug transition-colors"
+                    style={{
+                      borderColor: "var(--sheet-border)",
+                      background: "var(--sheet-chip)",
+                      color: "var(--sheet-ink)",
+                    }}
                   >
                     {pill}
                   </button>
@@ -349,8 +385,11 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
         </div>
 
         <form
-          className="flex items-end gap-2 border-t border-white/10 p-3"
-          style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
+          className="flex items-end gap-2 border-t p-3"
+          style={{
+            borderColor: "var(--sheet-border)",
+            paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
+          }}
           onSubmit={(event) => {
             event.preventDefault();
             void send(input);
@@ -373,7 +412,11 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
             onClick={() => fileRef.current?.click()}
             disabled={busy}
             aria-label={lang === "en" ? "Photograph a plate or part" : "Plaka veya parça fotoğrafı"}
-            className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/10 text-amber-100 hover:bg-white/10 disabled:opacity-40"
+            className="grid size-11 shrink-0 place-items-center rounded-xl border disabled:opacity-40"
+            style={{
+              borderColor: "var(--sheet-border)",
+              color: "var(--sheet-active-ink)",
+            }}
           >
             <Camera className="size-4" />
           </button>
@@ -388,13 +431,19 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
             }}
             maxLength={4000}
             placeholder={t("ai.placeholder")}
-            className="h-11 min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-amber-300/50"
+            className="h-11 min-w-0 flex-1 rounded-xl border px-3.5 text-sm outline-none"
+            style={{
+              borderColor: "var(--sheet-border)",
+              background: "var(--sheet-chip)",
+              color: "var(--sheet-ink)",
+            }}
           />
           <button
             type="submit"
             disabled={busy || !input.trim()}
             aria-label={t("common.send", { defaultValue: "Send" })}
-            className="grid size-11 place-items-center rounded-xl bg-[#F5B942] text-[#1A1406] disabled:opacity-40 hover:bg-[#ffc857]"
+            className="grid size-11 place-items-center rounded-xl text-[#1A1406] disabled:opacity-40"
+            style={{ background: "var(--skin-command, #c9b896)" }}
           >
             <Send className="size-4" />
           </button>

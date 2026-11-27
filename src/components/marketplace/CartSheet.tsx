@@ -139,7 +139,29 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
 
         <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           {cart.items.length === 0 ? (
-            <p className="py-12 text-center text-sm text-white/50">{t("shop.empty_cart")}</p>
+            <div className="flex flex-col items-center gap-3 py-10 text-center">
+              <span
+                className="grid size-14 place-items-center rounded-2xl border"
+                style={{
+                  borderColor: "var(--desk-border, rgba(201,184,150,0.28))",
+                  background: "var(--desk-chip, rgba(201,184,150,0.08))",
+                  color: "var(--desk-price, #c9b896)",
+                }}
+              >
+                <Package className="size-6" />
+              </span>
+              <p className="text-sm" style={{ color: "var(--desk-muted, rgba(210,200,180,0.62))" }}>
+                {t("shop.empty_cart")}
+              </p>
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-1 inline-flex h-10 items-center rounded-xl px-4 text-[12px] font-bold uppercase tracking-[0.12em] text-[#0a192f]"
+                style={{ background: "var(--desk-active, #c9b896)" }}
+              >
+                {t("shop.browse_parts", { defaultValue: "Pazara dön" })}
+              </button>
+            </div>
           ) : (
             <>
               <ul className="space-y-2">
