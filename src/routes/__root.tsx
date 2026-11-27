@@ -124,7 +124,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "THALVO | Safe Voyage, Instant Response — certified marine mechanics and professional divers on demand across the Aegean and Mediterranean.",
       },
-      { name: "theme-color", content: "#0A192F" },
+      { name: "theme-color", content: "#0C2226" },
       { name: "color-scheme", content: "dark" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },

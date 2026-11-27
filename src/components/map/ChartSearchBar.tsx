@@ -62,7 +62,7 @@ export function ChartSearchBar({
   const showDropdown = focused && query.trim().length > 0;
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex flex-col gap-1.5 px-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+    <div className="thalvo-safe-top-bar pointer-events-none absolute inset-x-0 top-0 z-[500] flex flex-col gap-1.5 px-3">
       <LeafletPointerGuard className="pointer-events-none relative z-[10] flex min-w-0 items-center gap-2">
         <div className="pointer-events-auto relative z-0 min-w-0 flex-1">
           <div

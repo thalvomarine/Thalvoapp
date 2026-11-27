@@ -228,7 +228,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
     >
       {/* Top status rail — replaced by the map cockpit's own floating top bar in fullBleed mode */}
       {!fullBleed && (
-        <header className="sticky top-0 z-30 border-b border-[#C9B896]/12 bg-[#0C2226]/94 backdrop-blur-xl pt-[env(safe-area-inset-top)]">
+        <header className="thalvo-safe-top sticky top-0 z-30 border-b border-[#C9B896]/12 bg-[#0C2226]/94 backdrop-blur-xl">
           <div className="mx-auto flex h-12 max-w-6xl items-center justify-between gap-3 px-4">
             <Link to="/app" className="flex min-w-0 items-center gap-2.5">
               <Wordmark size="sm" className="text-white" />
@@ -266,13 +266,8 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
           failures inside <main> cannot unmount SOS. Rendered before the map
           subtree so the control is committed even if the chart throws. */}
       {sheetHostReady && !firstRun.open && (
-      <nav
-        className="pointer-events-none fixed inset-x-0 z-50"
-        style={{
-          bottom: "max(1rem, env(safe-area-inset-bottom))",
-        }}
-      >
-        <div className="pointer-events-auto mx-auto w-full max-w-lg px-3">
+      <nav className="thalvo-safe-bottom-pad pointer-events-none fixed inset-x-0 bottom-0 z-50 bg-gradient-to-t from-[#0C2226] via-[#0C2226]/92 to-transparent pt-3">
+        <div className="pointer-events-auto mx-auto w-full max-w-lg px-3 pb-1">
           <div className="thalvo-dock-shell border border-white/12 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur-xl">
             <div
               className={

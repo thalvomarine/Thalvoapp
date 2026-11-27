@@ -83,7 +83,8 @@ export function ProviderOpsDeck({
   );
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-28 z-[50] flex justify-center px-3 sm:px-6">
+    {/* Leave a right gutter for ChartFabStack so AI / layers / locate never sit on this strip. */}
+    <div className="thalvo-map-above-dock pointer-events-none absolute inset-x-0 z-[50] flex justify-center pl-3 pr-[4.5rem] sm:px-6">
       <div
         className={
           "thalvo-provider-ops pointer-events-auto w-full max-w-[22rem] overflow-hidden border shadow-2xl backdrop-blur-xl transition-[max-height] duration-300 " +

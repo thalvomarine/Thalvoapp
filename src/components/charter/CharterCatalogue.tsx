@@ -253,7 +253,7 @@ export function CharterCatalogue() {
 
   return (
     <div className="thalvo-dark min-h-dvh bg-[#0C2226] text-white">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0C2226]/90 backdrop-blur-xl">
+      <header className="thalvo-safe-top sticky top-0 z-40 border-b border-white/10 bg-[#0C2226]/90 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-5 py-3">
           <Link to="/" className="flex items-center gap-3">
             <Wordmark size="sm" className="text-white" decorative />
@@ -366,7 +366,7 @@ export function CharterCatalogue() {
               </div>
             </div>
 
-            <div className="sticky top-14 z-30 -mx-5 border-y border-white/10 bg-[#0C2226]/95 px-5 py-3 backdrop-blur-xl lg:hidden">
+            <div className="sticky top-[calc(env(safe-area-inset-top,0px)+3.5rem)] z-30 -mx-5 border-y border-white/10 bg-[#0C2226]/95 px-5 py-3 backdrop-blur-xl lg:hidden">
               <FilterRail
                 minCabins={minCabins}
                 setMinCabins={setMinCabins}

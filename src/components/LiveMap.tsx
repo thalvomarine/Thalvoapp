@@ -1783,7 +1783,7 @@ function LiveMapCanvas({
             )}
 
             {tileProgress && (
-              <div className="pointer-events-none absolute top-[calc(env(safe-area-inset-top)+0.75rem)] left-1/2 z-[460] -translate-x-1/2 px-3">
+              <div className="thalvo-safe-top-bar pointer-events-none absolute left-1/2 top-0 z-[460] -translate-x-1/2 px-3">
                 <div className="pointer-events-auto rounded-full border border-amber-400/35 bg-[#0C2226]/92 px-3.5 py-1.5 font-mono text-[11px] text-[#E8DFC8] shadow-2xl backdrop-blur-md">
                   {tileProgress.percent >= 100 && !tileProgress.cancelled
                     ? t("chart.offline_download_done")
@@ -1801,7 +1801,7 @@ function LiveMapCanvas({
             )}
 
             {!hud && (
-              <div className="pointer-events-auto absolute top-[calc(env(safe-area-inset-top)+0.75rem)] left-3 z-20 flex max-w-[min(220px,calc(100vw-5.5rem))] flex-col items-start gap-2">
+              <div className="thalvo-safe-top-bar pointer-events-auto absolute left-3 top-0 z-20 flex max-w-[min(220px,calc(100vw-5.5rem))] flex-col items-start gap-2">
                 {brand}
                 {fix && (
                   <div className="flex items-center gap-2">
