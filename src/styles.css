@@ -824,15 +824,15 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
 }
 .thalvo-live-pin {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
 }
 .thalvo-live-ring {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid var(--ring, #e6e0d4);
   box-shadow: none;
