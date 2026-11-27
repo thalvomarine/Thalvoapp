@@ -211,10 +211,10 @@ const CLEAR_ERROR_TILE =
   "data:image/svg+xml;charset=UTF-8," +
   encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"/>`);
 
-function markIcon(html: string, live = false, ring = "#00F0FF") {
+function markIcon(html: string, live = false, ring = "#E6E0D4") {
   return L.divIcon({
     html: live
-      ? `<div class="thalvo-live-pin" style="--ring:${ring}">${html}<span class="thalvo-live-ring"></span><span class="thalvo-live-ring is-late"></span></div>`
+      ? `<div class="thalvo-live-pin" style="--ring:${ring}">${html}<span class="thalvo-live-ring"></span></div>`
       : html,
     className: "thalvo-map-marker",
     iconSize: CHART_PIN_SIZE,
@@ -228,7 +228,7 @@ function pinIcon(kind: ChartPinKind, live = false, ring?: string) {
 }
 
 function actorIcon(actor: ActorPin, tone: ActorTone, live = false) {
-  const ring = tone === "gold" ? "#F5B942" : tone === "red" ? "#FB7185" : "#00F0FF";
+  const ring = tone === "gold" ? "#C6A15A" : tone === "red" ? "#C45C4A" : "#C5D0D6";
   return markIcon(actorPinHtml(actor, tone), live, ring);
 }
 
@@ -246,13 +246,13 @@ const capGoldIcon = actorIcon("cap", "gold");
 const capGoldLiveIcon = actorIcon("cap", "gold", true);
 const capRedIcon = actorIcon("cap", "red");
 const capRedLiveIcon = actorIcon("cap", "red", true);
-const diverIcon = pinIcon("diver", false, "#22D3EE");
-const diverLiveIcon = pinIcon("diver", true, "#22D3EE");
-const vesselIcon = pinIcon("vessel", false, "#7DD3FC");
-const vesselLiveIcon = pinIcon("vessel", true, "#7DD3FC");
-const sosIcon = pinIcon("hazard", false, "#FB7185");
-const sosLiveIcon = pinIcon("hazard", true, "#FB7185");
-const ownLiveIcon = pinIcon("own", true, "#00F0FF");
+const diverIcon = pinIcon("diver");
+const diverLiveIcon = pinIcon("diver", true, "#C5D0D6");
+const vesselIcon = pinIcon("vessel");
+const vesselLiveIcon = pinIcon("vessel", true, "#C5D0D6");
+const sosIcon = pinIcon("hazard");
+const sosLiveIcon = pinIcon("hazard", true, "#C45C4A");
+const ownLiveIcon = pinIcon("own", true, "#C5D0D6");
 
 const ZONE_ICONS: Record<MarineZoneKind, L.DivIcon> = {
   marina: pinIcon("marina"),
@@ -263,8 +263,8 @@ const ZONE_ICONS: Record<MarineZoneKind, L.DivIcon> = {
   anchorage: pinIcon("anchorage"),
 };
 
-const meIcon = pinIcon("own", false, "#00F0FF");
-const reportIcon = pinIcon("report", false, "#F8FAFC");
+const meIcon = pinIcon("own");
+const reportIcon = pinIcon("report");
 
 function Recenter({
   center,

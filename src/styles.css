@@ -829,32 +829,29 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
 }
 .thalvo-live-pin {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
 }
 .thalvo-live-ring {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  border: 2px solid var(--ring, #00f0ff);
-  box-shadow: 0 0 12px var(--ring, #00f0ff);
-  transform: translate(-50%, -50%) scale(0.62);
-  animation: thalvo-pin-ring 1.5s ease-out infinite;
+  border: 1px solid var(--ring, #e6e0d4);
+  box-shadow: none;
+  transform: translate(-50%, -50%) scale(0.9);
+  animation: thalvo-pin-ring 2.6s ease-out infinite;
   pointer-events: none;
-}
-.thalvo-live-ring.is-late {
-  animation-delay: 0.75s;
 }
 @keyframes thalvo-pin-ring {
   0% {
-    transform: translate(-50%, -50%) scale(0.62);
-    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0.55;
   }
   100% {
-    transform: translate(-50%, -50%) scale(1.75);
+    transform: translate(-50%, -50%) scale(1.6);
     opacity: 0;
   }
 }

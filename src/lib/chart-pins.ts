@@ -13,83 +13,111 @@ export type ChartPinKind =
 export type ActorPin = "wrench" | "cap";
 export type ActorTone = "cyan" | "gold" | "red";
 
-const TONE: Record<ActorTone, string> = {
-  cyan: "#00F0FF",
-  gold: "#F5B942",
-  red: "#FB7185",
+/** Night-chart ink. One material, shape does the telling. */
+const FACE = "#141C28";
+const INK = "#E6E0D4";
+const HAIR = "rgba(230,224,212,0.34)";
+const SIZE = 34;
+
+const EDGE: Record<ActorTone, string> = {
+  cyan: "rgba(176,196,208,0.55)",
+  gold: "rgba(198,161,90,0.72)",
+  red: "rgba(196,92,74,0.9)",
 };
 
-const PLACE: Record<ChartPinKind, { color: string; glyph: string }> = {
+function face(edge: string, body: string): string {
+  return `<div class="thalvo-disc" style="width:${SIZE}px;height:${SIZE}px;border-radius:50%;background:${FACE};box-shadow:inset 0 0 0 1px ${edge};display:grid;place-items:center;box-sizing:border-box">${body}</div>`;
+}
+
+function svg(body: string, width = 18): string {
+  return `<svg width="${width}" height="${width}" viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
+}
+
+const PLACE: Record<ChartPinKind, { edge: string; glyph: string }> = {
   marina: {
-    color: "#F5B942",
-    glyph: `<path d="M3.4 7.4h17.2" stroke-width="2.2"/><path d="M12 7.4v10.4" stroke-width="2.2"/><circle cx="4.6" cy="7.4" r="1.2" fill="#F5B942" stroke="none"/><circle cx="19.4" cy="7.4" r="1.2" fill="#F5B942" stroke="none"/><path d="M8.6 17.8h6.8"/>`,
+    edge: HAIR,
+    glyph: svg(
+      `<rect x="2.2" y="6.4" width="19.6" height="2.5" rx=".3" fill="${INK}"/><rect x="10.75" y="8.7" width="2.5" height="10.4" rx=".3" fill="${INK}"/>`,
+    ),
   },
   anchorage: {
-    color: "#34D399",
-    glyph: `<circle cx="12" cy="4.4" r="1.35" fill="#34D399" stroke="none"/><path d="M12 5.7v8.6M8.6 8.1h6.8"/><path d="M12 14.2c-3.6 0-5.6 2.1-5.6 4.4h2.3c0-1.3 1.1-2.2 3.3-2.2s3.3.9 3.3 2.2h2.3c0-2.3-2-4.4-5.6-4.4z"/>`,
+    edge: HAIR,
+    glyph: svg(
+      `<g fill="${INK}"><circle cx="12" cy="4.05" r="1.7"/><circle cx="12" cy="4.05" r=".72" fill="${FACE}"/><rect x="11.25" y="5.55" width="1.5" height="7"/><rect x="7.5" y="6.7" width="9" height="1.4"/><path d="M12 12.2c-3.7 0-5.7 2.2-5.9 4.7h1.9c.2-1.3 1.5-2.4 4-2.4s3.8 1.1 4 2.4h1.9c-.2-2.5-2.2-4.7-5.9-4.7z"/></g>`,
+    ),
   },
   fuel: {
-    color: "#FBBF24",
-    glyph: `<rect x="4.4" y="6.2" width="8.4" height="12.6" rx="1.3"/><path d="M6.2 9.4h4.8M12.8 8.2c2.4.1 3.6 1.3 3.6 3v3.4"/><path d="M16.4 14.6v2.2" stroke-width="2.1"/><circle cx="16.4" cy="18.2" r=".7" fill="#FBBF24" stroke="none"/>`,
+    edge: HAIR,
+    glyph: svg(
+      `<g fill="${INK}"><rect x="5.6" y="4.2" width="8.4" height="15.4" rx="1.15"/><rect x="7.15" y="6.15" width="5.3" height="3" fill="${FACE}"/><path d="M14 6.7h1.7c.95 0 1.7.75 1.7 1.7v4.3h-1.45V8.55H14z"/></g>`,
+    ),
   },
   hazard: {
-    color: "#FB7185",
-    glyph: `<path d="M12 3.6 20.4 12 12 20.4 3.6 12 12 3.6z"/><path d="M12 8.2v4.6M12 15.4v.6" stroke-width="2"/>`,
+    edge: "rgba(196,92,74,0.85)",
+    glyph: svg(`<path d="M12 3.4 20.1 12 12 20.6 3.9 12z" fill="#C45C4A"/>`),
   },
   lighthouse: {
-    color: "#FDE68A",
-    glyph: `<path d="M1.6 7.6h6.2M16.2 7.6h6.2" stroke-width="1.6"/><rect x="9.2" y="4.4" width="5.6" height="3.1" rx=".35"/><path d="M8 7.8h8M10 7.8 8.6 16.4h6.8L14 7.8M7.2 16.4h9.6M8.8 18.8h6.4"/>`,
+    edge: HAIR,
+    glyph: svg(
+      `<g fill="${INK}"><rect x="9.3" y="3.5" width="5.4" height="2.7"/><rect x="10.55" y="4.05" width="2.9" height="1.35" fill="${FACE}"/><rect x="8.15" y="6.05" width="7.7" height="1.15"/><path d="M10.25 7.2 8.7 17.1h6.6L13.75 7.2z"/><rect x="7.5" y="17.1" width="9" height="1.55"/></g>`,
+    ),
   },
   restaurant: {
-    color: "#C4B5FD",
-    glyph: `<path d="M5.2 3.8v6.2M3.6 3.8v2.8c0 1.2.9 1.7 1.6 1.7s1.6-.5 1.6-1.7V3.8M5.2 10v9.4"/><circle cx="14.4" cy="13.6" r="5.1"/>`,
+    edge: HAIR,
+    glyph: svg(
+      `<g fill="${INK}"><rect x="8.7" y="2.8" width="1.25" height="6.1"/><rect x="11.38" y="2.8" width="1.25" height="6.1"/><rect x="14.05" y="2.8" width="1.25" height="6.1"/><rect x="11.15" y="8.5" width="1.7" height="1.7"/><rect x="10.35" y="10" width="3.3" height="10.2" rx="1.35"/></g>`,
+    ),
   },
   own: {
-    color: "#00F0FF",
-    glyph: `<circle cx="12" cy="12.6" r="6.3"/><circle cx="12" cy="12.6" r="2.15" fill="#00F0FF" stroke="none"/><path d="M12 3v3.2" stroke-width="2.1"/>`,
+    edge: "rgba(176,196,208,0.6)",
+    glyph: svg(
+      `<circle cx="12" cy="13" r="5.1" fill="none" stroke="${INK}" stroke-width="1.35"/><circle cx="12" cy="13" r="1.65" fill="${INK}"/><path d="M12 4.1v3.05" stroke="${INK}" stroke-width="1.45" stroke-linecap="round"/>`,
+    ),
   },
   diver: {
-    color: "#22D3EE",
-    glyph: `<circle cx="11" cy="13.2" r="5"/><path d="M7.2 13.6h7.6"/><circle cx="9.2" cy="12.1" r=".85" fill="#22D3EE" stroke="none"/><circle cx="12.8" cy="12.1" r=".85" fill="#22D3EE" stroke="none"/><circle cx="16.8" cy="7.6" r="1.2"/><circle cx="18.8" cy="5.1" r=".75"/><circle cx="15.2" cy="5.6" r=".55"/>`,
+    edge: HAIR,
+    glyph: svg(
+      `<g fill="${INK}"><circle cx="12" cy="10.6" r="5.35"/><rect x="8.3" y="9.55" width="7.4" height="2.35" fill="${FACE}"/><rect x="8.4" y="15.7" width="7.2" height="1.7" rx=".3"/></g>`,
+    ),
   },
   vessel: {
-    color: "#7DD3FC",
-    glyph: `<path d="M12 3.2 17.6 19.2H6.4L12 3.2z"/><path d="M12 8.4v6.4" stroke-width="1.5"/>`,
+    edge: HAIR,
+    glyph: svg(`<path d="M12 3.3 16.5 18.8H7.5L12 3.3z" fill="${INK}"/>`),
   },
   report: {
-    color: "#F8FAFC",
-    glyph: `<path d="M6.6 3.8v16.4"/><path d="M6.6 4.6h10.2L13.2 9.2l3.6 4.4H6.6z" fill="#F8FAFC" fill-opacity=".2"/>`,
+    edge: HAIR,
+    glyph: svg(
+      `<g fill="${INK}"><rect x="6.3" y="3.2" width="1.45" height="17.2"/><path d="M7.75 4.1h9.4L13.5 8.7l3.65 4.3H7.75z"/></g>`,
+    ),
   },
 };
 
-function disc(color: string, body: string): string {
-    return `<div class="thalvo-disc" style="width:44px;height:44px;border-radius:50%;background:#071422;border:2px solid ${color};box-shadow:0 0 0 3px ${color}40;display:grid;place-items:center;box-sizing:border-box">${body}</div>`;
-}
-
-function stroked(color: string, body: string): string {
-  return `<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="${color}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${body}</g></svg>`;
-}
-
-/** Centered chart disc. The geographic anchor is the middle of the circle. */
+/** Centered chart disc. The geographic point is the middle of the circle. */
 export function chartPinHtml(kind: ChartPinKind): string {
   const place = PLACE[kind];
-  return disc(place.color, stroked(place.color, place.glyph));
+  return face(place.edge, place.glyph);
 }
 
 /**
- * Mission actors. The wrench turns around its own center.
- * The captain's cap stays still. Both discs share the same 44px box.
+ * Mission actors on the same disc.
+ * The wrench is a real open-end, turning a few degrees.
+ * The cap is a peaked captain's cap: white crown, black visor, dull gold band.
  */
 export function actorPinHtml(actor: ActorPin, tone: ActorTone = "cyan"): string {
-  const color = TONE[tone];
   if (actor === "wrench") {
-    const body = `<svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><g fill="${color}"><animateTransform attributeName="transform" type="rotate" values="-22 12 12;22 12 12;-22 12 12" dur="1.15s" repeatCount="indefinite"/><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g></svg>`;
-    return disc(color, body);
+    const body = svg(
+      `<g fill="${INK}"><animateTransform attributeName="transform" type="rotate" values="-9 12 12;9 12 12;-9 12 12" dur="2.8s" repeatCount="indefinite"/><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g>`,
+      17,
+    );
+    return face(EDGE[tone], body);
   }
-  const body = `<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.4 14.2h8.4c.55 0 .75.7.35 1.05l-1.5 1.15c-1.3.7-3.4.7-5.1.35l-2.15-.4v-2.15z" fill="${color}"/><path d="M3.6 15.5V9.2C3.6 6.4 5.8 4.4 8.6 4.4h2.4c2.5 0 4.4 1.7 4.4 4.4v6.7H3.6z" fill="#10243f" stroke="#F8FAFC" stroke-width="1.2"/><rect x="3.8" y="12.2" width="11.4" height="1.7" fill="${color}"/><circle cx="7.4" cy="9.4" r="1.15" fill="${color}"/></svg>`;
-  return disc(color, body);
+  const body = svg(
+    `<path d="M12.2 14.5h8.5c.45 0 .62.58.28.9l-1.35 1c-1.45.65-3.7.6-5.3.25l-2.13-.4V14.5z" fill="#1A140C"/><path d="M3.7 15.4V9.5c0-2.55 2.05-4.5 4.7-4.5h2.15c2.35 0 4.15 1.65 4.15 4.2v6.2H3.7z" fill="#F3F0E8"/><rect x="3.85" y="12.35" width="10.7" height="1.45" fill="#C6A15A"/><circle cx="7.5" cy="9.55" r=".9" fill="#C6A15A"/>`,
+    20,
+  );
+  return face(EDGE[tone], body);
 }
 
-export const CHART_PIN_SIZE: [number, number] = [44, 44];
-export const CHART_PIN_ANCHOR: [number, number] = [22, 22];
-export const CHART_POPUP_ANCHOR: [number, number] = [0, -28];
+export const CHART_PIN_SIZE: [number, number] = [SIZE, SIZE];
+export const CHART_PIN_ANCHOR: [number, number] = [SIZE / 2, SIZE / 2];
+export const CHART_POPUP_ANCHOR: [number, number] = [0, -22];
