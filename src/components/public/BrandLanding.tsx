@@ -139,6 +139,12 @@ export function BrandLanding() {
           <div className="flex items-center gap-2 md:ml-5">
             <LanguageSwitcher tone="dark" />
             <Link
+              to="/charter"
+              className="hidden h-9 items-center rounded-md border border-[#F5B942] bg-[#F5B942]/10 px-4 text-[12px] font-bold tracking-wide text-[#F5B942] md:inline-flex"
+            >
+              {t("charter.guest_link")}
+            </Link>
+            <Link
               to="/auth"
               search={{ intent: "captain" }}
               className="hidden h-9 items-center rounded-md bg-[#C9B896] px-4 text-[12px] font-bold tracking-wide text-[#1A1406] sm:inline-flex"
@@ -467,6 +473,13 @@ export function BrandLanding() {
               </button>
             </div>
             <nav className="mt-8 flex flex-col gap-0.5">
+              <Link
+                to="/charter"
+                onClick={() => setMenuOpen(false)}
+                className="mb-3 inline-flex h-11 items-center justify-center rounded-md bg-[#F5B942] text-sm font-bold text-[#1A1406]"
+              >
+                {t("charter.guest_link")}
+              </Link>
               <MenuLink href="#solutions" onClick={() => setMenuOpen(false)}>
                 {t("landing.nav_solutions")}
               </MenuLink>
