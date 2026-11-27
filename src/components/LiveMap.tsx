@@ -228,7 +228,7 @@ function pinIcon(kind: ChartPinKind, live = false, ring?: string) {
 }
 
 function actorIcon(actor: ActorPin, tone: ActorTone, live = false) {
-  const ring = tone === "gold" ? "#C6A15A" : tone === "red" ? "#C45C4A" : "#C5D0D6";
+  const ring = tone === "gold" ? "#6E94B8" : tone === "red" ? "#C45C4A" : "#8FA8B6";
   return markIcon(actorPinHtml(actor, tone), live, ring);
 }
 

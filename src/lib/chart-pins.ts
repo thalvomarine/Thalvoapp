@@ -13,15 +13,23 @@ export type ChartPinKind =
 export type ActorPin = "wrench" | "cap";
 export type ActorTone = "cyan" | "gold" | "red";
 
-/** Night-chart ink. One material, shape does the telling. */
+/** Night-chart face. Named marks each take one clear color, nothing fluorescent. */
 const FACE = "#141C28";
 const INK = "#E6E0D4";
 const HAIR = "rgba(230,224,212,0.34)";
 const SIZE = 34;
 
+const MARK = {
+  light: "#E2B04A",
+  pier: "#2F8F8A",
+  anchor: "#3E8F62",
+  wrench: "#8FA8B6",
+  captain: "#6E94B8",
+} as const;
+
 const EDGE: Record<ActorTone, string> = {
-  cyan: "rgba(176,196,208,0.55)",
-  gold: "rgba(198,161,90,0.72)",
+  cyan: "rgba(143,168,182,0.85)",
+  gold: "rgba(110,148,184,0.9)",
   red: "rgba(196,92,74,0.9)",
 };
 
@@ -35,15 +43,15 @@ function svg(body: string, width = 18): string {
 
 const PLACE: Record<ChartPinKind, { edge: string; glyph: string }> = {
   marina: {
-    edge: HAIR,
+    edge: "rgba(47,143,138,0.85)",
     glyph: svg(
-      `<rect x="2.2" y="6.4" width="19.6" height="2.5" rx=".3" fill="${INK}"/><rect x="10.75" y="8.7" width="2.5" height="10.4" rx=".3" fill="${INK}"/>`,
+      `<rect x="2.2" y="6.4" width="19.6" height="2.5" rx=".3" fill="${MARK.pier}"/><rect x="10.75" y="8.7" width="2.5" height="10.4" rx=".3" fill="${MARK.pier}"/>`,
     ),
   },
   anchorage: {
-    edge: HAIR,
+    edge: "rgba(62,143,98,0.85)",
     glyph: svg(
-      `<g fill="${INK}"><circle cx="12" cy="4.05" r="1.7"/><circle cx="12" cy="4.05" r=".72" fill="${FACE}"/><rect x="11.25" y="5.55" width="1.5" height="7"/><rect x="7.5" y="6.7" width="9" height="1.4"/><path d="M12 12.2c-3.7 0-5.7 2.2-5.9 4.7h1.9c.2-1.3 1.5-2.4 4-2.4s3.8 1.1 4 2.4h1.9c-.2-2.5-2.2-4.7-5.9-4.7z"/></g>`,
+      `<g fill="${MARK.anchor}"><circle cx="12" cy="4.05" r="1.7"/><circle cx="12" cy="4.05" r=".72" fill="${FACE}"/><rect x="11.25" y="5.55" width="1.5" height="7"/><rect x="7.5" y="6.7" width="9" height="1.4"/><path d="M12 12.2c-3.7 0-5.7 2.2-5.9 4.7h1.9c.2-1.3 1.5-2.4 4-2.4s3.8 1.1 4 2.4h1.9c-.2-2.5-2.2-4.7-5.9-4.7z"/></g>`,
     ),
   },
   fuel: {
@@ -57,9 +65,9 @@ const PLACE: Record<ChartPinKind, { edge: string; glyph: string }> = {
     glyph: svg(`<path d="M12 3.4 20.1 12 12 20.6 3.9 12z" fill="#C45C4A"/>`),
   },
   lighthouse: {
-    edge: HAIR,
+    edge: "rgba(226,176,74,0.9)",
     glyph: svg(
-      `<g fill="${INK}"><rect x="9.3" y="3.5" width="5.4" height="2.7"/><rect x="10.55" y="4.05" width="2.9" height="1.35" fill="${FACE}"/><rect x="8.15" y="6.05" width="7.7" height="1.15"/><path d="M10.25 7.2 8.7 17.1h6.6L13.75 7.2z"/><rect x="7.5" y="17.1" width="9" height="1.55"/></g>`,
+      `<g fill="${MARK.light}"><rect x="9.3" y="3.5" width="5.4" height="2.7"/><rect x="10.55" y="4.05" width="2.9" height="1.35" fill="#F6E3A6"/><rect x="8.15" y="6.05" width="7.7" height="1.15"/><path d="M10.25 7.2 8.7 17.1h6.6L13.75 7.2z"/><rect x="7.5" y="17.1" width="9" height="1.55"/></g>`,
     ),
   },
   restaurant: {
@@ -106,7 +114,7 @@ export function chartPinHtml(kind: ChartPinKind): string {
 export function actorPinHtml(actor: ActorPin, tone: ActorTone = "cyan"): string {
   if (actor === "wrench") {
     const body = svg(
-      `<g fill="${INK}"><animateTransform attributeName="transform" type="rotate" values="-9 12 12;9 12 12;-9 12 12" dur="2.8s" repeatCount="indefinite"/><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g>`,
+      `<g fill="${MARK.wrench}"><animateTransform attributeName="transform" type="rotate" values="-9 12 12;9 12 12;-9 12 12" dur="2.8s" repeatCount="indefinite"/><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g>`,
       17,
     );
     return face(EDGE[tone], body);

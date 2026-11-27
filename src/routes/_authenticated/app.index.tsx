@@ -281,6 +281,7 @@ function CaptainCockpit({ profile }: { profile: Profile }) {
       <LiveMap
         providers={chartProviders}
         alerts={missionAlerts}
+        alertMark="captain"
         routes={missionRoutes}
         frameRoutes={missionRoutes.length > 0}
         variant="dark"
