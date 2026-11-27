@@ -273,7 +273,7 @@ export function CharterCatalogue() {
 
           <div className="flex items-center gap-2">
             <LanguageSwitcher tone="dark" />
-            <Link to="/auth" search={{ next: "/app/charter" }} className="inline-flex h-9 items-center rounded-full bg-[#F5B942] px-4 text-xs font-semibold text-[#1a1203]">
+            <Link to="/auth" search={{ next: "/app/charter" }} className="inline-flex h-9 items-center rounded-full bg-[#C9B896] px-4 text-xs font-semibold text-[#1a1203]">
               {t("charter.firm_entry")}
             </Link>
           </div>
@@ -286,11 +286,11 @@ export function CharterCatalogue() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#06101c]/20 via-transparent to-[#06101c]" />
         </div>
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-16 pt-14 sm:pt-20">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#F5B942]/85 animate-[fadeUp_0.6s_ease_both]">{t("charter.guest_eyebrow")}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/85 animate-[fadeUp_0.6s_ease_both]">{t("charter.guest_eyebrow")}</p>
           <h1 className="thalvo-display mt-3 max-w-3xl text-[clamp(2.8rem,9vw,5rem)] leading-[0.9] tracking-[0.04em] animate-[fadeUp_0.7s_ease_both]">
             THALVO
           </h1>
-          <p className="mt-3 max-w-xl text-[clamp(1.05rem,2.4vw,1.4rem)] font-semibold tracking-wide text-[#F5B942] animate-[fadeUp_0.8s_ease_both]">
+          <p className="mt-3 max-w-xl text-[clamp(1.05rem,2.4vw,1.4rem)] font-semibold tracking-wide text-[#C9B896] animate-[fadeUp_0.8s_ease_both]">
             {t("charter.guest_title")}
           </p>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-white/70 animate-[fadeUp_0.9s_ease_both]">{t("charter.guest_body")}</p>
@@ -321,7 +321,7 @@ export function CharterCatalogue() {
             <Field label={t("charter.search_party")}>
               <input type="number" min={1} max={24} value={party} onChange={(event) => setParty(Math.min(24, Math.max(1, Math.floor(Number(event.target.value) || 1))))} className={fieldCls} />
             </Field>
-            <button type="submit" className="h-12 self-end rounded-2xl bg-[#F5B942] px-5 text-sm font-semibold text-[#1a1203] transition-[transform,box-shadow] duration-200 hover:scale-[1.01] hover:shadow-[0_0_0_4px_rgba(245,185,66,0.15)]">
+            <button type="submit" className="h-12 self-end rounded-2xl bg-[#C9B896] px-5 text-sm font-semibold text-[#1a1203] transition-[transform,box-shadow] duration-200 hover:scale-[1.01] hover:shadow-[0_0_0_4px_rgba(201,184,150,0.15)]">
               {t("charter.search_go")}
             </button>
           </form>
@@ -329,16 +329,16 @@ export function CharterCatalogue() {
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
             <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("charter.door_guest_kicker")}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8BA8A3]/80">{t("charter.door_guest_kicker")}</p>
               <p className="mt-2 text-[15px] font-semibold text-white">{t("charter.door_guest_title")}</p>
               <p className="mt-1 text-[13px] leading-relaxed text-white/60">{t("charter.door_guest_body")}</p>
             </div>
             <Link
               to="/auth"
               search={{ next: "/app/charter" }}
-              className="rounded-[1.25rem] border border-[#F5B942]/30 bg-[#F5B942]/10 p-4 transition-colors hover:border-[#F5B942]/55"
+              className="rounded-[1.25rem] border border-[#C9B896]/30 bg-[#C9B896]/10 p-4 transition-colors hover:border-[#C9B896]/55"
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#F5B942]">{t("charter.door_owner_kicker")}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C9B896]">{t("charter.door_owner_kicker")}</p>
               <p className="mt-2 text-[15px] font-semibold text-white">{t("charter.door_owner_title")}</p>
               <p className="mt-1 text-[13px] leading-relaxed text-white/70">{t("charter.door_owner_body")}</p>
             </Link>
@@ -352,7 +352,7 @@ export function CharterCatalogue() {
             <div>
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#00F0FF]/80">{t("charter.map_kicker")}</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BA8A3]/80">{t("charter.map_kicker")}</p>
                   <h2 className="thalvo-display mt-1 text-[1.55rem] tracking-wide">{t("charter.map_title")}</h2>
                 </div>
                 <p className="max-w-xs text-[12px] text-white/45">{t("charter.map_body")}</p>
@@ -382,7 +382,7 @@ export function CharterCatalogue() {
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm text-white/70">{t("charter.result_count", { count: shown.length })}</p>
               {filtering && (
-                <button type="button" onClick={clearAll} className="hidden text-[12px] font-semibold text-[#F5B942] lg:inline">
+                <button type="button" onClick={clearAll} className="hidden text-[12px] font-semibold text-[#C9B896] lg:inline">
                   {t("charter.search_reset")}
                 </button>
               )}
@@ -397,7 +397,7 @@ export function CharterCatalogue() {
             </div>
 
             {fallback && (
-              <p className="rounded-2xl border border-[#F5B942]/35 bg-[#F5B942]/10 px-4 py-3 text-[13px] leading-relaxed text-[#F5B942]/95">
+              <p className="rounded-2xl border border-[#C9B896]/35 bg-[#C9B896]/10 px-4 py-3 text-[13px] leading-relaxed text-[#C9B896]/95">
                 {t("charter.fallback_body", { place: place.trim(), count: shown.length })}
               </p>
             )}
@@ -405,7 +405,7 @@ export function CharterCatalogue() {
             {shown.length === 0 && (
               <div className="rounded-2xl border border-dashed border-white/15 px-4 py-10 text-center">
                 <p className="text-sm text-white/65">{t("charter.no_match")}</p>
-                <button type="button" onClick={clearAll} className="mt-3 text-[13px] font-semibold text-[#F5B942]">
+                <button type="button" onClick={clearAll} className="mt-3 text-[13px] font-semibold text-[#C9B896]">
                   {t("charter.search_reset")}
                 </button>
               </div>
@@ -473,7 +473,7 @@ export function CharterCatalogue() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40">{t("charter.budget_title")}</p>
               <div className="mt-2 flex flex-col gap-1">
                 {(["all", "low", "mid", "high"] as const).map((value) => (
-                  <button key={value} type="button" onClick={() => setBudget(value)} className={"rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors " + (budget === value ? "bg-[#F5B942]/20 text-[#F5B942]" : "text-white/70 hover:bg-white/5")}>
+                  <button key={value} type="button" onClick={() => setBudget(value)} className={"rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors " + (budget === value ? "bg-[#C9B896]/20 text-[#C9B896]" : "text-white/70 hover:bg-white/5")}>
                     {t(`charter.budget_${value}`)}
                   </button>
                 ))}
@@ -502,9 +502,9 @@ export function CharterCatalogue() {
         </section>
 
         <p className="mt-10 text-[13px] text-white/40">
-          <Link to="/services" className="text-[#F5B942]">{t("charter.door_service")}</Link>
+          <Link to="/services" className="text-[#C9B896]">{t("charter.door_service")}</Link>
           <span> · </span>
-          <Link to="/marketplace" className="text-[#F5B942]">{t("charter.door_parts")}</Link>
+          <Link to="/marketplace" className="text-[#C9B896]">{t("charter.door_parts")}</Link>
         </p>
       </main>
 
@@ -529,7 +529,7 @@ export function CharterCatalogue() {
 }
 
 const fieldCls =
-  "h-12 w-full rounded-2xl border border-white/15 bg-[#06101c]/80 px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#F5B942]/60";
+  "h-12 w-full rounded-2xl border border-white/15 bg-[#06101c]/80 px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#C9B896]/60";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -548,7 +548,7 @@ function BoatCard({ boat, locale, onOpen }: { boat: Listing; locale: string; onO
     <button
       type="button"
       onClick={onOpen}
-      className="group overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.03] text-left transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-[#F5B942]/45"
+      className="group overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.03] text-left transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-[#C9B896]/45"
     >
       <div className="relative aspect-[16/9] bg-[#0A192F]">
         {photo ? (
@@ -557,7 +557,7 @@ function BoatCard({ boat, locale, onOpen }: { boat: Listing; locale: string; onO
           <div className="h-full bg-[radial-gradient(circle_at_18%_80%,rgba(0,240,255,0.16),transparent_46%),linear-gradient(165deg,#0A192F,#06101c)]" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#06101c] via-[#06101c]/25 to-transparent" />
-        <span className="absolute left-3 top-3 max-w-[70%] truncate rounded-full border border-white/15 bg-[#06101c]/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F5B942] backdrop-blur-sm">
+        <span className="absolute left-3 top-3 max-w-[70%] truncate rounded-full border border-white/15 bg-[#06101c]/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#C9B896] backdrop-blur-sm">
           {boat.sample ? t("charter.card_sample") : boat.operator}
         </span>
         <div className="absolute inset-x-0 bottom-0 p-4">
@@ -568,10 +568,10 @@ function BoatCard({ boat, locale, onOpen }: { boat: Listing; locale: string; onO
       <div className="space-y-3 p-4">
         <p className="text-[13px] text-white/55">{boat.model} · {boat.year}</p>
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-white/70">
-          <span className="inline-flex items-center gap-1"><Ruler className="size-3.5 text-[#00F0FF]/80" />{formatLoa(boat.loaM)}</span>
-          <span className="inline-flex items-center gap-1"><BedDouble className="size-3.5 text-[#00F0FF]/80" />{boat.cabins} {t("charter.cabins")}</span>
-          <span className="inline-flex items-center gap-1"><Users className="size-3.5 text-[#00F0FF]/80" />{boat.berths}</span>
-          <span className="inline-flex items-center gap-1"><Ship className="size-3.5 text-[#00F0FF]/80" />{t(`charter.hull_${boat.hull}`)}</span>
+          <span className="inline-flex items-center gap-1"><Ruler className="size-3.5 text-[#8BA8A3]/80" />{formatLoa(boat.loaM)}</span>
+          <span className="inline-flex items-center gap-1"><BedDouble className="size-3.5 text-[#8BA8A3]/80" />{boat.cabins} {t("charter.cabins")}</span>
+          <span className="inline-flex items-center gap-1"><Users className="size-3.5 text-[#8BA8A3]/80" />{boat.berths}</span>
+          <span className="inline-flex items-center gap-1"><Ship className="size-3.5 text-[#8BA8A3]/80" />{t(`charter.hull_${boat.hull}`)}</span>
         </p>
         {boat.skipper && <p className="text-[12px] text-white/55">{t("charter.skipper")}: {boat.skipper}</p>}
         <div className="flex items-end justify-between gap-3 border-t border-white/10 pt-3">
@@ -592,7 +592,7 @@ function BoatCard({ boat, locale, onOpen }: { boat: Listing; locale: string; onO
             </span>
           )}
         </div>
-        {boat.yard && <p className="text-[12px] text-[#F5B942]">{t("charter.yard_note")}</p>}
+        {boat.yard && <p className="text-[12px] text-[#C9B896]">{t("charter.yard_note")}</p>}
       </div>
     </button>
   );
@@ -684,7 +684,7 @@ function BoatSheet({
   };
 
   const command = (
-    <div className="space-y-4 rounded-[1.35rem] border border-[#F5B942]/25 bg-[#0A192F]/90 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.35)]">
+    <div className="space-y-4 rounded-[1.35rem] border border-[#C9B896]/25 bg-[#0A192F]/90 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.35)]">
       <div>
         <p className="text-[15px]">
           <MoneyAmount value={boat.weeklyEur} currency="EUR" tone="gold" />
@@ -692,7 +692,7 @@ function BoatSheet({
         </p>
         <p className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/35">{t("charter.simulated")}</p>
         <p className="mt-2 text-[13px] leading-relaxed text-white/70">{t("charter.include_rate")}</p>
-        {nights > 0 && <p className="mt-2 text-[12px] text-[#00F0FF]/90">{t("charter.nights_count", { count: nights })}</p>}
+        {nights > 0 && <p className="mt-2 text-[12px] text-[#8BA8A3]/90">{t("charter.nights_count", { count: nights })}</p>}
       </div>
       <div>
         <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">{t("charter.stay_label")}</p>
@@ -714,7 +714,7 @@ function BoatSheet({
         <SheetField label={t("charter.field_party")} value={party} onChange={setParty} />
         <SheetField label={t("charter.field_note")} value={note} onChange={setNote} />
       </div>
-      <button type="button" disabled={busy || !checkIn || !checkOut} onClick={() => void submit()} className="h-12 w-full rounded-full bg-[#F5B942] text-sm font-semibold text-[#1a1203] transition-opacity disabled:opacity-40">
+      <button type="button" disabled={busy || !checkIn || !checkOut} onClick={() => void submit()} className="h-12 w-full rounded-full bg-[#C9B896] text-sm font-semibold text-[#1a1203] transition-opacity disabled:opacity-40">
         {t("charter.ask_week")}
       </button>
       <p className="text-[11px] leading-relaxed text-white/40">{boat.sample ? t("charter.sample_note") : t("charter.inquiry_note")}</p>
@@ -735,7 +735,7 @@ function BoatSheet({
           ) : (
             <div className="flex h-40 items-end bg-[radial-gradient(circle_at_18%_80%,rgba(0,240,255,0.16),transparent_46%),linear-gradient(165deg,#0A192F,#06101c)] p-5">
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#00F0FF]/80">{t(`charter.hull_${boat.hull}`)}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8BA8A3]/80">{t(`charter.hull_${boat.hull}`)}</p>
                 <p className="thalvo-display text-[2rem] tracking-wide">{boat.name}</p>
               </div>
             </div>
@@ -750,7 +750,7 @@ function BoatSheet({
             {boat.photos.length > 1 && (
               <div className="flex gap-2 overflow-x-auto">
                 {boat.photos.map((url, index) => (
-                  <button key={url} type="button" onClick={() => setPhoto(index)} className={"h-14 w-20 shrink-0 overflow-hidden rounded-lg border " + (index === photo ? "border-[#F5B942]" : "border-white/10")}>
+                  <button key={url} type="button" onClick={() => setPhoto(index)} className={"h-14 w-20 shrink-0 overflow-hidden rounded-lg border " + (index === photo ? "border-[#C9B896]" : "border-white/10")}>
                     <img src={url} alt="" className="h-full w-full object-cover" />
                   </button>
                 ))}
@@ -809,7 +809,7 @@ function BoatSheet({
               {boat.photos.length > 1 && (
                 <div className="mt-3 flex gap-2 overflow-x-auto">
                   {boat.photos.map((url, index) => (
-                    <button key={url} type="button" onClick={() => setPhoto(index)} className={"h-16 w-24 shrink-0 overflow-hidden rounded-lg border " + (index === photo ? "border-[#F5B942]" : "border-white/20")}>
+                    <button key={url} type="button" onClick={() => setPhoto(index)} className={"h-16 w-24 shrink-0 overflow-hidden rounded-lg border " + (index === photo ? "border-[#C9B896]" : "border-white/20")}>
                       <img src={url} alt="" className="h-full w-full object-cover" />
                     </button>
                   ))}
@@ -876,7 +876,7 @@ function OpenDaysBoard({
         </div>
         <div className="flex flex-wrap gap-3 text-[11px]">
           <LegendSwatch className="bg-emerald-400/90" label={t("charter.day_open", { count: openCount })} />
-          <LegendSwatch className="bg-[#F5B942]" label={t("charter.day_selected")} />
+          <LegendSwatch className="bg-[#C9B896]" label={t("charter.day_selected")} />
           <LegendSwatch className="bg-white/15 ring-1 ring-inset ring-white/20" label={t("charter.day_closed", { count: closedCount })} />
         </div>
       </div>
@@ -884,7 +884,7 @@ function OpenDaysBoard({
       <div className="mt-4 space-y-4">
         {months.map((month) => (
           <div key={month.key}>
-            <p className="mb-2 text-[12px] font-semibold capitalize tracking-wide text-[#00F0FF]/85">{month.label}</p>
+            <p className="mb-2 text-[12px] font-semibold capitalize tracking-wide text-[#8BA8A3]/85">{month.label}</p>
             <div className="grid grid-cols-7 gap-1.5">
               {month.days.map((iso) => {
                 const openDay = openSet.has(iso);
@@ -902,18 +902,18 @@ function OpenDaysBoard({
                     className={
                       "relative grid aspect-square place-items-center rounded-lg text-[11px] font-semibold transition-[transform,background-color,color,box-shadow] duration-150 " +
                       (isEdge
-                        ? "bg-[#F5B942] text-[#1a1203] shadow-[0_0_0_1px_rgba(245,185,66,0.55)] "
+                        ? "bg-[#C9B896] text-[#1a1203] shadow-[0_0_0_1px_rgba(201,184,150,0.55)] "
                         : inStay
-                          ? "bg-[#F5B942]/25 text-[#F5B942] "
+                          ? "bg-[#C9B896]/25 text-[#C9B896] "
                           : openDay
                             ? "bg-emerald-400/15 text-emerald-100 ring-1 ring-inset ring-emerald-300/35 hover:bg-emerald-400/25 hover:text-white "
                             : "cursor-not-allowed bg-white/[0.03] text-white/25 line-through decoration-white/25 ") +
-                      (isToday && !isEdge ? "ring-1 ring-[#00F0FF]/70 " : "")
+                      (isToday && !isEdge ? "ring-1 ring-[#8BA8A3]/70 " : "")
                     }
                   >
                     {dayNum}
                     {isToday && !isEdge && (
-                      <span className="absolute inset-x-[30%] bottom-1 h-0.5 rounded-full bg-[#00F0FF]/80" />
+                      <span className="absolute inset-x-[30%] bottom-1 h-0.5 rounded-full bg-[#8BA8A3]/80" />
                     )}
                   </button>
                 );
@@ -938,7 +938,7 @@ function LegendSwatch({ className, label }: { className: string; label: string }
 function SeasonCard({ title, body }: { title: string; body: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#F5B942]">{title}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C9B896]">{title}</p>
       <p className="mt-2 text-[13px] leading-relaxed text-white/65">{body}</p>
     </div>
   );
@@ -962,7 +962,7 @@ function Chip({ active, onClick, children, compact }: { active: boolean; onClick
         "shrink-0 rounded-full border font-semibold transition-colors " +
         (compact ? "px-2.5 py-1 text-[11px] whitespace-nowrap" : "px-3 py-1.5 text-[12px]") +
         " " +
-        (active ? "border-[#F5B942]/60 bg-[#F5B942]/15 text-[#F5B942]" : "border-white/10 text-white/70")
+        (active ? "border-[#C9B896]/60 bg-[#C9B896]/15 text-[#C9B896]" : "border-white/10 text-white/70")
       }
     >
       {children}
@@ -995,7 +995,7 @@ function FilterRail({
       <div className="flex items-center gap-2">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">{t("charter.filters")}</p>
         {filtering && (
-          <button type="button" onClick={onClear} className="text-[11px] font-semibold text-[#F5B942]">
+          <button type="button" onClick={onClear} className="text-[11px] font-semibold text-[#C9B896]">
             {t("charter.search_reset")}
           </button>
         )}
@@ -1032,7 +1032,7 @@ function SheetField({ label, value, onChange }: { label: string; value: string; 
   return (
     <label className="block">
       <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">{label}</span>
-      <input value={value} onChange={(event) => onChange(event.target.value)} className="mt-1 h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 text-sm text-white outline-none focus:border-[#F5B942]/50" />
+      <input value={value} onChange={(event) => onChange(event.target.value)} className="mt-1 h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 text-sm text-white outline-none focus:border-[#C9B896]/50" />
     </label>
   );
 }

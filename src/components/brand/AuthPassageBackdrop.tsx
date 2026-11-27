@@ -65,7 +65,7 @@ export function AuthPassageBackdrop({ className = "" }: { className?: string }) 
         </g>
 
         {/* Guiding star */}
-        <g className="ap-guide" transform="translate(400 120)" fill="#F5B942">
+        <g className="ap-guide" transform="translate(400 120)" fill="#C9B896">
           <path d="M0-7 L1.6-1.6 L7 0 L1.6 1.6 L0 7 L-1.6 1.6 L-7 0 L-1.6-1.6 Z" opacity="0.92" />
         </g>
 
@@ -73,7 +73,7 @@ export function AuthPassageBackdrop({ className = "" }: { className?: string }) 
         <path
           d="M60 340 C 200 318, 300 358, 400 336 S 600 318, 740 340"
           fill="none"
-          stroke="#F5B942"
+          stroke="#C9B896"
           strokeOpacity="0.26"
           strokeWidth="1.15"
           strokeLinecap="round"

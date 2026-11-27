@@ -42,7 +42,7 @@ export function AuthPassageShell({
             <Wordmark
               size="nav"
               decorative
-              className="shrink-0 drop-shadow-[0_0_28px_rgba(245,185,66,0.22)]"
+              className="shrink-0 drop-shadow-[0_0_28px_rgba(201,184,150,0.22)]"
             />
             <h1 className="thalvo-display text-[2.75rem] leading-none tracking-[0.16em] text-white sm:text-5xl lg:text-[4.25rem]">
               {title}

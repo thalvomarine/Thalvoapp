@@ -68,7 +68,7 @@ export function VesselAiPanel({ vessel, context }: Props) {
   return (
     <GlassPanel>
       <div className="flex items-center gap-2 mb-3">
-        <div className="size-8 rounded-xl bg-amber-400/10 border border-amber-400/25 grid place-items-center text-amber-300">
+        <div className="size-8 rounded-xl bg-[#C9B896]/10 border border-[#C9B896]/25 grid place-items-center text-[#C9B896]">
           <CompassMark size={16} />
         </div>
         <div>
@@ -100,7 +100,7 @@ export function VesselAiPanel({ vessel, context }: Props) {
         <button
           type="submit"
           disabled={loading || !q.trim()}
-          className="rounded-xl border border-amber-400/30 bg-amber-500/15 hover:bg-amber-500/25 disabled:opacity-50 px-3 text-sky-200"
+          className="rounded-xl border border-[#C9B896]/30 bg-amber-500/15 hover:bg-amber-500/25 disabled:opacity-50 px-3 text-sky-200"
         >
           {loading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
         </button>

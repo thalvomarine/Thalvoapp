@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 
 const TONE: Record<TrustTone, { text: string; ring: string; glow: string }> = {
   reliable: { text: "text-emerald-300", ring: "stroke-emerald-400/80",  glow: "from-emerald-400/25" },
-  building: { text: "text-amber-300",     ring: "stroke-sky-400/80",      glow: "from-sky-400/20" },
-  watch:    { text: "text-amber-300",   ring: "stroke-amber-400/80",    glow: "from-amber-400/25" },
+  building: { text: "text-[#C9B896]",     ring: "stroke-sky-400/80",      glow: "from-sky-400/20" },
+  watch:    { text: "text-[#C9B896]",   ring: "stroke-[#C9B896]/80",    glow: "from-[#C9B896]/20" },
   risk:     { text: "text-rose-300",    ring: "stroke-rose-400/80",     glow: "from-rose-500/30" },
 };
 

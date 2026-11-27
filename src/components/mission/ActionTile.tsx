@@ -11,9 +11,9 @@ interface Props {
 }
 
 const ACCENTS: Record<NonNullable<Props["accent"]>, string> = {
-  primary: "text-amber-300",
-  aqua:    "text-amber-300",
-  amber:   "text-amber-300",
+  primary: "text-[#C9B896]",
+  aqua:    "text-[#C9B896]",
+  amber:   "text-[#C9B896]",
   danger:  "text-rose-300",
 };
 

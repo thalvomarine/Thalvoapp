@@ -21,7 +21,7 @@ const TONE: Record<LeakRisk, { wrap: string; icon: ReactNode; label: string }> =
     label: "Heads up",
   },
   medium: {
-    wrap: "thalvo-risk-medium border-amber-400/30 bg-amber-400/10 text-amber-200",
+    wrap: "thalvo-risk-medium border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]",
     icon: <AlertTriangle className="size-4" />,
     label: "Warning",
   },

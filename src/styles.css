@@ -203,24 +203,24 @@
 .thalvo-route-pin-via {
   width: 16px;
   height: 16px;
-  background: #f5b942;
+  background: #C9B896;
   border: 2px solid #0b1528;
-  filter: drop-shadow(0 2px 4px rgba(245, 185, 66, 0.45));
+  filter: drop-shadow(0 2px 4px rgba(201, 184, 150, 0.45));
 }
 .thalvo-route-pin-end {
   width: 20px;
   height: 20px;
   background: #0b1528;
-  border: 2px solid #f5b942;
-  box-shadow: 0 0 10px rgba(245, 185, 66, 0.45), 0 0 0 1px rgba(245, 197, 66, 0.35);
+  border: 2px solid #C9B896;
+  box-shadow: 0 0 10px rgba(201, 184, 150, 0.45), 0 0 0 1px rgba(245, 197, 66, 0.35);
 }
 .leaflet-marker-dragging .thalvo-route-pin-via,
 .thalvo-route-hit.is-dragging .thalvo-route-pin-via,
 .thalvo-route-pin-via.is-dragging,
 .leaflet-marker-icon.is-dragging .thalvo-route-pin-via {
   transform: scale(1.25);
-  box-shadow: 0 0 14px rgba(245, 185, 66, 0.85);
-  filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.9));
+  box-shadow: 0 0 14px rgba(201, 184, 150, 0.85);
+  filter: drop-shadow(0 0 8px rgba(201, 184, 150, 0.9));
 }
 .thalvo-route-mid-core {
   width: 24px;
@@ -229,8 +229,8 @@
   display: grid;
   place-items: center;
   background: rgba(11, 21, 40, 0.8);
-  border: 1px solid rgba(245, 185, 66, 0.45);
-  color: #f5b942;
+  border: 1px solid rgba(201, 184, 150, 0.45);
+  color: #C9B896;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
@@ -289,14 +289,15 @@
 /* Cockpit surface — ECDIS navy plane (no candy glow) */
 .thalvo-cockpit {
   background:
-    linear-gradient(180deg, #0b1a2e 0%, #06101c 48%, #050d18 100%);
+    radial-gradient(80% 50% at 10% 0%, rgb(30 70 78 / 0.35) 0%, transparent 55%),
+    linear-gradient(180deg, #0c2226 0%, #071416 100%);
 }
 
 /* Marketplace showroom — MarineOS skill tokens + light motion */
 .thalvo-catalog {
   --mos-navy: #0a192f;
-  --mos-cyan: #00f0ff;
-  --mos-amber: #f5b942;
+  --mos-cyan: #8BA8A3;
+  --mos-amber: #C9B896;
 }
 
 /*
@@ -351,7 +352,7 @@ html[data-thalvo-theme="day"] .thalvo-desk {
   --desk-price: #d97706;
   --desk-accent: #0a192f;
   --desk-accent-fg: #ffffff;
-  --desk-active: #f5b942;
+  --desk-active: #C9B896;
   --desk-active-ink: #0a192f;
   --desk-shadow: 0 14px 36px -22px rgb(15 23 42 / 0.18);
   --desk-overlay: rgb(15 23 42 / 0.4);
@@ -365,10 +366,10 @@ html[data-thalvo-theme="night"] .thalvo-desk {
   --desk-border: rgb(245 247 251 / 0.14);
   --desk-input: #000000;
   --desk-chip: rgb(245 247 251 / 0.06);
-  --desk-price: #f5b942;
+  --desk-price: #C9B896;
   --desk-accent: #111111;
   --desk-accent-fg: #f5f7fb;
-  --desk-active: #f5b942;
+  --desk-active: #C9B896;
   --desk-active-ink: #000000;
   --desk-shadow: 0 14px 36px -22px rgb(0 0 0 / 0.8);
   --desk-overlay: rgb(0 0 0 / 0.7);
@@ -429,7 +430,7 @@ html[data-thalvo-theme="night"] .thalvo-chart-sheet {
   --sheet-chip-hover: rgb(245 247 251 / 0.1);
   --sheet-active-bg: rgb(245 185 66 / 0.18);
   --sheet-active-border: rgb(245 185 66 / 0.55);
-  --sheet-active-ink: #f5b942;
+  --sheet-active-ink: #C9B896;
   --sheet-overlay: rgb(0 0 0 / 0.72);
   --sheet-switch-off: rgb(245 247 251 / 0.12);
   --sheet-handle: rgb(245 247 251 / 0.28);
@@ -468,7 +469,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-white\/40 {
   color: var(--sheet-muted) !important;
 }
 html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-amber-200,
-html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-amber-100,
+html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-[#E8DFC8],
 html[data-thalvo-theme="day"] .thalvo-chart-sheet .text-amber-50 {
   color: var(--sheet-active-ink) !important;
 }
@@ -658,7 +659,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #f5b942;
+  color: #C9B896;
 }
 .landing-cta-primary {
   display: inline-flex;
@@ -667,7 +668,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
   justify-content: center;
   gap: 0.45rem;
   border-radius: 0.5rem;
-  background: #f5b942;
+  background: #C9B896;
   padding: 0 1.75rem;
   font-size: 0.875rem;
   font-weight: 700;
@@ -675,7 +676,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
   transition: background 160ms ease, transform 160ms ease;
 }
 .landing-cta-primary:hover {
-  background: #ffc857;
+  background: #d4c4a8;
 }
 .landing-cta-primary:disabled {
   opacity: 0.55;
@@ -1048,24 +1049,24 @@ html[data-thalvo-theme="day"] .placeholder\:text-white\/60::placeholder {
 
 /* Thalvo amber accents become darker gold ink on white (day). */
 html[data-thalvo-theme="day"] .text-amber-50,
-html[data-thalvo-theme="day"] .text-amber-100,
-html[data-thalvo-theme="day"] .text-amber-100\/90,
-html[data-thalvo-theme="day"] .text-amber-100\/80,
-html[data-thalvo-theme="day"] .text-amber-100\/70,
+html[data-thalvo-theme="day"] .text-[#E8DFC8],
+html[data-thalvo-theme="day"] .text-[#E8DFC8]\/90,
+html[data-thalvo-theme="day"] .text-[#E8DFC8]\/80,
+html[data-thalvo-theme="day"] .text-[#E8DFC8]\/70,
 html[data-thalvo-theme="day"] .text-amber-200,
 html[data-thalvo-theme="day"] .text-amber-200\/90,
 html[data-thalvo-theme="day"] .text-amber-200\/80,
 html[data-thalvo-theme="day"] .text-amber-200\/70 {
   color: #b45309 !important;
 }
-html[data-thalvo-theme="day"] .text-amber-300,
-html[data-thalvo-theme="day"] .text-amber-300\/90,
-html[data-thalvo-theme="day"] .text-amber-300\/85,
-html[data-thalvo-theme="day"] .text-amber-300\/80,
-html[data-thalvo-theme="day"] .text-amber-300\/70 {
+html[data-thalvo-theme="day"] .text-[#C9B896],
+html[data-thalvo-theme="day"] .text-[#C9B896]\/90,
+html[data-thalvo-theme="day"] .text-[#C9B896]\/85,
+html[data-thalvo-theme="day"] .text-[#C9B896]\/80,
+html[data-thalvo-theme="day"] .text-[#C9B896]\/70 {
   color: #92400e !important;
 }
-html[data-thalvo-theme="day"] .text-\[\#F5B942\] {
+html[data-thalvo-theme="day"] .text-\[\#C9B896\] {
   color: #b45309 !important;
 }
 html[data-thalvo-theme="day"] .hover\:text-amber-200:hover {
@@ -1105,9 +1106,9 @@ html[data-thalvo-theme="day"] .hover\:text-white\/85:hover,
 html[data-thalvo-theme="day"] .hover\:text-white\/80:hover {
   color: #0f172a !important;
 }
-html[data-thalvo-theme="day"] .text-amber-100,
+html[data-thalvo-theme="day"] .text-[#E8DFC8],
 html[data-thalvo-theme="day"] .text-sky-200,
-html[data-thalvo-theme="day"] .text-amber-300 {
+html[data-thalvo-theme="day"] .text-[#C9B896] {
   color: #0369a1 !important;
 }
 html[data-thalvo-theme="day"] .text-emerald-100,
@@ -1248,22 +1249,22 @@ html[data-thalvo-theme="day"] .thalvo-on-dark .text-white\/35 {
   color: rgb(255 255 255 / 0.55) !important;
 }
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-50,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-100,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-100\/90,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-100\/80,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-100\/70,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#E8DFC8],
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#E8DFC8]\/90,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#E8DFC8]\/80,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#E8DFC8]\/70,
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-200,
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-200\/90,
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-200\/80,
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-200\/70 {
   color: #fde68a !important;
 }
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/90,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/85,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/80,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/70,
-html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-300\/55 {
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896],
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/90,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/85,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/80,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/70,
+html[data-thalvo-theme="day"] .thalvo-on-dark .text-[#C9B896]\/55 {
   color: rgb(245 185 66 / 0.9) !important;
 }
 html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-400\/50 {
@@ -1406,7 +1407,7 @@ html[data-thalvo-theme="day"] .thalvo-brand-mark {
   border-radius: 14px;
   border: 1px solid rgb(245 185 66 / 0.35);
   background: rgb(245 185 66 / 0.1);
-  color: #f5b942;
+  color: #C9B896;
 }
 @media (prefers-reduced-motion: reduce) {
   .auth-rise,

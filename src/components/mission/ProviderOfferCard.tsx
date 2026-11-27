@@ -193,7 +193,7 @@ export function ProviderOfferCard({ request }: { request: ProviderOfferRequest }
             />
           </div>
           {etaHint ? (
-            <p className="text-[10px] tracking-wide text-amber-200/80">
+            <p className="text-[10px] tracking-wide text-[#C9B896]/80">
               {t("provider.eta_auto_hint", { defaultValue: "Otomatik ETA" })} · {etaHint}
             </p>
           ) : null}
@@ -222,7 +222,7 @@ export function ProviderOfferCard({ request }: { request: ProviderOfferRequest }
               className={
                 "h-9 flex-1 rounded-[10px] border text-[11px] font-semibold uppercase tracking-[0.14em] " +
                 (available === "standby"
-                  ? "border-amber-400/40 bg-amber-400/15 text-amber-300"
+                  ? "border-amber-400/40 bg-amber-400/15 text-[#C9B896]"
                   : "border-white/10 bg-white/5 text-white/50")
               }
             >

@@ -231,7 +231,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
             <Link to="/app" className="flex min-w-0 items-center gap-2.5">
               <Wordmark size="sm" className="text-white" />
               <span className="thalvo-display text-[15px] tracking-[0.18em] text-white">THALVO</span>
-              <span className="hidden rounded-[3px] border border-[#00F0FF]/35 bg-[#00F0FF]/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#00F0FF] sm:inline">
+              <span className="hidden rounded-[3px] border border-[#C9B896]/35 bg-[#C9B896]/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#C9B896] sm:inline">
                 MarineOS
               </span>
             </Link>
@@ -242,7 +242,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
           </div>
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pb-2.5 text-[12px]">
             <div className="truncate text-white/70">
-              <span className="mr-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#F5B942]/70">
+              <span className="mr-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#C9B896]/70">
                 {isSupplier
                   ? t("auth.role_supplier")
                   : profile.role === "Provider"
@@ -400,7 +400,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
         {welcomeBanner && (
           <div
             className={
-              "pointer-events-auto z-[60] flex items-start gap-2 border border-amber-400/30 bg-[#0A192F]/95 px-3 py-2.5 text-[12px] leading-snug text-amber-50 shadow-2xl backdrop-blur-md " +
+              "pointer-events-auto z-[60] flex items-start gap-2 border border-[#C9B896]/30 bg-[#0A192F]/95 px-3 py-2.5 text-[12px] leading-snug text-[#E8DFC8] shadow-2xl backdrop-blur-md " +
               (fullBleed
                 ? "absolute inset-x-3 top-[calc(env(safe-area-inset-top)+3.5rem)] rounded-2xl"
                 : "mb-4 rounded-2xl")
@@ -411,7 +411,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
               type="button"
               onClick={() => setWelcomeBanner(false)}
               aria-label={t("common.close")}
-              className="grid size-7 shrink-0 place-items-center rounded-full text-amber-100/70 hover:bg-white/10 hover:text-white"
+              className="grid size-7 shrink-0 place-items-center rounded-full text-[#E8DFC8]/70 hover:bg-white/10 hover:text-white"
             >
               <X className="size-3.5" />
             </button>
@@ -547,7 +547,7 @@ function NavTab({
         className={
           "thalvo-fab-latch grid size-9 place-items-center border transition-colors " +
           (active
-            ? "border-[color:color-mix(in_srgb,var(--skin-active,#00F0FF)_35%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#00F0FF)_10%,transparent)]"
+            ? "border-[color:color-mix(in_srgb,var(--skin-active,#8BA8A3)_35%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#8BA8A3)_10%,transparent)]"
             : "border-transparent bg-transparent")
         }
       >

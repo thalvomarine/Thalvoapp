@@ -39,14 +39,14 @@ export function LiveOpsPanel() {
       <div className="grid gap-2 sm:grid-cols-2">
         <Link
           to="/app/transfer-captain"
-          className="block overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition-colors hover:border-[#F5B942]/35"
+          className="block overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition-colors hover:border-[#C9B896]/35"
         >
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg border border-[#F5B942]/30 bg-[#F5B942]/10 text-[#F5B942]">
+            <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg border border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]">
               <UserRound className="size-4" />
             </span>
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F5B942]/80">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C9B896]/80">
                 {t("transfer.entry_eyebrow")}
               </p>
               <p className="mt-1 text-[14px] font-semibold text-white">{t("transfer.entry_title")}</p>
@@ -57,14 +57,14 @@ export function LiveOpsPanel() {
 
         <Link
           to="/app/charter"
-          className="block overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition-colors hover:border-[#F5B942]/35"
+          className="block overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition-colors hover:border-[#C9B896]/35"
         >
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg border border-[#F5B942]/30 bg-[#F5B942]/10 text-[#F5B942]">
+            <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg border border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]">
               <Ship className="size-4" />
             </span>
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F5B942]/80">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C9B896]/80">
                 {t("charter.menu")}
               </p>
               <p className="mt-1 text-[14px] font-semibold text-white">{t("charter.fleet_title")}</p>
@@ -74,7 +74,7 @@ export function LiveOpsPanel() {
         </Link>
       </div>
 
-      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#F5B942]/80">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#C9B896]/80">
         {t("ops.live_feed")}
       </p>
 
@@ -100,7 +100,7 @@ function OpsMissionCard({ mission, onDetails }: { mission: OpsMission; onDetails
   };
 
   return (
-    <article className="thalvo-chart-sheet overflow-hidden rounded-2xl border shadow-[0_0_32px_rgba(245,185,66,0.08)]">
+    <article className="thalvo-chart-sheet overflow-hidden rounded-2xl border shadow-[0_0_32px_rgba(201,184,150,0.08)]">
       <div
         className="flex items-start justify-between gap-3 border-b px-4 py-3"
         style={{ borderColor: "var(--sheet-border)" }}
@@ -170,7 +170,7 @@ function OpsAction({
     <button
       type="button"
       onClick={onClick}
-      className="flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.08em] transition-colors hover:bg-amber-400/10"
+      className="flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.08em] transition-colors hover:bg-[#C9B896]/10"
       style={{ color: "var(--sheet-active-ink)" }}
     >
       {icon}
@@ -194,7 +194,7 @@ function OpsMissionSheet({ mission, onClose }: { mission: OpsMission; onClose: (
       >
         <div className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-300">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C9B896]">
               {t("ops.details")}
             </p>
             <h3 className="mt-1 text-sm font-semibold text-white">{t(mission.titleKey)}</h3>
@@ -219,8 +219,8 @@ function OpsMissionSheet({ mission, onClose }: { mission: OpsMission; onClose: (
             <SpecRow label={t("ops.eta")} value={`${mission.etaMin} min`} />
           )}
           <p className="text-[12px] leading-relaxed text-white/60">{t(mission.notesKey)}</p>
-          <div className="rounded-2xl border border-amber-400/25 bg-amber-400/10 p-3">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-200">
+          <div className="rounded-2xl border border-[#C9B896]/25 bg-[#C9B896]/10 p-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C9B896]">
               {t("ops.vhf")}
             </p>
             <p className="mt-1 font-semibold text-white">
@@ -241,7 +241,7 @@ function OpsMissionSheet({ mission, onClose }: { mission: OpsMission; onClose: (
               onClose();
               void navigate({ to: "/app" });
             }}
-            className="h-11 rounded-xl border border-amber-400/40 bg-amber-400/10 text-[11px] font-semibold uppercase tracking-[0.12em] text-amber-100"
+            className="h-11 rounded-xl border border-amber-400/40 bg-[#C9B896]/10 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8DFC8]"
           >
             {t("ops.focus_map")}
           </button>
@@ -399,7 +399,7 @@ function CaptainEmergencyCalls() {
 
   return (
     <div className="space-y-2">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-300/80">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#C9B896]/80">
         {t("esvc.my_calls")}
       </p>
       <ul className="space-y-2">
@@ -412,7 +412,7 @@ function CaptainEmergencyCalls() {
               <p className="text-sm font-semibold text-white">
                 {t(EMERGENCY_CATEGORY_LABEL_KEYS[row.category])}
               </p>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-200">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#C9B896]">
                 {t(`esvc.status_${row.status}`)}
               </span>
             </div>

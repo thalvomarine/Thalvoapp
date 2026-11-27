@@ -26,7 +26,7 @@ const OSM_RASTER_TILE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const COVERAGE_KINDS = new Set<MarineZoneKind>(["marina", "anchorage", "fuel", "hazard"]);
 
 const KIND_COLOR: Record<MarineZoneKind, string> = {
-  marina: "#f5b942",
+  marina: "#C9B896",
   anchorage: "#fbbf24",
   fuel: "#34d399",
   hazard: "#fb7185",
@@ -258,7 +258,7 @@ export function CoverageChart({
           <CircleMarker
             center={[own.lat, own.lng]}
             radius={8}
-            pathOptions={{ color: "#f5b942", fillColor: "#f5b942", fillOpacity: 0.95, weight: 2 }}
+            pathOptions={{ color: "#C9B896", fillColor: "#C9B896", fillOpacity: 0.95, weight: 2 }}
           >
             <Popup>
               <p className="text-sm font-semibold text-slate-900">{t("chart.locate_me")}</p>

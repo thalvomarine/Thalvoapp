@@ -13,7 +13,7 @@ export function AboutThalvo() {
     <GlassPanel className="space-y-3">
       <div className="flex items-baseline justify-between gap-2">
         <h3 className="text-sm font-semibold text-white">{t("about.title")}</h3>
-        <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-amber-300/90">
+        <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#C9B896]/90">
           {t("about.subtitle")}
         </span>
       </div>
@@ -33,7 +33,7 @@ export function AboutThalvo() {
         <p className="mt-2 text-[12px] leading-relaxed text-white/65">{t("about.vision_body")}</p>
       </details>
 
-      <p className="pt-1 text-center text-[10px] italic text-amber-200/70">
+      <p className="pt-1 text-center text-[10px] italic text-[#C9B896]/70">
         {t("about.tagline")}
       </p>
     </GlassPanel>

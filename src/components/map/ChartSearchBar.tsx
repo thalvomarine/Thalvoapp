@@ -155,9 +155,9 @@ export function ChartSearchBar({
                             setFocused(false);
                             onSelect(point);
                           }}
-                          className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left transition-colors hover:bg-amber-400/10"
+                          className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left transition-colors hover:bg-[#C9B896]/10"
                         >
-                          <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-white/[0.06] text-amber-200">
+                          <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-white/[0.06] text-[#C9B896]">
                             <Anchor className="size-3.5" />
                           </span>
                           <span className="min-w-0 flex-1">

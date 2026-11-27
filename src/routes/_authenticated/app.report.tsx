@@ -139,7 +139,7 @@ function ReportPage() {
                 <button key={p} onClick={() => setProblem(p)}
                   className={"px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors " +
                     (problem === p
-                      ? (isDiver ? "bg-amber-500/20 border-amber-400/50 text-amber-100" : "bg-amber-500/20 border-amber-400/50 text-amber-100")
+                      ? (isDiver ? "bg-amber-500/20 border-amber-400/50 text-[#E8DFC8]" : "bg-amber-500/20 border-amber-400/50 text-[#E8DFC8]")
                       : "bg-white/[0.03] border-white/10 text-white/70 hover:bg-white/10")}>
                   {t(`problems.${p}`)}
                 </button>
@@ -163,10 +163,10 @@ function ReportPage() {
         <div className={"rounded-2xl border p-3 flex items-center gap-3 text-xs " +
           (coords
             ? isLowAccuracy(coords)
-              ? "border-amber-400/30 bg-amber-500/10 text-amber-100"
+              ? "border-[#C9B896]/30 bg-amber-500/10 text-[#E8DFC8]"
               : "border-emerald-400/30 bg-emerald-500/10 text-emerald-100"
             : locating ? "border-white/10 bg-white/[0.04] text-white/70"
-            : "border-amber-400/30 bg-amber-500/10 text-amber-100")}>
+            : "border-[#C9B896]/30 bg-amber-500/10 text-[#E8DFC8]")}>
           {locating ? <Loader2 className="size-4 animate-spin" /> : <MapPin className="size-4" />}
           <div className="flex-1 min-w-0">
             {coords ? (

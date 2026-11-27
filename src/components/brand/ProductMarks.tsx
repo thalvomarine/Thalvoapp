@@ -3,14 +3,15 @@
  *
  * Grammar:
  *   • 32×32 viewBox, stroke ≈ 1.2, round caps/joins
- *   • Amber #F5B942 (command) · Cyan #00F0FF (chart ops) · Steel #8AA4C4 · Navy #0A192F
+ *   • Champagne #C9B896 (command) · Sea glass #8BA8A3 (chart ops) · Steel #A8B4C0
  *   • No lucide/emoji here — brand asset only
+ *   Marina Concierge lock: muted metals, no neon cyan / loud amber.
  */
 
-const AMBER = "#F5B942";
-const CYAN = "#00F0FF";
-const STEEL = "#8AA4C4";
-const NAVY = "#0A192F";
+const AMBER = "#C9B896";
+const CYAN = "#8BA8A3";
+const STEEL = "#A8B4C0";
+const NAVY = "#0C2226";
 const RING = "rgba(255,255,255,0.5)";
 
 interface MarkProps {

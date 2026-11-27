@@ -128,15 +128,15 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
           </div>
         ) : (
           <div className="space-y-3 p-5">
-            <div className="inline-flex w-full items-center gap-2 rounded-xl border-2 border-amber-400/60 bg-amber-400/[0.14] px-3 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-amber-100">
+            <div className="inline-flex w-full items-center gap-2 rounded-xl border-2 border-amber-400/60 bg-amber-400/[0.14] px-3 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#E8DFC8]">
               <FlaskConical className="size-3.5 shrink-0" />
               <span>{t("checkout.test_mode_badge")}</span>
             </div>
-            <div className="rounded-xl border border-amber-400/30 bg-amber-400/[0.1] px-3 py-2 text-[11px] leading-relaxed text-amber-200">
+            <div className="rounded-xl border border-[#C9B896]/30 bg-amber-400/[0.1] px-3 py-2 text-[11px] leading-relaxed text-[#C9B896]">
               {t("checkout.sim_banner")}
             </div>
             {!online && (
-              <div className="inline-flex items-start gap-2 rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100">
+              <div className="inline-flex items-start gap-2 rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-[#E8DFC8]">
                 <WifiOff className="mt-0.5 size-3.5 shrink-0" />
                 {t("checkout.offline_banner")}
               </div>
@@ -214,7 +214,7 @@ export function CheckoutModal({ open, amount, title, subtitle, onClose, onPaid, 
                   />
                 </div>
               </div>
-              <p className="text-center text-[10px] italic text-amber-200/80">
+              <p className="text-center text-[10px] italic text-[#C9B896]/80">
                 {t("checkout.test_mode_fields_note")}
               </p>
             </div>

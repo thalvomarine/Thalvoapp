@@ -48,8 +48,8 @@ export function OfferCard({ offer, currencyFormat, onAccept, onExplainTrust, acc
           className={
             "size-11 rounded-xl grid place-items-center shrink-0 " +
             (isDiver
-              ? "bg-amber-500/15 border border-amber-400/30 text-amber-300"
-              : "bg-amber-500/15 border border-amber-400/30 text-amber-300")
+              ? "bg-amber-500/15 border border-[#C9B896]/30 text-[#C9B896]"
+              : "bg-amber-500/15 border border-[#C9B896]/30 text-[#C9B896]")
           }
         >
           {isDiver ? <Anchor className="size-5" /> : <Wrench className="size-5" />}
@@ -61,12 +61,12 @@ export function OfferCard({ offer, currencyFormat, onAccept, onExplainTrust, acc
             onClick={onExplainTrust ? () => onExplainTrust(offer) : undefined}
             className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/70 hover:text-white"
           >
-            <Star className="size-2.5 fill-amber-300 text-amber-300" />
-            <span className="tabular-nums text-amber-200">{rating.toFixed(1)}</span>
+            <Star className="size-2.5 fill-amber-300 text-[#C9B896]" />
+            <span className="tabular-nums text-[#C9B896]">{rating.toFixed(1)}</span>
             {verified && (
               <>
                 <span className="text-white/20">·</span>
-                <ShieldCheck className="size-2.5 text-amber-300" />
+                <ShieldCheck className="size-2.5 text-[#C9B896]" />
                 <span className="text-sky-200">{t("offer_card.verified")}</span>
               </>
             )}
@@ -93,7 +93,7 @@ export function OfferCard({ offer, currencyFormat, onAccept, onExplainTrust, acc
           type="button"
           onClick={() => onAccept(offer)}
           disabled={disabled || accepting}
-          className="mt-3 w-full h-12 rounded-xl bg-[#F5B942] hover:bg-[#ffc857] disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 text-sm font-semibold inline-flex items-center justify-center gap-2 transition-colors"
+          className="mt-3 w-full h-12 rounded-xl bg-[#C9B896] hover:bg-[#d4c4a8] disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 text-sm font-semibold inline-flex items-center justify-center gap-2 transition-colors"
         >
           {accepting ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />}
           {t("owner.accept_and_demo_pay", { defaultValue: "Accept & demo pay" })}

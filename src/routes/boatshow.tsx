@@ -91,7 +91,7 @@ function BoatshowPage() {
 
         {/* Hero — brand first, one job */}
         <section className="flex flex-1 flex-col justify-center px-5 pb-10 pt-12 sm:px-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-300/90">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/90">
             {t("boatshow.kicker")}
           </p>
           <h1 className="thalvo-display mt-3 max-w-xl text-[clamp(2.4rem,8vw,4.2rem)] leading-[0.95] tracking-tight text-white">
@@ -128,7 +128,7 @@ function BoatshowPage() {
               className="block border border-white/10 bg-white/[0.03] px-4 py-4 transition-colors hover:border-amber-300/40 hover:bg-white/[0.06]"
             >
               <div className="flex items-center gap-2 text-[13px] font-semibold text-white">
-                <Ship className="size-4 text-amber-300" />
+                <Ship className="size-4 text-[#C9B896]" />
                 {t("boatshow.path_brand")}
               </div>
               <p className="mt-1.5 text-[12px] leading-snug text-white/55">{t("boatshow.path_brand_body")}</p>
@@ -136,21 +136,21 @@ function BoatshowPage() {
             <PathLink
               to="/auth"
               search={{ intent: "dealer", next: "/app/dealer" }}
-              icon={<Store className="size-4 text-amber-300" />}
+              icon={<Store className="size-4 text-[#C9B896]" />}
               title={t("boatshow.path_dealer")}
               body={t("boatshow.path_dealer_body")}
             />
             <PathLink
               to="/auth"
               search={{ intent: "captain" }}
-              icon={<Anchor className="size-4 text-amber-300" />}
+              icon={<Anchor className="size-4 text-[#C9B896]" />}
               title={t("boatshow.path_captain")}
               body={t("boatshow.path_captain_body")}
             />
             <PathLink
               to="/auth"
               search={{ intent: "provider" }}
-              icon={<Wrench className="size-4 text-amber-300" />}
+              icon={<Wrench className="size-4 text-[#C9B896]" />}
               title={t("boatshow.path_tech")}
               body={t("boatshow.path_tech_body")}
             />
@@ -222,7 +222,7 @@ function BoatshowPage() {
             <li>{t("boatshow.demo_4")}</li>
             <li>{t("boatshow.demo_5")}</li>
           </ol>
-          <p className="mt-4 max-w-xl text-[12px] text-amber-200/80">{t("boatshow.demo_honest")}</p>
+          <p className="mt-4 max-w-xl text-[12px] text-[#C9B896]/80">{t("boatshow.demo_honest")}</p>
         </section>
 
         <PublicFooter />

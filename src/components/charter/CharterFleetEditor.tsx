@@ -118,7 +118,7 @@ export function CharterFleetEditor({
       <GlassPanel>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#00F0FF]/80">{t("charter.fleet_eyebrow")}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8BA8A3]/80">{t("charter.fleet_eyebrow")}</p>
             <h2 className="thalvo-display mt-1 text-[1.7rem] tracking-wide text-white">{t("charter.fleet_title")}</h2>
             <p className="mt-1 max-w-xl text-[13px] text-white/60">{t("charter.fleet_body")}</p>
           </div>
@@ -126,8 +126,8 @@ export function CharterFleetEditor({
         </div>
 
         <div className="mt-5 grid gap-2 sm:grid-cols-3">
-          <StatCard icon={<Ship className="size-4 text-[#00F0FF]" />} label={t("charter.stat_fleet")} value={String(yachts.length)} hint={t("charter.stat_listed", { count: listed })} />
-          <StatCard icon={<Inbox className="size-4 text-[#F5B942]" />} label={t("charter.stat_inbox")} value={String(inquiries.length)} hint={t("charter.stat_new", { count: fresh })} />
+          <StatCard icon={<Ship className="size-4 text-[#8BA8A3]" />} label={t("charter.stat_fleet")} value={String(yachts.length)} hint={t("charter.stat_listed", { count: listed })} />
+          <StatCard icon={<Inbox className="size-4 text-[#C9B896]" />} label={t("charter.stat_inbox")} value={String(inquiries.length)} hint={t("charter.stat_new", { count: fresh })} />
           <StatCard icon={<CalendarDays className="size-4 text-emerald-300" />} label={t("charter.stat_days")} value={String(days.length)} hint={t("charter.stat_days_hint")} />
         </div>
 
@@ -146,14 +146,14 @@ export function CharterFleetEditor({
               className={
                 "inline-flex h-10 items-center gap-2 rounded-full border px-4 text-[12px] font-semibold transition-colors " +
                 (tab === id
-                  ? "border-[#F5B942]/55 bg-[#F5B942]/15 text-[#F5B942]"
+                  ? "border-[#C9B896]/55 bg-[#C9B896]/15 text-[#C9B896]"
                   : "border-white/10 text-white/65 hover:border-white/25 hover:text-white")
               }
             >
               <Icon className="size-3.5" />
               {label}
               {id === "inbox" && fresh > 0 && (
-                <span className="rounded-full bg-[#F5B942] px-1.5 text-[10px] text-[#1a1203]">{fresh}</span>
+                <span className="rounded-full bg-[#C9B896] px-1.5 text-[10px] text-[#0a192f]">{fresh}</span>
               )}
             </button>
           ))}
@@ -194,7 +194,7 @@ export function CharterFleetEditor({
                     onClick={() => setForm({ ...form, base: port })}
                     className={
                       "rounded-full border px-2.5 py-1 text-[11px] " +
-                      (form.base === port ? "border-[#00F0FF]/50 text-[#00F0FF]" : "border-white/10 text-white/55 hover:border-white/25")
+                      (form.base === port ? "border-[#8BA8A3]/50 text-[#8BA8A3]" : "border-white/10 text-white/55 hover:border-white/25")
                     }
                   >
                     {port}
@@ -211,7 +211,7 @@ export function CharterFleetEditor({
                       onClick={() => setForm({ ...form, hull })}
                       className={
                         "rounded-full border px-3 py-1.5 text-[12px] font-semibold " +
-                        (form.hull === hull ? "border-[#F5B942]/55 bg-[#F5B942]/15 text-[#F5B942]" : "border-white/10 text-white/65")
+                        (form.hull === hull ? "border-[#C9B896]/55 bg-[#C9B896]/15 text-[#C9B896]" : "border-white/10 text-white/65")
                       }
                     >
                       {t(`charter.hull_${hull}`)}
@@ -225,7 +225,7 @@ export function CharterFleetEditor({
               type="button"
               disabled={busy || score < 100}
               onClick={() => void save()}
-              className="mt-6 h-11 w-full rounded-full bg-[#F5B942] text-sm font-semibold text-[#1a1203] transition-opacity disabled:opacity-40 sm:w-auto sm:px-8"
+              className="mt-6 h-11 w-full rounded-full bg-[#C9B896] text-sm font-semibold text-[#0a192f] transition-opacity disabled:opacity-40 sm:w-auto sm:px-8"
             >
               {t("charter.fleet_add")}
             </button>
@@ -235,7 +235,7 @@ export function CharterFleetEditor({
           <aside className="h-fit space-y-3 lg:sticky lg:top-4">
             <GlassPanel>
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{t("charter.score_title")}</p>
-              <p className="thalvo-display mt-2 text-[2.4rem] tracking-wide text-[#F5B942]">{score}</p>
+              <p className="thalvo-display mt-2 text-[2.4rem] tracking-wide text-[#C9B896]">{score}</p>
               <p className="text-[12px] text-white/50">{t("charter.score_body")}</p>
               <ul className="mt-4 space-y-2">
                 {checks.map((row) => (
@@ -378,7 +378,7 @@ export function CharterFleetEditor({
                               })
                               .catch(() => toast.error(t("charter.fleet_failed")))
                           }
-                          className="mt-3 inline-flex h-9 items-center rounded-full border border-[#F5B942]/45 px-3 text-[11px] font-semibold text-[#F5B942]"
+                          className="mt-3 inline-flex h-9 items-center rounded-full border border-[#C9B896]/45 px-3 text-[11px] font-semibold text-[#C9B896]"
                         >
                           {t("charter.quote_action")}
                         </button>
@@ -411,7 +411,7 @@ function StatCard({ icon, label, value, hint }: { icon: ReactNode; label: string
 function SectionTitle({ icon, title }: { icon: ReactNode; title: string }) {
   return (
     <div className="mt-6 flex items-center gap-2 border-t border-white/10 pt-4">
-      <span className="text-[#00F0FF]/90">{icon}</span>
+      <span className="text-[#8BA8A3]/90">{icon}</span>
       <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/55">{title}</p>
     </div>
   );
@@ -431,7 +431,7 @@ function EmptyState({
   return (
     <GlassPanel>
       <div className="flex flex-col items-start gap-3 py-6 sm:flex-row sm:items-center">
-        <div className="grid size-12 place-items-center rounded-2xl border border-[#00F0FF]/30 bg-[#00F0FF]/10 text-[#00F0FF]">
+        <div className="grid size-12 place-items-center rounded-2xl border border-[#8BA8A3]/30 bg-[#8BA8A3]/10 text-[#8BA8A3]">
           <Radar className="size-5" />
         </div>
         <div className="min-w-0 flex-1">
@@ -439,7 +439,7 @@ function EmptyState({
           <p className="mt-1 text-[13px] text-white/55">{body}</p>
         </div>
         {action && onAction && (
-          <button type="button" onClick={onAction} className="h-10 rounded-full bg-[#F5B942] px-4 text-[12px] font-semibold text-[#1a1203]">
+          <button type="button" onClick={onAction} className="h-10 rounded-full bg-[#C9B896] px-4 text-[12px] font-semibold text-[#0a192f]">
             {action}
           </button>
         )}
@@ -466,7 +466,7 @@ function TextField({
         <input
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 text-sm text-white outline-none focus:border-[#F5B942]/50"
+          className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 text-sm text-white outline-none focus:border-[#C9B896]/50"
         />
         {suffix ? <span className="pointer-events-none absolute inset-y-0 right-3 grid place-items-center text-[11px] text-white/35">{suffix}</span> : null}
       </span>

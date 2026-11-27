@@ -12,8 +12,8 @@ export function VerificationBadge({ verified, label, className = "" }: Props) {
   const { t } = useTranslation();
   const text = label ?? (verified ? t("trust.verification.verified") : t("trust.verification.unverified"));
   const styles = verified
-    ? "border-amber-400/30 bg-amber-400/10 text-amber-300"
-    : "border-amber-400/30 bg-amber-400/10 text-amber-300";
+    ? "border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]"
+    : "border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]";
   return (
     <span
       className={

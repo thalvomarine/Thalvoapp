@@ -141,14 +141,14 @@ export function BrandLanding() {
             <Link
               to="/auth"
               search={{ intent: "captain" }}
-              className="hidden h-9 items-center rounded-md bg-[#F5B942] px-4 text-[12px] font-bold tracking-wide text-[#1A1406] sm:inline-flex"
+              className="hidden h-9 items-center rounded-md bg-[#C9B896] px-4 text-[12px] font-bold tracking-wide text-[#1A1406] sm:inline-flex"
             >
               {t("auth.sign_in")}
             </Link>
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="inline-flex size-9 items-center justify-center rounded-md border border-white/20 text-[#F5B942] md:hidden"
+              className="inline-flex size-9 items-center justify-center rounded-md border border-white/20 text-[#C9B896] md:hidden"
               aria-label={t("landing.nav_menu")}
             >
               <LayoutGrid className="size-4" />
@@ -161,10 +161,10 @@ export function BrandLanding() {
             <h1 className="thalvo-display text-[clamp(3.6rem,14vw,7rem)] leading-[0.88] tracking-[0.06em] text-white">
               THALVO
             </h1>
-            <p className="mt-5 text-[clamp(1.05rem,2.4vw,1.4rem)] font-semibold tracking-[0.04em] text-[#F5B942]">
+            <p className="mt-5 text-[clamp(1.05rem,2.4vw,1.4rem)] font-semibold tracking-[0.04em] text-[#C9B896]">
               {t("landing.slogan")}
             </p>
-            <div className="mx-auto mt-4 h-px w-16 bg-[#F5B942]/80" />
+            <div className="mx-auto mt-4 h-px w-16 bg-[#C9B896]/80" />
             <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-white/78 sm:text-base">
               {t("landing.lede")}
             </p>
@@ -190,7 +190,7 @@ export function BrandLanding() {
       {/* ——— SOLUTIONS ——— */}
       <section id="solutions" className="landing-reveal scroll-mt-24 border-t border-white/[0.07] px-5 py-20 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-5xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#F5B942]/80">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/80">
             {t("landing.nav_solutions")}
           </p>
           <h2 className="thalvo-display mt-3 max-w-xl text-[clamp(1.8rem,4vw,2.6rem)] leading-tight tracking-wide text-white">
@@ -205,8 +205,8 @@ export function BrandLanding() {
             <Feature n="03" title={t("landing.feat_chart_title")} body={t("landing.feat_chart_body")} />
           </div>
           <div className="mt-10 grid gap-3 sm:grid-cols-2">
-            <Link to="/charter" className="rounded-3xl border border-[#F5B942]/30 bg-[#F5B942]/10 p-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F5B942]">{t("charter.door_charter")}</p>
+            <Link to="/charter" className="rounded-3xl border border-[#C9B896]/30 bg-[#C9B896]/10 p-5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#C9B896]">{t("charter.door_charter")}</p>
               <p className="mt-2 text-sm text-white/80">{t("charter.door_charter_body")}</p>
             </Link>
             <div className="rounded-3xl border border-white/10 p-5">
@@ -214,7 +214,7 @@ export function BrandLanding() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55">{t("charter.door_service")}</p>
                 <p className="mt-2 text-sm text-white/70">{t("charter.door_service_body")}</p>
               </Link>
-              <Link to="/marketplace" className="mt-3 inline-flex text-[12px] font-semibold text-[#F5B942]">{t("charter.door_parts")}</Link>
+              <Link to="/marketplace" className="mt-3 inline-flex text-[12px] font-semibold text-[#C9B896]">{t("charter.door_parts")}</Link>
             </div>
           </div>
         </div>
@@ -223,7 +223,7 @@ export function BrandLanding() {
       {/* ——— ABOUT ——— */}
       <section id="about" className="scroll-mt-24 border-t border-white/[0.07] px-5 py-20 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-5xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#F5B942]/80">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/80">
             {t("landing.nav_about")}
           </p>
           <h2 className="thalvo-display mt-3 text-[clamp(1.8rem,4vw,2.6rem)] leading-tight tracking-wide text-white">
@@ -260,7 +260,7 @@ export function BrandLanding() {
           >
             <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/[0.08] px-5 py-4 sm:px-7">
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#F5B942]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#C9B896]">
                   {t("landing.partner_kicker")}
                 </p>
                 <h2
@@ -295,7 +295,7 @@ export function BrandLanding() {
                       key={line}
                       className="border-l border-[#D4AF37]/35 pl-3 text-[12px] leading-snug text-white/55"
                     >
-                      <span className="thalvo-num block text-[10px] tracking-[0.2em] text-[#F5B942]/70">
+                      <span className="thalvo-num block text-[10px] tracking-[0.2em] text-[#C9B896]/70">
                         0{i + 1}
                       </span>
                       <span className="mt-1 block">{line}</span>
@@ -306,7 +306,7 @@ export function BrandLanding() {
 
               {sent ? (
                 <div className="flex min-h-[240px] flex-col justify-center px-6 py-12 sm:px-10">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#F5B942]/80">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/80">
                     {t("landing.partner_kicker")}
                   </p>
                   <p className="thalvo-display mt-3 text-3xl text-white">
@@ -327,7 +327,7 @@ export function BrandLanding() {
                     <Link
                       to="/auth"
                       search={{ intent: "dealer" }}
-                      className="inline-flex h-11 items-center justify-center rounded-md bg-[#F5B942] px-5 text-sm font-bold text-[#1A1406] hover:bg-[#ffc857]"
+                      className="inline-flex h-11 items-center justify-center rounded-md bg-[#C9B896] px-5 text-sm font-bold text-[#1A1406] hover:bg-[#d4c4a8]"
                       onClick={closePartner}
                     >
                       {t("landing.partner_door_bayi")}
@@ -352,7 +352,7 @@ export function BrandLanding() {
                             className={
                               "flex items-center justify-between rounded-lg px-3.5 py-3 text-left text-[13px] font-semibold transition " +
                               (on
-                                ? "bg-[#F5B942] text-[#1A1406]"
+                                ? "bg-[#C9B896] text-[#1A1406]"
                                 : "border border-white/[0.08] bg-white/[0.02] text-white/70 hover:border-[#D4AF37]/35 hover:text-white")
                             }
                           >
@@ -407,7 +407,7 @@ export function BrandLanding() {
                         <button
                           type="submit"
                           disabled={busy}
-                          className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-[#F5B942] px-8 text-sm font-bold text-[#1A1406] transition hover:bg-[#ffc857] disabled:opacity-55 sm:min-w-[14rem]"
+                          className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-[#C9B896] px-8 text-sm font-bold text-[#1A1406] transition hover:bg-[#d4c4a8] disabled:opacity-55 sm:min-w-[14rem]"
                         >
                           {busy ? t("common.loading") : t("boatshow.lead_submit")}
                           <ArrowUpRight className="size-4 opacity-80" aria-hidden />
@@ -421,7 +421,7 @@ export function BrandLanding() {
                         <Link
                           to="/auth"
                           search={{ intent: "provider" }}
-                          className="font-semibold text-[#00F0FF] hover:underline"
+                          className="font-semibold text-[#8BA8A3] hover:underline"
                           onClick={closePartner}
                         >
                           {t("landing.partner_door_usta")}
@@ -429,7 +429,7 @@ export function BrandLanding() {
                         <Link
                           to="/auth"
                           search={{ intent: "dealer" }}
-                          className="font-semibold text-[#F5B942] hover:underline"
+                          className="font-semibold text-[#C9B896] hover:underline"
                           onClick={closePartner}
                         >
                           {t("landing.partner_door_bayi")}
@@ -498,7 +498,7 @@ export function BrandLanding() {
                 to="/auth"
                 search={{ intent: "captain" }}
                 onClick={() => setMenuOpen(false)}
-                className="rounded-md px-3 py-3.5 text-sm font-semibold text-[#F5B942] hover:bg-white/[0.04]"
+                className="rounded-md px-3 py-3.5 text-sm font-semibold text-[#C9B896] hover:bg-white/[0.04]"
               >
                 {t("auth.sign_in")}
               </Link>
@@ -549,7 +549,7 @@ export function BrandLanding() {
 function Feature({ n, title, body }: { n: string; title: string; body: string }) {
   return (
     <div className="border-t border-white/10 pt-5">
-      <p className="thalvo-num text-[11px] tracking-[0.2em] text-[#F5B942]/70">{n}</p>
+      <p className="thalvo-num text-[11px] tracking-[0.2em] text-[#C9B896]/70">{n}</p>
       <p className="mt-3 text-[15px] font-semibold text-white">{title}</p>
       <p className="mt-2 text-[13px] leading-relaxed text-white/55">{body}</p>
     </div>

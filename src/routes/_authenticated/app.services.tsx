@@ -96,7 +96,7 @@ function Services() {
           className={
             "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-semibold uppercase tracking-[0.14em] transition-colors " +
             (filter === "mechanic"
-              ? "border-amber-400/50 bg-amber-500/20 text-amber-100"
+              ? "border-amber-400/50 bg-amber-500/20 text-[#E8DFC8]"
               : "border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/10")
           }
         >
@@ -107,7 +107,7 @@ function Services() {
           className={
             "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-semibold uppercase tracking-[0.14em] transition-colors " +
             (filter === "diver"
-              ? "border-amber-400/50 bg-amber-500/20 text-amber-100"
+              ? "border-amber-400/50 bg-amber-500/20 text-[#E8DFC8]"
               : "border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/10")
           }
         >
@@ -124,7 +124,7 @@ function Services() {
             <button
               type="button"
               onClick={loadPackages}
-              className="inline-flex h-10 items-center rounded-md bg-[#F5B942] px-4 text-[12px] font-bold text-[#1A1406] hover:bg-[#ffc857]"
+              className="inline-flex h-10 items-center rounded-md bg-[#C9B896] px-4 text-[12px] font-bold text-[#1A1406] hover:bg-[#d4c4a8]"
             >
               {t("common.retry", { defaultValue: "Retry" })}
             </button>
@@ -146,7 +146,7 @@ function Services() {
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-white">{label(p)}</p>
-                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#F5B942]/85">
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C9B896]/85">
                     {t("services.request_quote")}
                   </p>
                 </div>
@@ -257,7 +257,7 @@ function PackageOffers({
                   key={o.id}
                   className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3"
                 >
-                  <div className="grid size-11 place-items-center rounded-xl border border-[#F5B942]/30 bg-[#F5B942]/10 text-[#F5B942]">
+                  <div className="grid size-11 place-items-center rounded-xl border border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]">
                     {o.provider_details?.service_type === "Underwater Diver" ? (
                       <Anchor className="size-5" />
                     ) : (
@@ -277,7 +277,7 @@ function PackageOffers({
                     type="button"
                     disabled={busyId === o.id}
                     onClick={() => void requestQuote(o)}
-                    className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md bg-[#F5B942] px-3 text-[11px] font-bold tracking-wide text-[#1A1406] transition hover:bg-[#ffc857] disabled:opacity-55"
+                    className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md bg-[#C9B896] px-3 text-[11px] font-bold tracking-wide text-[#1A1406] transition hover:bg-[#d4c4a8] disabled:opacity-55"
                   >
                     {busyId === o.id ? (
                       <Loader2 className="size-3.5 animate-spin" />

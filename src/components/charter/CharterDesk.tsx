@@ -154,9 +154,9 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
         />
       }
     >
-      <GlassPanel className="border-amber-400/25 bg-amber-400/[0.06]">
-        <p className="text-[12px] leading-relaxed text-amber-100/90">{t("charter.demo_note")}</p>
-        <p className="mt-1 text-[11px] text-amber-100/70">{t("charter.rhythm")}</p>
+      <GlassPanel className="border-[#C9B896]/30 bg-[#C9B896]/10">
+        <p className="text-[12px] leading-relaxed text-[#E8DFC8]/90">{t("charter.demo_note")}</p>
+        <p className="mt-1 text-[11px] text-[#E8DFC8]/70">{t("charter.rhythm")}</p>
       </GlassPanel>
 
       <div className="flex gap-2 overflow-x-auto pb-1">
@@ -199,9 +199,9 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
                 className={
                   "rounded-xl border px-1 py-2 text-center transition-colors " +
                   (selected
-                    ? "border-amber-300/60 bg-amber-400/15"
+                    ? "border-[#C9B896]/45 bg-[#C9B896]/12"
                     : isToday
-                      ? "border-cyan-300/40 bg-cyan-400/10"
+                      ? "border-[#8BA8A3]/40 bg-[#8BA8A3]/10"
                       : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]")
                 }
               >
@@ -260,7 +260,7 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
             <div className="grid gap-3 md:grid-cols-2">
               {fleet.map((boat) => (
                 <button key={boat.id} type="button" onClick={() => setOpenYacht(boat.id)} className="text-left">
-                  <GlassPanel className="h-full transition-colors hover:border-amber-300/30">
+                  <GlassPanel className="h-full transition-colors hover:border-[#C9B896]/35">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold text-white">{boat.name}</p>
@@ -316,7 +316,7 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
                   <button
                     type="button"
                     onClick={() => quoteInquiry(row.id)}
-                    className="ml-auto rounded-full border border-amber-300/40 px-3 py-1 text-[11px] font-semibold text-amber-100"
+                    className="ml-auto rounded-full border border-[#C9B896]/40 px-3 py-1 text-[11px] font-semibold text-[#E8DFC8]"
                   >
                     {t("charter.quote_action")}
                   </button>
@@ -376,10 +376,10 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
 
 const CELL_CLASS: Record<OccupancyTone, string> = {
   free: "border-white/10 bg-white/[0.03] text-white/45",
-  booked: "border-cyan-300/40 bg-cyan-400/15 text-cyan-50",
-  option: "border-amber-300/50 bg-amber-400/15 text-amber-50",
-  one_way: "border-cyan-200/30 bg-cyan-400/10 text-cyan-50",
-  service: "border-rose-400/30 bg-rose-500/10 text-rose-100",
+  booked: "border-[#8BA8A3]/45 bg-[#8BA8A3]/12 text-[#D5E4E1]",
+  option: "border-[#C9B896]/45 bg-[#C9B896]/12 text-[#E8DFC8]",
+  one_way: "border-[#7A9E9A]/40 bg-[#7A9E9A]/10 text-[#C9D9D6]",
+  service: "border-[#A67C7C]/40 bg-[#A67C7C]/12 text-[#E8D0D0]",
   closed: "border-white/10 bg-white/[0.04] text-white/40",
 };
 
@@ -417,7 +417,7 @@ function OccupancySheet({
               return (
                 <th
                   key={day.startIso}
-                  className={"min-w-[3.25rem] px-1 py-1 text-center text-[10px] font-semibold uppercase tracking-wider " + (current ? "text-cyan-200" : "text-white/40")}
+                  className={"min-w-[3.25rem] px-1 py-1 text-center text-[10px] font-semibold uppercase tracking-wider " + (current ? "text-[#C9B896]" : "text-white/40")}
                 >
                   {fmt.format(new Date(start[0]!, start[1]! - 1, start[2]!))}
                 </th>
@@ -479,7 +479,7 @@ function BookingMoney({
         {bookingNights(booking)} {t("charter.nights")} · {booking.party} {t("charter.party")} · {window.embark}/{window.disembark}
       </p>
       {booking.status === "option" && (
-        <p className="mt-1 text-[11px] text-amber-200">{t("charter.option_hold", { until: booking.startIso })}</p>
+        <p className="mt-1 text-[11px] text-[#C9B896]">{t("charter.option_hold", { until: booking.startIso })}</p>
       )}
       <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-white/70">
         <span>{t("charter.money_collected")} <MoneyAmount value={money.collected} currency="EUR" className="text-[11px]" /></span>
@@ -545,7 +545,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
       className={
         "shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-semibold transition-colors " +
         (active
-          ? "border-amber-300/50 bg-amber-400/15 text-amber-50"
+          ? "border-[#C9B896]/45 bg-[#C9B896]/12 text-[#E8DFC8]"
           : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.07]")
       }
     >
@@ -594,7 +594,7 @@ function OpsColumn({
                   <button
                     type="button"
                     onClick={() => onCheckIn(booking)}
-                    className="mt-2 rounded-full bg-amber-400/90 px-3 py-1 text-[11px] font-semibold text-[#1a1203]"
+                    className="mt-2 rounded-full bg-[#C9B896]/90 px-3 py-1 text-[11px] font-semibold text-[#0a192f]"
                   >
                     {t("charter.check_in_action")}
                   </button>

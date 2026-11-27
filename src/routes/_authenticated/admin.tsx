@@ -43,7 +43,7 @@ function SuperadminPage() {
       <div className="mb-4 flex justify-end">
         <Link
           to="/app/admin"
-          className="inline-flex h-9 items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-3 text-[11px] font-bold uppercase tracking-[0.14em] text-amber-100"
+          className="inline-flex h-9 items-center rounded-full border border-[#C9B896]/30 bg-[#C9B896]/10 px-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#E8DFC8]"
         >
           {t("admin.super.open_tower")}
         </Link>

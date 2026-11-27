@@ -254,7 +254,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
       style={{
         bottom: "calc(max(1rem, env(safe-area-inset-bottom)) + 4.6rem)",
         background: "linear-gradient(160deg, #0F2440 0%, #0A192F 70%, #081428 100%)",
-        border: "1px solid rgba(245,185,66,0.45)",
+        border: "1px solid rgba(201,184,150,0.45)",
         boxShadow: "0 12px 32px -12px rgba(0,0,0,0.75)",
       }}
     >
@@ -376,7 +376,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
             <MessageBubble key={message.id} message={message} />
           ))}
           {busy && (
-            <div className="flex items-center gap-2 text-xs text-amber-100/70">
+            <div className="flex items-center gap-2 text-xs text-[#E8DFC8]/70">
               <Loader2 className="size-3.5 animate-spin" />
               {t("ai.thinking")}
             </div>
@@ -497,18 +497,18 @@ function MessageBubble({ message }: { message: ChatLine }) {
               "mb-2 rounded-xl border px-3 py-2 text-xs leading-relaxed " +
               (message.weather.alert === "storm" || message.weather.alert === "gale"
                 ? "border-rose-300/40 bg-rose-500/10 text-rose-50"
-                : "border-amber-300/30 bg-amber-400/10 text-amber-50")
+                : "border-amber-300/30 bg-[#C9B896]/10 text-[#E8DFC8]")
             }
           >
             {message.weather.summary}
           </p>
         )}
         {message.route && (
-          <p className="mb-2 text-xs text-amber-100">
+          <p className="mb-2 text-xs text-[#E8DFC8]">
             {message.route}
           </p>
         )}
-        <div className="thalvo-md space-y-2 leading-relaxed [&_h2]:text-[15px] [&_h2]:font-semibold [&_h2]:text-amber-100 [&_ol]:list-decimal [&_ol]:pl-4 [&_ul]:list-disc [&_ul]:pl-4 [&_strong]:text-white [&_code]:text-amber-100">
+        <div className="thalvo-md space-y-2 leading-relaxed [&_h2]:text-[15px] [&_h2]:font-semibold [&_h2]:text-[#E8DFC8] [&_ol]:list-decimal [&_ol]:pl-4 [&_ul]:list-disc [&_ul]:pl-4 [&_strong]:text-white [&_code]:text-[#E8DFC8]">
           <ReactMarkdown
             components={{
               a: ({ href, children }) => <SafeLink href={href}>{children}</SafeLink>,
@@ -530,7 +530,7 @@ function SafeLink({ href, children }: { href?: string; children?: ReactNode }) {
   const safe = typeof href === "string" && (/^https?:\/\//i.test(href) || (href.startsWith("/") && !href.startsWith("//")));
   if (!safe) return <span>{children}</span>;
   return (
-    <a href={href} target="_blank" rel="noreferrer noopener" className="text-amber-200 underline">
+    <a href={href} target="_blank" rel="noreferrer noopener" className="text-[#C9B896] underline">
       {children}
     </a>
   );

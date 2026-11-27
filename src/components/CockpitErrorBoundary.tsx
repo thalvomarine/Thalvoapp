@@ -71,7 +71,7 @@ function ChartCrashFallback({
       ) : null}
       <button
         type="button"
-        className="rounded-md border border-amber-400/40 bg-amber-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-amber-100"
+        className="rounded-md border border-amber-400/40 bg-[#C9B896]/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#E8DFC8]"
         onClick={onRetry}
       >
         {staleChunk ? t("chart.crash_reload") : t("chart.crash_retry")}

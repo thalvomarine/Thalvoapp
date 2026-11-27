@@ -21,13 +21,13 @@ export function DeliveryEtaBadge({ mode, minutes, distanceKm, className = "" }: 
   return (
     <span
       className={
-        "inline-flex items-center gap-1 rounded-full border border-amber-400/25 bg-amber-400/10 text-amber-300 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] " +
+        "inline-flex items-center gap-1 rounded-full border border-[#C9B896]/25 bg-[#C9B896]/10 text-[#C9B896] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] " +
         className
       }
     >
       <Icon className="size-2.5" />
       {label}
-      {suffix && <span className="text-sky-200/90 inline-flex items-center gap-0.5"><Clock className="size-2.5" />{suffix}</span>}
+      {suffix && <span className="text-[#8BA8A3]/90 inline-flex items-center gap-0.5"><Clock className="size-2.5" />{suffix}</span>}
     </span>
   );
 }

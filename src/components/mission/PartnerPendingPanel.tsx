@@ -28,12 +28,12 @@ export function PartnerPendingPanel({
     return (
       <div
         className={
-          "flex items-start gap-2.5 border border-[#F5B942]/30 bg-[#0A192F]/95 px-3 py-2.5 text-[12px] leading-snug text-amber-50 shadow-lg backdrop-blur-md " +
+          "flex items-start gap-2.5 border border-[#C9B896]/30 bg-[#0A192F]/95 px-3 py-2.5 text-[12px] leading-snug text-[#E8DFC8] shadow-lg backdrop-blur-md " +
           className
         }
         role="status"
       >
-        <Clock3 className="mt-0.5 size-4 shrink-0 text-[#F5B942]" aria-hidden />
+        <Clock3 className="mt-0.5 size-4 shrink-0 text-[#C9B896]" aria-hidden />
         <div className="min-w-0 flex-1">
           <p className="font-semibold text-white">
             {t("partner_pending.banner_title", { role: roleLabel })}
@@ -51,10 +51,10 @@ export function PartnerPendingPanel({
       }
       role="status"
     >
-      <div className="mx-auto grid size-12 place-items-center rounded-full border border-[#F5B942]/35 bg-[#F5B942]/10">
-        <Icon className="size-5 text-[#F5B942]" aria-hidden />
+      <div className="mx-auto grid size-12 place-items-center rounded-full border border-[#C9B896]/35 bg-[#C9B896]/10">
+        <Icon className="size-5 text-[#C9B896]" aria-hidden />
       </div>
-      <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#F5B942]/80">
+      <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#C9B896]/80">
         {t("partner_pending.kicker")}
       </p>
       <h2 className="thalvo-display mt-2 text-2xl tracking-wide text-white">
@@ -65,11 +65,11 @@ export function PartnerPendingPanel({
       </p>
       <ul className="mx-auto mt-6 grid max-w-sm gap-2 text-left text-[12px] text-white/65">
         <li className="flex items-start gap-2">
-          <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-[#00F0FF]" aria-hidden />
+          <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-[#8BA8A3]" aria-hidden />
           <span>{t("partner_pending.point_review")}</span>
         </li>
         <li className="flex items-start gap-2">
-          <Clock3 className="mt-0.5 size-3.5 shrink-0 text-[#F5B942]" aria-hidden />
+          <Clock3 className="mt-0.5 size-3.5 shrink-0 text-[#C9B896]" aria-hidden />
           <span>{t("partner_pending.point_wait")}</span>
         </li>
       </ul>

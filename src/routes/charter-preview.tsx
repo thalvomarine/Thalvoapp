@@ -18,7 +18,7 @@ function CharterPreviewPage() {
           <Wordmark size="sm" className="text-white" />
         </Link>
         <div className="flex items-center gap-2">
-          <Link to="/charter" className="text-[12px] font-semibold text-[#F5B942]">
+          <Link to="/charter" className="text-[12px] font-semibold text-[#C9B896]">
             {t("charter.guest_link")}
           </Link>
           <LanguageSwitcher tone="dark" />

@@ -94,7 +94,7 @@ export function AdminPoiDialog({ onSaved }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-400/15 px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-amber-100 transition-colors hover:bg-amber-400/25"
+        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-400/15 px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-[#E8DFC8] transition-colors hover:bg-amber-400/25"
       >
         <Plus className="size-3.5" />
         {t("admin.poi.trigger")}

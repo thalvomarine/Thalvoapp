@@ -493,7 +493,7 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
         {/* Footer */}
         <div className="border-t border-white/[0.06] bg-[oklch(0.13_0.02_250/0.9)] backdrop-blur-md p-3 pb-[max(env(safe-area-inset-bottom),12px)] space-y-2">
           {!online && (
-            <div role="alert" className="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100 inline-flex items-start gap-2 w-full">
+            <div role="alert" className="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-[#E8DFC8] inline-flex items-start gap-2 w-full">
               <WifiOff className="size-3.5 mt-0.5 shrink-0" />
               {t("sos_sheet.offline")}
             </div>
@@ -548,17 +548,17 @@ function StepProblem({
       <button
         type="button"
         onClick={onServiceCall}
-        className="flex w-full items-center justify-between gap-3 rounded-2xl border border-amber-400/35 bg-amber-400/10 px-4 py-3 text-left"
+        className="flex w-full items-center justify-between gap-3 rounded-2xl border border-amber-400/35 bg-[#C9B896]/10 px-4 py-3 text-left"
       >
         <span>
-          <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-300/80">
+          <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C9B896]/80">
             {t("esvc.entry_eyebrow")}
           </span>
           <span className="mt-0.5 block text-sm font-semibold text-white">
             {t("esvc.entry_title")}
           </span>
         </span>
-        <span className="text-amber-200/80">›</span>
+        <span className="text-[#C9B896]/80">›</span>
       </button>
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50 mb-2">
@@ -631,7 +631,7 @@ function StepLocation({
     stateTone === "ok"
       ? "border-emerald-400/30 bg-emerald-500/10 text-emerald-200"
       : stateTone === "manual"
-        ? "border-amber-400/30 bg-amber-500/10 text-amber-100"
+        ? "border-[#C9B896]/30 bg-amber-500/10 text-[#E8DFC8]"
         : "border-white/10 bg-white/[0.04] text-white/80";
   return (
     <div className="space-y-5">
@@ -731,7 +731,7 @@ function StepSend({
         </p>
       </div>
 
-      <p className="rounded-2xl border border-amber-400/25 bg-amber-500/10 px-3 py-2.5 text-[12px] leading-relaxed text-amber-50">
+      <p className="rounded-2xl border border-[#C9B896]/25 bg-amber-500/10 px-3 py-2.5 text-[12px] leading-relaxed text-[#E8DFC8]">
         {t("sos_sheet.not_coastguard")}
       </p>
 
@@ -747,7 +747,7 @@ function StepSend({
           <div>
             <p className="text-sm font-semibold text-white">{t("sos_sheet.brief_title")}</p>
             <p className="mt-0.5 text-[12px] leading-snug text-white/50">{t("sos_sheet.brief_sub")}</p>
-            <p className={"mt-2 text-[11px] font-semibold " + (ready ? "text-amber-200" : "text-white/40")}>
+            <p className={"mt-2 text-[11px] font-semibold " + (ready ? "text-[#C9B896]" : "text-white/40")}>
               {ready ? t("sos_sheet.brief_ready") : t("sos_sheet.brief_empty")}
             </p>
           </div>
@@ -814,7 +814,7 @@ function StepSend({
                 onChange={(e) => onNote(e.target.value)}
                 rows={3}
                 placeholder={t("sos_sheet.note_ph")}
-                className="mt-2 w-full resize-none rounded-2xl border border-white/15 bg-white/5 p-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-amber-300/60"
+                className="mt-2 w-full resize-none rounded-2xl border border-white/15 bg-white/5 p-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#C9B896]/45"
               />
             </div>
             <div>
@@ -847,7 +847,7 @@ function StepSend({
               {aiText ? (
                 <div className="mt-2 rounded-2xl border border-amber-300/20 bg-amber-400/[0.06] p-3">
                   <p className="whitespace-pre-wrap text-[12px] leading-relaxed text-white/85">{aiText}</p>
-                  <button type="button" onClick={onRunAi} className="mt-2 text-[11px] font-semibold text-amber-100">
+                  <button type="button" onClick={onRunAi} className="mt-2 text-[11px] font-semibold text-[#E8DFC8]">
                     {t("sos_sheet.advice_again")}
                   </button>
                 </div>
@@ -856,7 +856,7 @@ function StepSend({
                   type="button"
                   onClick={onRunAi}
                   disabled={aiBusy}
-                  className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-amber-300/25 bg-amber-400/[0.06] text-xs font-semibold text-amber-100 disabled:opacity-60"
+                  className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-amber-300/25 bg-amber-400/[0.06] text-xs font-semibold text-[#E8DFC8] disabled:opacity-60"
                 >
                   {aiBusy ? <Loader2 className="size-4 animate-spin" /> : <Sparkle className="size-4" />}
                   {aiBusy ? t("sos_sheet.advice_busy") : t("sos_sheet.advice_run")}

@@ -248,7 +248,7 @@ function CallCard({
             "shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] " +
             (urgent
               ? "border-red-400/40 bg-red-500/15 text-red-200"
-              : "border-amber-400/30 bg-amber-400/10 text-amber-100")
+              : "border-[#C9B896]/30 bg-[#C9B896]/10 text-[#E8DFC8]")
           }
         >
           {t(`esvc.urgency_${row.urgency_level}`)}

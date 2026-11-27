@@ -165,7 +165,7 @@ function ProviderProfile({ profile }: { profile: Profile }) {
             <button key={b} onClick={() => toggleBrand(b)}
               className={"px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-[0.12em] border transition-colors " +
                 (brands.includes(b)
-                  ? "bg-amber-500/20 border-amber-400/50 text-amber-100"
+                  ? "bg-amber-500/20 border-amber-400/50 text-[#E8DFC8]"
                   : "bg-white/[0.03] border-white/10 text-white/55 hover:bg-white/10")}>
               {b}
             </button>
@@ -178,7 +178,7 @@ function ProviderProfile({ profile }: { profile: Profile }) {
         <div className="mt-2 grid grid-cols-1 gap-2">
           {EQUIPMENT_KEYS.map((k) => (
             <label key={k} className="flex items-center gap-3 text-sm text-white/80">
-              <input type="checkbox" checked={equipment.includes(k)} onChange={() => toggleEq(k)} className="size-4 accent-[#F5B942]" />
+              <input type="checkbox" checked={equipment.includes(k)} onChange={() => toggleEq(k)} className="size-4 accent-[#C9B896]" />
               <span>{t(`profile.${k}`)}</span>
             </label>
           ))}
@@ -188,7 +188,7 @@ function ProviderProfile({ profile }: { profile: Profile }) {
       <button
         onClick={save}
         disabled={saving}
-        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#F5B942] text-sm font-bold tracking-wide text-[#1A1406] hover:bg-[#ffc857] disabled:opacity-55"
+        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#C9B896] text-sm font-bold tracking-wide text-[#1A1406] hover:bg-[#d4c4a8] disabled:opacity-55"
       >
         {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
         {savedTick ? t("profile.saved") : t("profile.save")}
@@ -436,20 +436,20 @@ function ClientProfile({ profile }: { profile: Profile }) {
       <GlassPanel>
         <div className="flex items-center justify-between mb-2">
           <SectionHeader label={t("profile.vessels")} />
-          <button onClick={() => setAddingVessel(true)} className="text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-300 inline-flex items-center gap-1">
+          <button onClick={() => setAddingVessel(true)} className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#C9B896] inline-flex items-center gap-1">
             <Plus className="size-3.5" /> {t("profile.add_vessel")}
           </button>
         </div>
         {vessels.length === 0 && !addingVessel && (
           <EmptyState
-            icon={<Ship className="size-5 text-[#F5B942]/80" />}
+            icon={<Ship className="size-5 text-[#C9B896]/80" />}
             title={t("profile.no_vessels_title")}
             body={t("profile.no_vessels_body")}
             action={
               <button
                 type="button"
                 onClick={() => setAddingVessel(true)}
-                className="mt-3 inline-flex h-10 items-center gap-1.5 rounded-md bg-[#F5B942] px-4 text-[12px] font-bold text-[#1A1406] hover:bg-[#ffc857]"
+                className="mt-3 inline-flex h-10 items-center gap-1.5 rounded-md bg-[#C9B896] px-4 text-[12px] font-bold text-[#1A1406] hover:bg-[#d4c4a8]"
               >
                 <Plus className="size-3.5" />
                 {t("profile.add_vessel")}
@@ -460,7 +460,7 @@ function ClientProfile({ profile }: { profile: Profile }) {
         <ul className="space-y-2">
           {vessels.map((v) => (
             <li key={v.id} className="flex items-start gap-2 rounded-xl bg-white/[0.03] border border-white/10 p-3">
-              <Ship className="size-4 mt-0.5 text-amber-300" />
+              <Ship className="size-4 mt-0.5 text-[#C9B896]" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-white">{v.name} <span className="text-[10px] font-normal text-white/40 uppercase ml-1">{vesselCategoryLabel(v.category, t)}</span></p>
                 <p className="text-[11px] text-white/50">{vesselTypeLabel(v.vessel_type, t)} · {v.length_m ?? "?"} m · {fuelLabel(v.fuel_type, t)}</p>
@@ -497,7 +497,7 @@ function ClientProfile({ profile }: { profile: Profile }) {
       <button
         onClick={save}
         disabled={saving}
-        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#F5B942] text-sm font-bold tracking-wide text-[#1A1406] hover:bg-[#ffc857] disabled:opacity-55"
+        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#C9B896] text-sm font-bold tracking-wide text-[#1A1406] hover:bg-[#d4c4a8] disabled:opacity-55"
       >
         {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
         {savedTick ? t("profile.saved") : t("profile.save")}
@@ -522,7 +522,7 @@ function OnboardingReplayRow({ userId }: { userId: string }) {
         <span className="block text-sm font-semibold text-white">{t("profile.replay_tour_title")}</span>
         <span className="block text-[11px] text-white/55">{t("profile.replay_tour_body")}</span>
       </span>
-      <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#F5B942]">
+      <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#C9B896]">
         {t("profile.replay_tour_cta")}
       </span>
     </button>
@@ -535,9 +535,9 @@ function Field({ label, value, onChange, type = "text", placeholder }: {
 }) {
   return (
     <div>
-      <label className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200/70">{label}</label>
+      <label className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C9B896]/70">{label}</label>
       <input type={type} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 h-11 w-full rounded-xl border border-amber-400/25 bg-[#071422] px-3.5 text-sm text-white outline-none placeholder:text-white/35 focus:border-amber-300" />
+        className="mt-1.5 h-11 w-full rounded-xl border border-[#C9B896]/25 bg-[#071422] px-3.5 text-sm text-white outline-none placeholder:text-white/35 focus:border-amber-300" />
     </div>
   );
 }

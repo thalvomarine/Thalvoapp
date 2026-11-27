@@ -127,10 +127,10 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
         }}
       >
         <div className="pointer-events-auto flex max-h-[min(70dvh,calc(100dvh-env(safe-area-inset-bottom)-6.5rem))] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-amber-500/30 bg-[#0a192f]/95 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.85)] backdrop-blur-xl">
-          <div className="h-px w-full shrink-0 bg-gradient-to-r from-transparent via-amber-300/60 to-transparent" />
+          <div className="h-px w-full shrink-0 bg-gradient-to-r from-transparent via-[#C9B896]/45 to-transparent" />
           <div className="flex shrink-0 items-start justify-between gap-3 p-4 pb-2">
             <div className="min-w-0">
-              <p className="truncate text-[9px] font-bold uppercase tracking-[0.2em] text-amber-200/80">
+              <p className="truncate text-[9px] font-bold uppercase tracking-[0.2em] text-[#C9B896]/80">
                 {kindLabel}
               </p>
               <p className="mt-0.5 truncate text-base font-semibold text-white">{name}</p>
@@ -154,13 +154,13 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
             <div className="flex flex-wrap items-center gap-2 text-[11px]">
               {depthM != null && Number.isFinite(depthM) && (
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-white/80">
-                  <Ruler className="size-3 text-amber-300/80" />
+                  <Ruler className="size-3 text-[#C9B896]/80" />
                   {t("marine.depth_m", { value: depthM })}
                 </span>
               )}
               {seabedLabel && (
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-white/80">
-                  <Waves className="size-3 text-amber-300/80" />
+                  <Waves className="size-3 text-[#C9B896]/80" />
                   {seabedLabel}
                 </span>
               )}
@@ -174,7 +174,7 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
                     "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-semibold uppercase tracking-[0.06em] " +
                     (shelter.sheltered
                       ? "border-emerald-400/40 bg-emerald-400/15 text-emerald-100"
-                      : "border-amber-400/40 bg-amber-400/15 text-amber-100")
+                      : "border-amber-400/40 bg-amber-400/15 text-[#E8DFC8]")
                   }
                 >
                   {t(shelter.labelKey)}
@@ -219,7 +219,7 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
                 onClose();
                 openEmergencyService({ bayName: bay || undefined });
               }}
-              className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] text-[12px] font-bold uppercase tracking-[0.06em] text-white/80 hover:border-[#F5B942]/40 hover:text-[#F5B942]"
+              className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] text-[12px] font-bold uppercase tracking-[0.06em] text-white/80 hover:border-[#C9B896]/40 hover:text-[#C9B896]"
             >
               <Anchor className="size-4 shrink-0" />
               <span className="truncate">{t("esvc.entry_title")}</span>

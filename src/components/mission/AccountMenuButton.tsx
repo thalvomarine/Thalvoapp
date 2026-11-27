@@ -61,7 +61,7 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
         <button
           aria-label="Account"
           className={
-            "grid place-items-center rounded-[10px] border border-white/12 bg-white/[0.04] text-white/80 transition-colors hover:border-[#00F0FF]/35 hover:bg-[#00F0FF]/10 " +
+            "grid place-items-center rounded-[10px] border border-white/12 bg-white/[0.04] text-white/80 transition-colors hover:border-[#8BA8A3]/35 hover:bg-[#8BA8A3]/10 " +
             (compact ? "size-8" : "size-9")
           }
         >
@@ -108,7 +108,7 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
           <DropdownMenuItem asChild>
             <Link
               to="/admin"
-              className="font-semibold text-amber-200 focus:bg-rose-500/20 focus:text-amber-100"
+              className="font-semibold text-[#C9B896] focus:bg-rose-500/20 focus:text-[#E8DFC8]"
             >
               <Shield className="mr-2 size-4 text-rose-300" />
               {t("admin.super.menu")}

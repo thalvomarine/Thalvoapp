@@ -14,7 +14,7 @@ export function CockpitHeader({ eyebrow, title, subtitle, actions }: Props) {
       <div className="flex min-w-0 items-start justify-between gap-3">
         <div className="min-w-0">
           {eyebrow ? (
-            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#F5B942]/75">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/80">
               {eyebrow}
             </p>
           ) : null}

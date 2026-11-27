@@ -158,7 +158,7 @@ export function IncidentDetailPanel({ mission, offersCount }: Props) {
           type="button"
           disabled={busy !== null}
           onClick={() => void flagMission()}
-          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-100 text-[12px] font-semibold hover:bg-amber-400/15 disabled:opacity-50"
+          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-[#C9B896]/10 border border-[#C9B896]/30 text-[#E8DFC8] text-[12px] font-semibold hover:bg-amber-400/15 disabled:opacity-50"
         >
           <span>{t("admin.incident.flag_review")}</span>
           <Flag className="size-3.5" />

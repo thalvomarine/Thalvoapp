@@ -20,14 +20,14 @@ export function ServicePackageCard({
 
   return (
     <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-      <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-[#F5B942]/30 bg-[#F5B942]/10 text-[#F5B942]">
+      <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]">
         {isDiver ? <Anchor className="size-5" /> : <Wrench className="size-5" />}
       </span>
       <div className="min-w-0">
         <p className="text-sm font-semibold text-white">
           {isTr ? pkg.title_tr : pkg.title_en}
         </p>
-        <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#F5B942]/85">
+        <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C9B896]/85">
           {t("services.request_quote")}
         </p>
       </div>

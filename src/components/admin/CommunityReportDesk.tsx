@@ -47,7 +47,7 @@ export function CommunityReportDesk({ reports, busyId, onApprove, onReject }: Pr
             return (
               <li key={r.id} className="p-3.5">
                 <div className="flex items-start gap-2.5">
-                  <div className="grid size-8 shrink-0 place-items-center rounded-xl border border-amber-400/30 bg-amber-400/10 text-amber-200">
+                  <div className="grid size-8 shrink-0 place-items-center rounded-xl border border-[#C9B896]/30 bg-[#C9B896]/10 text-[#C9B896]">
                     <MessageSquareWarning className="size-4" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -63,17 +63,17 @@ export function CommunityReportDesk({ reports, busyId, onApprove, onReject }: Pr
                         className={
                           "grid size-6 shrink-0 place-items-center rounded-lg border transition-colors " +
                           (focused
-                            ? "border-amber-300/60 bg-amber-400/25 text-amber-100"
+                            ? "border-[#C9B896]/45 bg-amber-400/25 text-[#E8DFC8]"
                             : "border-white/15 bg-white/[0.06] text-white/60 hover:bg-white/[0.12]")
                         }
                       >
                         <MapPin className="size-3.5" />
                       </button>
                     </div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-amber-300/80">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#C9B896]/80">
                       {t(REPORT_CATEGORY_LABEL_KEYS[r.category])}
                     </p>
-                    <p className="font-mono text-[10px] text-amber-200/80">
+                    <p className="font-mono text-[10px] text-[#C9B896]/80">
                       {formatDegrees(r.lat, r.lng)}
                     </p>
                     <p className="mt-1 text-[11px] leading-snug text-white/70">{r.note}</p>

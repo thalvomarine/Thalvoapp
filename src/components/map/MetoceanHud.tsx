@@ -161,7 +161,7 @@ export function MetoceanHud() {
             {t("chart.metocean_shelter_label")}:{" "}
             <span
               className={
-                shelter.sheltered ? "font-medium text-emerald-500" : "font-medium text-amber-500"
+                shelter.sheltered ? "font-medium text-emerald-500" : "font-medium text-[#E8DFC8]0"
               }
             >
               {t(shelter.labelKey)}

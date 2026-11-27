@@ -18,7 +18,7 @@ export function EmptyState({ icon, title, body, action, className = "" }: Props)
       }
     >
       {icon ? (
-        <div className="grid size-11 place-items-center rounded-full border border-[#F5B942]/25 bg-[#F5B942]/08 text-[#F5B942]/90">
+        <div className="grid size-11 place-items-center rounded-full border border-[#C9B896]/25 bg-[#C9B896]/08 text-[#C9B896]/90">
           {icon}
         </div>
       ) : null}

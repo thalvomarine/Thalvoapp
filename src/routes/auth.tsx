@@ -308,7 +308,7 @@ function AuthPage() {
             <Wordmark
               size="nav"
               decorative
-              className="shrink-0 drop-shadow-[0_0_28px_rgba(245,185,66,0.22)]"
+              className="shrink-0 drop-shadow-[0_0_28px_rgba(201,184,150,0.22)]"
             />
             <h1 className="thalvo-display text-[2.75rem] leading-none tracking-[0.16em] text-white sm:text-5xl lg:text-[4.25rem]">
               THALVO
@@ -411,10 +411,10 @@ function AuthPage() {
                     <button
                       type="button"
                       onClick={() => setRoleReady(false)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/25 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-100"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/25 bg-[#C9B896]/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E8DFC8]"
                     >
                       {roleLabel}
-                      <span className="text-amber-100/50">·</span>
+                      <span className="text-[#E8DFC8]/50">·</span>
                       {t("auth.change_role")}
                     </button>
 

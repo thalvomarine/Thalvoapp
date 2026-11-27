@@ -66,8 +66,8 @@ export function ActiveMissionCard({ job, problemLabel }: Props) {
         {/* Header row */}
         <div className="p-4 flex items-start gap-3">
           <span className={"size-11 rounded-xl grid place-items-center " + (isDiver
-            ? "bg-amber-500/15 border border-amber-400/30 text-amber-300"
-            : "bg-amber-500/15 border border-amber-400/30 text-amber-300")}>
+            ? "bg-amber-500/15 border border-[#C9B896]/30 text-[#C9B896]"
+            : "bg-amber-500/15 border border-[#C9B896]/30 text-[#C9B896]")}>
             {isDiver ? <Anchor className="size-5" /> : <Wrench className="size-5" />}
           </span>
           <div className="flex-1 min-w-0">
@@ -80,7 +80,7 @@ export function ActiveMissionCard({ job, problemLabel }: Props) {
                 Active mission
               </p>
               {stage === "en_route" && etaLeft !== null && (
-                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-300 inline-flex items-center gap-1">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#C9B896] inline-flex items-center gap-1">
                   <Clock className="size-3" /> ETA {etaLeft} min
                 </span>
               )}

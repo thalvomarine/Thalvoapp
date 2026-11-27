@@ -10,9 +10,9 @@ interface Props {
 const TONES: Record<NonNullable<Props["tone"]>, string> = {
   neutral: "text-foreground/80 bg-white/5 border-white/10",
   success: "text-emerald-300 bg-emerald-400/10 border-emerald-400/25",
-  warning: "text-amber-300 bg-amber-400/10 border-amber-400/25",
+  warning: "text-[#C9B896] bg-[#C9B896]/10 border-[#C9B896]/25",
   danger:  "text-rose-300 bg-rose-500/10 border-rose-500/30",
-  info:    "text-amber-300 bg-amber-400/10 border-amber-400/25",
+  info:    "text-[#C9B896] bg-[#C9B896]/10 border-[#C9B896]/25",
 };
 
 /** Compact operational status pill — used in headers, map overlays, cards. */

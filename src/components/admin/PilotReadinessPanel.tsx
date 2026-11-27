@@ -34,7 +34,7 @@ export function PilotReadinessPanel({
     <GlassPanel padded={false}>
       <div className="border-b border-white/[0.06] p-4">
         <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/45">
-          <Flag className="size-3.5 text-amber-300" /> {t("admin.pilot.title")}
+          <Flag className="size-3.5 text-[#C9B896]" /> {t("admin.pilot.title")}
         </p>
         <p className="mt-1.5 text-[12px] leading-snug text-white/55">{t("admin.pilot.subtitle")}</p>
       </div>
@@ -98,7 +98,7 @@ function Stat({
     tone === "ok"
       ? "text-emerald-300"
       : tone === "warn"
-        ? "text-amber-200"
+        ? "text-[#C9B896]"
         : tone === "danger"
           ? "text-rose-300"
           : "text-white";

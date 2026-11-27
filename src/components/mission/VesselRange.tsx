@@ -46,7 +46,7 @@ export function VesselRange({
       <div>
         <p
           className="text-[10px] font-semibold uppercase tracking-[0.16em]"
-          style={{ color: "var(--sheet-active-ink, #f5b942)" }}
+          style={{ color: "var(--sheet-active-ink, #C9B896)" }}
         >
           {t("ops.distance")}
         </p>
@@ -60,7 +60,7 @@ export function VesselRange({
       <div>
         <p
           className="text-[10px] font-semibold uppercase tracking-[0.16em]"
-          style={{ color: "var(--sheet-active-ink, #f5b942)" }}
+          style={{ color: "var(--sheet-active-ink, #C9B896)" }}
         >
           {t("ops.eta")}
         </p>

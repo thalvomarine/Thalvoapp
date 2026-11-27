@@ -72,7 +72,7 @@ export function AdminPaymentOpsPanel({ intents, payouts, commissions, providerCo
             "text-[10px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full border " +
             (providerConnected
               ? "text-emerald-300 bg-emerald-400/10 border-emerald-400/25"
-              : "text-amber-300 bg-amber-400/10 border-amber-400/25")
+              : "text-[#C9B896] bg-[#C9B896]/10 border-[#C9B896]/25")
           }
         >
           {providerConnected ? t("admin.payops.provider_live") : t("admin.payops.test_mode")}
@@ -80,8 +80,8 @@ export function AdminPaymentOpsPanel({ intents, payouts, commissions, providerCo
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.05]">
-        <Cell label={t("admin.payops.held")}   value={centsToUnits(heldCents)}       tone="text-amber-300" />
-        <Cell label={t("admin.payops.owed")}  value={centsToUnits(payoutOwedCents)} tone="text-amber-300" />
+        <Cell label={t("admin.payops.held")}   value={centsToUnits(heldCents)}       tone="text-[#C9B896]" />
+        <Cell label={t("admin.payops.owed")}  value={centsToUnits(payoutOwedCents)} tone="text-[#C9B896]" />
         <Cell label={t("admin.payops.released")}      value={centsToUnits(releasedCents)}   tone="text-emerald-300" />
         <Cell label={t("admin.payops.commission")}    value={centsToUnits(commissionCents)} tone="text-emerald-200" />
       </div>
