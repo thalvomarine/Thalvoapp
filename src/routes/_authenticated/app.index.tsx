@@ -765,7 +765,7 @@ function RequestCard({
             <button
               onClick={submit}
               disabled={busy}
-              className="flex-1 h-10 rounded-xl bg-sky-500 hover:bg-amber-400 text-slate-900 text-sm font-semibold inline-flex items-center justify-center gap-1.5"
+              className="flex-1 h-10 rounded-xl bg-[#F5B942] hover:bg-[#ffc857] text-[#1A1406] text-sm font-semibold inline-flex items-center justify-center gap-1.5"
             >
               {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}{" "}
               {t("provider.submit_offer")}

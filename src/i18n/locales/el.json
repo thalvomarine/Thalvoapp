@@ -444,7 +444,9 @@
     "book_now": "Κράτηση τώρα",
     "eta_short": "ETA",
     "empty_title": "Δεν υπάρχουν πακέτα ακόμη",
-    "empty_body": "Τα τυπικά πακέτα υπηρεσιών θα εμφανιστούν εδώ."
+    "empty_body": "Τα τυπικά πακέτα υπηρεσιών θα εμφανιστούν εδώ.",
+    "load_error_title": "Αποτυχία φόρτωσης πακέτων",
+    "load_error_body": "Ελέγξτε τη σύνδεση και δοκιμάστε ξανά."
   },
   "shop": {
     "title": "Spare Parts Marketplace",
@@ -954,7 +956,12 @@
     "eq_boat": "Own Service Boat",
     "eq_crane": "Onboard Crane / Winch",
     "eq_night": "Night Dive Rated",
-    "review_pending": "Review pending"
+    "review_pending": "Review pending",
+    "no_vessels_title": "Δεν υπάρχουν σκάφη",
+    "no_vessels_body": "Προσθέστε σκάφος για διαβατήριο και SOS.",
+    "replay_tour_title": "Επανάληψη ξενάγησης",
+    "replay_tour_body": "Ανοίξτε ξανά την πρώτη εμπειρία THALVO.",
+    "replay_tour_cta": "Επανεκκίνηση"
   },
   "ai": {
     "subtitle": "Ο ναυτικός σας βοηθός",

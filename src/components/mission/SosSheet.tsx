@@ -504,7 +504,7 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
                 type="button"
                 onClick={() => setStep(((step as number) + 1) as Step)}
                 disabled={!canNext}
-                className="flex-1 h-14 rounded-2xl bg-white text-slate-900 font-semibold text-sm inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 h-14 rounded-2xl bg-[#F5B942] text-[#1A1406] font-semibold text-sm inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#ffc857]"
               >
                 {isTr ? "Devam" : "Continue"}
               </button>
@@ -582,7 +582,7 @@ function StepProblem({
                 className={
                   "w-full h-14 rounded-2xl px-4 text-left border transition-all inline-flex items-center justify-between " +
                   (active
-                    ? "bg-white text-slate-900 border-white shadow-[0_8px_24px_-12px_rgba(255,255,255,0.4)]"
+                    ? "bg-[#F5B942] text-[#1A1406] border-[#F5B942]"
                     : "bg-white/[0.03] text-white/85 border-white/10 hover:bg-white/[0.06]")
                 }
               >
@@ -608,7 +608,7 @@ function CategoryCard({ active, onClick, icon, label }: {
       className={
         "h-16 rounded-2xl px-4 border transition-all inline-flex items-center gap-3 " +
         (active
-          ? "bg-white text-slate-900 border-white"
+          ? "bg-[#F5B942] text-[#1A1406] border-[#F5B942]"
           : "bg-white/[0.03] text-white border-white/10 hover:bg-white/[0.06]")
       }
     >
@@ -677,7 +677,7 @@ function StepLocation({
                 className={
                   "w-full h-14 rounded-2xl px-4 text-left border transition-all inline-flex items-center justify-between " +
                   (active
-                    ? "bg-white text-slate-900 border-white"
+                    ? "bg-[#F5B942] text-[#1A1406] border-[#F5B942]"
                     : "bg-white/[0.03] text-white/85 border-white/10 hover:bg-white/[0.06]")
                 }
               >
@@ -891,7 +891,7 @@ function Choice({
 }) {
   const on = danger
     ? "border-rose-300/70 bg-rose-500/20 text-rose-50"
-    : "border-amber-200/70 bg-white text-slate-900";
+    : "border-[#F5B942]/70 bg-[#F5B942] text-[#1A1406]";
   return (
     <button
       type="button"

@@ -7,15 +7,10 @@ import {
   EMERGENCY_CATEGORY_LABEL_KEYS,
   type EmergencyServiceRequest,
 } from "@/lib/emergency-service";
-import { Activity, Clock, Crosshair, MapPin, Radio, Ship, UserRound, X } from "lucide-react";
-import { CockpitHeader, MetricCard, StatusBadge } from "@/components/core";
+import { Anchor, Crosshair, MapPin, Radio, Ship, UserRound, X } from "lucide-react";
+import { CockpitHeader, StatusBadge } from "@/components/core";
 import { GlassPanel } from "@/components/mission/GlassPanel";
-import {
-  SEED_MISSIONS,
-  SEED_OPS_STATS,
-  type OpsMission,
-  type OpsMissionStatus,
-} from "@/lib/live-ops";
+import { type OpsMission, type OpsMissionStatus } from "@/lib/live-ops";
 import { requestMapFocus } from "@/lib/map-focus-bus";
 import { toast } from "sonner";
 import { noteSchemaMiss, skipMissing } from "@/lib/schema-gap";
@@ -39,82 +34,49 @@ export function LiveOpsPanel() {
         subtitle={t("ops.subtitle")}
       />
 
-      <div className="grid grid-cols-3 gap-2">
-        <MetricCard
-          label={t("ops.stat_active")}
-          value={SEED_OPS_STATS.active}
-          tone="info"
-          icon={<Activity className="size-3" />}
-          hint={t("ops.stat_active_hint")}
-        />
-        <MetricCard
-          label={t("ops.stat_pending")}
-          value={SEED_OPS_STATS.pending}
-          tone="warning"
-          icon={<Clock className="size-3" />}
-          hint={t("ops.stat_pending_hint")}
-        />
-        <MetricCard
-          label={t("ops.stat_completed")}
-          value={SEED_OPS_STATS.completed}
-          tone="success"
-          icon={<Ship className="size-3" />}
-          hint={t("ops.stat_completed_hint")}
-        />
-      </div>
-
       <CaptainEmergencyCalls />
 
-      <Link
-        to="/app/transfer-captain"
-        className="block overflow-hidden rounded-2xl border border-rose-400/30 bg-rose-500/[0.08] px-4 py-3 transition-colors hover:border-rose-300/50"
-      >
-        <div className="flex items-start gap-3">
-          <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl border border-rose-400/30 bg-rose-500/15 text-rose-200">
-            <UserRound className="size-4" />
-          </span>
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-rose-300/80">
-              {t("transfer.entry_eyebrow")}
-            </p>
-            <p className="mt-1 text-[14px] font-semibold text-white">{t("transfer.entry_title")}</p>
-            <p className="mt-1 text-[12px] leading-snug text-white/60">
-              {t("transfer.entry_body")}
-            </p>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Link
+          to="/app/transfer-captain"
+          className="block overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition-colors hover:border-[#F5B942]/35"
+        >
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg border border-[#F5B942]/30 bg-[#F5B942]/10 text-[#F5B942]">
+              <UserRound className="size-4" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F5B942]/80">
+                {t("transfer.entry_eyebrow")}
+              </p>
+              <p className="mt-1 text-[14px] font-semibold text-white">{t("transfer.entry_title")}</p>
+              <p className="mt-1 text-[12px] leading-snug text-white/55">{t("transfer.entry_body")}</p>
+            </div>
           </div>
-        </div>
-      </Link>
+        </Link>
 
-      <Link
-        to="/app/charter"
-        className="block overflow-hidden rounded-2xl border border-amber-300/35 bg-amber-400/[0.08] px-4 py-3 transition-colors hover:border-amber-200/50"
-      >
-        <div className="flex items-start gap-3">
-          <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl border border-amber-300/30 bg-amber-400/15 text-amber-100">
-            <Ship className="size-4" />
-          </span>
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-200/80">
-              {t("charter.menu")}
-            </p>
-            <p className="mt-1 text-[14px] font-semibold text-white">{t("charter.fleet_title")}</p>
-            <p className="mt-1 text-[12px] leading-snug text-white/60">{t("charter.fleet_body")}</p>
+        <Link
+          to="/app/charter"
+          className="block overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition-colors hover:border-[#F5B942]/35"
+        >
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg border border-[#F5B942]/30 bg-[#F5B942]/10 text-[#F5B942]">
+              <Ship className="size-4" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F5B942]/80">
+                {t("charter.menu")}
+              </p>
+              <p className="mt-1 text-[14px] font-semibold text-white">{t("charter.fleet_title")}</p>
+              <p className="mt-1 text-[12px] leading-snug text-white/55">{t("charter.fleet_body")}</p>
+            </div>
           </div>
-        </div>
-      </Link>
-
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-300/80">
-          {t("ops.live_feed")}
-        </p>
-        <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-300">
-          <span className="relative flex size-1.5">
-            <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-70" />
-            <span className="relative size-1.5 rounded-full bg-emerald-400" />
-          </span>
-          LIVE
-        </span>
+        </Link>
       </div>
+
+      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#F5B942]/80">
+        {t("ops.live_feed")}
+      </p>
 
       <ActiveFaults />
 
@@ -455,7 +417,14 @@ function CaptainEmergencyCalls() {
               </span>
             </div>
             <p className="mt-0.5 text-[11px] text-white/50">
-              {row.bay_name ? `⚓ ${row.bay_name}` : t("esvc.open_water")}
+              {row.bay_name ? (
+                <span className="inline-flex items-center gap-1">
+                  <Anchor className="size-3 opacity-70" aria-hidden />
+                  {row.bay_name}
+                </span>
+              ) : (
+                t("esvc.open_water")
+              )}
             </p>
           </li>
         ))}

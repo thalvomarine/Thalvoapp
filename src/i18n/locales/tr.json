@@ -444,7 +444,9 @@
     "book_now": "Hemen Rezerve Et",
     "eta_short": "Süre",
     "empty_title": "Henüz paket yok",
-    "empty_body": "Standart servis paketleri burada görünecek."
+    "empty_body": "Standart servis paketleri burada görünecek.",
+    "load_error_title": "Servis paketleri yüklenemedi",
+    "load_error_body": "Bağlantıyı kontrol edip yeniden deneyin."
   },
   "shop": {
     "title": "Yedek Parça Pazaryeri",
@@ -954,7 +956,12 @@
     "eq_boat": "Kendi Servis Teknesi",
     "eq_crane": "Vinç / Bumba",
     "eq_night": "Gece Dalışı Sertifikalı",
-    "review_pending": "Değerlendirme bekleniyor"
+    "review_pending": "Değerlendirme bekleniyor",
+    "no_vessels_title": "Kayıtlı tekne yok",
+    "no_vessels_body": "Pasaport ve SOS için tekne ekleyin.",
+    "replay_tour_title": "Karşılama turunu yeniden aç",
+    "replay_tour_body": "THALVO ilk kullanım deneyimini tekrar göster.",
+    "replay_tour_cta": "Yeniden başlat"
   },
   "ai": {
     "subtitle": "Deniz asistanınız",

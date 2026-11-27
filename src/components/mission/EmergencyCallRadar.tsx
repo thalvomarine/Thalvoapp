@@ -191,7 +191,7 @@ function CallCard({
             {t(EMERGENCY_CATEGORY_LABEL_KEYS[row.category])}
           </p>
           <p className="mt-0.5 truncate text-[11px]" style={{ color: "var(--sheet-muted)" }}>
-            {row.bay_name ? `⚓ ${row.bay_name}` : t("esvc.open_water")}
+            {row.bay_name ? row.bay_name : t("esvc.open_water")}
           </p>
           {position ? (
             <button

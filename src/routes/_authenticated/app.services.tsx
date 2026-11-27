@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { emitEvent } from "@/lib/events";
 import { sanitizePlainText } from "@/lib/sanitize";
 import { CockpitHeader } from "@/components/core/CockpitHeader";
-import { GlassPanel } from "@/components/mission/GlassPanel";
 import { LiveOpsPanel } from "@/components/mission/LiveOpsPanel";
 import { MoneyAmount } from "@/components/core/MoneyAmount";
 import { EmptyState } from "@/components/core/EmptyState";
@@ -43,13 +42,24 @@ function Services() {
   const [filter, setFilter] = useState<"mechanic" | "diver">("mechanic");
   const [packages, setPackages] = useState<Pkg[]>([]);
   const [selected, setSelected] = useState<Pkg | null>(null);
+  const [loadError, setLoadError] = useState(false);
 
-  useEffect(() => {
+  const loadPackages = () => {
+    setLoadError(false);
     supabase.from("service_packages").select("*").order("key")
       .then(({ data, error }) => {
-        if (error) console.warn("[services] service_packages unavailable", error.message);
+        if (error) {
+          console.warn("[services] service_packages unavailable", error.message);
+          setLoadError(true);
+          setPackages([]);
+          return;
+        }
         setPackages((data as never) ?? []);
       });
+  };
+
+  useEffect(() => {
+    loadPackages();
   }, []);
 
   const visible = useMemo(() => packages.filter((p) => p.category === filter), [packages, filter]);
@@ -63,25 +73,38 @@ function Services() {
 
       <div className="flex gap-2">
         <button onClick={() => setFilter("mechanic")}
-          className={"flex-1 h-11 rounded-2xl text-sm font-semibold uppercase tracking-[0.14em] inline-flex items-center justify-center gap-2 border transition-colors " +
+          className={"flex-1 h-11 rounded-xl text-sm font-semibold uppercase tracking-[0.14em] inline-flex items-center justify-center gap-2 border transition-colors " +
             (filter === "mechanic" ? "bg-amber-500/20 border-amber-400/50 text-amber-100" : "bg-white/[0.03] border-white/10 text-white/60 hover:bg-white/10")}>
           <Wrench className="size-4" /> {t("services.filter_mech")}
         </button>
         <button onClick={() => setFilter("diver")}
-          className={"flex-1 h-11 rounded-2xl text-sm font-semibold uppercase tracking-[0.14em] inline-flex items-center justify-center gap-2 border transition-colors " +
+          className={"flex-1 h-11 rounded-xl text-sm font-semibold uppercase tracking-[0.14em] inline-flex items-center justify-center gap-2 border transition-colors " +
             (filter === "diver" ? "bg-amber-500/20 border-amber-400/50 text-amber-100" : "bg-white/[0.03] border-white/10 text-white/60 hover:bg-white/10")}>
           <Anchor className="size-4" /> {t("services.filter_diver")}
         </button>
       </div>
 
-      {visible.length === 0 ? (
-        <GlassPanel>
-          <EmptyState
-            icon={<Wrench className="size-4" />}
-            title={t("services.empty_title")}
-            body={t("services.empty_body")}
-          />
-        </GlassPanel>
+      {loadError ? (
+        <EmptyState
+          icon={<Wrench className="size-4" />}
+          title={t("services.load_error_title")}
+          body={t("services.load_error_body")}
+          action={
+            <button
+              type="button"
+              onClick={loadPackages}
+              className="inline-flex h-10 items-center rounded-md bg-[#F5B942] px-4 text-[12px] font-bold text-[#1A1406] hover:bg-[#ffc857]"
+            >
+              {t("common.retry", { defaultValue: "Retry" })}
+            </button>
+          }
+        />
+      ) : visible.length === 0 ? (
+        <EmptyState
+          icon={<Wrench className="size-4" />}
+          title={t("services.empty_title")}
+          body={t("services.empty_body")}
+        />
       ) : (
         <ul className="space-y-2">
           {visible.map((p) => (
@@ -173,7 +196,7 @@ function PackageOffers({ pkg, label, onClose }: { pkg: Pkg; label: string; onClo
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-[max(2rem,env(safe-area-inset-bottom))]">
           {offers.length === 0 ? (
-            <p className="py-8 text-center text-sm text-white/50">{t("services.no_offers")}</p>
+            <EmptyState title={t("services.no_offers")} body={t("services.empty_body")} />
           ) : (
             <ul className="space-y-2">
               {offers.map((o) => (
@@ -181,14 +204,7 @@ function PackageOffers({ pkg, label, onClose }: { pkg: Pkg; label: string; onClo
                   key={o.id}
                   className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3"
                 >
-                  <div
-                    className={
-                      "grid size-11 place-items-center rounded-xl text-white " +
-                      (o.provider_details?.service_type === "Underwater Diver"
-                        ? "aqua-gradient"
-                        : "marine-gradient")
-                    }
-                  >
+                  <div className="grid size-11 place-items-center rounded-xl border border-[#F5B942]/30 bg-[#F5B942]/10 text-[#F5B942]">
                     {o.provider_details?.service_type === "Underwater Diver" ? (
                       <Anchor className="size-5" />
                     ) : (

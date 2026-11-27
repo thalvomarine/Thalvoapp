@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GlassPanel } from "@/components/mission/GlassPanel";
-import { Sparkles, Loader2, Send } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
+import { CompassMark } from "@/components/brand/CompassMark";
 import { askThalvoAi } from "@/lib/thalvo-ai.functions";
 import { useServerFn } from "@tanstack/react-start";
 import type { VesselIdentity } from "./VesselIdentityCard";
@@ -68,7 +69,7 @@ export function VesselAiPanel({ vessel, context }: Props) {
     <GlassPanel>
       <div className="flex items-center gap-2 mb-3">
         <div className="size-8 rounded-xl bg-amber-400/10 border border-amber-400/25 grid place-items-center text-amber-300">
-          <Sparkles className="size-4" />
+          <CompassMark size={16} />
         </div>
         <div>
           <p className="text-sm font-medium text-white/90">{t("passport.ai_title")}</p>

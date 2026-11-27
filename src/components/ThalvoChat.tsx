@@ -253,10 +253,9 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
       className="fixed right-4 z-[60] grid size-14 place-items-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
       style={{
         bottom: "calc(max(1rem, env(safe-area-inset-bottom)) + 4.6rem)",
-        background:
-          "radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 45%), linear-gradient(160deg, #0F2440 0%, #0A192F 60%, #081428 100%)",
-        border: "1px solid rgba(0,180,216,0.65)",
-        boxShadow: "0 10px 28px -10px rgba(0,0,0,0.7), 0 0 24px -6px rgba(0,180,216,0.45)",
+        background: "linear-gradient(160deg, #0F2440 0%, #0A192F 70%, #081428 100%)",
+        border: "1px solid rgba(245,185,66,0.45)",
+        boxShadow: "0 12px 32px -12px rgba(0,0,0,0.75)",
       }}
     >
       <CompassMark size={26} />
@@ -271,9 +270,8 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
         style={{
           bottom: `calc(max(0.75rem, env(safe-area-inset-bottom)) + ${keyboardInset}px)`,
           height: "min(72dvh, 640px)",
-          background:
-            "radial-gradient(120% 60% at 50% -10%, rgba(0,180,216,0.16) 0%, transparent 55%), linear-gradient(180deg, #0B1B33 0%, #0A192F 100%)",
-          border: "1px solid rgba(0,180,216,0.28)",
+          background: "linear-gradient(180deg, #0B1B33 0%, #0A192F 100%)",
+          border: "1px solid rgba(255,255,255,0.12)",
         }}
         onClick={(event) => event.stopPropagation()}
         aria-label="THALVO AI"
@@ -312,19 +310,25 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
 
         <div ref={scrollRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
           {messages.length === 0 && (
-            <div className="space-y-3">
-              <p className="text-sm leading-relaxed text-white/75">
-                {lang === "en"
-                  ? "Ask about an engine fault, the sea state, or where to go in THALVO. A plate photo can be read from the camera button."
-                  : "Motor arızası, deniz durumu veya THALVO'da nereye gideceğini sor. Kamera düğmesiyle plaka fotoğrafı okunur."}
-              </p>
+            <div className="space-y-4">
+              <div className="rounded-xl border border-dashed border-white/12 bg-white/[0.02] px-4 py-5 text-center">
+                <div className="mx-auto grid size-11 place-items-center rounded-full border border-[#F5B942]/30 bg-[#F5B942]/10">
+                  <CompassMark size={22} />
+                </div>
+                <p className="thalvo-display mt-3 text-lg tracking-wide text-white">THALVO AI</p>
+                <p className="mt-2 text-[12px] leading-relaxed text-white/55">
+                  {lang === "en"
+                    ? "Ask about an engine fault, the sea state, or where to go in THALVO."
+                    : "Motor arızası, deniz durumu veya THALVO'da nereye gideceğini sor."}
+                </p>
+              </div>
               <div className="flex flex-col gap-2">
                 {pills.map((pill) => (
                   <button
                     key={pill}
                     type="button"
                     onClick={() => void send(pill)}
-                    className="rounded-xl border border-amber-300/25 bg-white/[0.04] px-3 py-2.5 text-left text-[12.5px] leading-snug text-white/90 hover:bg-white/[0.08]"
+                    className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-left text-[12.5px] leading-snug text-white/90 hover:border-[#F5B942]/35 hover:bg-white/[0.06]"
                   >
                     {pill}
                   </button>
@@ -390,8 +394,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
             type="submit"
             disabled={busy || !input.trim()}
             aria-label={t("common.send", { defaultValue: "Send" })}
-            className="grid size-11 place-items-center rounded-xl border border-amber-300/50 text-white disabled:opacity-40"
-            style={{ background: "linear-gradient(160deg, rgba(0,180,216,0.35), rgba(0,180,216,0.12))" }}
+            className="grid size-11 place-items-center rounded-xl bg-[#F5B942] text-[#1A1406] disabled:opacity-40 hover:bg-[#ffc857]"
           >
             <Send className="size-4" />
           </button>

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { noteSchemaMiss, skipMissing } from "@/lib/schema-gap";
 import { n, useSessionUser, type Profile } from "@/lib/session";
-import { Anchor, Loader2, Plus, Save, Ship, Trash2 } from "lucide-react";
+import { Loader2, Plus, Save, Ship, Trash2 } from "lucide-react";
 import { CockpitHeader } from "@/components/core/CockpitHeader";
 import { GlassPanel } from "@/components/mission/GlassPanel";
 import { SectionHeader } from "@/components/core/SectionHeader";
@@ -178,15 +178,18 @@ function ProviderProfile({ profile }: { profile: Profile }) {
         <div className="mt-2 grid grid-cols-1 gap-2">
           {EQUIPMENT_KEYS.map((k) => (
             <label key={k} className="flex items-center gap-3 text-sm text-white/80">
-              <input type="checkbox" checked={equipment.includes(k)} onChange={() => toggleEq(k)} className="size-4 accent-sky-400" />
+              <input type="checkbox" checked={equipment.includes(k)} onChange={() => toggleEq(k)} className="size-4 accent-[#F5B942]" />
               <span>{t(`profile.${k}`)}</span>
             </label>
           ))}
         </div>
       </GlassPanel>
 
-      <button onClick={save} disabled={saving}
-        className="w-full h-12 rounded-xl amber-gradient text-warning-foreground font-black uppercase tracking-wider inline-flex items-center justify-center gap-2">
+      <button
+        onClick={save}
+        disabled={saving}
+        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#F5B942] text-sm font-bold tracking-wide text-[#1A1406] hover:bg-[#ffc857] disabled:opacity-55"
+      >
         {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
         {savedTick ? t("profile.saved") : t("profile.save")}
       </button>
@@ -438,7 +441,21 @@ function ClientProfile({ profile }: { profile: Profile }) {
           </button>
         </div>
         {vessels.length === 0 && !addingVessel && (
-          <EmptyState title="—" />
+          <EmptyState
+            icon={<Ship className="size-5 text-[#F5B942]/80" />}
+            title={t("profile.no_vessels_title")}
+            body={t("profile.no_vessels_body")}
+            action={
+              <button
+                type="button"
+                onClick={() => setAddingVessel(true)}
+                className="mt-3 inline-flex h-10 items-center gap-1.5 rounded-md bg-[#F5B942] px-4 text-[12px] font-bold text-[#1A1406] hover:bg-[#ffc857]"
+              >
+                <Plus className="size-3.5" />
+                {t("profile.add_vessel")}
+              </button>
+            }
+          />
         )}
         <ul className="space-y-2">
           {vessels.map((v) => (
@@ -469,7 +486,7 @@ function ClientProfile({ profile }: { profile: Profile }) {
 
       <RiskBanner
         risk="medium"
-        title={`🩺 ${t("profile.health_note")}`}
+        title={t("profile.health_note")}
         body={t("profile.health_hint")}
       />
       <GlassPanel>
@@ -477,8 +494,11 @@ function ClientProfile({ profile }: { profile: Profile }) {
           className="w-full rounded-xl bg-white/5 border border-white/10 text-white p-3 text-sm outline-none focus:border-amber-400/60" />
       </GlassPanel>
 
-      <button onClick={save} disabled={saving}
-        className="w-full h-12 rounded-xl amber-gradient text-warning-foreground font-black uppercase tracking-wider inline-flex items-center justify-center gap-2">
+      <button
+        onClick={save}
+        disabled={saving}
+        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#F5B942] text-sm font-bold tracking-wide text-[#1A1406] hover:bg-[#ffc857] disabled:opacity-55"
+      >
         {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
         {savedTick ? t("profile.saved") : t("profile.save")}
       </button>
@@ -486,29 +506,25 @@ function ClientProfile({ profile }: { profile: Profile }) {
       <OnboardingReplayRow userId={profile.id} />
       <AboutThalvo />
       <InstallAppButton />
-
-
-
-      {/* footer stat */}
-      <p className="text-center text-[10px] uppercase tracking-[0.18em] text-white/40">
-        <Anchor className="inline size-3 mr-1" />THALVO · {vessels.length} vessels
-      </p>
     </div>
   );
 }
 
 function OnboardingReplayRow({ userId }: { userId: string }) {
+  const { t } = useTranslation();
   return (
     <button
       type="button"
       onClick={() => restartOnboarding(userId)}
-      className="w-full rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition-colors px-4 py-3 flex items-center justify-between text-left"
+      className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition-colors hover:bg-white/[0.08]"
     >
       <span>
-        <span className="block text-sm font-semibold text-white">Replay welcome tour</span>
-        <span className="block text-[11px] text-white/55">Re-open the THALVO first-run experience.</span>
+        <span className="block text-sm font-semibold text-white">{t("profile.replay_tour_title")}</span>
+        <span className="block text-[11px] text-white/55">{t("profile.replay_tour_body")}</span>
       </span>
-      <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-300">Restart</span>
+      <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#F5B942]">
+        {t("profile.replay_tour_cta")}
+      </span>
     </button>
   );
 }

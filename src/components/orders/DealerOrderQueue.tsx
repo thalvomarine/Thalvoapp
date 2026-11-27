@@ -311,7 +311,7 @@ function DealerRow({
               <button
                 onClick={advance}
                 disabled={busy}
-                className="h-10 px-4 rounded-2xl bg-sky-500 hover:bg-amber-400 text-slate-900 font-semibold text-[12px] uppercase tracking-[0.14em] disabled:opacity-40"
+                className="h-10 px-4 rounded-2xl bg-[#F5B942] hover:bg-[#ffc857] text-[#1A1406] font-semibold text-[12px] uppercase tracking-[0.14em] disabled:opacity-40"
               >
                 {t(ctaKey)}
               </button>

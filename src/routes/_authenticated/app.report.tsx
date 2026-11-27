@@ -74,7 +74,7 @@ function ReportPage() {
     const healthNote = profileRow?.emergency_health_note;
     const finalDescription = [
       sanitizeMultiline(description, 1500),
-      healthNote ? `\n🩺 ${t("profile.health_note")}: ${sanitizeMultiline(healthNote, 500)}` : "",
+      healthNote ? `\n${t("profile.health_note")}: ${sanitizeMultiline(healthNote, 500)}` : "",
     ].filter(Boolean).join("\n").trim().slice(0, 4000);
     const { data, error } = await supabase.from("jobs").insert({
       client_id: user.id,

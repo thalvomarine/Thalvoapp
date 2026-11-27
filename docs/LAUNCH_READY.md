@@ -9,7 +9,7 @@ Companion docs: `.cursor/skills/thalvo-marineos/SKILL.md`, `.cursor/skills/thalv
 - [x] MarineOS product skill present
 - [x] Launch-ready orchestration skill present
 - [x] Design tokens corrected (`--mos-cyan` = cyan, not amber)
-- [ ] Design language applied across all signed-in + public surfaces
+- [x] Design language pass started site-wide (missions, profile, SOS, AI, CTAs, empties)
 - [ ] Owner reviewed checkpoint build (preview) before `main`
 
 ## Checkpoint B — Motors green

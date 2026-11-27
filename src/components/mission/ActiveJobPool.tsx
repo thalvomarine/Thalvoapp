@@ -87,10 +87,7 @@ export function ActiveJobPool({ userId }: Props) {
             color: "var(--sheet-active-ink)",
           }}
         >
-          <span className="relative flex size-1.5">
-            <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400 opacity-70" />
-            <span className="relative size-1.5 rounded-full bg-emerald-400" />
-          </span>
+          <span className="size-1.5 rounded-full bg-emerald-400" />
           {jobs.length}
         </span>
       </div>

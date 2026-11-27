@@ -88,13 +88,11 @@ export function TransferCaptainPanel() {
 
   if (profile && !isClient) {
     return (
-      <GlassPanel>
-        <EmptyState
-          icon={<Ship className="size-4" />}
-          title={t("transfer.captains_only_title")}
-          body={t("transfer.captains_only_body")}
-        />
-      </GlassPanel>
+      <EmptyState
+        icon={<Ship className="size-4" />}
+        title={t("transfer.captains_only_title")}
+        body={t("transfer.captains_only_body")}
+      />
     );
   }
 
@@ -112,7 +110,7 @@ export function TransferCaptainPanel() {
         <button
           type="button"
           onClick={() => setCreateOpen(true)}
-          className="h-11 flex-1 min-w-[10rem] rounded-2xl border border-rose-400/40 bg-rose-500/15 px-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-rose-100"
+          className="h-11 min-w-[10rem] flex-1 rounded-xl bg-[#F5B942] px-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#1A1406] hover:bg-[#ffc857]"
         >
           {t("transfer.need_captain")}
         </button>
@@ -148,18 +146,18 @@ export function TransferCaptainPanel() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-10 text-amber-200/70">
-          <Loader2 className="size-5 animate-spin" />
-        </div>
+        <EmptyState
+          icon={<Ship className="size-4" />}
+          title={t("transfer.loading_title", { defaultValue: t("common.loading") })}
+          body={t("transfer.loading_body", { defaultValue: "" })}
+        />
       ) : tab === "board" ? (
         board.length === 0 ? (
-          <GlassPanel>
-            <EmptyState
-              icon={<UserRound className="size-4" />}
-              title={t("transfer.board_empty_title")}
-              body={t("transfer.board_empty_body")}
-            />
-          </GlassPanel>
+          <EmptyState
+            icon={<UserRound className="size-4" />}
+            title={t("transfer.board_empty_title")}
+            body={t("transfer.board_empty_body")}
+          />
         ) : (
           <ul className="space-y-2">
             {board.map((req) => (
@@ -175,13 +173,11 @@ export function TransferCaptainPanel() {
         )
       ) : tab === "mine" ? (
         myReqs.length === 0 ? (
-          <GlassPanel>
-            <EmptyState
-              icon={<Ship className="size-4" />}
-              title={t("transfer.mine_empty_title")}
-              body={t("transfer.mine_empty_body")}
-            />
-          </GlassPanel>
+          <EmptyState
+            icon={<Ship className="size-4" />}
+            title={t("transfer.mine_empty_title")}
+            body={t("transfer.mine_empty_body")}
+          />
         ) : (
           <ul className="space-y-2">
             {myReqs.map((req) => (
@@ -214,13 +210,11 @@ export function TransferCaptainPanel() {
           </ul>
         )
       ) : myApps.length === 0 ? (
-        <GlassPanel>
-          <EmptyState
-            icon={<FileText className="size-4" />}
-            title={t("transfer.apps_empty_title")}
-            body={t("transfer.apps_empty_body")}
-          />
-        </GlassPanel>
+        <EmptyState
+          icon={<FileText className="size-4" />}
+          title={t("transfer.apps_empty_title")}
+          body={t("transfer.apps_empty_body")}
+        />
       ) : (
         <ul className="space-y-2">
           {myApps.map((app) => (

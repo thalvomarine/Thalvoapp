@@ -109,7 +109,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
           <Link
             to="/app/orders"
             onClick={onClose}
-            className="grid h-12 w-full place-items-center rounded-2xl bg-sky-500 text-sm font-semibold tracking-tight text-slate-900 transition-colors hover:bg-amber-400"
+            className="grid h-12 w-full place-items-center rounded-2xl bg-[#F5B942] text-sm font-semibold tracking-tight text-[#1A1406] transition-colors hover:bg-[#ffc857]"
           >
             {t("shop_cart.open_order_tracking")}
           </Link>
@@ -275,7 +275,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
             </div>
             <button
               onClick={() => setPay(true)}
-              className="h-12 w-full rounded-2xl bg-sky-500 text-sm font-semibold tracking-tight text-slate-900 transition-colors hover:bg-amber-400"
+              className="h-12 w-full rounded-2xl bg-[#F5B942] text-sm font-semibold tracking-tight text-[#1A1406] transition-colors hover:bg-[#ffc857]"
             >
               {t("shop_cart.confirm_order")}
             </button>

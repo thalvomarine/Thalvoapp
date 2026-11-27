@@ -193,7 +193,7 @@ export function EmergencyServiceSheet({
               </button>
             </div>
             {bayName ? (
-              <p className="mt-1 truncate text-[12px] text-white/60">⚓ {bayName}</p>
+              <p className="mt-1 truncate text-[12px] text-white/60">{bayName}</p>
             ) : null}
           </div>
 

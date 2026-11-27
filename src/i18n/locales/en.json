@@ -444,7 +444,9 @@
     "book_now": "Book Now",
     "eta_short": "ETA",
     "empty_title": "No packages yet",
-    "empty_body": "Standard service packages will appear here."
+    "empty_body": "Standard service packages will appear here.",
+    "load_error_title": "Could not load service packages",
+    "load_error_body": "Check the connection and try again."
   },
   "shop": {
     "title": "Spare Parts Marketplace",
@@ -954,7 +956,12 @@
     "eq_boat": "Own Service Boat",
     "eq_crane": "Onboard Crane / Winch",
     "eq_night": "Night Dive Rated",
-    "review_pending": "Review pending"
+    "review_pending": "Review pending",
+    "no_vessels_title": "No vessels yet",
+    "no_vessels_body": "Add a vessel for passport and SOS context.",
+    "replay_tour_title": "Replay welcome tour",
+    "replay_tour_body": "Re-open the THALVO first-run experience.",
+    "replay_tour_cta": "Restart"
   },
   "ai": {
     "subtitle": "Your marine assistant",
