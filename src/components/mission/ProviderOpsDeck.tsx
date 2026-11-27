@@ -82,8 +82,8 @@ export function ProviderOpsDeck({
     [t, sosCount, poolCount, activeJobs.length],
   );
 
+  // Leave a right gutter for ChartFabStack so AI / layers / locate never sit on this strip.
   return (
-    {/* Leave a right gutter for ChartFabStack so AI / layers / locate never sit on this strip. */}
     <div className="thalvo-map-above-dock pointer-events-none absolute inset-x-0 z-[50] flex justify-center pl-3 pr-[4.5rem] sm:px-6">
       <div
         className={
