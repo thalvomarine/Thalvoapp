@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { useSessionUser } from "@/lib/session";
+import { useProfile, useSessionUser } from "@/lib/session";
 import {
   EMERGENCY_CATEGORY_LABEL_KEYS,
   type EmergencyServiceRequest,
@@ -10,12 +10,8 @@ import {
 import { Activity, Clock, Crosshair, MapPin, Radio, Ship, UserRound, X } from "lucide-react";
 import { CockpitHeader, MetricCard, StatusBadge } from "@/components/core";
 import { GlassPanel } from "@/components/mission/GlassPanel";
-import {
-  SEED_MISSIONS,
-  SEED_OPS_STATS,
-  type OpsMission,
-  type OpsMissionStatus,
-} from "@/lib/live-ops";
+import { LiveCallBoard } from "@/components/mission/LiveCallBoard";
+import { type OpsMission, type OpsMissionStatus } from "@/lib/live-ops";
 import { requestMapFocus } from "@/lib/map-focus-bus";
 import { toast } from "sonner";
 import { noteSchemaMiss, skipMissing } from "@/lib/schema-gap";
@@ -29,6 +25,10 @@ const STATUS_TONE: Record<OpsMissionStatus, "warning" | "info" | "neutral" | "su
 
 export function LiveOpsPanel() {
   const { t } = useTranslation();
+  const { user } = useSessionUser();
+  const { profile } = useProfile(user?.id);
+  const isProvider = profile?.role === "Provider";
+  const counts = useLiveCounts(user?.id, isProvider);
   const [selected, setSelected] = useState<OpsMission | null>(null);
 
   return (
@@ -42,21 +42,21 @@ export function LiveOpsPanel() {
       <div className="grid grid-cols-3 gap-2">
         <MetricCard
           label={t("ops.stat_active")}
-          value={SEED_OPS_STATS.active}
+          value={counts.active}
           tone="info"
           icon={<Activity className="size-3" />}
           hint={t("ops.stat_active_hint")}
         />
         <MetricCard
           label={t("ops.stat_pending")}
-          value={SEED_OPS_STATS.pending}
+          value={counts.pending}
           tone="warning"
           icon={<Clock className="size-3" />}
           hint={t("ops.stat_pending_hint")}
         />
         <MetricCard
           label={t("ops.stat_completed")}
-          value={SEED_OPS_STATS.completed}
+          value={counts.completed}
           tone="success"
           icon={<Ship className="size-3" />}
           hint={t("ops.stat_completed_hint")}
@@ -116,11 +116,83 @@ export function LiveOpsPanel() {
         </span>
       </div>
 
-      <ActiveFaults />
+      {isProvider && user ? <LiveCallBoard userId={user.id} /> : <ActiveFaults />}
 
       {selected && <OpsMissionSheet mission={selected} onClose={() => setSelected(null)} />}
     </div>
   );
+}
+
+function useLiveCounts(userId: string | undefined, isProvider: boolean) {
+  const [counts, setCounts] = useState({ active: 0, pending: 0, completed: 0 });
+
+  useEffect(() => {
+    if (!userId) return;
+    const load = async () => {
+      if (isProvider) {
+        const [openRes, mineRes, doneRes] = await Promise.all([
+          supabase
+            .from("emergency_service_requests")
+            .select("id", { count: "exact", head: true })
+            .eq("status", "pending")
+            .is("assigned_provider_id", null),
+          supabase
+            .from("jobs")
+            .select("id", { count: "exact", head: true })
+            .eq("provider_id", userId)
+            .not("status", "in", "(Completed,Cancelled)"),
+          supabase
+            .from("jobs")
+            .select("id", { count: "exact", head: true })
+            .eq("provider_id", userId)
+            .eq("status", "Completed"),
+        ]);
+        setCounts({
+          active: mineRes.count ?? 0,
+          pending: openRes.count ?? 0,
+          completed: doneRes.count ?? 0,
+        });
+        return;
+      }
+      const [openRes, waitingRes, doneRes] = await Promise.all([
+        supabase
+          .from("jobs")
+          .select("id", { count: "exact", head: true })
+          .eq("client_id", userId)
+          .not("status", "in", "(Completed,Cancelled)"),
+        supabase
+          .from("jobs")
+          .select("id", { count: "exact", head: true })
+          .eq("client_id", userId)
+          .in("status", ["Pending", "Offered"]),
+        supabase
+          .from("jobs")
+          .select("id", { count: "exact", head: true })
+          .eq("client_id", userId)
+          .eq("status", "Completed"),
+      ]);
+      setCounts({
+        active: openRes.count ?? 0,
+        pending: waitingRes.count ?? 0,
+        completed: doneRes.count ?? 0,
+      });
+    };
+    void load();
+    const ch = supabase
+      .channel(`ops-counts:${userId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "jobs" }, () => void load())
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "emergency_service_requests" },
+        () => void load(),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [userId, isProvider]);
+
+  return counts;
 }
 
 function OpsMissionCard({ mission, onDetails }: { mission: OpsMission; onDetails: () => void }) {
@@ -162,7 +234,10 @@ function OpsMissionCard({ mission, onDetails }: { mission: OpsMission; onDetails
 
       <div className="space-y-2 px-4 py-3">
         <p className="flex items-start gap-2 text-[13px]" style={{ color: "var(--sheet-ink)" }}>
-          <MapPin className="mt-0.5 size-3.5 shrink-0" style={{ color: "var(--sheet-active-ink)" }} />
+          <MapPin
+            className="mt-0.5 size-3.5 shrink-0"
+            style={{ color: "var(--sheet-active-ink)" }}
+          />
           <span>
             <span style={{ color: "var(--sheet-muted)" }}>{t("ops.target")}: </span>
             {t(mission.targetKey)}

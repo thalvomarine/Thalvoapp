@@ -45,6 +45,7 @@ import {
   type ProviderPayoutRow,
 } from "@/components/payments/ProviderPayoutPanel";
 import { CommissionBreakdown } from "@/components/payments/CommissionBreakdown";
+import { MissionBidForm } from "@/components/mission/MissionBidForm";
 import { computeCommission, readCompleteJobResult } from "@/lib/payments";
 import { sanitizePlainText } from "@/lib/sanitize";
 
@@ -98,9 +99,11 @@ interface Part {
 
 function JobPage() {
   const { id } = Route.useParams();
+  const { t } = useTranslation();
   const { user } = useSessionUser();
   const { profile } = useProfile(user?.id);
   const [job, setJob] = useState<Job | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const load = () =>
@@ -109,7 +112,10 @@ function JobPage() {
         .select("*")
         .eq("id", id)
         .maybeSingle()
-        .then(({ data }) => setJob((data as Job) ?? null));
+        .then(({ data }) => {
+          setJob((data as Job) ?? null);
+          setLoaded(true);
+        });
     load();
     const ch = supabase
       .channel(`job:${id}`)
@@ -124,16 +130,24 @@ function JobPage() {
     };
   }, [id]);
 
-  if (!user || !profile || !job) {
+  if (!user || !profile || !loaded) {
     return (
       <div className="min-h-dvh grid place-items-center bg-deep text-white">
         <Loader2 className="size-6 animate-spin" />
       </div>
     );
   }
+  if (!job) {
+    return (
+      <div className="min-h-dvh grid place-items-center bg-deep px-6 text-center text-white">
+        <p className="max-w-sm text-sm text-white/70">{t("ops.job_hidden")}</p>
+      </div>
+    );
+  }
   const isClient = profile.role === "Client";
   return (
-    <>{isClient ? <ClientJob job={job} meId={user.id} /> : <ProviderJob job={job} meId={user.id} />}
+    <>
+      {isClient ? <ClientJob job={job} meId={user.id} /> : <ProviderJob job={job} meId={user.id} />}
     </>
   );
 }
@@ -181,7 +195,9 @@ function JobBrief({
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
         {t("sos_sheet.brief_title")}
       </p>
-      {showText && <p className="whitespace-pre-wrap text-sm leading-relaxed text-white/80">{text}</p>}
+      {showText && (
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-white/80">{text}</p>
+      )}
       {url && <img src={url} alt="" className="h-40 w-full rounded-xl object-cover" />}
     </GlassPanel>
   );
@@ -213,7 +229,9 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
             _job_id: job.id,
             _lat: res.fix.lat,
             _lng: res.fix.lng,
-            _accuracy_m: Number.isFinite(res.fix.accuracy) ? Math.round(res.fix.accuracy) : undefined,
+            _accuracy_m: Number.isFinite(res.fix.accuracy)
+              ? Math.round(res.fix.accuracy)
+              : undefined,
           });
       if (rpc.error) {
         noteSchemaMiss("refresh_own_call_position", rpc.error);
@@ -259,14 +277,19 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
     let live = true;
     loadTrustSignals(providerId).then((signals) => {
       if (!live) return;
-      setTrustReport(computeTrust({
-        ...signals,
-        rating: signals.rating ?? trustFor?.provider_details?.rating ?? null,
-        jobsCompleted: signals.jobsCompleted ?? trustFor?.provider_details?.jobs_completed ?? null,
-        verified: signals.verified || Boolean(trustFor?.provider_details?.certification_url),
-      }));
+      setTrustReport(
+        computeTrust({
+          ...signals,
+          rating: signals.rating ?? trustFor?.provider_details?.rating ?? null,
+          jobsCompleted:
+            signals.jobsCompleted ?? trustFor?.provider_details?.jobs_completed ?? null,
+          verified: signals.verified || Boolean(trustFor?.provider_details?.certification_url),
+        }),
+      );
     });
-    return () => { live = false; };
+    return () => {
+      live = false;
+    };
   }, [trustFor]);
 
   useEffect(() => {
@@ -424,14 +447,16 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
 
   useEffect(() => {
     if (!job.provider_id) return;
-    const apply = (data: {
-      id: string;
-      service_type: string;
-      lat: number | null;
-      lng: number | null;
-      updated_at?: string | null;
-      profiles: { full_name: string } | null;
-    } | null) => {
+    const apply = (
+      data: {
+        id: string;
+        service_type: string;
+        lat: number | null;
+        lng: number | null;
+        updated_at?: string | null;
+        profiles: { full_name: string } | null;
+      } | null,
+    ) => {
       if (!data || data.lat == null || data.lng == null) {
         setProviderPos(null);
         setProviderLiveAt(null);
@@ -493,8 +518,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
     };
   }, [job.provider_id, job.id, t]);
 
-  const liveProviderFresh =
-    providerLiveAt != null && Date.now() - providerLiveAt < 120_000;
+  const liveProviderFresh = providerLiveAt != null && Date.now() - providerLiveAt < 120_000;
 
   const enRouteEta = useMemo(() => {
     if (job.status !== "EnRoute") return null;
@@ -564,6 +588,10 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
       return;
     }
     setCompleting(false);
+    if (outcome === "awaiting_counterpart") {
+      toast.success(t("close.waiting_provider"));
+      return;
+    }
     navigate({ to: "/app" });
   };
 
@@ -631,7 +659,11 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
           </button>
         )}
       </GlassPanel>
-      <JobBrief description={job.description} photoPath={job.photo_url} problem={job.problem_category} />
+      <JobBrief
+        description={job.description}
+        photoPath={job.photo_url}
+        problem={job.problem_category}
+      />
 
       {!closed && Number.isFinite(job.lat) && Number.isFinite(job.lng) && (
         <div className="rounded-2xl overflow-hidden border border-white/10">
@@ -765,7 +797,7 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
           ) : (
             <CheckCircle2 className="size-5" />
           )}
-          {t("owner.confirm_complete")} · {t("mission.release_escrow")}
+          {t("close.confirm")}
         </button>
       )}
       {job.status === "PartsPending" && pendingPart && (
@@ -907,11 +939,14 @@ function ClientJob({ job, meId }: { job: Job; meId: string }) {
         open={!!trustFor}
         onClose={() => setTrustFor(null)}
         subject={trustFor?.profiles?.full_name ?? t("mission.provider_fallback")}
-        report={trustReport ?? computeTrust({
-          rating: trustFor?.provider_details?.rating ?? null,
-          jobsCompleted: trustFor?.provider_details?.jobs_completed ?? null,
-          verified: Boolean(trustFor?.provider_details?.certification_url),
-        })}
+        report={
+          trustReport ??
+          computeTrust({
+            rating: trustFor?.provider_details?.rating ?? null,
+            jobsCompleted: trustFor?.provider_details?.jobs_completed ?? null,
+            verified: Boolean(trustFor?.provider_details?.certification_url),
+          })
+        }
       />
     </div>
   );
@@ -927,12 +962,7 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   const [partPhoto, setPartPhoto] = useState("");
   const [source, setSource] = useState("Tedarikçi Firma (Local Supplier)");
   const [busy, setBusy] = useState(false);
-  const [bidPrice, setBidPrice] = useState("");
-  const [bidEta, setBidEta] = useState("");
-  const [bidNote, setBidNote] = useState("");
-  const [bidding, setBidding] = useState(false);
-  const openForBid =
-    !job.provider_id && (job.status === "Pending" || job.status === "Offered");
+  const openForBid = !job.provider_id && (job.status === "Pending" || job.status === "Offered");
   const tracking =
     job.provider_id === meId &&
     ["Accepted", "EnRoute", "OnSite", "InProgress", "PartsPending"].includes(job.status);
@@ -1008,32 +1038,20 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
   }, [job.id, meId]);
   const providerCommission = computeCommission(Number(job.total_escrow_pool));
 
-  const submitBid = async () => {
-    if (!bidPrice || !bidEta) return;
-    setBidding(true);
-    const res = await getFix();
-    if (res.ok) {
-      await supabase.rpc("refresh_own_provider_position", {
-        _lat: res.fix.lat,
-        _lng: res.fix.lng,
-        _accuracy_m: Number.isFinite(res.fix.accuracy) ? Math.round(res.fix.accuracy) : undefined,
-      });
-    }
-    const { error } = await supabase.rpc("submit_offer", {
-      _job_id: job.id,
-      _price: parseGrouped(bidPrice),
-      _eta_minutes: parseGrouped(bidEta),
-      _note: bidNote.trim() || null,
-    });
-    setBidding(false);
+  const confirmClose = async () => {
+    const { data, error } = await supabase.rpc("complete_job", { _job_id: job.id });
     if (error) {
       toast.error(error.message);
       return;
     }
-    toast.success(t("ops_alerts.offer_sent"));
-    setBidPrice("");
-    setBidEta("");
-    setBidNote("");
+    const outcome = readCompleteJobResult(data);
+    if (outcome === "awaiting_counterpart") {
+      toast.success(t("close.waiting_captain"));
+      return;
+    }
+    if (outcome === "completed" || outcome === "already_completed") {
+      toast.success(t("status.Completed"));
+    }
   };
 
   const setSail = async () => {
@@ -1093,7 +1111,11 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
           </div>
         </div>
       </GlassPanel>
-      <JobBrief description={job.description} photoPath={job.photo_url} problem={job.problem_category} />
+      <JobBrief
+        description={job.description}
+        photoPath={job.photo_url}
+        problem={job.problem_category}
+      />
       {Number.isFinite(job.lat) && Number.isFinite(job.lng) && Math.abs(job.lat) > 1 && (
         <VesselRange lat={job.lat} lng={job.lng} />
       )}
@@ -1104,45 +1126,7 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
             {t("ops_alerts.bid")}
           </p>
           <p className="text-sm text-white/70">{t("ops_alerts.pool_bid_hint")}</p>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <input
-              value={bidPrice}
-              onChange={(e) => {
-                const next = groupThousands(e.target.value);
-                setBidPrice(next);
-                requestAnimationFrame(() => {
-                  const el = e.target;
-                  const caret = caretAfterGrouping(e.target.value, next, el.selectionStart);
-                  el.setSelectionRange(caret, caret);
-                });
-              }}
-              inputMode="decimal"
-              placeholder={t("ops_alerts.bid_price", { defaultValue: "Price (TRY)" })}
-              className="h-11 rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white"
-            />
-            <input
-              value={bidEta}
-              onChange={(e) => setBidEta(groupThousands(e.target.value))}
-              inputMode="numeric"
-              placeholder={t("ops_alerts.bid_eta", { defaultValue: "ETA (min)" })}
-              className="h-11 rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white"
-            />
-          </div>
-          <input
-            value={bidNote}
-            onChange={(e) => setBidNote(e.target.value)}
-            placeholder={t("ops_alerts.bid_note", { defaultValue: "Note (optional)" })}
-            className="h-11 w-full rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white"
-          />
-          <button
-            type="button"
-            disabled={bidding || !bidPrice || !bidEta}
-            onClick={() => void submitBid()}
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 text-[12px] font-black uppercase tracking-wider text-[#0A192F] disabled:opacity-50"
-          >
-            {bidding ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
-            {t("ops_alerts.send_offer")}
-          </button>
+          <MissionBidForm jobId={job.id} lat={job.lat} lng={job.lng} />
         </GlassPanel>
       )}
 
@@ -1177,6 +1161,17 @@ function ProviderJob({ job, meId }: { job: Job; meId: string }) {
           className="w-full h-14 rounded-2xl marine-gradient text-white font-bold inline-flex items-center justify-center gap-2"
         >
           <PinIcon className="size-5" /> {t("provider.arrived")}
+        </button>
+      )}
+
+      {["OnSite", "InProgress"].includes(job.status) && job.provider_id === meId && (
+        <button
+          type="button"
+          onClick={() => void confirmClose()}
+          className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 font-semibold text-slate-900"
+        >
+          <CheckCircle2 className="size-5" />
+          {t("close.confirm")}
         </button>
       )}
 

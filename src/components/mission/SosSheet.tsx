@@ -10,17 +10,34 @@ import { emitEvent } from "@/lib/events";
 import { resolveAiLang } from "@/lib/ai-lang";
 import { PROBLEM_KEYS } from "@/i18n";
 import { useOnlineStatus } from "@/lib/pwa";
-import { getFix, fixToJobFields, formatAccuracy, isStale, isLowAccuracy, readLastFix, type GeoFix } from "@/lib/geolocation";
+import {
+  getFix,
+  fixToJobFields,
+  formatAccuracy,
+  isStale,
+  isLowAccuracy,
+  readLastFix,
+  type GeoFix,
+} from "@/lib/geolocation";
 import { sanitizeMultiline } from "@/lib/sanitize";
 import { formatDm } from "@/lib/formatters";
 import { publishLocatedCall } from "@/lib/emergency-service";
+import { resolveCallerVessel } from "@/lib/caller-vessel";
 import { openEmergencyService } from "@/lib/emergency-service-bus";
 import { COAST_MARINAS } from "@/lib/coast-marinas";
 import {
-  Anchor, ArrowLeft, Camera, Check, Loader2, MapPin, Radio,
-  Sparkle, WifiOff, Wrench, X,
+  Anchor,
+  ArrowLeft,
+  Camera,
+  Check,
+  Loader2,
+  MapPin,
+  Radio,
+  Sparkle,
+  WifiOff,
+  Wrench,
+  X,
 } from "lucide-react";
-
 
 type Category = "mechanic" | "diver";
 type Step = 0 | 1 | 2;
@@ -91,15 +108,31 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
   const fileRef = useRef<HTMLInputElement>(null);
 
   const reset = useCallback(() => {
-    setStep(0); setCategory(initialCategory); setProblem(problems[0]);
-    setMarina(MARINAS[0]); setNote(""); setPhoto(null); setPhotoFile(null);
-    setBriefOpen(false); setSituation(null); setEngineState(null); setDiveTarget(null); setSafety([]);
-    setCoords(null); setLocErr(null); setAiText(null); setAiOk(false);
-    setLocating(false); setAiBusy(false); setPublishing(false);
+    setStep(0);
+    setCategory(initialCategory);
+    setProblem(problems[0]);
+    setMarina(MARINAS[0]);
+    setNote("");
+    setPhoto(null);
+    setPhotoFile(null);
+    setBriefOpen(false);
+    setSituation(null);
+    setEngineState(null);
+    setDiveTarget(null);
+    setSafety([]);
+    setCoords(null);
+    setLocErr(null);
+    setAiText(null);
+    setAiOk(false);
+    setLocating(false);
+    setAiBusy(false);
+    setPublishing(false);
   }, [initialCategory, problems]);
 
   // Reset problem list when category changes
-  useEffect(() => { setProblem((category === "diver" ? PROBLEM_KEYS.diver : PROBLEM_KEYS.mechanic)[0]); }, [category]);
+  useEffect(() => {
+    setProblem((category === "diver" ? PROBLEM_KEYS.diver : PROBLEM_KEYS.mechanic)[0]);
+  }, [category]);
 
   // Sync initial category / AI-prepared brief when opened
   useEffect(() => {
@@ -113,7 +146,8 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
 
   // Single shared positioning path — no fallback marina, no invented coordinates.
   const locate = useCallback(async () => {
-    setLocating(true); setLocErr(null);
+    setLocating(true);
+    setLocErr(null);
     const res = await getFix();
     if (res.ok) {
       setCoords(res.fix);
@@ -137,12 +171,12 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
     void locate();
   }, [open, coords, locating, locate]);
 
-
-
   // ESC to close
   useEffect(() => {
     if (!open) return;
-    const h = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
   }, [open, onClose]);
@@ -162,9 +196,15 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
       `Category: ${catLabel}\nProblem: ${problemLabel}\nLocation: ${marina}` +
       (coords ? ` (${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)})` : "") +
       (situation ? `\nBoat: ${t(`sos_sheet.sit_${situation}`)}` : "") +
-      (category === "mechanic" && engineState ? `\nEngine: ${t(`sos_sheet.eng_${engineState}`)}` : "") +
-      (category === "diver" && diveTarget ? `\nIn the water: ${t(`sos_sheet.dive_${diveTarget}`)}` : "") +
-      (safety.length ? `\nSafety: ${safety.map((flag) => t(`sos_sheet.safe_${flag}`)).join(", ")}` : "") +
+      (category === "mechanic" && engineState
+        ? `\nEngine: ${t(`sos_sheet.eng_${engineState}`)}`
+        : "") +
+      (category === "diver" && diveTarget
+        ? `\nIn the water: ${t(`sos_sheet.dive_${diveTarget}`)}`
+        : "") +
+      (safety.length
+        ? `\nSafety: ${safety.map((flag) => t(`sos_sheet.safe_${flag}`)).join(", ")}`
+        : "") +
       (note ? `\nCaptain note: ${note}` : "") +
       (photo ? `\n(Photo attached by captain — not visible to you here.)` : "") +
       `\n\nReturn: (1) one-line likely cause, (2) one immediate safety step the captain can take now, (3) what a responder will most likely need on arrival. No panic language.`;
@@ -202,7 +242,9 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
   const publish = async () => {
     if (publishing) return;
     setPublishing(true);
-    const fallbackMsg = isTr ? "SOS Bildirildi (Offline/Fallback)" : "SOS reported (Offline/Fallback)";
+    const fallbackMsg = isTr
+      ? "SOS Bildirildi (Offline/Fallback)"
+      : "SOS reported (Offline/Fallback)";
 
     const acknowledgeFallback = (reason: unknown) => {
       console.error("[sos] fallback", reason);
@@ -247,11 +289,16 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
         acknowledgeFallback(userErr ?? "no-user");
         return;
       }
-      const { data: p } = await supabase.from("profiles").select("emergency_health_note, boat_name").eq("id", user.id).maybeSingle();
-      const profileRow = p as { emergency_health_note: string | null; boat_name: string | null } | null;
+      const [{ data: p }, vesselName] = await Promise.all([
+        supabase.from("profiles").select("emergency_health_note").eq("id", user.id).maybeSingle(),
+        resolveCallerVessel(user.id),
+      ]);
+      const profileRow = p as { emergency_health_note: string | null } | null;
       const healthNote = profileRow?.emergency_health_note;
       const brief = composeBrief({
-        situation: situation ? `${t("sos_sheet.situation")}: ${t(`sos_sheet.sit_${situation}`)}` : "",
+        situation: situation
+          ? `${t("sos_sheet.situation")}: ${t(`sos_sheet.sit_${situation}`)}`
+          : "",
         machine:
           category === "diver"
             ? diveTarget
@@ -265,12 +312,16 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
             ? `${t("sos_sheet.safety")}: ${safety.map((flag) => t(`sos_sheet.safe_${flag}`)).join(", ")}`
             : "",
         note: sanitizeMultiline(note, 1500),
-        advice: aiOk && aiText ? `${t("sos_sheet.advice")}: ${sanitizeMultiline(aiText, 1500)}` : "",
-        health: healthNote ? `${t("profile.health_note")}: ${sanitizeMultiline(healthNote, 500)}` : "",
+        advice:
+          aiOk && aiText ? `${t("sos_sheet.advice")}: ${sanitizeMultiline(aiText, 1500)}` : "",
+        health: healthNote
+          ? `${t("profile.health_note")}: ${sanitizeMultiline(healthNote, 500)}`
+          : "",
       });
       let photoPath: string | null = null;
       if (photoFile) {
-        const ext = photoFile.type === "image/png" ? "png" : photoFile.type === "image/webp" ? "webp" : "jpg";
+        const ext =
+          photoFile.type === "image/png" ? "png" : photoFile.type === "image/webp" ? "webp" : "jpg";
         const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
         const uploaded = await supabase.storage.from("job-photos").upload(path, photoFile, {
           contentType: photoFile.type,
@@ -279,18 +330,26 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
         if (uploaded.error) toast.warning(t("sos_sheet.photo_skipped"));
         else photoPath = path;
       }
-      const finalDescription = (brief || t(`problems.${problem}`, { defaultValue: problem })).slice(0, 4000);
+      const vesselLine = vesselName ? `${isTr ? "Tekne" : "Vessel"}: ${vesselName}` : "";
+      const finalDescription = (
+        [vesselLine, brief].filter(Boolean).join("\n") ||
+        t(`problems.${problem}`, { defaultValue: problem })
+      ).slice(0, 4000);
       const { data, error } = await (async () => {
         try {
-          return await supabase.from("jobs").insert({
-            client_id: user.id,
-            service_type: category === "diver" ? "Underwater Diver" : "Marine Mechanic",
-            problem_category: problem,
-            description: finalDescription,
-            photo_url: photoPath,
-            marina,
-            ...(liveFix ? fixToJobFields(liveFix) : {}),
-          }).select("id").single();
+          return await supabase
+            .from("jobs")
+            .insert({
+              client_id: user.id,
+              service_type: category === "diver" ? "Underwater Diver" : "Marine Mechanic",
+              problem_category: problem,
+              description: finalDescription,
+              photo_url: photoPath,
+              marina,
+              ...(liveFix ? fixToJobFields(liveFix) : {}),
+            })
+            .select("id")
+            .single();
         } catch (insertErr) {
           return { data: null, error: insertErr as { message?: string } };
         }
@@ -306,7 +365,7 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
           category,
           lat: liveFix.lat,
           lng: liveFix.lng,
-          vesselName: profileRow?.boat_name?.trim() || "",
+          vesselName,
           bayName: marina,
           description: finalDescription,
           urgency: "urgent",
@@ -328,7 +387,8 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
           problem_category: problem,
           marina,
           category,
-          accuracy_m: liveFix && Number.isFinite(liveFix.accuracy) ? Math.round(liveFix.accuracy) : null,
+          accuracy_m:
+            liveFix && Number.isFinite(liveFix.accuracy) ? Math.round(liveFix.accuracy) : null,
           fallback: !liveFix,
         },
       });
@@ -350,23 +410,27 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
     ? ["Sorun", "Konum", "SOS gönder"]
     : ["Problem", "Location", "Send SOS"];
 
-  const stepLabel = isTr
-    ? `SOS · Adım ${step + 1} / 3`
-    : `SOS · Step ${step + 1} of 3`;
+  const stepLabel = isTr ? `SOS · Adım ${step + 1} / 3` : `SOS · Step ${step + 1} of 3`;
 
-  const locationState: { label: string; tone: "ok" | "warn" | "manual" } =
-    coords
-      ? isStale(coords)
-        ? { label: isTr ? "Son bilinen konum" : "Last known position", tone: "warn" }
-        : isLowAccuracy(coords)
-          ? { label: isTr ? "Düşük hassasiyetli konum" : "Low-accuracy position", tone: "warn" }
-          : { label: isTr ? "Mevcut konum kullanılıyor" : "Using current location", tone: "ok" }
-      : locating
-        ? { label: isTr ? "Konum alınıyor…" : "Getting location…", tone: "warn" }
-        : { label: isTr ? "Konumsuz devam edilebilir" : "You can continue without a fix", tone: "manual" };
+  const locationState: { label: string; tone: "ok" | "warn" | "manual" } = coords
+    ? isStale(coords)
+      ? { label: isTr ? "Son bilinen konum" : "Last known position", tone: "warn" }
+      : isLowAccuracy(coords)
+        ? { label: isTr ? "Düşük hassasiyetli konum" : "Low-accuracy position", tone: "warn" }
+        : { label: isTr ? "Mevcut konum kullanılıyor" : "Using current location", tone: "ok" }
+    : locating
+      ? { label: isTr ? "Konum alınıyor…" : "Getting location…", tone: "warn" }
+      : {
+          label: isTr ? "Konumsuz devam edilebilir" : "You can continue without a fix",
+          tone: "manual",
+        };
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-end justify-center" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 z-[200] flex items-end justify-center"
+      role="dialog"
+      aria-modal="true"
+    >
       <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={onClose} />
       <div className="thalvo-dark relative w-full max-w-xl bg-[oklch(0.14_0.02_250)] text-foreground border-t border-white/10 rounded-t-3xl overflow-hidden shadow-[0_-30px_80px_-20px_rgba(0,0,0,0.9)] flex flex-col max-h-[92dvh]">
         {/* Header */}
@@ -378,17 +442,25 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
                 onClick={() => setStep(((step as number) - 1) as Step)}
                 className="size-9 grid place-items-center rounded-full bg-white/5 border border-white/10 text-white/70 hover:bg-white/10"
                 aria-label="Back"
-              ><ArrowLeft className="size-4" /></button>
-            ) : <span className="size-9" />}
+              >
+                <ArrowLeft className="size-4" />
+              </button>
+            ) : (
+              <span className="size-9" />
+            )}
             <div className="flex-1 min-w-0 text-center">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-rose-300/90">{stepLabel}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-rose-300/90">
+                {stepLabel}
+              </p>
               <p className="text-sm font-semibold text-white mt-0.5 truncate">{titles[step]}</p>
             </div>
             <button
               onClick={onClose}
               className="size-9 grid place-items-center rounded-full bg-white/5 border border-white/10 text-white/70 hover:bg-white/10"
               aria-label="Close"
-            ><X className="size-4" /></button>
+            >
+              <X className="size-4" />
+            </button>
           </div>
           {/* Step dots */}
           <div className="mt-3 flex items-center gap-1.5">
@@ -408,8 +480,11 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
         <div className="flex-1 overflow-y-auto px-4 py-5">
           {step === 0 && (
             <StepProblem
-              category={category} onCategory={setCategory}
-              problem={problem} onProblem={setProblem} problems={[...problems]}
+              category={category}
+              onCategory={setCategory}
+              problem={problem}
+              onProblem={setProblem}
+              problems={[...problems]}
               isTr={isTr}
               onServiceCall={() => {
                 onClose();
@@ -421,10 +496,16 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
           )}
           {step === 1 && (
             <StepLocation
-              coords={coords} locating={locating} err={locErr}
-              marina={marina} onMarina={setMarina}
-              stateLabel={locationState.label} stateTone={locationState.tone}
-              onRetry={() => { void locate(); }}
+              coords={coords}
+              locating={locating}
+              err={locErr}
+              marina={marina}
+              onMarina={setMarina}
+              stateLabel={locationState.label}
+              stateTone={locationState.tone}
+              onRetry={() => {
+                void locate();
+              }}
               isTr={isTr}
             />
           )}
@@ -432,9 +513,11 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
             <StepSend
               category={category}
               problem={t(`problems.${problem}`, { defaultValue: problem })}
-              marina={marina} coords={coords}
+              marina={marina}
+              coords={coords}
               stateLabel={locationState.label}
-              note={note} onNote={setNote}
+              note={note}
+              onNote={setNote}
               photo={photo}
               onPickPhoto={() => fileRef.current?.click()}
               onClearPhoto={() => {
@@ -452,10 +535,14 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
               safety={safety}
               onSafety={(flag) =>
                 setSafety((current) =>
-                  current.includes(flag) ? current.filter((item) => item !== flag) : [...current, flag],
+                  current.includes(flag)
+                    ? current.filter((item) => item !== flag)
+                    : [...current, flag],
                 )
               }
-              aiBusy={aiBusy} aiText={aiText} onRunAi={runDiagnosis}
+              aiBusy={aiBusy}
+              aiText={aiText}
+              onRunAi={runDiagnosis}
               isTr={isTr}
             />
           )}
@@ -493,7 +580,10 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
         {/* Footer */}
         <div className="border-t border-white/[0.06] bg-[oklch(0.13_0.02_250/0.9)] backdrop-blur-md p-3 pb-[max(env(safe-area-inset-bottom),12px)] space-y-2">
           {!online && (
-            <div role="alert" className="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100 inline-flex items-start gap-2 w-full">
+            <div
+              role="alert"
+              className="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100 inline-flex items-start gap-2 w-full"
+            >
               <WifiOff className="size-3.5 mt-0.5 shrink-0" />
               {t("sos_sheet.offline")}
             </div>
@@ -515,17 +605,22 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
                 disabled={publishing}
                 className="flex-1 h-14 rounded-2xl font-bold text-base text-white inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed tracking-wide"
                 style={{
-                  background: "linear-gradient(135deg, oklch(0.68 0.24 25) 0%, oklch(0.6 0.24 18) 100%)",
-                  boxShadow: "0 18px 50px -10px rgba(244,63,94,0.55), inset 0 1px 0 rgba(255,255,255,0.25)",
+                  background:
+                    "linear-gradient(135deg, oklch(0.68 0.24 25) 0%, oklch(0.6 0.24 18) 100%)",
+                  boxShadow:
+                    "0 18px 50px -10px rgba(244,63,94,0.55), inset 0 1px 0 rgba(255,255,255,0.25)",
                 }}
               >
-                {publishing ? <Loader2 className="size-5 animate-spin" /> : <Radio className="size-5" />}
+                {publishing ? (
+                  <Loader2 className="size-5 animate-spin" />
+                ) : (
+                  <Radio className="size-5" />
+                )}
                 {isTr ? "SOS gönder" : "Send SOS"}
               </button>
             )}
           </div>
         </div>
-
       </div>
     </div>
   );
@@ -534,10 +629,19 @@ export function SosSheet({ open, onClose, initialCategory = "mechanic", initialN
 /* ---------- steps ---------- */
 
 function StepProblem({
-  category, onCategory, problem, onProblem, problems, isTr, onServiceCall,
+  category,
+  onCategory,
+  problem,
+  onProblem,
+  problems,
+  isTr,
+  onServiceCall,
 }: {
-  category: Category; onCategory: (c: Category) => void;
-  problem: string; onProblem: (p: string) => void; problems: string[];
+  category: Category;
+  onCategory: (c: Category) => void;
+  problem: string;
+  onProblem: (p: string) => void;
+  problems: string[];
   isTr: boolean;
   onServiceCall: () => void;
 }) {
@@ -564,8 +668,18 @@ function StepProblem({
           {isTr ? "Yardım türü" : "Type of help"}
         </p>
         <div className="grid grid-cols-2 gap-2">
-          <CategoryCard active={category === "mechanic"} onClick={() => onCategory("mechanic")} icon={<Wrench className="size-5" />} label={isTr ? "Deniz mekaniği" : "Marine mechanic"} />
-          <CategoryCard active={category === "diver"} onClick={() => onCategory("diver")} icon={<Anchor className="size-5" />} label={isTr ? "Sualtı dalgıç" : "Underwater diver"} />
+          <CategoryCard
+            active={category === "mechanic"}
+            onClick={() => onCategory("mechanic")}
+            icon={<Wrench className="size-5" />}
+            label={isTr ? "Deniz mekaniği" : "Marine mechanic"}
+          />
+          <CategoryCard
+            active={category === "diver"}
+            onClick={() => onCategory("diver")}
+            icon={<Anchor className="size-5" />}
+            label={isTr ? "Sualtı dalgıç" : "Underwater diver"}
+          />
         </div>
       </div>
       <div>
@@ -599,8 +713,16 @@ function StepProblem({
   );
 }
 
-function CategoryCard({ active, onClick, icon, label }: {
-  active: boolean; onClick: () => void; icon: React.ReactNode; label: string;
+function CategoryCard({
+  active,
+  onClick,
+  icon,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
 }) {
   return (
     <button
@@ -612,19 +734,39 @@ function CategoryCard({ active, onClick, icon, label }: {
           : "bg-white/[0.03] text-white border-white/10 hover:bg-white/[0.06]")
       }
     >
-      <span className={"size-9 rounded-xl grid place-items-center " + (active ? "bg-slate-900/10" : "bg-white/10")}>{icon}</span>
+      <span
+        className={
+          "size-9 rounded-xl grid place-items-center " +
+          (active ? "bg-slate-900/10" : "bg-white/10")
+        }
+      >
+        {icon}
+      </span>
       <span className="text-sm font-semibold truncate">{label}</span>
     </button>
   );
 }
 
 function StepLocation({
-  coords, locating, err, marina, onMarina, stateLabel, stateTone, onRetry, isTr,
+  coords,
+  locating,
+  err,
+  marina,
+  onMarina,
+  stateLabel,
+  stateTone,
+  onRetry,
+  isTr,
 }: {
-  coords: GeoFix | null; locating: boolean; err: string | null;
-  marina: string; onMarina: (m: string) => void;
-  stateLabel: string; stateTone: "ok" | "warn" | "manual";
-  onRetry: () => void; isTr: boolean;
+  coords: GeoFix | null;
+  locating: boolean;
+  err: string | null;
+  marina: string;
+  onMarina: (m: string) => void;
+  stateLabel: string;
+  stateTone: "ok" | "warn" | "manual";
+  onRetry: () => void;
+  isTr: boolean;
 }) {
   const toneCls =
     stateTone === "ok"
@@ -648,20 +790,23 @@ function StepLocation({
             )}
             {!coords && !locating && (
               <p className="text-[11px] opacity-80 mt-0.5">
-                {err ?? (isTr
-                  ? "Konum alınamadı. Marinayı seçip konumsuz SOS gönderebilirsiniz."
-                  : "Position unavailable. Pick a marina and send SOS without a fix.")}
+                {err ??
+                  (isTr
+                    ? "Konum alınamadı. Marinayı seçip konumsuz SOS gönderebilirsiniz."
+                    : "Position unavailable. Pick a marina and send SOS without a fix.")}
               </p>
             )}
           </div>
           {!locating && (
-            <button onClick={onRetry} className="text-[10px] font-semibold uppercase tracking-[0.14em] opacity-80 hover:opacity-100">
-              {coords ? (isTr ? "Yenile" : "Redo") : (isTr ? "Tekrar" : "Retry")}
+            <button
+              onClick={onRetry}
+              className="text-[10px] font-semibold uppercase tracking-[0.14em] opacity-80 hover:opacity-100"
+            >
+              {coords ? (isTr ? "Yenile" : "Redo") : isTr ? "Tekrar" : "Retry"}
             </button>
           )}
         </div>
       </div>
-
 
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50 mb-2">
@@ -695,27 +840,68 @@ function StepLocation({
 }
 
 function StepSend({
-  category, problem, marina, coords, stateLabel,
-  note, onNote, photo, onPickPhoto, onClearPhoto,
-  briefOpen, onBriefOpen, situation, onSituation, engineState, onEngineState,
-  diveTarget, onDiveTarget, safety, onSafety,
-  aiBusy, aiText, onRunAi, isTr,
+  category,
+  problem,
+  marina,
+  coords,
+  stateLabel,
+  note,
+  onNote,
+  photo,
+  onPickPhoto,
+  onClearPhoto,
+  briefOpen,
+  onBriefOpen,
+  situation,
+  onSituation,
+  engineState,
+  onEngineState,
+  diveTarget,
+  onDiveTarget,
+  safety,
+  onSafety,
+  aiBusy,
+  aiText,
+  onRunAi,
+  isTr,
 }: {
-  category: Category; problem: string; marina: string;
-  coords: { lat: number; lng: number } | null; stateLabel: string;
-  note: string; onNote: (v: string) => void;
-  photo: string | null; onPickPhoto: () => void; onClearPhoto: () => void;
-  briefOpen: boolean; onBriefOpen: (open: boolean) => void;
-  situation: Situation | null; onSituation: (value: Situation | null) => void;
-  engineState: EngineState | null; onEngineState: (value: EngineState | null) => void;
-  diveTarget: DiveTarget | null; onDiveTarget: (value: DiveTarget | null) => void;
-  safety: SafetyFlag[]; onSafety: (flag: SafetyFlag) => void;
-  aiBusy: boolean; aiText: string | null; onRunAi: () => void;
+  category: Category;
+  problem: string;
+  marina: string;
+  coords: { lat: number; lng: number } | null;
+  stateLabel: string;
+  note: string;
+  onNote: (v: string) => void;
+  photo: string | null;
+  onPickPhoto: () => void;
+  onClearPhoto: () => void;
+  briefOpen: boolean;
+  onBriefOpen: (open: boolean) => void;
+  situation: Situation | null;
+  onSituation: (value: Situation | null) => void;
+  engineState: EngineState | null;
+  onEngineState: (value: EngineState | null) => void;
+  diveTarget: DiveTarget | null;
+  onDiveTarget: (value: DiveTarget | null) => void;
+  safety: SafetyFlag[];
+  onSafety: (flag: SafetyFlag) => void;
+  aiBusy: boolean;
+  aiText: string | null;
+  onRunAi: () => void;
   isTr: boolean;
 }) {
   const { t } = useTranslation();
-  const ready = Boolean(note.trim() || photo || situation || engineState || diveTarget || safety.length);
-  const role = category === "diver" ? (isTr ? "Sualtı dalgıç" : "Underwater diver") : (isTr ? "Deniz mekaniği" : "Marine mechanic");
+  const ready = Boolean(
+    note.trim() || photo || situation || engineState || diveTarget || safety.length,
+  );
+  const role =
+    category === "diver"
+      ? isTr
+        ? "Sualtı dalgıç"
+        : "Underwater diver"
+      : isTr
+        ? "Deniz mekaniği"
+        : "Marine mechanic";
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 space-y-2">
@@ -723,10 +909,14 @@ function StepSend({
           {isTr ? "Çağrı kartı" : "Call card"}
         </p>
         <p className="text-lg font-semibold text-white leading-snug">{problem}</p>
-        <p className="text-xs text-white/60">{role} · {marina}</p>
+        <p className="text-xs text-white/60">
+          {role} · {marina}
+        </p>
         <p className="text-[11px] text-white/50 inline-flex items-center gap-1.5">
           <MapPin className="size-3" /> {stateLabel}
-          {coords && <span className="font-mono opacity-70">· {formatDm(coords.lat, coords.lng)}</span>}
+          {coords && (
+            <span className="font-mono opacity-70">· {formatDm(coords.lat, coords.lng)}</span>
+          )}
         </p>
       </div>
 
@@ -745,8 +935,14 @@ function StepSend({
         <div className="flex items-start justify-between gap-3 px-4 py-3">
           <div>
             <p className="text-sm font-semibold text-white">{t("sos_sheet.brief_title")}</p>
-            <p className="mt-0.5 text-[12px] leading-snug text-white/50">{t("sos_sheet.brief_sub")}</p>
-            <p className={"mt-2 text-[11px] font-semibold " + (ready ? "text-amber-200" : "text-white/40")}>
+            <p className="mt-0.5 text-[12px] leading-snug text-white/50">
+              {t("sos_sheet.brief_sub")}
+            </p>
+            <p
+              className={
+                "mt-2 text-[11px] font-semibold " + (ready ? "text-amber-200" : "text-white/40")
+              }
+            >
               {ready ? t("sos_sheet.brief_ready") : t("sos_sheet.brief_empty")}
             </p>
           </div>
@@ -755,7 +951,11 @@ function StepSend({
             onClick={() => onBriefOpen(!briefOpen)}
             className="shrink-0 rounded-full border border-white/15 px-3 py-1.5 text-[11px] font-semibold text-white/80"
           >
-            {briefOpen ? t("sos_sheet.close_brief") : ready ? t("sos_sheet.brief_edit") : t("sos_sheet.brief_write")}
+            {briefOpen
+              ? t("sos_sheet.close_brief")
+              : ready
+                ? t("sos_sheet.brief_edit")
+                : t("sos_sheet.brief_write")}
           </button>
         </div>
         {briefOpen && (
@@ -817,7 +1017,9 @@ function StepSend({
               />
             </div>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50">{t("sos_sheet.photo")}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50">
+                {t("sos_sheet.photo")}
+              </p>
               {photo ? (
                 <div className="relative mt-2 overflow-hidden rounded-2xl border border-white/10">
                   <img src={photo} alt="" className="h-36 w-full object-cover" />
@@ -842,11 +1044,19 @@ function StepSend({
               )}
             </div>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50">{t("sos_sheet.advice")}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50">
+                {t("sos_sheet.advice")}
+              </p>
               {aiText ? (
                 <div className="mt-2 rounded-2xl border border-amber-300/20 bg-amber-400/[0.06] p-3">
-                  <p className="whitespace-pre-wrap text-[12px] leading-relaxed text-white/85">{aiText}</p>
-                  <button type="button" onClick={onRunAi} className="mt-2 text-[11px] font-semibold text-amber-100">
+                  <p className="whitespace-pre-wrap text-[12px] leading-relaxed text-white/85">
+                    {aiText}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={onRunAi}
+                    className="mt-2 text-[11px] font-semibold text-amber-100"
+                  >
                     {t("sos_sheet.advice_again")}
                   </button>
                 </div>
@@ -857,7 +1067,11 @@ function StepSend({
                   disabled={aiBusy}
                   className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-amber-300/25 bg-amber-400/[0.06] text-xs font-semibold text-amber-100 disabled:opacity-60"
                 >
-                  {aiBusy ? <Loader2 className="size-4 animate-spin" /> : <Sparkle className="size-4" />}
+                  {aiBusy ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Sparkle className="size-4" />
+                  )}
                   {aiBusy ? t("sos_sheet.advice_busy") : t("sos_sheet.advice_run")}
                 </button>
               )}
@@ -905,4 +1119,3 @@ function Choice({
     </button>
   );
 }
-

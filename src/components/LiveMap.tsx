@@ -20,6 +20,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { isNativeWebView } from "@/lib/native-history";
 import { openNativeAppSettings } from "@/lib/native-app";
+import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   Loader2,
@@ -121,6 +122,8 @@ export interface LiveAlert {
   title: string;
   kind: "sos" | "fault";
   detail?: string;
+  /** Linked marketplace job. The pin opens this mission. */
+  jobId?: string | null;
 }
 
 /** Dispatch route line: a responding boat's position to the job it's assigned to. */
@@ -652,6 +655,15 @@ const ChartOverlays = memo(function ChartOverlays({
               <p>{alert.title}</p>
               <p className="mt-1 font-mono">{formatDegrees(alert.lat, alert.lng)}</p>
               {alert.detail ? <p className="mt-1 opacity-70">{alert.detail}</p> : null}
+              {alert.jobId ? (
+                <Link
+                  to="/app/job/$id"
+                  params={{ id: alert.jobId }}
+                  className="mt-2 inline-flex h-8 items-center rounded-lg bg-amber-400 px-3 text-[11px] font-black uppercase tracking-wider text-[#0A192F]"
+                >
+                  {t("esvc.bid")}
+                </Link>
+              ) : null}
             </div>
           </Popup>
         </Marker>

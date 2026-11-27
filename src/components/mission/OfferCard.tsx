@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Anchor, Clock, Loader2, ShieldCheck, Star, Wrench } from "lucide-react";
+import { decodeRendezvous } from "@/lib/rendezvous";
+import { formatTL } from "@/lib/filter";
 
 export interface OfferCardData {
   id: string;
@@ -28,11 +30,28 @@ interface Props {
  * OfferCard — MarineOS offer surface (simplified).
  * Identity + price hero · one trust chip · muted ETA · single CTA.
  */
-export function OfferCard({ offer, currencyFormat, onAccept, onExplainTrust, accepting, selected, disabled }: Props) {
+export function OfferCard({
+  offer,
+  currencyFormat,
+  onAccept,
+  onExplainTrust,
+  accepting,
+  selected,
+  disabled,
+}: Props) {
   const { t } = useTranslation();
   const isDiver = offer.role === "diver";
   const rating = typeof offer.rating === "number" ? offer.rating : 5;
   const verified = offer.verified ?? true;
+  const meet = decodeRendezvous(offer.note);
+  const meetLabel =
+    meet.mode === "pickup"
+      ? t("meet.pickup_chip")
+      : meet.mode === "marina"
+        ? t("meet.marina_chip", { point: meet.point || t("meet.point") })
+        : meet.fee > 0
+          ? t("meet.own_boat_chip", { fee: formatTL(meet.fee) })
+          : t("meet.own_boat");
 
   return (
     <div
@@ -82,9 +101,13 @@ export function OfferCard({ offer, currencyFormat, onAccept, onExplainTrust, acc
         </div>
       </div>
 
-      {offer.note && (
+      <p className="mt-3 rounded-xl border border-amber-300/25 bg-amber-400/10 px-3 py-2 text-[12px] text-amber-50">
+        {meetLabel}
+      </p>
+
+      {meet.note && (
         <p className="mt-3 text-[12px] text-white/60 whitespace-pre-wrap border-l-2 border-white/10 pl-3">
-          {offer.note}
+          {meet.note}
         </p>
       )}
 
@@ -95,7 +118,11 @@ export function OfferCard({ offer, currencyFormat, onAccept, onExplainTrust, acc
           disabled={disabled || accepting}
           className="mt-3 w-full h-12 rounded-xl bg-sky-500 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 text-sm font-semibold inline-flex items-center justify-center gap-2 transition-colors"
         >
-          {accepting ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />}
+          {accepting ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <ShieldCheck className="size-4" />
+          )}
           {t("owner.accept_and_demo_pay", { defaultValue: "Accept & demo pay" })}
         </button>
       )}

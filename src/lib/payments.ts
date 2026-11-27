@@ -18,23 +18,13 @@
 /** The single currency the platform operates in. Matches every stored row. */
 export const CURRENCY = "TRY" as const;
 
-
 export type PaymentIntentStatus =
-  | "created"
-  | "pending"
-  | "secured"
-  | "released"
-  | "refunded"
-  | "failed";
+  "created" | "pending" | "secured" | "released" | "refunded" | "failed";
 
 export type PayoutStatus = "pending" | "processing" | "completed" | "failed";
 
 export type EscrowTransactionKind =
-  | "secure"
-  | "release"
-  | "refund"
-  | "extra_secure"
-  | "extra_release";
+  "secure" | "release" | "refund" | "extra_secure" | "extra_release";
 
 /** THALVO's default marketplace commission on labor missions. */
 export const THALVO_COMMISSION_RATE = 0.1;
@@ -47,7 +37,10 @@ export interface CommissionBreakdown {
 }
 
 /** Compute a THALVO commission breakdown in whole currency units. */
-export function computeCommission(gross: number, rate = THALVO_COMMISSION_RATE): CommissionBreakdown {
+export function computeCommission(
+  gross: number,
+  rate = THALVO_COMMISSION_RATE,
+): CommissionBreakdown {
   const g = Math.max(0, Number(gross) || 0);
   const fee = Math.round(g * rate * 100) / 100;
   return { gross: g, fee, net: Math.max(0, g - fee), rate };
@@ -60,7 +53,8 @@ export function centsToUnits(cents: number | null | undefined): number {
 }
 
 /** Outcome of the idempotent `complete_job` RPC. */
-export type CompleteJobOutcome = "completed" | "already_completed" | "unknown";
+export type CompleteJobOutcome =
+  "completed" | "already_completed" | "awaiting_counterpart" | "unknown";
 
 /**
  * Read the `complete_job` RPC payload defensively. Anything that is not an
@@ -72,6 +66,7 @@ export function readCompleteJobResult(data: unknown): CompleteJobOutcome {
   const status = (data as { status?: unknown }).status;
   if (status === "completed") return "completed";
   if (status === "already_completed") return "already_completed";
+  if (status === "awaiting_counterpart") return "awaiting_counterpart";
   return "unknown";
 }
 
@@ -126,4 +121,3 @@ export const ESCROW_KIND_LABEL_KEY: Record<EscrowTransactionKind, string> = {
   extra_secure: "payments.escrow_kind.extra_secure",
   extra_release: "payments.escrow_kind.extra_release",
 };
-

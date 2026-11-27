@@ -272,7 +272,25 @@
     "fault_burst_title": "{{count}} yeni arıza bildirimi",
     "fault_body_at": "{{category}} · {{position}}",
     "location_not_shared": "Kayıt düştü ama konum usta haritasına iletilemedi.",
-    "unknown_job": "Servis çağrısı"
+    "unknown_job": "Servis çağrısı",
+    "not_verified": "Teklif için usta kaydının yönetici onayı gerekir. Çağrıyı görüyorsun; onaydan sonra teklif açılır."
+  },
+  "meet": {
+    "label": "Tekneye nasıl çıkılacak",
+    "own_boat": "Kendi botumla geliyorum",
+    "pickup": "Beni botunuzla alın",
+    "marina": "Marinada / bu noktada buluşalım",
+    "fee": "Bot ücreti (TRY)",
+    "point": "Buluşma noktası",
+    "fee_note": "Kendi botunun ücreti teklife eklenir. Ödeme emanette kalır, iş bitip iki taraf onaylayınca komisyon düşülerek ustaya geçer.",
+    "own_boat_chip": "Usta kendi botuyla · {{fee}}",
+    "pickup_chip": "Kaptan ustayı botuyla alır",
+    "marina_chip": "Buluşma: {{point}}"
+  },
+  "close": {
+    "confirm": "İşi bitirdim, onaylıyorum",
+    "waiting_provider": "Onayın kayda geçti. Usta da onaylayınca komisyon kesilir ve bakiye ustaya geçer. Emanet bizde duruyor.",
+    "waiting_captain": "Onayın kayda geçti. Kaptan da onaylayınca bakiye aktarılır."
   },
   "ops": {
     "eyebrow": "THALVO · Canlı Operasyon",
@@ -283,7 +301,7 @@
     "stat_pending": "Bekleyen Talepler",
     "stat_pending_hint": "Kuyruktaki istekler",
     "stat_completed": "Tamamlanan",
-    "stat_completed_hint": "Son 30 gün",
+    "stat_completed_hint": "Kapanan işler",
     "live_feed": "Canlı görevler",
     "unit_label": "Birim",
     "target": "Hedef",
@@ -295,6 +313,8 @@
     "focus_map": "Haritada Odakla",
     "active_fault": "Aktif arıza",
     "no_active_fault": "Açık arıza yok. Gönderdiğiniz SOS burada canlı kalır.",
+    "job_hidden": "Bu görev bu hesapta açılmıyor. Çağrı hâlâ canlıysa Görevler listesinden teklif ver.",
+    "eta_live_short": "Canlı konumdan ETA",
     "open_fault": "Arızayı aç",
     "cancel_call": "Çağrıyı iptal et",
     "cancelling": "İptal ediliyor",

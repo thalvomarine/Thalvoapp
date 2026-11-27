@@ -272,7 +272,25 @@
     "fault_burst_title": "{{count}} new fault reports",
     "fault_body_at": "{{category}} · {{position}}",
     "location_not_shared": "The report was saved, but the position did not reach provider charts.",
+    "not_verified": "An admin must approve this master account before an offer can be sent. The call is visible; the bid opens after approval.",
     "unknown_job": "Service call"
+  },
+  "meet": {
+    "label": "How the master reaches the boat",
+    "own_boat": "I come on my own boat",
+    "pickup": "Pick me up with your boat",
+    "marina": "Meet me at the marina / this point",
+    "fee": "Boat fee (TRY)",
+    "point": "Meeting point",
+    "fee_note": "An own-boat fee is added to the offer. Payment stays in escrow and reaches the master, minus commission, only after both sides confirm.",
+    "own_boat_chip": "Master's own boat · {{fee}}",
+    "pickup_chip": "Captain collects the master",
+    "marina_chip": "Meet at {{point}}"
+  },
+  "close": {
+    "confirm": "Work is finished — I confirm",
+    "waiting_provider": "Your confirmation is in. The balance moves after the master confirms too. Escrow stays with THALVO.",
+    "waiting_captain": "Your confirmation is in. The balance moves after the captain confirms too."
   },
   "ops": {
     "eyebrow": "THALVO · Live Ops",
@@ -283,7 +301,7 @@
     "stat_pending": "Pending",
     "stat_pending_hint": "Requests queued",
     "stat_completed": "Completed",
-    "stat_completed_hint": "Last 30 days",
+    "stat_completed_hint": "Closed missions",
     "live_feed": "Live missions",
     "unit_label": "Unit",
     "target": "Target",
@@ -295,6 +313,8 @@
     "focus_map": "Focus on chart",
     "active_fault": "Active fault",
     "no_active_fault": "No open fault. An SOS you send stays live here.",
+    "job_hidden": "This mission is not open on this account. If the call is still live, bid from Missions.",
+    "eta_live_short": "ETA from the live fix",
     "open_fault": "Open fault",
     "cancel_call": "Cancel call",
     "cancelling": "Cancelling",

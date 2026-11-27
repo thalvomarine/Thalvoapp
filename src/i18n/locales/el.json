@@ -272,7 +272,25 @@
     "fault_title": "Νέα αναφορά βλάβης",
     "fault_burst_title": "{{count}} νέες αναφορές βλάβης",
     "fault_body_at": "{{category}} · {{position}}",
-    "location_not_shared": "Η αναφορά αποθηκεύτηκε, αλλά η θέση δεν έφτασε στους χάρτες των παρόχων."
+    "location_not_shared": "Η αναφορά αποθηκεύτηκε, αλλά η θέση δεν έφτασε στους χάρτες των παρόχων.",
+    "not_verified": "An admin must approve this master account before an offer can be sent. The call is visible; the bid opens after approval."
+  },
+  "meet": {
+    "label": "How the master reaches the boat",
+    "own_boat": "I come on my own boat",
+    "pickup": "Pick me up with your boat",
+    "marina": "Meet me at the marina / this point",
+    "fee": "Boat fee (TRY)",
+    "point": "Meeting point",
+    "fee_note": "An own-boat fee is added to the offer. Payment stays in escrow and reaches the master, minus commission, only after both sides confirm.",
+    "own_boat_chip": "Master's own boat · {{fee}}",
+    "pickup_chip": "Captain collects the master",
+    "marina_chip": "Meet at {{point}}"
+  },
+  "close": {
+    "confirm": "Work is finished — I confirm",
+    "waiting_provider": "Your confirmation is in. The balance moves after the master confirms too. Escrow stays with THALVO.",
+    "waiting_captain": "Your confirmation is in. The balance moves after the captain confirms too."
   },
   "ops": {
     "eyebrow": "THALVO · Live Ops",
@@ -295,6 +313,8 @@
     "focus_map": "Focus on chart",
     "active_fault": "Ενεργή βλάβη",
     "no_active_fault": "Δεν υπάρχει ανοιχτή βλάβη.",
+    "job_hidden": "This mission is not open on this account. If the call is still live, bid from Missions.",
+    "eta_live_short": "ETA from the live fix",
     "open_fault": "Άνοιγμα βλάβης",
     "cancel_call": "Ακύρωση κλήσης",
     "cancelling": "Ακύρωση",
