@@ -28,7 +28,7 @@ export function PartnerPendingPanel({
     return (
       <div
         className={
-          "flex items-start gap-2.5 border border-[#C9B896]/30 bg-[#0A192F]/95 px-3 py-2.5 text-[12px] leading-snug text-[#E8DFC8] shadow-lg backdrop-blur-md " +
+          "flex items-start gap-2.5 border border-[#C9B896]/30 bg-[#0C2226]/95 px-3 py-2.5 text-[12px] leading-snug text-[#E8DFC8] shadow-lg backdrop-blur-md " +
           className
         }
         role="status"

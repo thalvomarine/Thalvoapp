@@ -103,7 +103,7 @@ function Stat({
           ? "text-rose-300"
           : "text-white";
   return (
-    <div className="bg-[#0A192F]/90 px-3 py-3">
+    <div className="bg-[#0C2226]/90 px-3 py-3">
       <p className="text-[10px] uppercase tracking-[0.14em] text-white/40">{label}</p>
       <p className={`mt-1 text-[13px] font-semibold tabular-nums ${valueTone}`}>{value}</p>
       {hint ? <p className="mt-0.5 text-[10px] text-white/35">{hint}</p> : null}

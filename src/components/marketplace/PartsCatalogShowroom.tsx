@@ -305,9 +305,9 @@ export function PartsCatalogShowroom({
           aria-label={t("marketplace.catalog.filters")}
           className={
             filterPresentation === "bottom"
-              ? "absolute inset-x-0 bottom-0 flex max-h-[min(88dvh,40rem)] flex-col rounded-t-3xl border border-b-0 border-white/10 bg-[#071422] shadow-2xl transition-transform duration-300 ease-out pb-[env(safe-area-inset-bottom)] " +
+              ? "absolute inset-x-0 bottom-0 flex max-h-[min(88dvh,40rem)] flex-col rounded-t-3xl border border-b-0 border-white/10 bg-[#0C2226] shadow-2xl transition-transform duration-300 ease-out pb-[env(safe-area-inset-bottom)] " +
                 (filtersOpen ? "translate-y-0" : "translate-y-full")
-              : "absolute inset-y-0 left-0 flex w-[min(100vw-2.5rem,20rem)] flex-col border-r border-white/10 bg-[#071422] shadow-2xl transition-transform duration-300 ease-out sm:w-[22rem] " +
+              : "absolute inset-y-0 left-0 flex w-[min(100vw-2.5rem,20rem)] flex-col border-r border-white/10 bg-[#0C2226] shadow-2xl transition-transform duration-300 ease-out sm:w-[22rem] " +
                 (filtersOpen ? "translate-x-0" : "-translate-x-full")
           }
         >
@@ -474,7 +474,7 @@ export function PartsCatalogShowroom({
       </div>
 
       {/* Showroom masthead — tighter on mobile */}
-      <header className="relative overflow-hidden rounded-xl border border-white/10 bg-[linear-gradient(135deg,#071422_0%,#0d2744_48%,#123a4f_100%)] sm:rounded-2xl">
+      <header className="relative overflow-hidden rounded-xl border border-white/10 bg-[linear-gradient(135deg,#0C2226_0%,#0d2744_48%,#123a4f_100%)] sm:rounded-2xl">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.1] sm:opacity-[0.12]"

@@ -127,7 +127,7 @@ export function AdminPoiDialog({ onSaved }: Props) {
                   onChange={(e) => setKind(e.target.value as MarineZoneKind)}
                 >
                   {ZONE_KINDS.map((k) => (
-                    <option key={k} value={k} className="bg-[#0a192f]">
+                    <option key={k} value={k} className="bg-[#0C2226]">
                       {t(ZONE_KIND_LABEL_KEYS[k])}
                     </option>
                   ))}

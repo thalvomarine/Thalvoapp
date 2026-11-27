@@ -28,7 +28,7 @@ interface Props {
 }
 
 const fieldClass =
-  "w-full h-9 rounded-lg border border-amber-500/25 bg-[#0a192f]/70 px-2.5 text-[12px] text-white outline-none focus:border-amber-400/70";
+  "w-full h-9 rounded-lg border border-amber-500/25 bg-[#0C2226]/70 px-2.5 text-[12px] text-white outline-none focus:border-amber-400/70";
 
 /** Admin-only "draw a new chart point" modal, writing to `marine_zones`. */
 export function AdminZoneDialog({ open, onOpenChange, position, onSaved }: Props) {
@@ -84,7 +84,7 @@ export function AdminZoneDialog({ open, onOpenChange, position, onSaved }: Props
         if (!pending) onOpenChange(v);
       }}
     >
-      <DialogContent className="thalvo-dark border-amber-500/30 bg-[#0a192f]/95 text-white backdrop-blur-xl sm:max-w-[440px]">
+      <DialogContent className="thalvo-dark border-amber-500/30 bg-[#0C2226]/95 text-white backdrop-blur-xl sm:max-w-[440px]">
         <DialogHeader>
           <DialogTitle className="text-white">{t("chart.zone_title")}</DialogTitle>
           <DialogDescription className="text-white/60">
@@ -108,7 +108,7 @@ export function AdminZoneDialog({ open, onOpenChange, position, onSaved }: Props
                 onChange={(e) => setKind(e.target.value as MarineZoneKind)}
               >
                 {ZONE_KINDS.map((k) => (
-                  <option key={k} value={k} className="bg-[#0a192f]">
+                  <option key={k} value={k} className="bg-[#0C2226]">
                     {t(ZONE_KIND_LABEL_KEYS[k])}
                   </option>
                 ))}
@@ -164,7 +164,7 @@ export function AdminZoneDialog({ open, onOpenChange, position, onSaved }: Props
               maxLength={600}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-lg border border-amber-500/25 bg-[#0a192f]/70 p-2.5 text-[12px] text-white outline-none focus:border-amber-400/70"
+              className="w-full rounded-lg border border-amber-500/25 bg-[#0C2226]/70 p-2.5 text-[12px] text-white outline-none focus:border-amber-400/70"
             />
           </label>
 

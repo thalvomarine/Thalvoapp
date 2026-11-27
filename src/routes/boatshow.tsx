@@ -70,7 +70,7 @@ function BoatshowPage() {
   };
 
   return (
-    <div className="thalvo-dark relative min-h-dvh overflow-x-hidden bg-[#0A192F] text-white">
+    <div className="thalvo-dark relative min-h-dvh overflow-x-hidden bg-[#0C2226] text-white">
       <SeaBackdrop />
       <div className="relative z-10 flex min-h-dvh flex-col">
         <header className="flex items-center justify-between gap-3 px-5 pt-5">
@@ -176,7 +176,7 @@ function BoatshowPage() {
                   className="h-11 rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white"
                 >
                   {KINDS.map((k) => (
-                    <option key={k} value={k} className="bg-[#0A192F]">
+                    <option key={k} value={k} className="bg-[#0C2226]">
                       {t(`boatshow.kind_${k}`)}
                     </option>
                   ))}

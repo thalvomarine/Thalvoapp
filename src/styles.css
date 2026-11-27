@@ -103,13 +103,9 @@
 @layer base {
   * { border-color: var(--color-border); }
   html, body {
-    /* The native WebView/window canvas behind everything — always the deep
-       ECDIS navy, never a flash of white, whether that's the initial paint
-       before hydration, iOS rubber-band bounce past a scroll edge, or a
-       stray horizontal-overflow gutter on a page that hasn't fully clipped
-       one of its own children yet. Actual page content still paints its
-       own (light or dark) surface on top of this canvas as normal. */
-    background-color: #0a192f;
+    /* Marina Concierge canvas — teal harbour floor, never a white or ECDIS
+       navy flash on boot, overscroll, or tab pending. */
+    background-color: #0c2226;
     color: var(--color-foreground);
     -webkit-tap-highlight-color: transparent;
     /* Native-app feel on mobile/Capacitor: no browser pull-to-refresh and no
@@ -832,7 +828,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
 }
 
 .leaflet-container {
-  background: #06101c;
+  background: #0C2226;
 }
 
 /* Charter catalogue chart: contain Leaflet pane z-index and kill the global
@@ -847,7 +843,7 @@ html[data-thalvo-theme="day"] .thalvo-chart-sheet-scrim {
   min-height: 0 !important;
   height: 100% !important;
   width: 100%;
-  background: #06101c;
+  background: #0C2226;
 }
 .charter-base-chart .leaflet-pane,
 .charter-base-chart .leaflet-control,
@@ -891,10 +887,10 @@ html[data-thalvo-theme="night"] .thalvo-premium {
   background: #000 !important;
   color: #f5f7fb;
 }
-html[data-thalvo-theme="night"] .bg-\[\#071422\],
+html[data-thalvo-theme="night"] .bg-\[\#0C2226\],
 html[data-thalvo-theme="night"] .bg-\[\#0A192F\],
 html[data-thalvo-theme="night"] .bg-\[\#0a192f\],
-html[data-thalvo-theme="night"] .bg-\[\#06101c\] {
+html[data-thalvo-theme="night"] .bg-\[\#0C2226\] {
   background-color: #000 !important;
 }
 html[data-thalvo-theme="night"] .bg-\[\#0A192F\]\/90,
@@ -905,7 +901,7 @@ html[data-thalvo-theme="night"] .bg-\[\#0A192F\]\/95,
 html[data-thalvo-theme="night"] .bg-\[\#0a192f\]\/95,
 html[data-thalvo-theme="night"] .bg-\[\#0A192F\]\/85,
 html[data-thalvo-theme="night"] .bg-\[\#0a192f\]\/85,
-html[data-thalvo-theme="night"] .bg-\[\#071422\]\/92 {
+html[data-thalvo-theme="night"] .bg-\[\#0C2226\]\/92 {
   background-color: rgb(0 0 0 / 0.92) !important;
 }
 
@@ -1074,17 +1070,17 @@ html[data-thalvo-theme="day"] .hover\:text-amber-200:hover {
 }
 
 /* Navy / ECDIS surfaces → paper white (every casing + opacity used in the shell). */
-html[data-thalvo-theme="day"] .bg-\[\#071422\],
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\],
 html[data-thalvo-theme="day"] .bg-\[\#0A192F\],
 html[data-thalvo-theme="day"] .bg-\[\#0a192f\],
-html[data-thalvo-theme="day"] .bg-\[\#06101c\],
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\],
 html[data-thalvo-theme="day"] .bg-\[\#0c1b30\],
 html[data-thalvo-theme="day"] .bg-\[\#0F2440\],
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/88,
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/90,
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/92,
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/95,
-html[data-thalvo-theme="day"] .bg-\[\#071422\]\/96,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/88,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/90,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/92,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/95,
+html[data-thalvo-theme="day"] .bg-\[\#0C2226\]\/96,
 html[data-thalvo-theme="day"] .bg-\[\#0A192F\]\/90,
 html[data-thalvo-theme="day"] .bg-\[\#0A192F\]\/95,
 html[data-thalvo-theme="day"] .bg-\[\#0a192f\]\/70,
@@ -1272,8 +1268,8 @@ html[data-thalvo-theme="day"] .thalvo-on-dark .text-amber-400\/50 {
 }
 html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0A192F\],
 html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0a192f\],
-html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#071422\],
-html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#06101c\] {
+html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0C2226\],
+html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0C2226\] {
   background-color: #0a192f !important;
 }
 html[data-thalvo-theme="day"] .thalvo-on-dark .bg-\[\#0A192F\]\/90,

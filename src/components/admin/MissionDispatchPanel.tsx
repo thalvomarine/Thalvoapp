@@ -122,7 +122,7 @@ export function MissionDispatchPanel({
                               const next = Number(e.target.value);
                               if (Number.isFinite(next) && next > 0) onSpeedChange(m, next);
                             }}
-                            className="h-5 w-11 rounded border border-amber-300/30 bg-[#0a192f] px-1 text-right font-mono text-[10px] text-[#E8DFC8] outline-none focus:border-amber-300/70"
+                            className="h-5 w-11 rounded border border-amber-300/30 bg-[#0C2226] px-1 text-right font-mono text-[10px] text-[#E8DFC8] outline-none focus:border-amber-300/70"
                           />
                           kts
                         </label>
@@ -146,11 +146,11 @@ export function MissionDispatchPanel({
                       }}
                       className="h-8 w-full rounded-lg border border-white/15 bg-white/[0.06] px-2 text-[11px] text-white disabled:opacity-50"
                     >
-                      <option value="" className="bg-[#0a192f]">
+                      <option value="" className="bg-[#0C2226]">
                         {t("admin.dispatch.pick_provider")}
                       </option>
                       {providers.map((p) => (
-                        <option key={p.id} value={p.id} className="bg-[#0a192f]">
+                        <option key={p.id} value={p.id} className="bg-[#0C2226]">
                           {p.name}
                         </option>
                       ))}
@@ -167,11 +167,11 @@ export function MissionDispatchPanel({
                       onChange={(e) => onStatus(m, e.target.value as DispatchStatus)}
                       className="h-8 w-full rounded-lg border border-white/15 bg-white/[0.06] px-2 text-[11px] text-white disabled:opacity-50"
                     >
-                      <option value="" disabled className="bg-[#0a192f]">
+                      <option value="" disabled className="bg-[#0C2226]">
                         {m.status}
                       </option>
                       {DISPATCH_STATUSES.map((s) => (
-                        <option key={s} value={s} className="bg-[#0a192f]">
+                        <option key={s} value={s} className="bg-[#0C2226]">
                           {t(`admin.dispatch.status_${s.toLowerCase()}`)}
                         </option>
                       ))}

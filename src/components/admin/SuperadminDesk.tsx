@@ -222,7 +222,7 @@ export function SuperadminDesk() {
         ) : (
           <div className="max-h-[420px] overflow-auto">
             <table className="w-full min-w-[720px] text-left text-[12px]">
-              <thead className="sticky top-0 bg-[#0a192f] text-[10px] uppercase tracking-[0.14em] text-white/40">
+              <thead className="sticky top-0 bg-[#0C2226] text-[10px] uppercase tracking-[0.14em] text-white/40">
                 <tr>
                   <th className="px-3 py-2 font-semibold">{t("admin.super.col_name")}</th>
                   <th className="px-3 py-2 font-semibold">{t("admin.email")}</th>

@@ -949,7 +949,7 @@ export function ChartDrawHint({
         (inline
           ? "pointer-events-auto w-fit max-w-full "
           : "pointer-events-auto absolute left-1/2 top-[calc(env(safe-area-inset-top)+4.25rem)] z-20 max-w-[calc(100vw-1.5rem)] -translate-x-1/2 ") +
-        "rounded-md border border-[#C9B896]/45 bg-[#0A192F]/92 px-3.5 py-1.5 text-center text-[10px] font-semibold text-[#C9B896] backdrop-blur-md"
+        "rounded-md border border-[#C9B896]/45 bg-[#0C2226]/92 px-3.5 py-1.5 text-center text-[10px] font-semibold text-[#C9B896] backdrop-blur-md"
       }
     >
       <span className="inline-flex items-center gap-1.5 whitespace-nowrap">

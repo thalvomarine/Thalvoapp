@@ -75,8 +75,8 @@ export function JobChat({ jobId, meId }: { jobId: string; meId: string }) {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#071422] text-white">
-      <div className="flex items-center gap-2 bg-[#06101c] px-4 py-2.5 text-white">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0C2226] text-white">
+      <div className="flex items-center gap-2 bg-[#0C2226] px-4 py-2.5 text-white">
         <ShieldCheck className="size-4 text-aqua" />
         <p className="text-sm font-bold">{t("chat.title")}</p>
       </div>
@@ -89,7 +89,7 @@ export function JobChat({ jobId, meId }: { jobId: string; meId: string }) {
         </div>
       )}
 
-      <div ref={scrollRef} className="h-72 space-y-2 overflow-y-auto bg-[#06101c] px-3 py-3">
+      <div ref={scrollRef} className="h-72 space-y-2 overflow-y-auto bg-[#0C2226] px-3 py-3">
         {messages.map((m) => {
           const mine = m.sender_id === meId;
           return (

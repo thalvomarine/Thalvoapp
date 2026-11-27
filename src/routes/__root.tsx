@@ -184,13 +184,13 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html
       lang="tr"
-      className="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]"
+      className="min-h-dvh w-full max-w-[100vw] bg-[#0C2226]"
       suppressHydrationWarning
     >
       <head>
         <HeadContent />
       </head>
-      <body className="min-h-dvh w-full max-w-[100vw] bg-[#0A192F]" suppressHydrationWarning>
+      <body className="min-h-dvh w-full max-w-[100vw] bg-[#0C2226]" suppressHydrationWarning>
         {children}
         <Scripts />
       </body>

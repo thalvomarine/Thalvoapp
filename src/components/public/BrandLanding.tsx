@@ -100,7 +100,7 @@ export function BrandLanding() {
   ];
 
   return (
-    <div className="thalvo-dark min-h-dvh overflow-x-clip bg-[#06101c] text-white">
+    <div className="thalvo-dark min-h-dvh overflow-x-clip bg-[#0C2226] text-white">
       {/* ——— HERO ——— */}
       <section className="relative flex min-h-svh flex-col">
         <PiriChartBackdrop />
@@ -184,7 +184,7 @@ export function BrandLanding() {
           </div>
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#06101c] to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0C2226] to-transparent" />
       </section>
 
       {/* ——— SOLUTIONS ——— */}
@@ -359,7 +359,7 @@ export function BrandLanding() {
                             <span>{t(`boatshow.kind_${k}`)}</span>
                             <span
                               className={
-                                "size-1.5 rounded-full " + (on ? "bg-[#06101c]" : "bg-white/25")
+                                "size-1.5 rounded-full " + (on ? "bg-[#0C2226]" : "bg-white/25")
                               }
                             />
                           </button>

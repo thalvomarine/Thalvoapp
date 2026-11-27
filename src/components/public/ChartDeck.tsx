@@ -59,8 +59,8 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
   };
 
   return (
-    <div className="thalvo-dark flex h-svh max-h-svh w-full max-w-[100vw] flex-col overflow-hidden bg-[#06101c] text-white">
-      <header className="z-[1100] shrink-0 overflow-hidden border-b border-white/[0.08] bg-[#071422] pt-[env(safe-area-inset-top)]">
+    <div className="thalvo-dark flex h-svh max-h-svh w-full max-w-[100vw] flex-col overflow-hidden bg-[#0C2226] text-white">
+      <header className="z-[1100] shrink-0 overflow-hidden border-b border-white/[0.08] bg-[#0C2226] pt-[env(safe-area-inset-top)]">
         <div className="flex h-11 min-w-0 items-center gap-2 px-2">
           <Link to="/" className="flex min-w-0 shrink items-center gap-2">
             <Wordmark size="sm" className="text-white" decorative />
@@ -128,7 +128,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
             aria-label={t("chart.locate_me")}
             title={t("chart.locate_me")}
             className={
-              "absolute right-3 z-[1100] grid size-11 place-items-center rounded-full border border-white/15 bg-[#071422]/92 text-[#E8DFC8] disabled:opacity-60 " +
+              "absolute right-3 z-[1100] grid size-11 place-items-center rounded-full border border-white/15 bg-[#0C2226]/92 text-[#E8DFC8] disabled:opacity-60 " +
               (unconfirmed ? "top-16" : "top-3")
             }
           >
@@ -140,7 +140,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
           </button>
         )}
         {!panel && locError && (
-          <div className="absolute left-3 right-16 top-3 z-[1100] flex items-start gap-2 rounded-md bg-[#071422]/92 px-3 py-2 text-[12px] text-[#E8DFC8]">
+          <div className="absolute left-3 right-16 top-3 z-[1100] flex items-start gap-2 rounded-md bg-[#0C2226]/92 px-3 py-2 text-[12px] text-[#E8DFC8]">
             <p className="min-w-0 flex-1">{locError}</p>
             {locDenied && isNativeWebView() && (
               <button
@@ -159,7 +159,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
         {!panel && (
           <div className="pointer-events-none absolute inset-x-2 bottom-2 z-[1100] flex max-w-full items-end justify-between gap-2">
             {/* Legend chips stay on dark glass so they read over the chart tiles. */}
-            <ul className="flex max-w-full flex-wrap gap-x-2 gap-y-1 rounded-md bg-[#071422]/88 px-2 py-1 shadow-sm">
+            <ul className="flex max-w-full flex-wrap gap-x-2 gap-y-1 rounded-md bg-[#0C2226]/88 px-2 py-1 shadow-sm">
               {LEGEND.map((item) => (
                 <li key={item.id} className="flex items-center gap-1.5 text-[10px] text-white/75">
                   <span className="size-1.5 rounded-full" style={{ background: item.color }} />
@@ -167,7 +167,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
                 </li>
               ))}
             </ul>
-            <div className="hidden max-w-[min(100%,22rem)] shrink-0 flex-wrap gap-x-3 gap-y-1 rounded-md bg-[#071422]/88 px-2 py-1 text-[11px] shadow-sm sm:flex">
+            <div className="hidden max-w-[min(100%,22rem)] shrink-0 flex-wrap gap-x-3 gap-y-1 rounded-md bg-[#0C2226]/88 px-2 py-1 text-[11px] shadow-sm sm:flex">
               <Link to="/about" className="pointer-events-auto text-white/70 hover:text-white">
                 {t("public.footer_about")}
               </Link>
@@ -191,7 +191,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
         {panel === "services" && <ServicesPanel />}
       </div>
 
-      <nav className="z-[1200] shrink-0 border-t border-white/[0.08] bg-[#071422] pb-[env(safe-area-inset-bottom)]">
+      <nav className="z-[1200] shrink-0 border-t border-white/[0.08] bg-[#0C2226] pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto grid h-14 max-w-lg grid-cols-3">
           <DockLink panel={undefined} active={!panel} icon={<MapIcon className="size-4" />} label={t("nav.map")} />
           <DockLink
@@ -249,7 +249,7 @@ function PanelFrame({
 }) {
   const { t } = useTranslation();
   return (
-    <aside className="pointer-events-auto absolute z-[1100] flex flex-col overflow-hidden border border-white/10 bg-[#071422]/96 shadow-2xl backdrop-blur-xl max-lg:inset-x-0 max-lg:bottom-0 max-lg:max-h-[78%] max-lg:rounded-t-2xl lg:bottom-3 lg:left-3 lg:top-3 lg:w-[400px] lg:rounded-2xl">
+    <aside className="pointer-events-auto absolute z-[1100] flex flex-col overflow-hidden border border-white/10 bg-[#0C2226]/96 shadow-2xl backdrop-blur-xl max-lg:inset-x-0 max-lg:bottom-0 max-lg:max-h-[78%] max-lg:rounded-t-2xl lg:bottom-3 lg:left-3 lg:top-3 lg:w-[400px] lg:rounded-2xl">
       <div className="flex items-start justify-between gap-3 px-5 pb-3 pt-4">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#C9B896]/80">{kicker}</p>

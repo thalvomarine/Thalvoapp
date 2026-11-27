@@ -230,7 +230,7 @@ export function CoverageChart({
         zoomAnimation={false}
         markerZoomAnimation={false}
         className={fill ? "thalvo-ecdis thalvo-chart-frame" : "thalvo-ecdis"}
-        style={{ width: "100%", height: "100%", background: "#06101c" }}
+        style={{ width: "100%", height: "100%", background: "#0C2226" }}
       >
         <FitFrame />
         {offline ? (

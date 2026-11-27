@@ -101,7 +101,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
     return (
       <div className={SHEET_SCRIM + " p-4"} onClick={onClose}>
         <div
-          className="thalvo-dark w-full max-w-md space-y-4 rounded-3xl border border-white/10 bg-[#071422] p-6 text-center shadow-2xl"
+          className="thalvo-dark w-full max-w-md space-y-4 rounded-3xl border border-white/10 bg-[#0C2226] p-6 text-center shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
           <p className="text-lg font-semibold tracking-tight text-white">{t("shop_cart.order_submitted")}</p>
@@ -280,7 +280,7 @@ export function CartSheet({ onClose, onCatalogReload }: Props) {
         </div>
 
         {cart.items.length > 0 && (
-          <div className="space-y-3 border-t border-white/10 bg-[#06101c] px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <div className="space-y-3 border-t border-white/10 bg-[#0C2226] px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
             <div className="flex items-center justify-between text-xs text-white/60">
               <span>{t("shop_cart.eta")}</span>
               <span className="tabular-nums">

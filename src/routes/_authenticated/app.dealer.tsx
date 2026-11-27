@@ -401,7 +401,7 @@ function PartForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="thalvo-dark w-full max-w-lg rounded-3xl bg-[#071422] border border-[#C9B896]/25 shadow-2xl overflow-hidden max-h-[90dvh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div className="thalvo-dark w-full max-w-lg rounded-3xl bg-[#0C2226] border border-[#C9B896]/25 shadow-2xl overflow-hidden max-h-[90dvh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="p-4 flex items-center justify-between border-b border-amber-400/15">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C9B896]">THALVO</p>
@@ -540,7 +540,7 @@ function PartForm({
   );
 }
 
-const inputCls = "w-full h-11 rounded-xl border border-[#C9B896]/25 bg-[#0A192F] text-white placeholder:text-white/35 px-3 text-sm outline-none focus:border-amber-300";
+const inputCls = "w-full h-11 rounded-xl border border-[#C9B896]/25 bg-[#0C2226] text-white placeholder:text-white/35 px-3 text-sm outline-none focus:border-amber-300";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

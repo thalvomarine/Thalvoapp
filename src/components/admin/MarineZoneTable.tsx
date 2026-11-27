@@ -32,7 +32,7 @@ export function MarineZoneTable({ zones, busyId, onToggleActive, onDelete }: Pro
       ) : (
         <div className="max-h-[420px] overflow-y-auto">
           <table className="w-full text-left text-[11px]">
-            <thead className="sticky top-0 bg-[#0a192f]/95 text-white/45">
+            <thead className="sticky top-0 bg-[#0C2226]/95 text-white/45">
               <tr>
                 <th className="px-3 py-2 font-semibold">{t("admin.zones.col_name")}</th>
                 <th className="px-3 py-2 font-semibold">{t("admin.zones.col_kind")}</th>

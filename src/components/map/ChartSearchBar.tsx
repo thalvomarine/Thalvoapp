@@ -130,7 +130,7 @@ export function ChartSearchBar({
           </div>
 
           {showDropdown && (
-            <div className="thalvo-on-dark mt-1.5 max-h-[40vh] overflow-y-auto rounded-xl border border-white/12 bg-[#0a192f]/95 shadow-2xl backdrop-blur-md">
+            <div className="thalvo-on-dark mt-1.5 max-h-[40vh] overflow-y-auto rounded-xl border border-white/12 bg-[#0C2226]/95 shadow-2xl backdrop-blur-md">
               {results.length === 0 ? (
                 <p className="px-3.5 py-3 text-[11px] text-white/40">
                   {t("chart.search_no_results")}

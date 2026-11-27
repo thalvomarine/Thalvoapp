@@ -330,7 +330,7 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
       {yacht && (
         <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/50 p-3 sm:items-center" onClick={() => setOpenYacht(null)}>
           <div
-            className="thalvo-dark max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-3xl border border-white/10 bg-[#071422] p-4 shadow-2xl"
+            className="thalvo-dark max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-3xl border border-white/10 bg-[#0C2226] p-4 shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
@@ -375,11 +375,11 @@ export function CharterDesk({ companyYachts = NO_COMPANY_YACHTS }: { companyYach
 }
 
 const CELL_CLASS: Record<OccupancyTone, string> = {
-  free: "border-white/10 bg-white/[0.03] text-white/45",
-  booked: "border-[#8BA8A3]/45 bg-[#8BA8A3]/12 text-[#D5E4E1]",
-  option: "border-[#C9B896]/45 bg-[#C9B896]/12 text-[#E8DFC8]",
-  one_way: "border-[#7A9E9A]/40 bg-[#7A9E9A]/10 text-[#C9D9D6]",
-  service: "border-[#A67C7C]/40 bg-[#A67C7C]/12 text-[#E8D0D0]",
+  free: "border-white/12 bg-[#0C2226]/80 text-white/50",
+  booked: "border-[#7FA39C] bg-[#3D5F5A]/55 text-[#E8F2EF]",
+  option: "border-[#C9B896] bg-[#6B5A3A]/55 text-[#F3EBDA]",
+  one_way: "border-[#6E8F98] bg-[#35555C]/50 text-[#DCEAEF]",
+  service: "border-[#B88982] bg-[#5C3F3C]/55 text-[#F2E2DE]",
   closed: "border-white/10 bg-white/[0.04] text-white/40",
 };
 
@@ -410,7 +410,7 @@ function OccupancySheet({
       <table className="w-full min-w-[720px] border-collapse text-left">
         <thead>
           <tr>
-            <th className="sticky left-0 z-10 w-36 bg-[#071422] py-2 pl-3 pr-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{t("charter.tab_fleet")}</th>
+            <th className="sticky left-0 z-10 w-36 bg-[#0C2226] py-2 pl-3 pr-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{t("charter.tab_fleet")}</th>
             {days.map((day) => {
               const start = day.startIso.split("-").map(Number);
               const current = today === day.startIso;
@@ -428,7 +428,7 @@ function OccupancySheet({
         <tbody>
           {fleet.map((boat) => (
             <tr key={boat.id}>
-              <th className="sticky left-0 z-10 bg-[#071422] py-1 pl-3 pr-2 text-left shadow-[8px_0_12px_rgba(0,0,0,0.45)]">
+              <th className="sticky left-0 z-10 bg-[#0C2226] py-1 pl-3 pr-2 text-left shadow-[8px_0_12px_rgba(0,0,0,0.45)]">
                 <button type="button" onClick={() => onOpen(boat.id)} className="block max-w-36 text-left">
                   <span className="block truncate text-[12px] font-semibold text-white">{boat.name}</span>
                   <span className="block truncate text-[10px] font-normal text-white/45">{boat.base}</span>

@@ -55,7 +55,7 @@ export const RouteDeck = memo(function RouteDeck({
   const [legsOpen, setLegsOpen] = useState(false);
 
   return (
-    <div className="pointer-events-auto w-[min(92vw,22rem)] overflow-hidden rounded-2xl border border-[#C9B896]/25 bg-[#0B1528]/90 shadow-2xl shadow-[#0C2226]/50 backdrop-blur-md">
+    <div className="pointer-events-auto w-[min(92vw,22rem)] overflow-hidden rounded-2xl border border-[#C9B896]/25 bg-[#0C2226]/90 shadow-2xl shadow-[#0C2226]/50 backdrop-blur-md">
       <div className="flex items-start justify-between gap-3 border-b border-amber-500/10 px-3.5 py-3">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-400/70">

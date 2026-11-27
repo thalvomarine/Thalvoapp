@@ -293,7 +293,7 @@ function RequestCard({
 }) {
   const { t } = useTranslation();
   return (
-    <article className="overflow-hidden rounded-2xl border border-[#C9B896]/25 bg-[#0a192f]/90">
+    <article className="overflow-hidden rounded-2xl border border-[#C9B896]/25 bg-[#0C2226]/90">
       <div className="flex items-start justify-between gap-3 border-b border-white/[0.06] px-4 py-3">
         <div className="min-w-0">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C9B896]/80">
@@ -769,7 +769,7 @@ function SheetFrame({
         onKeyDown={() => undefined}
         role="presentation"
       />
-      <div className="relative z-[1] max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-3xl border border-amber-500/25 bg-[#0a192f] p-4 shadow-2xl">
+      <div className="relative z-[1] max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-3xl border border-amber-500/25 bg-[#0C2226] p-4 shadow-2xl">
         <div className="mb-3 flex items-center justify-between gap-2">
           <h2 className="text-[15px] font-semibold text-white">{title}</h2>
           <button

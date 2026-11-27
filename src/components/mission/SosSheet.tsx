@@ -742,7 +742,7 @@ function StepSend({
           : "Your contact stays private until you accept an offer."}
       </div>
 
-      <section className="rounded-2xl border border-white/10 bg-[#071422]">
+      <section className="rounded-2xl border border-white/10 bg-[#0C2226]">
         <div className="flex items-start justify-between gap-3 px-4 py-3">
           <div>
             <p className="text-sm font-semibold text-white">{t("sos_sheet.brief_title")}</p>

@@ -126,7 +126,7 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
           zIndex: 999990,
         }}
       >
-        <div className="pointer-events-auto flex max-h-[min(70dvh,calc(100dvh-env(safe-area-inset-bottom)-6.5rem))] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-amber-500/30 bg-[#0a192f]/95 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.85)] backdrop-blur-xl">
+        <div className="pointer-events-auto flex max-h-[min(70dvh,calc(100dvh-env(safe-area-inset-bottom)-6.5rem))] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-amber-500/30 bg-[#0C2226]/95 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.85)] backdrop-blur-xl">
           <div className="h-px w-full shrink-0 bg-gradient-to-r from-transparent via-[#C9B896]/45 to-transparent" />
           <div className="flex shrink-0 items-start justify-between gap-3 p-4 pb-2">
             <div className="min-w-0">
@@ -233,7 +233,7 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
   } catch (err) {
     console.error("[ChartDetailSheet] render crash:", err);
     return createPortal(
-      <div className="pointer-events-auto fixed inset-x-4 bottom-28 z-[999990] rounded-xl border border-rose-400/40 bg-[#0a192f]/95 p-3 text-[11px] text-rose-200">
+      <div className="pointer-events-auto fixed inset-x-4 bottom-28 z-[999990] rounded-xl border border-rose-400/40 bg-[#0C2226]/95 p-3 text-[11px] text-rose-200">
         Nokta detayı açılamadı. {err instanceof Error ? err.message : String(err)}
       </div>,
       document.body,

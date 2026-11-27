@@ -20,7 +20,7 @@ export interface VesselSpec {
 }
 
 const fieldClass =
-  "mt-1.5 h-11 w-full rounded-xl border border-[#C9B896]/25 bg-[#071422] px-3 text-sm text-white outline-none focus:border-amber-300";
+  "mt-1.5 h-11 w-full rounded-xl border border-[#C9B896]/25 bg-[#0C2226] px-3 text-sm text-white outline-none focus:border-amber-300";
 const labelClass = "text-[10px] font-semibold uppercase tracking-[0.16em] text-[#C9B896]/70";
 
 export function VesselSpecForm({
@@ -40,7 +40,7 @@ export function VesselSpecForm({
   const patch = (partial: Partial<VesselSpec>) => onChange({ ...value, ...partial });
 
   return (
-    <div className="space-y-4 rounded-2xl border border-amber-400/20 bg-[#071422] p-4">
+    <div className="space-y-4 rounded-2xl border border-amber-400/20 bg-[#0C2226] p-4">
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C9B896]">{t("vessel.registry")}</p>
         <p className="mt-1 text-[12px] leading-snug text-white/50">{t("vessel.registry_sub")}</p>

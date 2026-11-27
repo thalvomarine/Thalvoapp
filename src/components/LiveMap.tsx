@@ -1559,7 +1559,7 @@ function LiveMapCanvas({
 
             {tileProgress && (
               <div className="pointer-events-none absolute top-[calc(env(safe-area-inset-top)+0.75rem)] left-1/2 z-[460] -translate-x-1/2 px-3">
-                <div className="pointer-events-auto rounded-full border border-amber-400/35 bg-[#0B1528]/92 px-3.5 py-1.5 font-mono text-[11px] text-[#E8DFC8] shadow-2xl backdrop-blur-md">
+                <div className="pointer-events-auto rounded-full border border-amber-400/35 bg-[#0C2226]/92 px-3.5 py-1.5 font-mono text-[11px] text-[#E8DFC8] shadow-2xl backdrop-blur-md">
                   {tileProgress.percent >= 100 && !tileProgress.cancelled
                     ? t("chart.offline_download_done")
                     : t("chart.offline_download_progress", {

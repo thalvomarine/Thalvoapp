@@ -252,8 +252,8 @@ export function CharterCatalogue() {
   };
 
   return (
-    <div className="thalvo-dark min-h-dvh bg-[#06101c] text-white">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#06101c]/90 backdrop-blur-xl">
+    <div className="thalvo-dark min-h-dvh bg-[#0C2226] text-white">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0C2226]/90 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-5 py-3">
           <Link to="/" className="flex items-center gap-3">
             <Wordmark size="sm" className="text-white" decorative />
@@ -283,7 +283,7 @@ export function CharterCatalogue() {
       <section className="relative z-20">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <PiriChartBackdrop />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#06101c]/20 via-transparent to-[#06101c]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0C2226]/20 via-transparent to-[#0C2226]" />
         </div>
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-16 pt-14 sm:pt-20">
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C9B896]/85 animate-[fadeUp_0.6s_ease_both]">{t("charter.guest_eyebrow")}</p>
@@ -297,7 +297,7 @@ export function CharterCatalogue() {
 
           <form
             id="charter-search"
-            className="mt-10 grid gap-3 rounded-[1.85rem] border border-white/12 bg-[#06101c]/78 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.4)] backdrop-blur-md animate-[fadeUp_1s_ease_both] lg:grid-cols-[1.05fr_1.45fr_7rem_auto]"
+            className="mt-10 grid gap-3 rounded-[1.85rem] border border-white/12 bg-[#0C2226]/78 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.4)] backdrop-blur-md animate-[fadeUp_1s_ease_both] lg:grid-cols-[1.05fr_1.45fr_7rem_auto]"
             onSubmit={(event) => {
               event.preventDefault();
               document.getElementById("charter-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -366,7 +366,7 @@ export function CharterCatalogue() {
               </div>
             </div>
 
-            <div className="sticky top-14 z-30 -mx-5 border-y border-white/10 bg-[#06101c]/95 px-5 py-3 backdrop-blur-xl lg:hidden">
+            <div className="sticky top-14 z-30 -mx-5 border-y border-white/10 bg-[#0C2226]/95 px-5 py-3 backdrop-blur-xl lg:hidden">
               <FilterRail
                 minCabins={minCabins}
                 setMinCabins={setMinCabins}
@@ -529,7 +529,7 @@ export function CharterCatalogue() {
 }
 
 const fieldCls =
-  "h-12 w-full rounded-2xl border border-white/15 bg-[#06101c]/80 px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#C9B896]/60";
+  "h-12 w-full rounded-2xl border border-white/15 bg-[#0C2226]/80 px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#C9B896]/60";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -550,14 +550,14 @@ function BoatCard({ boat, locale, onOpen }: { boat: Listing; locale: string; onO
       onClick={onOpen}
       className="group overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.03] text-left transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-[#C9B896]/45"
     >
-      <div className="relative aspect-[16/9] bg-[#0A192F]">
+      <div className="relative aspect-[16/9] bg-[#0C2226]">
         {photo ? (
           <img src={photo} alt="" className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]" />
         ) : (
-          <div className="h-full bg-[radial-gradient(circle_at_18%_80%,rgba(0,240,255,0.16),transparent_46%),linear-gradient(165deg,#0A192F,#06101c)]" />
+          <div className="h-full bg-[radial-gradient(circle_at_18%_80%,rgba(0,240,255,0.16),transparent_46%),linear-gradient(165deg,#0A192F,#0C2226)]" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#06101c] via-[#06101c]/25 to-transparent" />
-        <span className="absolute left-3 top-3 max-w-[70%] truncate rounded-full border border-white/15 bg-[#06101c]/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#C9B896] backdrop-blur-sm">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0C2226] via-[#0C2226]/25 to-transparent" />
+        <span className="absolute left-3 top-3 max-w-[70%] truncate rounded-full border border-white/15 bg-[#0C2226]/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#C9B896] backdrop-blur-sm">
           {boat.sample ? t("charter.card_sample") : boat.operator}
         </span>
         <div className="absolute inset-x-0 bottom-0 p-4">
@@ -684,7 +684,7 @@ function BoatSheet({
   };
 
   const command = (
-    <div className="space-y-4 rounded-[1.35rem] border border-[#C9B896]/25 bg-[#0A192F]/90 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.35)]">
+    <div className="space-y-4 rounded-[1.35rem] border border-[#C9B896]/25 bg-[#0C2226]/90 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.35)]">
       <div>
         <p className="text-[15px]">
           <MoneyAmount value={boat.weeklyEur} currency="EUR" tone="gold" />
@@ -724,16 +724,16 @@ function BoatSheet({
   return (
     <div className="fixed inset-0 z-[1200] flex items-end justify-center bg-black/65 p-0 sm:items-center sm:p-5" onClick={onClose}>
       <div
-        className="thalvo-dark relative z-[1201] flex max-h-[96dvh] w-full max-w-5xl flex-col overflow-hidden rounded-t-[1.6rem] border border-white/10 bg-[#071422] shadow-2xl sm:rounded-[1.6rem]"
+        className="thalvo-dark relative z-[1201] flex max-h-[96dvh] w-full max-w-5xl flex-col overflow-hidden rounded-t-[1.6rem] border border-white/10 bg-[#0C2226] shadow-2xl sm:rounded-[1.6rem]"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="relative shrink-0 bg-[#0A192F]">
+        <div className="relative shrink-0 bg-[#0C2226]">
           {src ? (
             <button type="button" className="block w-full" onClick={() => boat.photos.length > 0 && setGallery(true)}>
               <div className="aspect-[16/8]"><img src={src} alt="" className="h-full w-full object-cover" /></div>
             </button>
           ) : (
-            <div className="flex h-40 items-end bg-[radial-gradient(circle_at_18%_80%,rgba(0,240,255,0.16),transparent_46%),linear-gradient(165deg,#0A192F,#06101c)] p-5">
+            <div className="flex h-40 items-end bg-[radial-gradient(circle_at_18%_80%,rgba(0,240,255,0.16),transparent_46%),linear-gradient(165deg,#0A192F,#0C2226)] p-5">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8BA8A3]/80">{t(`charter.hull_${boat.hull}`)}</p>
                 <p className="thalvo-display text-[2rem] tracking-wide">{boat.name}</p>
@@ -795,7 +795,7 @@ function BoatSheet({
             <div className="lg:hidden">{command}</div>
           </div>
 
-          <aside className="hidden min-h-0 overflow-y-auto border-l border-white/10 bg-[#06101c]/70 p-4 lg:block">
+          <aside className="hidden min-h-0 overflow-y-auto border-l border-white/10 bg-[#0C2226]/70 p-4 lg:block">
             {command}
           </aside>
         </div>

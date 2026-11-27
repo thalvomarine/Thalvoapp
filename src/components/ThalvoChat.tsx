@@ -253,7 +253,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
       className="fixed right-4 z-[60] grid size-14 place-items-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
       style={{
         bottom: "calc(max(1rem, env(safe-area-inset-bottom)) + 4.6rem)",
-        background: "linear-gradient(160deg, #0F2440 0%, #0A192F 70%, #081428 100%)",
+        background: "linear-gradient(160deg, #143338 0%, #0C2226 70%, #071416 100%)",
         border: "1px solid rgba(201,184,150,0.45)",
         boxShadow: "0 12px 32px -12px rgba(0,0,0,0.75)",
       }}

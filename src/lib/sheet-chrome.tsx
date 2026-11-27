@@ -39,7 +39,7 @@ export const SHEET_SCRIM =
   "fixed inset-0 z-[80] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center";
 
 export const SHEET_PANEL =
-  "thalvo-dark flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#071422] text-white shadow-2xl sm:mx-auto sm:max-w-lg sm:rounded-3xl";
+  "thalvo-dark flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#0C2226] text-white shadow-2xl sm:mx-auto sm:max-w-lg sm:rounded-3xl";
 
 export function SheetHandle(): ReactNode {
   return (

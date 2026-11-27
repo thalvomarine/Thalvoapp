@@ -206,7 +206,7 @@ export function CharterStayPicker({
               id={panelId}
               role="dialog"
               aria-label={t("charter.stay_label")}
-              className="charter-stay-panel fixed z-[2210] overflow-hidden border border-white/12 bg-[#071422] shadow-[0_28px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:rounded-t-[1.75rem] max-sm:border-b-0 sm:rounded-3xl"
+              className="charter-stay-panel fixed z-[2210] overflow-hidden border border-white/12 bg-[#0C2226] shadow-[0_28px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:rounded-t-[1.75rem] max-sm:border-b-0 sm:rounded-3xl"
               style={desktop ? { top: anchor.top, left: anchor.left, width: anchor.width } : undefined}
             >
               <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-white/20 sm:hidden" />
@@ -281,7 +281,7 @@ export function CharterStayPicker({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => (open ? setOpen(false) : openPanel())}
-        className="group flex h-12 w-full items-center gap-3 rounded-2xl border border-white/15 bg-[#06101c]/85 px-3 text-left transition-[border-color,box-shadow,background-color] duration-250 hover:border-[#C9B896]/40 focus:border-[#C9B896]/65 focus:outline-none focus:shadow-[0_0_0_3px_rgba(201,184,150,0.12)]"
+        className="group flex h-12 w-full items-center gap-3 rounded-2xl border border-white/15 bg-[#0C2226]/85 px-3 text-left transition-[border-color,box-shadow,background-color] duration-250 hover:border-[#C9B896]/40 focus:border-[#C9B896]/65 focus:outline-none focus:shadow-[0_0_0_3px_rgba(201,184,150,0.12)]"
       >
         <span className="grid size-9 place-items-center rounded-xl bg-[#C9B896]/12 text-[#C9B896] transition-colors duration-250 group-hover:bg-[#C9B896]/18">
           <CalendarRange className="size-4" />

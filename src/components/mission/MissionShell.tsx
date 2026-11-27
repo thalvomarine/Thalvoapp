@@ -226,12 +226,12 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
     >
       {/* Top status rail — replaced by the map cockpit's own floating top bar in fullBleed mode */}
       {!fullBleed && (
-        <header className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#06101c]/92 backdrop-blur-xl pt-[env(safe-area-inset-top)]">
+        <header className="sticky top-0 z-30 border-b border-[#C9B896]/12 bg-[#0C2226]/94 backdrop-blur-xl pt-[env(safe-area-inset-top)]">
           <div className="mx-auto flex h-12 max-w-6xl items-center justify-between gap-3 px-4">
             <Link to="/app" className="flex min-w-0 items-center gap-2.5">
               <Wordmark size="sm" className="text-white" />
               <span className="thalvo-display text-[15px] tracking-[0.18em] text-white">THALVO</span>
-              <span className="hidden rounded-[3px] border border-[#C9B896]/35 bg-[#C9B896]/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#C9B896] sm:inline">
+              <span className="hidden rounded-[3px] border border-[#C9B896]/40 bg-[#C9B896]/14 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#C9B896] sm:inline">
                 MarineOS
               </span>
             </Link>
@@ -400,7 +400,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
         {welcomeBanner && (
           <div
             className={
-              "pointer-events-auto z-[60] flex items-start gap-2 border border-[#C9B896]/30 bg-[#0A192F]/95 px-3 py-2.5 text-[12px] leading-snug text-[#E8DFC8] shadow-2xl backdrop-blur-md " +
+              "pointer-events-auto z-[60] flex items-start gap-2 border border-[#C9B896]/30 bg-[#0C2226]/95 px-3 py-2.5 text-[12px] leading-snug text-[#E8DFC8] shadow-2xl backdrop-blur-md " +
               (fullBleed
                 ? "absolute inset-x-3 top-[calc(env(safe-area-inset-top)+3.5rem)] rounded-2xl"
                 : "mb-4 rounded-2xl")
