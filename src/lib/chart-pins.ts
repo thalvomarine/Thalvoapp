@@ -13,70 +13,72 @@ export type ChartPinKind =
 export type ActorPin = "wrench" | "cap";
 export type ActorTone = "cyan" | "gold" | "red";
 
-const MARK = {
-  light: "#E6B15C",
-  pier: "#3AA89F",
-  anchor: "#3E9A6A",
-  wrench: "#E4EDF2",
-  ink: "#E7E1D4",
+/**
+ * Soft-capsule chart cards. The tip disc sits on the coordinate.
+ * Fills stay muted brass, sea, ochre, and brick — no neon.
+ */
+const FILL: Record<ChartPinKind, string> = {
+  marina: "#C4A15A",
+  anchorage: "#3E7A62",
+  fuel: "#C4893A",
   hazard: "#C45C4A",
-  sea: "#0C2226",
-} as const;
-
-const SIZE = 36;
-
-function icon(body: string): string {
-  return `<svg width="${SIZE}" height="${SIZE}" viewBox="0 0 32 32" aria-hidden="true">${body}</svg>`;
-}
-
-const PLACE: Record<ChartPinKind, string> = {
-  lighthouse: icon(
-    `<g fill="${MARK.light}"><path d="M16 2.2c1.8 0 2.8 1.1 2.8 2H13.2c0-.9 1-2 2.8-2z"/><rect x="12.2" y="4.2" width="7.6" height="4.8"/><rect x="13.1" y="5" width="1.5" height="3.2" fill="#F8E7B0"/><rect x="15.25" y="5" width="1.5" height="3.2" fill="#F8E7B0"/><rect x="17.4" y="5" width="1.5" height="3.2" fill="#F8E7B0"/><rect x="10" y="8.8" width="12" height="1.5"/><path d="M13.4 10.3 11.2 26.4h9.6L18.6 10.3z"/><rect x="9.2" y="26.4" width="13.6" height="2.2"/></g>`,
-  ),
-  marina: icon(
-    `<g fill="${MARK.pier}"><rect x="2" y="4.2" width="28" height="5.4" rx=".6"/><rect x="4.2" y="9.6" width="4.6" height="16.4" rx=".7"/><rect x="13.7" y="9.6" width="4.6" height="11.2" rx=".7"/><rect x="23.2" y="9.6" width="4.6" height="17.6" rx=".7"/></g>`,
-  ),
-  anchorage: icon(
-    `<g fill="${MARK.anchor}"><path fill-rule="evenodd" d="M16 1.8a2.5 2.5 0 1 0 .01 0zM16 3a1.15 1.15 0 1 1-.01 0z"/><rect x="14.8" y="4.6" width="2.4" height="12.6"/><rect x="7.6" y="7.4" width="16.8" height="2.3" rx=".4"/><path d="M16 16.4c-5.4 0-8.6 3-9.2 6.6 1.5-1.5 2.6-2 3.8-1.5 1 .5 1.1 2.2.2 3.4C9.2 22.4 12.2 20.6 16 20.4c3.8.2 6.8 2 5.2 4.5-.9-1.2-.8-2.9.2-3.4 1.2-.5 2.3 0 3.8 1.5-.6-3.6-3.8-6.6-9.2-6.6z"/></g>`,
-  ),
-  fuel: icon(
-    `<g fill="${MARK.ink}"><rect x="8" y="5" width="11" height="22" rx="1.4"/><rect x="10.2" y="7.4" width="6.6" height="4.2" fill="${MARK.sea}"/><path d="M19 8h3.2c1 0 1.8.8 1.8 1.8v6.2h-2V10.2H19z"/></g>`,
-  ),
-  hazard: icon(`<path d="M16 3.2 28.8 16 16 28.8 3.2 16z" fill="${MARK.hazard}"/>`),
-  restaurant: icon(
-    `<g fill="${MARK.ink}"><rect x="11.2" y="3" width="1.7" height="8.2"/><rect x="14.15" y="3" width="1.7" height="8.2"/><rect x="17.1" y="3" width="1.7" height="8.2"/><rect x="13.9" y="10.8" width="2.2" height="2"/><rect x="13.1" y="12.6" width="3.8" height="15.2" rx="1.6"/></g>`,
-  ),
-  own: icon(
-    `<circle cx="16" cy="18" r="6.4" fill="none" stroke="${MARK.ink}" stroke-width="1.6"/><circle cx="16" cy="18" r="2" fill="${MARK.ink}"/><path d="M16 5.2v4.2" stroke="${MARK.ink}" stroke-width="1.7" stroke-linecap="round"/>`,
-  ),
-  diver: icon(
-    `<g fill="${MARK.ink}"><circle cx="16" cy="15" r="7.2"/><rect x="10.6" y="13.4" width="10.8" height="3" fill="${MARK.sea}"/><rect x="11.2" y="22" width="9.6" height="2.2" rx=".4"/></g>`,
-  ),
-  vessel: icon(`<path d="M16 4.2 23.4 27.2H8.6L16 4.2z" fill="${MARK.ink}"/>`),
-  report: icon(
-    `<g fill="${MARK.ink}"><rect x="8" y="4" width="1.8" height="24"/><path d="M9.8 5.2h13.2L17.6 11.6l5.4 6H9.8z"/></g>`,
-  ),
+  lighthouse: "#E0C98A",
+  restaurant: "#A89078",
+  own: "#C4A15A",
+  diver: "#4E7C86",
+  vessel: "#6E8494",
+  report: "#E4DDD0",
 };
 
-/** The object is the mark. Its box center is the chart coordinate. */
+const GLYPH: Record<ChartPinKind, string> = {
+  marina:
+    '<path d="M5 18.5h14l-1.6 1.8H6.6L5 18.5zM12 4.2v14.3M12 5.2l6.8 10.2H12V5.2zM12 8.2 7.2 14.5H12V8.2z" fill="none" stroke="#041018" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>',
+  anchorage:
+    '<path d="M12 4v11M8 8.5h8M12 15c-3.2 0-5 1.8-5 4h10c0-2.2-1.8-4-5-4z" fill="none" stroke="#041018" stroke-width="1.7" stroke-linecap="round"/>',
+  fuel:
+    '<path d="M8 19V6.5A1.5 1.5 0 0 1 9.5 5h4A1.5 1.5 0 0 1 15 6.5V19M8 10h7M15 8.5h1.4a2 2 0 0 1 2 2V14a1.6 1.6 0 1 1-3.2 0" fill="none" stroke="#041018" stroke-width="1.7" stroke-linecap="round"/>',
+  hazard:
+    '<path d="M12 4.5 20 19H4L12 4.5zM12 10v4M12 16.2v.6" fill="none" stroke="#041018" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>',
+  lighthouse:
+    '<path d="M12 4v2M9.5 20h5M10 18V9.5h4V18M9 9.5h6M8 7.2 10 9.5M16 7.2 14 9.5" fill="none" stroke="#041018" stroke-width="1.7" stroke-linecap="round"/>',
+  restaurant:
+    '<path d="M8 4.5v6a2 2 0 0 0 2 2V20M14 4.5v15M17 4.5v6" fill="none" stroke="#041018" stroke-width="1.7" stroke-linecap="round"/>',
+  own: '<circle cx="12" cy="12" r="3.2" fill="#041018"/>',
+  diver:
+    '<circle cx="12" cy="11" r="4.2" fill="none" stroke="#041018" stroke-width="1.7"/><path d="M8.6 11.2h6.8" stroke="#041018" stroke-width="1.7" stroke-linecap="round"/>',
+  vessel:
+    '<path d="M5 18.5h14l-1.6 1.8H6.6L5 18.5zM12 4.2v14.3M12 5.2l6.8 10.2H12V5.2z" fill="none" stroke="#041018" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>',
+  report:
+    '<path d="M8 4.2v16M8 5.2h9.2L13.4 9.6l3.8 4.2H8" fill="none" stroke="#041018" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>',
+};
+
+const ACTOR_FILL: Record<ActorTone, string> = {
+  cyan: "#C4A15A",
+  gold: "#C4A15A",
+  red: "#C45C4A",
+};
+
+const GLYPH_SIZE = 20;
+
+function capsule(fill: string, glyph: string): string {
+  return `<div style="width:30px;height:46px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))"><div style="width:30px;height:38px;border-radius:15px 15px 12px 12px;background:${fill};border:2px solid #fff;display:grid;place-items:center;box-sizing:border-box"><svg width="${GLYPH_SIZE}" height="${GLYPH_SIZE}" viewBox="0 0 24 24" aria-hidden="true">${glyph}</svg></div><div style="width:10px;height:10px;margin:-5px auto 0;background:${fill};border-radius:50%;border:2px solid #fff;box-sizing:border-box"></div></div>`;
+}
+
+/** Soft capsule. The tip disc is the chart coordinate. */
 export function chartPinHtml(kind: ChartPinKind): string {
-  return PLACE[kind];
+  return capsule(FILL[kind], GLYPH[kind]);
 }
 
-/** Open-end wrench for the master. Flat-crowned peaked cap for the captain. */
+/** Wrench and peaked cap, in the same capsule as the chart marks. */
 export function actorPinHtml(actor: ActorPin, tone: ActorTone = "cyan"): string {
-  if (actor === "wrench") {
-    const color = tone === "red" ? MARK.hazard : MARK.wrench;
-    return icon(
-      `<g transform="translate(1.2 1.2) scale(1.22)" fill="${color}"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g>`,
-    );
-  }
-  const crown = tone === "red" ? "#F0D2CC" : "#F4F1EA";
-  return icon(
-    `<path d="M4.2 21.2V12.4C4.2 9.6 6.4 7.4 9.4 7.4h8.2c2.6 0 4.4 1.8 4.4 4.4v9.4H4.2z" fill="${crown}"/><rect x="4.2" y="16.6" width="17.8" height="2.2" fill="#C6A15A"/><circle cx="8" cy="13.2" r="1.15" fill="#C6A15A"/><path d="M15.2 18.4c5.8-.4 11.6.4 13.6 2-1.4 2-7 2.8-12.4 1.8-1-.2-1.5-1.6-1.2-3.8z" fill="#1A140E"/>`,
-  );
+  const fill = ACTOR_FILL[tone];
+  const glyph =
+    actor === "wrench"
+      ? '<path d="M14.2 7.2 16 9l1.2-1.2 2.2-2.2a4.2 4.2 0 0 1-5.6 5.6L8.2 16.8a1.5 1.5 0 0 1-2.1-2.1l5.6-5.6a4.2 4.2 0 0 1 5.6-5.6L14.2 7.2z" fill="none" stroke="#041018" stroke-width="1.6" stroke-linejoin="round"/>'
+      : '<path d="M5 15.2V10.2C5 8 6.8 6.4 9.2 6.4h4.2c2 0 3.4 1.4 3.4 3.4v5.4H5z" fill="none" stroke="#041018" stroke-width="1.6"/><path d="M5 13.2h12" stroke="#041018" stroke-width="1.6"/><path d="M12.4 15.2c4 .2 7.2.8 8.2 1.6-1 1.4-4.6 1.8-7.6 1.2" fill="none" stroke="#041018" stroke-width="1.6" stroke-linecap="round"/>';
+  return capsule(fill, glyph);
 }
 
-export const CHART_PIN_SIZE: [number, number] = [SIZE, SIZE];
-export const CHART_PIN_ANCHOR: [number, number] = [SIZE / 2, SIZE / 2];
-export const CHART_POPUP_ANCHOR: [number, number] = [0, -22];
+export const CHART_PIN_SIZE: [number, number] = [30, 46];
+export const CHART_PIN_ANCHOR: [number, number] = [15, 46];
+export const CHART_POPUP_ANCHOR: [number, number] = [0, -42];
