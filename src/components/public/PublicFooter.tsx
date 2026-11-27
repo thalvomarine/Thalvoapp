@@ -2,12 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { PaymentMarks } from "@/components/payments/PaymentMarks";
 
-/** Shared signed-out footer: coverage, legal, and payment marks for PSP review. */
+/** Shared public footer: coverage, legal, payment marks. */
 export function PublicFooter() {
   const { t } = useTranslation();
-  const linkCls = "text-[11px] font-semibold text-white/55 hover:text-white";
+  const linkCls =
+    "text-[11px] font-semibold uppercase tracking-[0.1em] text-[#8BA8A3] transition hover:text-[#C9B896]";
   return (
-    <footer className="relative z-10 px-5 py-6 text-center">
+    <footer className="thalvo-safe-bottom-pad relative z-10 border-t border-[#C9B896]/12 px-5 py-6 text-center">
       <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
         <Link to="/chart" className={linkCls}>
           {t("public.footer_coverage")}
@@ -30,7 +31,7 @@ export function PublicFooter() {
       </nav>
       <PaymentMarks className="mt-4" />
       <p className="mt-2 text-[10px] text-white/35">{t("public.payment_marks_note")}</p>
-      <p className="mt-3 text-[11px] text-white/40">© THALVO · {t("brand.tagline")}</p>
+      <p className="mt-3 text-[11px] tracking-wide text-white/40">© THALVO · {t("brand.tagline")}</p>
     </footer>
   );
 }

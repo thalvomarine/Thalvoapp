@@ -12,6 +12,7 @@ import { Crosshair, Loader2, Map as MapIcon, Settings, ShoppingBag, Wrench, X } 
 import { clearEmailUnconfirmed, isEmailUnconfirmed } from "@/lib/signup-welcome";
 import { isNativeWebView } from "@/lib/native-history";
 import { openNativeAppSettings } from "@/lib/native-app";
+import { useSessionUser } from "@/lib/session";
 
 export type ChartPanel = "parts" | "services";
 
@@ -70,12 +71,7 @@ export function ChartDeck({ panel }: { panel?: ChartPanel }) {
           <p className="thalvo-num hidden min-w-0 truncate text-[12px] text-[#E8DFC8]/90 md:block">{position}</p>
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
             <LanguageSwitcher tone="dark" />
-            <Link
-              to="/auth"
-              className="inline-flex h-8 max-w-[6.5rem] items-center truncate rounded-md bg-[#C9B896] px-2.5 text-[12px] font-semibold text-[#1A1406]"
-            >
-              {t("auth.sign_in")}
-            </Link>
+            <ChartDeckAuthLink />
           </div>
         </div>
         <div className="flex min-w-0 items-end gap-1 overflow-x-auto px-2">
@@ -429,6 +425,30 @@ function Retry({ onRetry }: { onRetry: () => void }) {
         {t("common.retry")}
       </button>
     </div>
+  );
+}
+
+function ChartDeckAuthLink() {
+  const { t } = useTranslation();
+  const { user, loading } = useSessionUser();
+  if (loading) return <span className="inline-block h-8 w-16 rounded-md bg-white/[0.06]" aria-hidden />;
+  if (user) {
+    return (
+      <Link
+        to="/app"
+        className="inline-flex h-8 max-w-[7.5rem] items-center truncate rounded-md border border-[#C9B896]/40 bg-[#C9B896]/12 px-2.5 text-[11px] font-bold text-[#E8DFC8]"
+      >
+        {t("public.open_app")}
+      </Link>
+    );
+  }
+  return (
+    <Link
+      to="/auth"
+      className="inline-flex h-8 max-w-[6.5rem] items-center truncate rounded-md bg-[#C9B896] px-2.5 text-[12px] font-semibold text-[#0C2226]"
+    >
+      {t("auth.sign_in")}
+    </Link>
   );
 }
 
