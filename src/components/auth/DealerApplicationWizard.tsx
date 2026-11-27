@@ -123,7 +123,7 @@ export function DealerApplicationWizard({
       <button
         type="button"
         onClick={onChangeRole}
-        className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/25 bg-[#C9B896]/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E8DFC8]"
+        className="inline-flex items-center gap-1.5 rounded-xl border border-[#C9B896]/30 bg-[#C9B896]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#E8DFC8]"
       >
         {t("auth.role_supplier")}
         <span className="text-[#E8DFC8]/50">·</span>

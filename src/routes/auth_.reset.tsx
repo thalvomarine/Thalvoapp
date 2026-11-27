@@ -104,7 +104,7 @@ function ResetPasswordPage() {
     <AuthPassageShell kicker={t("auth.reset_kicker")}>
       {gate === "loading" ? (
         <div className="flex min-h-40 flex-col items-center justify-center gap-3 text-white/60">
-          <Loader2 className="size-6 animate-spin text-[color:var(--pm-gold)]" />
+          <Loader2 className="size-6 animate-spin text-[#C9B896]" />
           <p className="text-[13px]">{t("auth.reset_checking")}</p>
         </div>
       ) : gate === "missing" ? (
@@ -122,14 +122,14 @@ function ResetPasswordPage() {
           </div>
           <Link
             to="/auth/forgot"
-            className="pm-gold-cta inline-flex h-12 w-full items-center justify-center rounded-xl text-[14px] font-bold tracking-wide"
+            className="pm-gold-cta inline-flex h-12 w-full items-center justify-center rounded-xl text-[13px] font-bold uppercase tracking-[0.12em]"
           >
             {t("auth.forgot_submit")}
           </Link>
           <Link
             to="/auth"
             search={{}}
-            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-white/50 hover:text-[color:var(--pm-gold)]"
+            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#8BA8A3] hover:text-[#C9B896]"
           >
             <ArrowLeft className="size-3.5" aria-hidden />
             {t("auth.back_to_sign_in")}
@@ -137,7 +137,7 @@ function ResetPasswordPage() {
         </div>
       ) : (
         <form onSubmit={submit} className="space-y-4">
-          <div className="flex size-12 items-center justify-center rounded-2xl border border-[color:var(--pm-gold)]/35 bg-[color:var(--pm-gold)]/10 text-[color:var(--pm-gold)]">
+          <div className="flex size-12 items-center justify-center rounded-2xl border border-[#C9B896]/35 bg-[#C9B896]/10 text-[#C9B896]">
             <KeyRound className="size-5" aria-hidden />
           </div>
           <div>
@@ -184,7 +184,7 @@ function ResetPasswordPage() {
           <button
             type="submit"
             disabled={busy}
-            className="pm-gold-cta mt-1 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[14px] font-bold tracking-wide disabled:opacity-60"
+            className="pm-gold-cta mt-1 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[13px] font-bold uppercase tracking-[0.12em] disabled:opacity-60"
           >
             {busy && <Loader2 className="size-4 animate-spin" />}
             {t("auth.reset_submit")}
