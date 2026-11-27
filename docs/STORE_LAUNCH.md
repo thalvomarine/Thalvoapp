@@ -1,7 +1,7 @@
 # Thalvo MarineOS — App Store & Google Play launch
 
 Bundle ID / applicationId: `com.thalvo.marineos`  
-Current native version: **1.0.5** (build / versionCode **6**)  
+Current native version: **1.0.6** (build / versionCode **7**)  
 Privacy: https://thalvo.org/privacy  
 Terms: https://thalvo.org/terms  
 Support: https://thalvo.org · support@thalvo.org  

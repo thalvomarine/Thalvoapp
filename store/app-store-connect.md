@@ -1,6 +1,6 @@
 # App Store Connect — paste sheet
 
-Version in the Xcode project: **1.0.5** (build **6**).  
+Version in the Xcode project: **1.0.6** (build **7**).  
 Bundle ID: `com.thalvo.marineos`  
 SKU: `thalvo-marineos` (cannot be changed later)
 
@@ -58,7 +58,7 @@ Turkish description and the payment-simulation sentence: `store/listing.tr.md`.
 
 Free. No in-app purchases. Simulated ledger amounts are not App Store products.
 
-## 5. Version 1.0.5
+## 5. Version 1.0.6
 
 | Field | Value |
 | --- | --- |
@@ -68,7 +68,7 @@ Free. No in-app purchases. Simulated ledger amounts are not App Store products.
 | Keywords | deniz,navigasyon,tekne,marina,harita,cockpit,Ege,Akdeniz,SOS,kaptan |
 | Support URL | https://thalvo.org/about |
 | Marketing URL | https://thalvo.org |
-| Version | 1.0.5 |
+| Version | 1.0.6 |
 | Copyright | 2026 İsmail Tolga İşler |
 | Routing app coverage file | Leave empty. This is a coast chart, not a turn-by-turn routing app. |
 
