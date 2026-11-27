@@ -144,7 +144,7 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
               type="button"
               onClick={onClose}
               aria-label={t("common.close")}
-              className="grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
+              className="grid size-9 shrink-0 place-items-center rounded-[8px] border border-white/12 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
             >
               <X className="size-4" />
             </button>
@@ -193,7 +193,7 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
                   const target = displayPoint;
                   onNavigate(target);
                 }}
-                className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-amber-300/40 bg-amber-400/15 text-[12px] font-bold uppercase tracking-[0.06em] text-amber-100 transition-colors hover:bg-amber-400/25"
+                className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-[#00F0FF]/40 bg-[#00F0FF]/10 text-[12px] font-bold uppercase tracking-[0.06em] text-[#00F0FF] transition-colors hover:bg-[#00F0FF]/18"
               >
                 <Anchor className="size-4 shrink-0" />
                 <span className="truncate">{t("chart.sheet_navigate")}</span>
@@ -201,12 +201,7 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
               <button
                 type="button"
                 onClick={onEmergency}
-                className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl text-[12px] font-bold uppercase tracking-[0.06em] text-white transition-transform active:scale-[0.98]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, oklch(0.68 0.24 25) 0%, oklch(0.6 0.24 18) 100%)",
-                  boxShadow: "0 10px 30px -10px rgba(244,63,94,0.55)",
-                }}
+                className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#EF4444] text-[12px] font-bold uppercase tracking-[0.06em] text-white transition-transform active:scale-[0.98]"
               >
                 <AlertOctagon className="size-4 shrink-0" />
                 <span className="truncate">{t("chart.sheet_emergency")}</span>
@@ -219,7 +214,7 @@ export function ChartDetailSheet({ point, fix, onClose, onNavigate, onEmergency 
                 onClose();
                 openEmergencyService({ bayName: bay || undefined });
               }}
-              className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-amber-400/35 bg-amber-400/10 text-[12px] font-bold uppercase tracking-[0.06em] text-amber-100"
+              className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] text-[12px] font-bold uppercase tracking-[0.06em] text-white/80 hover:border-[#F5B942]/40 hover:text-[#F5B942]"
             >
               <Anchor className="size-4 shrink-0" />
               <span className="truncate">{t("esvc.entry_title")}</span>

@@ -161,12 +161,9 @@ function CaptainCockpit({ profile }: { profile: Profile }) {
         <Link
           to="/app/job/$id"
           params={{ id: primaryMission.id }}
-          className="flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-500/15 px-3 py-1.5 text-[10px] font-semibold text-amber-100 shadow-2xl backdrop-blur-md"
+          className="flex items-center gap-2 rounded-md border border-[#F5B942]/40 bg-[#0A192F]/92 px-3 py-1.5 text-[10px] font-semibold text-[#F5B942] shadow-lg backdrop-blur-md"
         >
-          <span className="relative flex size-1.5 shrink-0">
-            <span className="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-70" />
-            <span className="relative size-1.5 rounded-full bg-amber-400" />
-          </span>
+          <span className="size-1.5 shrink-0 rounded-[1px] bg-[#F5B942]" />
           <span className="truncate">
             {t(`status.${primaryMission.status}`, { defaultValue: primaryMission.status })}
           </span>

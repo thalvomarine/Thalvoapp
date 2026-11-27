@@ -5,6 +5,7 @@ import { LeafletPointerGuard, stopMapEvent } from "@/lib/leaflet-dom";
 import {
   chartPointCoords,
   chartPointName,
+  formatDegrees,
   ZONE_KIND_LABEL_KEYS,
   REPORT_CATEGORY_LABEL_KEYS,
   type ChartPoint,
@@ -97,12 +98,12 @@ export function ChartSearchBar({
                   inputRef.current?.focus();
                 }}
                 aria-label={t("common.clear")}
-                className="grid size-5 shrink-0 place-items-center rounded-full text-white/40 hover:text-white/80"
+                className="grid size-7 shrink-0 place-items-center rounded-md border border-white/12 text-white/50 hover:border-[#F5B942]/40 hover:text-[#F5B942]"
               >
-                <X className="size-3" />
+                <X className="size-3.5" />
               </button>
             ) : null}
-            <span className="shrink-0 rounded-full border border-amber-300/40 bg-amber-400/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-amber-100">
+            <span className="shrink-0 rounded-[3px] border border-[#00F0FF]/40 bg-[#00F0FF]/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#00F0FF]">
               {t("chart.live_pill")}
             </span>
           </div>
@@ -146,8 +147,8 @@ export function ChartSearchBar({
                               {t(labelKey)}
                             </span>
                           </span>
-                          <span className="shrink-0 font-mono text-[9px] text-white/30">
-                            {coords.lat.toFixed(2)}°, {coords.lng.toFixed(2)}°
+                          <span className="shrink-0 font-mono text-[9px] text-white/35">
+                            {formatDegrees(coords.lat, coords.lng)}
                           </span>
                         </button>
                       </li>

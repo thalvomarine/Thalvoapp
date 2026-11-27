@@ -81,19 +81,18 @@ const LAYER_ROWS: Array<{ key: ChartLayerKey; labelKey: string; dot: string }> =
 function Switch({ on }: { on: boolean }) {
   return (
     <span
-      className="relative inline-flex h-[18px] w-[32px] shrink-0 items-center rounded-full border transition-all duration-200"
+      className="grid size-4 shrink-0 place-items-center rounded-[3px] border transition-colors"
       style={{
-        borderColor: on ? "var(--sheet-active-border)" : "var(--sheet-border)",
-        background: on ? "var(--sheet-active-bg)" : "var(--sheet-switch-off)",
+        borderColor: on ? "rgba(0,240,255,0.55)" : "var(--sheet-border)",
+        background: on ? "rgba(0,240,255,0.18)" : "var(--sheet-switch-off)",
       }}
+      aria-hidden
     >
       <span
-        className={
-          "absolute size-3 rounded-full transition-all duration-200 " +
-          (on ? "left-[17px]" : "left-[3px]")
-        }
+        className="size-1.5 rounded-[1px] transition-opacity"
         style={{
-          background: on ? "var(--sheet-active-ink)" : "var(--sheet-faint)",
+          background: on ? "#00F0FF" : "transparent",
+          opacity: on ? 1 : 0,
         }}
       />
     </span>
@@ -655,12 +654,11 @@ export function ChartReadout({
 }
 
 const FAB_BTN =
-  "thalvo-chart-sheet grid size-11 place-items-center rounded-full border shadow-2xl backdrop-blur-md transition-colors hover:opacity-90 disabled:opacity-60 text-[color:var(--sheet-active-ink)]";
+  "thalvo-chart-sheet grid size-11 place-items-center rounded-[10px] border border-[color:var(--sheet-border)] shadow-[0_10px_28px_-14px_rgba(0,0,0,0.7)] backdrop-blur-md transition-colors hover:border-[rgba(0,240,255,0.4)] disabled:opacity-60 text-[color:var(--sheet-active-ink)]";
 
 /**
- * Bottom-right FAB stack — compass, layers, locate.
- * On phones, layers opens a full-width bottom sheet (not a side popover)
- * so every control stays on-screen and scrollable above the dock.
+ * Bottom-right ECDIS latch stack — AI, layers, locate.
+ * Square latches (not round toy FABs). Layers opens a full-width sheet on phone.
  */
 export function ChartFabStack({
   onCycleBasemap,
@@ -811,7 +809,7 @@ export function ChartFabStack({
           (concealed || layersOpen ? "opacity-0" : "opacity-100")
         }
       >
-        <LeafletPointerGuard className="pointer-events-auto flex w-11 flex-col items-center gap-3">
+        <LeafletPointerGuard className="pointer-events-auto flex w-11 flex-col items-center gap-2.5">
           <button
             type="button"
             onPointerDown={stopMapEvent}
@@ -821,9 +819,12 @@ export function ChartFabStack({
             }}
             title="THALVO AI"
             aria-label="THALVO AI"
-            className={FAB_BTN}
+            className={FAB_BTN + " flex-col gap-0.5 !h-12"}
           >
-            <CompassMark size={18} />
+            <CompassMark size={16} />
+            <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#F5B942]/90">
+              AI
+            </span>
           </button>
           <button
             ref={layersBtnRef}
@@ -937,7 +938,7 @@ export function ChartDrawHint({
         (inline
           ? "pointer-events-auto w-fit max-w-full "
           : "pointer-events-auto absolute left-1/2 top-[calc(env(safe-area-inset-top)+4.25rem)] z-20 max-w-[calc(100vw-1.5rem)] -translate-x-1/2 ") +
-        "rounded-full border border-orange-400/50 bg-orange-500/20 px-3.5 py-1.5 text-center text-[10px] font-semibold text-orange-100 shadow-[0_0_20px_rgba(251,146,60,0.25)] backdrop-blur-xl"
+        "rounded-md border border-[#F5B942]/45 bg-[#0A192F]/92 px-3.5 py-1.5 text-center text-[10px] font-semibold text-[#F5B942] backdrop-blur-md"
       }
     >
       <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
