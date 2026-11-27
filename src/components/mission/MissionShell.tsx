@@ -285,7 +285,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                 <NavTab
                   to="/app"
                   active={path === "/app"}
-                  icon={<AtlasMark size={20} />}
+                  icon={<AtlasMark size={22} />}
                   label={t("nav.map")}
                 />
               )}
@@ -294,19 +294,19 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                   <NavTab
                     to="/app/dealer"
                     active={path.startsWith("/app/dealer") || path.startsWith("/app/supplier")}
-                    icon={<DealerMark size={20} />}
+                    icon={<DealerMark size={22} />}
                     label={t("nav.dock_counter")}
                   />
                   <NavTab
                     to="/app/marketplace"
                     active={path.startsWith("/app/marketplace") || path.startsWith("/app/shop")}
-                    icon={<MarketplaceMark size={20} />}
+                    icon={<MarketplaceMark size={22} />}
                     label={t("nav.dock_market")}
                   />
                   <NavTab
                     to="/app/orders"
                     active={path.startsWith("/app/orders")}
-                    icon={<OrdersMark size={20} />}
+                    icon={<OrdersMark size={22} />}
                     label={t("nav.orders")}
                   />
                 </>
@@ -320,7 +320,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                       path.startsWith("/app/report") ||
                       path.startsWith("/app/transfer-captain")
                     }
-                    icon={<RescueMark size={20} />}
+                    icon={<RescueMark size={22} />}
                     label={t("nav.missions")}
                   />
                   <SosNavButton onActivate={fireSos} />
@@ -331,19 +331,19 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                       path.startsWith("/app/shop") ||
                       path.startsWith("/app/dealer")
                     }
-                    icon={<MarketplaceMark size={20} />}
+                    icon={<MarketplaceMark size={22} />}
                     label={t("nav.dock_market")}
                   />
                   <NavTab
                     to="/app/orders"
                     active={path.startsWith("/app/orders")}
-                    icon={<OrdersMark size={20} />}
+                    icon={<OrdersMark size={22} />}
                     label={t("nav.orders")}
                   />
                   <NavTab
                     to="/app/profile"
                     active={path.startsWith("/app/profile")}
-                    icon={<ProfileMark size={20} />}
+                    icon={<ProfileMark size={22} />}
                     label={t("nav.profile")}
                   />
                 </>
@@ -357,7 +357,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                       path.startsWith("/app/report") ||
                       path.startsWith("/app/transfer-captain")
                     }
-                    icon={<RescueMark size={20} />}
+                    icon={<RescueMark size={22} />}
                     label={t("nav.missions")}
                   />
                   <SosNavButton onActivate={fireSos} />
@@ -369,13 +369,13 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                       path.startsWith("/app/orders") ||
                       path.startsWith("/app/dealer")
                     }
-                    icon={<MarketplaceMark size={20} />}
+                    icon={<MarketplaceMark size={22} />}
                     label={t("nav.dock_market")}
                   />
                   <NavTab
                     to="/app/passport"
                     active={path.startsWith("/app/passport") || path.startsWith("/app/reputation")}
-                    icon={<PassportMark size={20} />}
+                    icon={<PassportMark size={22} />}
                     label={t("nav.dock_vessel")}
                   />
                   <CharterNavButton
@@ -531,8 +531,8 @@ function SosNavButton({
       className="relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-visible px-0.5 text-[9px] font-semibold uppercase tracking-tight text-[#E08A8A]"
       style={{ pointerEvents: "auto" }}
     >
-      <span className="thalvo-fab-latch grid size-9 place-items-center border border-[#C45C5C]/55 bg-[#C45C5C]/15">
-        <SosMark size={22} />
+      <span className="thalvo-fab-latch grid size-10 place-items-center border border-[#C45C5C]/60 bg-[#C45C5C]/18">
+        <SosMark size={24} />
       </span>
       <span>SOS</span>
     </button>
@@ -607,7 +607,7 @@ function CharterNavButton({
             : "border-transparent bg-transparent")
         }
       >
-        {icon ?? <CharterMark size={20} />}
+        {icon ?? <CharterMark size={22} />}
       </span>
       <span className="max-w-full truncate whitespace-nowrap leading-none">{label}</span>
     </button>

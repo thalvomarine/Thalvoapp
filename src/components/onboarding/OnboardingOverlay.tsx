@@ -8,7 +8,7 @@ import {
 import i18n, { ensureLanguage, normalizeAppLng, type AppLng } from "@/i18n";
 import type { Profile } from "@/lib/session";
 import {
-  RescueMark, PassportMark, MarketplaceMark, ControlTowerMark,
+  RescueMark, PassportMark, MarketplaceMark, ControlTowerMark, SosMark,
 } from "@/components/brand/ProductMarks";
 import { requestOpsNotificationPermission } from "@/lib/ops-alerts";
 
@@ -273,7 +273,7 @@ export function OnboardingOverlay({ profile, isAdmin, onComplete }: Props) {
           >
             <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <TourItem icon={<MapPin className="size-4 text-[#C9B896]" />} title={t("onboarding.tour_map")} body={t("onboarding.tour_map_body")} />
-              <TourItem icon={<RescueMark size={18} />} title={t("onboarding.tour_sos")} body={t("onboarding.tour_sos_body")} />
+              <TourItem icon={<SosMark size={18} />} title={t("onboarding.tour_sos")} body={t("onboarding.tour_sos_body")} />
               <TourItem icon={<Compass className="size-4 text-[#C9B896]" />} title={t("onboarding.tour_compass")} body={t("onboarding.tour_compass_body")} />
               <TourItem icon={<MarketplaceMark size={18} />} title={t("onboarding.tour_market")} body={t("onboarding.tour_market_body")} />
               <TourItem icon={<PassportMark size={18} />} title={t("onboarding.tour_passport")} body={t("onboarding.tour_passport_body")} />
