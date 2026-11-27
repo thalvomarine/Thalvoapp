@@ -14,21 +14,20 @@ export type ActorPin = "wrench" | "cap";
 export type ActorTone = "cyan" | "gold" | "red";
 
 /**
- * V4 soft-capsule pins, the chart marks that were live before the
- * 27 Nov redraw. Rounded body, white rim, tip disc on the coordinate.
- * Diver, vessel, report, and the actor pins use the same capsule.
+ * Soft-capsule chart cards. The tip disc sits on the coordinate.
+ * Fills stay muted brass, sea, ochre, and brick — no neon.
  */
 const FILL: Record<ChartPinKind, string> = {
-  marina: "#f5b942",
-  anchorage: "#34d399",
-  fuel: "#fbbf24",
-  hazard: "#fb7185",
-  lighthouse: "#fde68a",
-  restaurant: "#c4b5fd",
-  own: "#f5b942",
-  diver: "#22d3ee",
-  vessel: "#38bdf8",
-  report: "#f8fafc",
+  marina: "#C4A15A",
+  anchorage: "#3E7A62",
+  fuel: "#C4893A",
+  hazard: "#C45C4A",
+  lighthouse: "#E0C98A",
+  restaurant: "#A89078",
+  own: "#C4A15A",
+  diver: "#4E7C86",
+  vessel: "#6E8494",
+  report: "#E4DDD0",
 };
 
 const GLYPH: Record<ChartPinKind, string> = {
@@ -54,13 +53,15 @@ const GLYPH: Record<ChartPinKind, string> = {
 };
 
 const ACTOR_FILL: Record<ActorTone, string> = {
-  cyan: "#f5b942",
-  gold: "#f5b942",
-  red: "#fb7185",
+  cyan: "#C4A15A",
+  gold: "#C4A15A",
+  red: "#C45C4A",
 };
 
+const GLYPH_SIZE = 20;
+
 function capsule(fill: string, glyph: string): string {
-  return `<div style="width:30px;height:46px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))"><div style="width:30px;height:38px;border-radius:15px 15px 12px 12px;background:${fill};border:2px solid #fff;box-shadow:0 0 0 3px ${fill}55;display:grid;place-items:center;box-sizing:border-box"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">${glyph}</svg></div><div style="width:10px;height:10px;margin:-5px auto 0;background:${fill};border-radius:50%;border:2px solid #fff;box-sizing:border-box"></div></div>`;
+  return `<div style="width:30px;height:46px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))"><div style="width:30px;height:38px;border-radius:15px 15px 12px 12px;background:${fill};border:2px solid #fff;display:grid;place-items:center;box-sizing:border-box"><svg width="${GLYPH_SIZE}" height="${GLYPH_SIZE}" viewBox="0 0 24 24" aria-hidden="true">${glyph}</svg></div><div style="width:10px;height:10px;margin:-5px auto 0;background:${fill};border-radius:50%;border:2px solid #fff;box-sizing:border-box"></div></div>`;
 }
 
 /** Soft capsule. The tip disc is the chart coordinate. */
