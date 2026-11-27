@@ -437,16 +437,20 @@
   "services": {
     "eyebrow": "THALVO · Shore support",
     "title": "Routine Service Packages",
-    "subtitle": "Compare fixed prices from certified workshops & divers.",
+    "subtitle": "Request quotes from certified technicians and divers — no fixed list prices.",
     "filter_mech": "Marine Mechanics",
     "filter_diver": "Divers",
     "no_offers": "No workshops offering this package yet.",
-    "book_now": "Book Now",
+    "book_now": "Get a quote",
     "eta_short": "ETA",
     "empty_title": "No packages yet",
     "empty_body": "Standard service packages will appear here.",
     "load_error_title": "Could not load service packages",
-    "load_error_body": "Check the connection and try again."
+    "load_error_body": "Check the connection and try again.",
+    "request_quote": "Get a quote",
+    "quote_sent": "Quote request sent.",
+    "quote_failed": "Could not send the quote request.",
+    "no_offers_body": "No approved provider for this job yet. Continue via SOS or a fault report."
   },
   "shop": {
     "title": "Spare Parts Marketplace",

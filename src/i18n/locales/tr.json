@@ -437,16 +437,20 @@
   "services": {
     "eyebrow": "THALVO · Kıyı destek",
     "title": "Rutin Servis Paketleri",
-    "subtitle": "Sertifikalı atölye ve dalgıçlardan sabit fiyat karşılaştır.",
+    "subtitle": "Sertifikalı usta ve dalgıçlardan teklif alın — sabit fiyat yok.",
     "filter_mech": "Motor Servisleri",
     "filter_diver": "Dalgıçlar",
     "no_offers": "Bu paket için henüz teklif yok.",
-    "book_now": "Hemen Rezerve Et",
+    "book_now": "Teklif al",
     "eta_short": "Süre",
     "empty_title": "Henüz paket yok",
     "empty_body": "Standart servis paketleri burada görünecek.",
     "load_error_title": "Servis paketleri yüklenemedi",
-    "load_error_body": "Bağlantıyı kontrol edip yeniden deneyin."
+    "load_error_body": "Bağlantıyı kontrol edip yeniden deneyin.",
+    "request_quote": "Teklif al",
+    "quote_sent": "Teklif talebi gönderildi.",
+    "quote_failed": "Teklif talebi gönderilemedi.",
+    "no_offers_body": "Bu iş için henüz onaylı usta yok. SOS veya arıza bildirimi ile devam edebilirsiniz."
   },
   "shop": {
     "title": "Yedek Parça Pazaryeri",

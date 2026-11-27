@@ -3,16 +3,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { CheckoutModal } from "@/components/CheckoutModal";
 import { useSessionUser } from "@/lib/session";
 
-import { Wrench, Anchor, Star, Clock } from "lucide-react";
+import { Wrench, Anchor, Star, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { emitEvent } from "@/lib/events";
 import { sanitizePlainText } from "@/lib/sanitize";
 import { CockpitHeader } from "@/components/core/CockpitHeader";
 import { LiveOpsPanel } from "@/components/mission/LiveOpsPanel";
-import { MoneyAmount } from "@/components/core/MoneyAmount";
 import { EmptyState } from "@/components/core/EmptyState";
 import { SHEET_PANEL, SHEET_SCRIM, SheetHandle, useSheetChrome } from "@/lib/sheet-chrome";
 import { packageTitleLang } from "@/lib/ai-lang";
@@ -22,9 +20,19 @@ export const Route = createFileRoute("/_authenticated/app/services")({
   component: ServicesPage,
 });
 
-interface Pkg { id: string; key: string; title_tr: string; title_en: string; category: "mechanic" | "diver"; base_duration_min: number; }
+interface Pkg {
+  id: string;
+  key: string;
+  title_tr: string;
+  title_en: string;
+  category: "mechanic" | "diver";
+  base_duration_min: number;
+}
 interface Offer {
-  id: string; provider_id: string; price: number; eta_minutes: number;
+  id: string;
+  provider_id: string;
+  price: number;
+  eta_minutes: number;
   profiles: { full_name: string; company_name: string | null } | null;
   provider_details: { rating: number; service_type: string } | null;
 }
@@ -46,7 +54,10 @@ function Services() {
 
   const loadPackages = () => {
     setLoadError(false);
-    supabase.from("service_packages").select("*").order("key")
+    supabase
+      .from("service_packages")
+      .select("*")
+      .order("key")
       .then(({ data, error }) => {
         if (error) {
           console.warn("[services] service_packages unavailable", error.message);
@@ -62,24 +73,44 @@ function Services() {
     loadPackages();
   }, []);
 
-  const visible = useMemo(() => packages.filter((p) => p.category === filter), [packages, filter]);
-  const label = (p: Pkg) => (packageTitleLang(i18n.language) === "en" ? p.title_en : p.title_tr);
+  const visible = useMemo(
+    () => packages.filter((p) => p.category === filter),
+    [packages, filter],
+  );
+  const label = (p: Pkg) =>
+    packageTitleLang(i18n.language) === "en" ? p.title_en : p.title_tr;
 
   return (
     <div className="space-y-6">
       <LiveOpsPanel />
 
-      <CockpitHeader eyebrow={t("services.eyebrow")} title={t("services.title")} subtitle={t("services.subtitle")} />
+      <CockpitHeader
+        eyebrow={t("services.eyebrow")}
+        title={t("services.title")}
+        subtitle={t("services.subtitle")}
+      />
 
       <div className="flex gap-2">
-        <button onClick={() => setFilter("mechanic")}
-          className={"flex-1 h-11 rounded-xl text-sm font-semibold uppercase tracking-[0.14em] inline-flex items-center justify-center gap-2 border transition-colors " +
-            (filter === "mechanic" ? "bg-amber-500/20 border-amber-400/50 text-amber-100" : "bg-white/[0.03] border-white/10 text-white/60 hover:bg-white/10")}>
+        <button
+          onClick={() => setFilter("mechanic")}
+          className={
+            "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-semibold uppercase tracking-[0.14em] transition-colors " +
+            (filter === "mechanic"
+              ? "border-amber-400/50 bg-amber-500/20 text-amber-100"
+              : "border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/10")
+          }
+        >
           <Wrench className="size-4" /> {t("services.filter_mech")}
         </button>
-        <button onClick={() => setFilter("diver")}
-          className={"flex-1 h-11 rounded-xl text-sm font-semibold uppercase tracking-[0.14em] inline-flex items-center justify-center gap-2 border transition-colors " +
-            (filter === "diver" ? "bg-amber-500/20 border-amber-400/50 text-amber-100" : "bg-white/[0.03] border-white/10 text-white/60 hover:bg-white/10")}>
+        <button
+          onClick={() => setFilter("diver")}
+          className={
+            "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-semibold uppercase tracking-[0.14em] transition-colors " +
+            (filter === "diver"
+              ? "border-amber-400/50 bg-amber-500/20 text-amber-100"
+              : "border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/10")
+          }
+        >
           <Anchor className="size-4" /> {t("services.filter_diver")}
         </button>
       </div>
@@ -109,58 +140,80 @@ function Services() {
         <ul className="space-y-2">
           {visible.map((p) => (
             <li key={p.id}>
-              <button onClick={() => setSelected(p)}
-                className="w-full text-left glass-panel rounded-2xl p-4 flex items-center justify-between hover:border-amber-400/40 transition-colors">
+              <button
+                onClick={() => setSelected(p)}
+                className="glass-panel flex w-full items-center justify-between rounded-2xl p-4 text-left transition-colors hover:border-amber-400/40"
+              >
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{label(p)}</p>
-                  <p className="text-[11px] text-white/50 inline-flex items-center gap-1 mt-0.5"><Clock className="size-3" /> ~{p.base_duration_min} {t("common.min")}</p>
+                  <p className="truncate text-sm font-semibold text-white">{label(p)}</p>
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#F5B942]/85">
+                    {t("services.request_quote")}
+                  </p>
                 </div>
-                <span className="text-white/40 text-lg">›</span>
+                <span className="text-lg text-white/40">›</span>
               </button>
             </li>
           ))}
         </ul>
       )}
 
-      {selected && <PackageOffers pkg={selected} label={label(selected)} onClose={() => setSelected(null)} />}
+      {selected && (
+        <PackageOffers
+          pkg={selected}
+          label={label(selected)}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </div>
   );
 }
 
-function PackageOffers({ pkg, label, onClose }: { pkg: Pkg; label: string; onClose: () => void }) {
+function PackageOffers({
+  pkg,
+  label,
+  onClose,
+}: {
+  pkg: Pkg;
+  label: string;
+  onClose: () => void;
+}) {
   const { t } = useTranslation();
   const { user } = useSessionUser();
   const navigate = useNavigate();
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [booking, setBooking] = useState<Offer | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   useSheetChrome(onClose);
 
   useEffect(() => {
-    supabase.from("provider_service_packages")
-      .select("id, provider_id, price, eta_minutes, profiles!provider_service_packages_provider_id_fkey(full_name, company_name), provider_details!provider_service_packages_provider_id_fkey(rating, service_type)")
-      .eq("package_id", pkg.id).order("price")
+    supabase
+      .from("provider_service_packages")
+      .select(
+        "id, provider_id, price, eta_minutes, profiles!provider_service_packages_provider_id_fkey(full_name, company_name), provider_details!provider_service_packages_provider_id_fkey(rating, service_type)",
+      )
+      .eq("package_id", pkg.id)
+      .order("price")
       .then(({ data }) => setOffers((data as never) ?? []));
   }, [pkg.id]);
 
   const bookingInFlight = useRef(false);
-  const book = async () => {
-    if (!booking || !user) return;
-    if (bookingInFlight.current) return; // duplicate-click guard
+  const requestQuote = async (offer: Offer) => {
+    if (!user) return;
+    if (bookingInFlight.current) return;
     bookingInFlight.current = true;
+    setBusyId(offer.id);
     try {
-      // Location Integrity — require a real, validated device fix before booking.
-      // Failure is thrown so CheckoutModal surfaces it in-modal and preserves selection.
       const res = await getFix();
-      if (!res.ok) throw new Error(t(res.failure.messageKey, { defaultValue: res.failure.defaultMessage }));
-      const fix = res.fix;
-      const fields = fixToJobFields(fix);
+      if (!res.ok) {
+        throw new Error(t(res.failure.messageKey, { defaultValue: res.failure.defaultMessage }));
+      }
+      const fields = fixToJobFields(res.fix);
       const { data, error } = await supabase.rpc("book_service_package", {
-        _psp_id: booking.id,
+        _psp_id: offer.id,
         _lat: fields.lat,
         _lng: fields.lng,
         _marina: "Göcek",
-        _description: sanitizePlainText(`Routine service · ${label}`, 400),
+        _description: sanitizePlainText(`Quote request · ${label}`, 400),
         _location_accuracy_m: fields.location_accuracy_m ?? undefined,
         _location_captured_at: fields.location_captured_at ?? undefined,
       });
@@ -170,23 +223,23 @@ function PackageOffers({ pkg, label, onClose }: { pkg: Pkg; label: string; onClo
         type: "mission.created",
         subject_type: "mission",
         subject_id: jobId,
-        metadata: { source: "service_package", package: pkg.key, price: booking.price },
+        metadata: { source: "service_package_quote", package: pkg.key },
       });
-      toast.success(t("owner.accept_offer"));
-      setBooking(null); onClose();
+      toast.success(t("services.quote_sent"));
+      onClose();
       navigate({ to: "/app/job/$id", params: { id: jobId } });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : t("services.quote_failed");
+      toast.error(message);
     } finally {
       bookingInFlight.current = false;
+      setBusyId(null);
     }
   };
 
-
   return (
     <div className={SHEET_SCRIM} onClick={onClose}>
-      <div
-        className={SHEET_PANEL + " sm:max-w-xl"}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={SHEET_PANEL + " sm:max-w-xl"} onClick={(e) => e.stopPropagation()}>
         <SheetHandle />
         <div className="flex items-center justify-between border-b border-white/10 px-5 pb-3 pt-2 sm:pt-5">
           <p className="font-semibold uppercase tracking-tight text-white">{label}</p>
@@ -196,7 +249,7 @@ function PackageOffers({ pkg, label, onClose }: { pkg: Pkg; label: string; onClo
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-[max(2rem,env(safe-area-inset-bottom))]">
           {offers.length === 0 ? (
-            <EmptyState title={t("services.no_offers")} body={t("services.empty_body")} />
+            <EmptyState title={t("services.no_offers")} body={t("services.no_offers_body")} />
           ) : (
             <ul className="space-y-2">
               {offers.map((o) => (
@@ -215,42 +268,27 @@ function PackageOffers({ pkg, label, onClose }: { pkg: Pkg; label: string; onClo
                     <p className="truncate text-sm font-bold text-white">
                       {o.profiles?.company_name || o.profiles?.full_name}
                     </p>
-                    <div className="flex items-center gap-2 text-[11px] text-white/50">
-                      <span className="inline-flex items-center gap-0.5">
-                        <Star className="size-3 fill-amber text-amber" />{" "}
-                        {(o.provider_details?.rating ?? 5).toFixed(1)}
-                      </span>
-                      <span>·</span>
-                      <span>
-                        {o.eta_minutes} {t("common.min")}
-                      </span>
-                    </div>
+                    <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-white/50">
+                      <Star className="size-3 fill-amber text-amber" />
+                      {(o.provider_details?.rating ?? 5).toFixed(1)}
+                    </p>
                   </div>
-                  <div className="text-right">
-                    <MoneyAmount value={Number(o.price)} className="text-base" />
-                    <button
-                      onClick={() => setBooking(o)}
-                      className="ml-auto mt-1.5 block rounded-md bg-[#F5B942] px-3 py-1.5 text-[11px] font-bold tracking-wide text-[#1A1406] transition hover:bg-[#ffc857]"
-                    >
-                      {t("services.book_now")}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    disabled={busyId === o.id}
+                    onClick={() => void requestQuote(o)}
+                    className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md bg-[#F5B942] px-3 text-[11px] font-bold tracking-wide text-[#1A1406] transition hover:bg-[#ffc857] disabled:opacity-55"
+                  >
+                    {busyId === o.id ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : null}
+                    {t("services.request_quote")}
+                  </button>
                 </li>
               ))}
             </ul>
           )}
         </div>
-        {booking && (
-          <CheckoutModal
-            open
-            amount={Number(booking.price)}
-            title={booking.profiles?.company_name || booking.profiles?.full_name || "Provider"}
-            subtitle={label}
-            tone="marine"
-            onClose={() => setBooking(null)}
-            onPaid={book}
-          />
-        )}
       </div>
     </div>
   );

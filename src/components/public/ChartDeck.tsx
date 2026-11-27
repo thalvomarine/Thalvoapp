@@ -301,14 +301,11 @@ function ServicesPanel() {
                         defaultValue: isTr ? pkg.title_tr : pkg.title_en,
                       })}
                     </p>
-                    {pkg.base_duration_min != null && (
-                      <p className="thalvo-num shrink-0 text-[12px] text-amber-100/80">
-                        {t("public.duration_min", { count: pkg.base_duration_min })}
-                      </p>
-                    )}
+                    <p className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#F5B942]/85">
+                      {t("services.request_quote")}
+                    </p>
                   </div>
                   {scope ? <p className="mt-1.5 text-[13px] leading-snug text-white/55">{scope}</p> : null}
-                  <p className="mt-2 text-[11px] tracking-wide text-white/40">{t("public.price_on_request")}</p>
                 </Link>
               </li>
             );
