@@ -1511,15 +1511,24 @@ html[data-thalvo-theme="day"] .thalvo-risk-low {
 }
 .thalvo-dock-shell {
   border-radius: var(--skin-dock-radius, 20px);
-  background: var(--skin-dock-bg, rgb(16 40 44 / 0.82));
-  border-color: rgb(201 184 150 / 0.28);
+  background: var(--skin-dock-bg, rgb(16 40 44 / 0.9));
+  border-color: rgb(201 184 150 / 0.32);
   backdrop-filter: blur(16px);
+}
+.thalvo-dock-label {
+  font-family: "Barlow Condensed", "Avenir Next Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.05;
+  text-transform: uppercase;
 }
 .thalvo-fab-latch {
   border-radius: var(--skin-fab-radius, 14px);
 }
 .thalvo-nav-active-rail {
-  background: var(--skin-active, #c9b896);
+  background: var(--skin-active, #d4c4a0);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--skin-active, #d4c4a0) 35%, transparent);
 }
 .thalvo-skin-badge {
   pointer-events: none;

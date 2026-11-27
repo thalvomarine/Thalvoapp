@@ -12,12 +12,12 @@
  *   Marketplace = tekne+parça · Passport = dümen · Charter = yelken
  */
 
-const AMBER = "#C9B896";
-const STEEL = "#B7C0C8";
+const AMBER = "#D4C4A0";
+const STEEL = "#D2D8DE";
 const INK = "#0C2226";
-const RING = "rgba(244,239,230,0.45)";
-const DANGER = "#C45C5C";
-const DANGER_SOFT = "#E08A8A";
+const RING = "rgba(244,239,230,0.55)";
+const DANGER = "#D96A6A";
+const DANGER_SOFT = "#F0A0A0";
 
 interface MarkProps {
   size?: number;

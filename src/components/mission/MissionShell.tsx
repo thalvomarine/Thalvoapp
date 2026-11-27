@@ -279,7 +279,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                 "grid w-full items-center px-1.5 " +
                 (isSupplier ? "grid-cols-3" : "grid-cols-6")
               }
-              style={{ height: 60 }}
+              style={{ height: 68 }}
             >
               {!isSupplier && (
                 <NavTab
@@ -528,13 +528,13 @@ function SosNavButton({
       onTouchStart={onActivate}
       onTouchEnd={onActivate}
       aria-label="SOS"
-      className="relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-visible px-0.5 text-[9px] font-semibold uppercase tracking-tight text-[#E08A8A]"
+      className="relative flex min-w-0 flex-col items-center justify-center gap-1 overflow-visible px-0.5 text-[#F0A0A0]"
       style={{ pointerEvents: "auto" }}
     >
-      <span className="thalvo-fab-latch grid size-10 place-items-center border border-[#C45C5C]/60 bg-[#C45C5C]/18">
+      <span className="thalvo-fab-latch grid size-10 place-items-center border border-[#D96A6A]/70 bg-[#D96A6A]/20">
         <SosMark size={24} />
       </span>
-      <span>SOS</span>
+      <span className="thalvo-dock-label">SOS</span>
     </button>
   );
 }
@@ -554,24 +554,31 @@ function NavTab({
     <Link
       to={to}
       className={
-        "relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden px-0.5 text-[9px] font-semibold uppercase tracking-tight transition-colors " +
-        (active ? "text-white" : "text-white/45 hover:text-white/75")
+        "relative flex min-w-0 flex-col items-center justify-center gap-1 overflow-hidden px-0.5 transition-colors " +
+        (active ? "text-[#F4EFE6]" : "text-[#D2D8DE]/70 hover:text-[#F4EFE6]")
       }
     >
       {active ? (
-        <span className="thalvo-nav-active-rail absolute top-0 h-[2px] w-7 rounded-full" />
+        <span className="thalvo-nav-active-rail absolute top-0 h-[3px] w-8 rounded-full" />
       ) : null}
       <span
         className={
-          "thalvo-fab-latch grid size-9 place-items-center border transition-colors " +
+          "thalvo-fab-latch grid size-10 place-items-center border transition-colors " +
           (active
-            ? "border-[color:color-mix(in_srgb,var(--skin-active,#C9B896)_35%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#C9B896)_10%,transparent)]"
+            ? "border-[color:color-mix(in_srgb,var(--skin-active,#D4C4A0)_55%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#D4C4A0)_18%,transparent)]"
             : "border-transparent bg-transparent")
         }
       >
         {icon}
       </span>
-      <span className="max-w-full truncate whitespace-nowrap leading-none">{label}</span>
+      <span
+        className={
+          "thalvo-dock-label max-w-full truncate " +
+          (active ? "text-[#D4C4A0]" : "")
+        }
+      >
+        {label}
+      </span>
     </Link>
   );
 }
@@ -592,24 +599,31 @@ function CharterNavButton({
       type="button"
       onClick={onOpen}
       className={
-        "relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden px-0.5 text-[9px] font-semibold uppercase tracking-tight transition-colors " +
-        (active ? "text-white" : "text-white/45 hover:text-white/75")
+        "relative flex min-w-0 flex-col items-center justify-center gap-1 overflow-hidden px-0.5 transition-colors " +
+        (active ? "text-[#F4EFE6]" : "text-[#D2D8DE]/70 hover:text-[#F4EFE6]")
       }
     >
       {active ? (
-        <span className="thalvo-nav-active-rail absolute top-0 h-[2px] w-7 rounded-full" />
+        <span className="thalvo-nav-active-rail absolute top-0 h-[3px] w-8 rounded-full" />
       ) : null}
       <span
         className={
-          "thalvo-fab-latch grid size-9 place-items-center border transition-colors " +
+          "thalvo-fab-latch grid size-10 place-items-center border transition-colors " +
           (active
-            ? "border-[color:color-mix(in_srgb,var(--skin-active,#C9B896)_35%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#C9B896)_10%,transparent)]"
+            ? "border-[color:color-mix(in_srgb,var(--skin-active,#D4C4A0)_55%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#D4C4A0)_18%,transparent)]"
             : "border-transparent bg-transparent")
         }
       >
         {icon ?? <CharterMark size={22} />}
       </span>
-      <span className="max-w-full truncate whitespace-nowrap leading-none">{label}</span>
+      <span
+        className={
+          "thalvo-dock-label max-w-full truncate " +
+          (active ? "text-[#D4C4A0]" : "")
+        }
+      >
+        {label}
+      </span>
     </button>
   );
 }
