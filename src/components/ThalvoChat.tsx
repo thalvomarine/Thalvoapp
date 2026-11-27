@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import ReactMarkdown from "react-markdown";
 import { Camera, Loader2, Plus, Send, X } from "lucide-react";
-import { CompassMark } from "@/components/brand/CompassMark";
+import { AiMark } from "@/components/brand/ProductMarks";
 import { getCockpitContext } from "@/lib/ai-captain-context-bus";
 import type { CaptainAction } from "@/lib/ai-captain-types";
 import { requestMapFocus } from "@/lib/map-focus-bus";
@@ -258,7 +258,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
         boxShadow: "0 12px 32px -12px rgba(0,0,0,0.75)",
       }}
     >
-      <CompassMark size={26} />
+      <AiMark size={26} />
     </button>
   );
 
@@ -279,7 +279,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
         <header className="flex items-center justify-between border-b border-white/10 px-4 py-3">
           <div className="flex items-center gap-3">
             <div className="grid size-10 place-items-center rounded-xl border border-amber-300/40 bg-[#0F2440]">
-              <CompassMark size={22} />
+              <AiMark size={22} />
             </div>
             <div>
               <p className="text-[13px] font-semibold tracking-wide text-white">THALVO AI</p>
@@ -313,7 +313,7 @@ function ThalvoChatLive({ showLauncher }: { showLauncher: boolean }) {
             <div className="space-y-4">
               <div className="rounded-xl border border-dashed border-white/12 bg-white/[0.02] px-4 py-5 text-center">
                 <div className="mx-auto grid size-11 place-items-center rounded-full border border-[#F5B942]/30 bg-[#F5B942]/10">
-                  <CompassMark size={22} />
+                  <AiMark size={22} />
                 </div>
                 <p className="thalvo-display mt-3 text-lg tracking-wide text-white">THALVO AI</p>
                 <p className="mt-2 text-[12px] leading-relaxed text-white/55">
@@ -429,7 +429,7 @@ function MessageBubble({ message }: { message: ChatLine }) {
     <div className={mine ? "flex justify-end" : "flex justify-start gap-2"}>
       {!mine && (
         <div className="mt-0.5 shrink-0">
-          <CompassMark size={16} />
+          <AiMark size={16} />
         </div>
       )}
       <div

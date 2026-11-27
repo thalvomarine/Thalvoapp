@@ -15,7 +15,7 @@ import { createPortal } from "react-dom";
 import { Wordmark } from "@/components/Wordmark";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccountMenuButton } from "@/components/mission/AccountMenuButton";
-import { ClipboardList, Map as MapIcon, Ship, Store, UserCircle2, AlertOctagon, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useFirstRun } from "@/components/onboarding/useFirstRun";
 
@@ -45,7 +45,17 @@ import { setMapChromeOverlay } from "@/lib/map-chrome";
 import { CockpitErrorBoundary } from "@/components/CockpitErrorBoundary";
 import { PartnerPendingPanel } from "@/components/mission/PartnerPendingPanel";
 
-import { RescueMark, PassportMark, MarketplaceMark } from "@/components/brand/ProductMarks";
+import {
+  AtlasMark,
+  CharterMark,
+  DealerMark,
+  MarketplaceMark,
+  OrdersMark,
+  PassportMark,
+  ProfileMark,
+  RescueMark,
+  SosMark,
+} from "@/components/brand/ProductMarks";
 import { ensureAdminAccess } from "@/lib/superadmin";
 import { useOpsAlerts } from "@/hooks/useOpsAlerts";
 import { useSessionUser, type Profile } from "@/lib/session";
@@ -212,20 +222,23 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
     >
       {/* Top status rail — replaced by the map cockpit's own floating top bar in fullBleed mode */}
       {!fullBleed && (
-        <header className="sticky top-0 z-30 border-b border-white/[0.06] bg-[oklch(0.13_0.02_250/0.7)] backdrop-blur-xl pt-[env(safe-area-inset-top)]">
+        <header className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#06101c]/92 backdrop-blur-xl pt-[env(safe-area-inset-top)]">
           <div className="mx-auto flex h-12 max-w-6xl items-center justify-between gap-3 px-4">
             <Link to="/app" className="flex min-w-0 items-center gap-2.5">
               <Wordmark size="sm" className="text-white" />
-              <span className="thalvo-display text-[14px] tracking-[0.16em] text-white">THALVO</span>
+              <span className="thalvo-display text-[15px] tracking-[0.18em] text-white">THALVO</span>
+              <span className="hidden rounded-[3px] border border-[#00F0FF]/35 bg-[#00F0FF]/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#00F0FF] sm:inline">
+                MarineOS
+              </span>
             </Link>
             <div className="flex items-center gap-2">
               <LanguageSwitcher tone="dark" />
               <AccountMenuButton profile={profile} isAdmin={isAdmin} />
             </div>
           </div>
-          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pb-2 text-[12px]">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pb-2.5 text-[12px]">
             <div className="truncate text-white/70">
-              <span className="mr-2 text-white/40">
+              <span className="mr-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#F5B942]/70">
                 {isSupplier
                   ? t("auth.role_supplier")
                   : profile.role === "Provider"
@@ -233,10 +246,10 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                     : t("auth.role_client")}
               </span>
               <span className="font-semibold text-white">{profile.full_name}</span>
-              {profile.boat_name && <span className="text-white/50"> · {profile.boat_name}</span>}
-              {profile.business_name && <span className="text-white/50"> · {profile.business_name}</span>}
+              {profile.boat_name && <span className="text-white/45"> · {profile.boat_name}</span>}
+              {profile.business_name && <span className="text-white/45"> · {profile.business_name}</span>}
             </div>
-            <div className="shrink-0 flex items-center gap-3 text-white/50">
+            <div className="flex shrink-0 items-center gap-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/40">
               <LocalDateLabel />
             </div>
           </div>
@@ -254,19 +267,19 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
         }}
       >
         <div className="pointer-events-auto mx-auto w-full max-w-lg px-3">
-          <div className="rounded-full border border-white/10 bg-[oklch(0.14_0.02_250/0.86)] backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)]">
+          <div className="rounded-[18px] border border-white/12 bg-[#06101c]/92 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur-xl">
             <div
               className={
-                "grid w-full items-center px-1 " +
+                "grid w-full items-center px-1.5 " +
                 (isSupplier ? "grid-cols-3" : "grid-cols-6")
               }
-              style={{ height: 56 }}
+              style={{ height: 60 }}
             >
               {!isSupplier && (
                 <NavTab
                   to="/app"
                   active={path === "/app"}
-                  icon={<MapIcon className="size-[16px]" />}
+                  icon={<AtlasMark size={20} />}
                   label={t("nav.map")}
                 />
               )}
@@ -275,19 +288,19 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                   <NavTab
                     to="/app/dealer"
                     active={path.startsWith("/app/dealer") || path.startsWith("/app/supplier")}
-                    icon={<Store className="size-[16px]" />}
+                    icon={<DealerMark size={20} />}
                     label={t("nav.dock_counter")}
                   />
                   <NavTab
                     to="/app/marketplace"
                     active={path.startsWith("/app/marketplace") || path.startsWith("/app/shop")}
-                    icon={<MarketplaceMark size={18} />}
+                    icon={<MarketplaceMark size={20} />}
                     label={t("nav.dock_market")}
                   />
                   <NavTab
                     to="/app/orders"
                     active={path.startsWith("/app/orders")}
-                    icon={<ClipboardList className="size-[16px]" />}
+                    icon={<OrdersMark size={20} />}
                     label={t("nav.orders")}
                   />
                 </>
@@ -301,7 +314,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                       path.startsWith("/app/report") ||
                       path.startsWith("/app/transfer-captain")
                     }
-                    icon={<RescueMark size={18} />}
+                    icon={<RescueMark size={20} />}
                     label={t("nav.missions")}
                   />
                   <SosNavButton onActivate={fireSos} />
@@ -312,19 +325,19 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                       path.startsWith("/app/shop") ||
                       path.startsWith("/app/dealer")
                     }
-                    icon={<MarketplaceMark size={18} />}
+                    icon={<MarketplaceMark size={20} />}
                     label={t("nav.dock_market")}
                   />
                   <NavTab
                     to="/app/orders"
                     active={path.startsWith("/app/orders")}
-                    icon={<ClipboardList className="size-[16px]" />}
+                    icon={<OrdersMark size={20} />}
                     label={t("nav.orders")}
                   />
                   <NavTab
                     to="/app/profile"
                     active={path.startsWith("/app/profile")}
-                    icon={<UserCircle2 className="size-[16px]" />}
+                    icon={<ProfileMark size={20} />}
                     label={t("nav.profile")}
                   />
                 </>
@@ -338,7 +351,7 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                       path.startsWith("/app/report") ||
                       path.startsWith("/app/transfer-captain")
                     }
-                    icon={<RescueMark size={18} />}
+                    icon={<RescueMark size={20} />}
                     label={t("nav.missions")}
                   />
                   <SosNavButton onActivate={fireSos} />
@@ -350,19 +363,19 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
                       path.startsWith("/app/orders") ||
                       path.startsWith("/app/dealer")
                     }
-                    icon={<MarketplaceMark size={18} />}
+                    icon={<MarketplaceMark size={20} />}
                     label={t("nav.dock_market")}
                   />
                   <NavTab
                     to="/app/passport"
                     active={path.startsWith("/app/passport") || path.startsWith("/app/reputation")}
-                    icon={<PassportMark size={18} />}
+                    icon={<PassportMark size={20} />}
                     label={t("nav.dock_vessel")}
                   />
                   <NavTab
                     to="/app/charter"
                     active={path.startsWith("/app/charter")}
-                    icon={<Ship className="size-[16px]" />}
+                    icon={<CharterMark size={20} />}
                     label={t("charter.door_charter")}
                   />
                 </>
@@ -493,18 +506,11 @@ function SosNavButton({
       onTouchStart={onActivate}
       onTouchEnd={onActivate}
       aria-label="SOS"
-      className="relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-visible px-0.5 text-[9px] font-semibold uppercase tracking-tight text-red-200"
+      className="relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-visible px-0.5 text-[9px] font-semibold uppercase tracking-tight text-[#FCA5A5]"
       style={{ pointerEvents: "auto" }}
     >
-      <span
-        className="relative grid size-8 place-items-center rounded-full text-white"
-        style={{
-          background: "linear-gradient(135deg, oklch(0.68 0.24 25) 0%, oklch(0.6 0.24 18) 100%)",
-          boxShadow: "0 8px 20px -8px rgba(244,63,94,0.7)",
-        }}
-      >
-        <span className="absolute -inset-1 -z-10 rounded-full bg-red-500/35 blur-sm animate-pulse" />
-        <AlertOctagon className="size-3.5" />
+      <span className="grid size-9 place-items-center rounded-[10px] border border-[#EF4444]/55 bg-[#EF4444]/15">
+        <SosMark size={22} />
       </span>
       <span>SOS</span>
     </button>
@@ -527,13 +533,22 @@ function NavTab({
       to={to}
       className={
         "relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden px-0.5 text-[9px] font-semibold uppercase tracking-tight transition-colors " +
-        (active ? "text-white" : "text-white/50 hover:text-white/80")
+        (active ? "text-white" : "text-white/45 hover:text-white/75")
       }
     >
-      {active && (
-        <span className="absolute -top-0.5 h-1 w-6 rounded-full bg-amber-400 shadow-[0_0_12px_theme(colors.amber.400)]" />
-      )}
-      {icon}
+      {active ? (
+        <span className="absolute top-0 h-[2px] w-7 rounded-full bg-[#00F0FF]" />
+      ) : null}
+      <span
+        className={
+          "grid size-9 place-items-center rounded-[10px] border transition-colors " +
+          (active
+            ? "border-[#00F0FF]/35 bg-[#00F0FF]/10"
+            : "border-transparent bg-transparent")
+        }
+      >
+        {icon}
+      </span>
       <span className="max-w-full truncate whitespace-nowrap leading-none">{label}</span>
     </Link>
   );

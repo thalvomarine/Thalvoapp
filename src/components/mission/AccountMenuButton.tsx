@@ -9,8 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Shield, Ship, Store, User, UserCircle2 } from "lucide-react";
-import { RescueMark, ControlTowerMark } from "@/components/brand/ProductMarks";
+import { LogOut, Shield } from "lucide-react";
+import { CharterMark, ControlTowerMark, DealerMark, ProfileMark, RescueMark } from "@/components/brand/ProductMarks";
 import type { Profile } from "@/lib/session";
 import { useSessionUser } from "@/lib/session";
 import { setMapChromeOverlay } from "@/lib/map-chrome";
@@ -61,11 +61,11 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
         <button
           aria-label="Account"
           className={
-            "grid place-items-center rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 transition-colors " +
-            (compact ? "size-7" : "size-9")
+            "grid place-items-center rounded-[10px] border border-white/12 bg-white/[0.04] text-white/80 transition-colors hover:border-[#00F0FF]/35 hover:bg-[#00F0FF]/10 " +
+            (compact ? "size-8" : "size-9")
           }
         >
-          <UserCircle2 className={compact ? "size-3.5" : "size-4"} />
+          <ProfileMark size={compact ? 16 : 18} />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -78,13 +78,16 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/app/profile">
-            <User className="size-4 mr-2" /> Profile
+            <span className="mr-2 inline-grid size-4 place-items-center">
+              <ProfileMark size={16} />
+            </span>
+            Profile
           </Link>
         </DropdownMenuItem>
         {isProvider && (
           <DropdownMenuItem asChild>
             <Link to="/app">
-              <span className="mr-2 inline-grid place-items-center size-4">
+              <span className="mr-2 inline-grid size-4 place-items-center">
                 <RescueMark size={16} />
               </span>
               Missions
@@ -94,7 +97,10 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
         {isSupplier && (
           <DropdownMenuItem asChild>
             <Link to="/app/dealer">
-              <Store className="size-4 mr-2" /> {t("nav.dock_counter")}
+              <span className="mr-2 inline-grid size-4 place-items-center">
+                <DealerMark size={16} />
+              </span>
+              {t("nav.dock_counter")}
             </Link>
           </DropdownMenuItem>
         )}
@@ -104,7 +110,7 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
               to="/admin"
               className="font-semibold text-amber-200 focus:bg-rose-500/20 focus:text-amber-100"
             >
-              <Shield className="size-4 mr-2 text-rose-300" />
+              <Shield className="mr-2 size-4 text-rose-300" />
               {t("admin.super.menu")}
             </Link>
           </DropdownMenuItem>
@@ -112,7 +118,7 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
         {(isAdmin || isSuper) && (
           <DropdownMenuItem asChild>
             <Link to="/app/admin">
-              <span className="mr-2 inline-grid place-items-center size-4">
+              <span className="mr-2 inline-grid size-4 place-items-center">
                 <ControlTowerMark size={16} />
               </span>
               Control Tower
@@ -122,11 +128,14 @@ export function AccountMenuButton({ profile, isAdmin, compact = false }: Props) 
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/app/charter">
-            <Ship className="size-4 mr-2" /> {t("charter.menu")}
+            <span className="mr-2 inline-grid size-4 place-items-center">
+              <CharterMark size={16} />
+            </span>
+            {t("charter.menu")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={signOut}>
-          <LogOut className="size-4 mr-2" /> Sign out
+          <LogOut className="mr-2 size-4" /> Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

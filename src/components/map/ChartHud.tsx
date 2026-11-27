@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { formatDegrees } from "@/lib/marine-data";
 import { LeafletPointerGuard, stopMapEvent } from "@/lib/leaflet-dom";
-import { CompassMark } from "@/components/brand/CompassMark";
+import { AiMark, LayersMark, LocateMark } from "@/components/brand/ProductMarks";
 import { openThalvoAi } from "@/lib/thalvo-ai-bus";
 
 export interface ChartLayers {
@@ -821,7 +821,7 @@ export function ChartFabStack({
             aria-label="THALVO AI"
             className={FAB_BTN + " flex-col gap-0.5 !h-12"}
           >
-            <CompassMark size={16} />
+            <AiMark size={20} />
             <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#F5B942]/90">
               AI
             </span>
@@ -844,7 +844,7 @@ export function ChartFabStack({
             aria-label={layersLabel}
             aria-pressed={layersOpen}
           >
-            <Layers className="size-[18px]" />
+            <LayersMark size={20} />
           </button>
           <button
             type="button"
@@ -859,9 +859,9 @@ export function ChartFabStack({
             className={FAB_BTN}
           >
             {locating ? (
-              <Loader2 className="size-[18px] animate-spin" />
+              <Loader2 className="size-[18px] animate-spin text-[#00F0FF]" />
             ) : (
-              <Crosshair className="size-[18px]" />
+              <LocateMark size={20} />
             )}
           </button>
         </LeafletPointerGuard>

@@ -286,12 +286,10 @@
   --ring: oklch(0.7 0.13 210);
 }
 
-/* Cockpit surface — deep radial vignette behind everything */
+/* Cockpit surface — ECDIS navy plane (no candy glow) */
 .thalvo-cockpit {
   background:
-    radial-gradient(120% 80% at 50% -10%, oklch(0.24 0.05 245) 0%, transparent 55%),
-    radial-gradient(90% 60% at 100% 100%, oklch(0.22 0.04 220 / 0.6) 0%, transparent 60%),
-    oklch(0.11 0.015 250);
+    linear-gradient(180deg, #0b1a2e 0%, #06101c 48%, #050d18 100%);
 }
 
 /* Marketplace showroom — MarineOS skill tokens + light motion */
