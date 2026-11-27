@@ -43,6 +43,7 @@ import {
 import type { EmergencyServiceCategory } from "@/lib/emergency-service";
 import { setMapChromeOverlay } from "@/lib/map-chrome";
 import { CockpitErrorBoundary } from "@/components/CockpitErrorBoundary";
+import { PartnerPendingPanel } from "@/components/mission/PartnerPendingPanel";
 
 import { RescueMark, PassportMark, MarketplaceMark } from "@/components/brand/ProductMarks";
 import { ensureAdminAccess } from "@/lib/superadmin";
@@ -78,6 +79,11 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
   const { user } = useSessionUser();
   const isSupplier = profile.role === "Supplier";
   const isProvider = profile.role === "Provider";
+  const pendingPartnerRole =
+    profile.role === "Client" &&
+    (profile.requested_role === "Provider" || profile.requested_role === "Supplier")
+      ? profile.requested_role
+      : null;
   const hasSos = !isSupplier;
   const [isAdmin, setIsAdmin] = useState(false);
   const [sosOpen, setSosOpen] = useState(false);
@@ -393,6 +399,20 @@ export function MissionShell({ profile, children, fullBleed = false }: Props) {
               <X className="size-3.5" />
             </button>
           </div>
+        )}
+        {pendingPartnerRole && (
+          <PartnerPendingPanel
+            requestedRole={pendingPartnerRole}
+            variant="banner"
+            className={
+              fullBleed
+                ? "pointer-events-auto absolute inset-x-3 z-[55] rounded-2xl " +
+                  (welcomeBanner
+                    ? "top-[calc(env(safe-area-inset-top)+7.25rem)]"
+                    : "top-[calc(env(safe-area-inset-top)+3.5rem)]")
+                : "mb-4 rounded-2xl"
+            }
+          />
         )}
         <CockpitErrorBoundary>{children}</CockpitErrorBoundary>
       </main>

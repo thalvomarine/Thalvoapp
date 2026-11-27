@@ -8,6 +8,7 @@ import { MarketplaceShell } from "@/components/marketplace/MarketplaceShell";
 import { DealerStockPanel, type DealerStockRow } from "@/components/marketplace/DealerStockPanel";
 import { DealerOrderQueue, type DealerOrderRow } from "@/components/orders/DealerOrderQueue";
 import { GlassPanel } from "@/components/mission/GlassPanel";
+import { PartnerPendingPanel } from "@/components/mission/PartnerPendingPanel";
 import { StatusChip } from "@/components/mission/StatusChip";
 import { Loader2, Plus, Store, X, Package } from "lucide-react";
 import { toast } from "sonner";
@@ -55,22 +56,33 @@ function DealerPage() {
   }
   if (!profile) return null;
   const isDealer = profile.role === "Supplier";
+  const pendingDealer = profile.role === "Client" && profile.requested_role === "Supplier";
   return isDealer ? (
     <DealerConsole userId={user.id} businessName={profile.business_name} marina={profile.home_marina} />
   ) : (
-    <NotDealer />
+    <NotDealer pending={pendingDealer} />
   );
 }
 
-function NotDealer() {
+function NotDealer({ pending }: { pending: boolean }) {
   const { t } = useTranslation();
   return (
     <MarketplaceShell eyebrow={t("dealer.eyebrow")} title={t("dealer.title")}>
-      <GlassPanel className="text-center">
-        <Store className="mx-auto size-8 text-white/40 mb-2" />
-        <p className="text-sm text-white/70 font-semibold">{t("dealer.access_only_title")}</p>
-        <p className="text-[12px] text-white/50 mt-1">{t("dealer.access_only_body")}</p>
-      </GlassPanel>
+      {pending ? (
+        <PartnerPendingPanel requestedRole="Supplier" />
+      ) : (
+        <GlassPanel className="text-center">
+          <Store className="mx-auto size-8 text-white/40 mb-2" />
+          <p className="text-sm text-white/70 font-semibold">{t("dealer.access_only_title")}</p>
+          <p className="text-[12px] text-white/50 mt-1">{t("dealer.access_only_body")}</p>
+          <a
+            href="/auth?intent=dealer"
+            className="mt-4 inline-flex h-10 items-center justify-center rounded-md border border-[#F5B942]/40 px-4 text-[12px] font-semibold text-[#F5B942] hover:bg-[#F5B942]/10"
+          >
+            {t("dealer.apply_cta")}
+          </a>
+        </GlassPanel>
+      )}
     </MarketplaceShell>
   );
 }

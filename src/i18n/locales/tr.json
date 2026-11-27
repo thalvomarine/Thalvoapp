@@ -130,7 +130,8 @@
       "err_mersis": "MERSİS 16 haneli olmalı.",
       "err_kep": "KEP adresi …@…kep.tr formatında olmalı.",
       "err_iban": "Geçerli bir TR IBAN girin.",
-      "err_terms": "Devam etmek için koşulları kabul edin."
+      "err_terms": "Devam etmek için koşulları kabul edin.",
+      "err_docs_required": "Vergi levhası ve imza sirküleri zorunlu; limited/AŞ için ticaret sicili de gerekir."
     },
     "service_type": "Hizmet tipi",
     "sm_mechanic": "Deniz Motoru Ustası",
@@ -1360,7 +1361,8 @@
     "new_order_toast_title": "Yeni sipariş geldi",
     "new_order_toast_body": "Bir müşteri yedek parça siparişi oluşturdu.",
     "badge_new": "Yeni",
-    "field_image_advanced": "Gelişmiş: URL yapıştır"
+    "field_image_advanced": "Gelişmiş: URL yapıştır",
+    "apply_cta": "Bayi başvurusu yap"
   },
   "mission": {
     "details": "Görev detayları",
@@ -2147,7 +2149,10 @@
     "partner_point_2": "Marka, marina, bayi veya teknisyen",
     "partner_point_3": "Pilot ekip 24 saat içinde döner",
     "partner_thanks_title": "Teşekkürler",
-    "partner_kind_hint": "Rolünüzü seçin — form buna göre kayda geçer."
+    "partner_kind_hint": "Rolünüzü seçin — form buna göre kayda geçer.",
+    "partner_account_hint": "Doğrudan hesap aç:",
+    "partner_door_usta": "Usta / teknisyen kaydı",
+    "partner_door_bayi": "Bayi başvurusu"
   },
   "onboarding": {
     "back": "Geri",
@@ -2500,5 +2505,16 @@
     "door_owner_kicker": "Tekne sahibi",
     "door_owner_title": "Filoyu MarineOS’ta yönet",
     "door_owner_body": "Tekne, fotoğraf, açık gün ve gelen talepler. Firma girişi ile açılır."
+  },
+  "partner_pending": {
+    "kicker": "Onay bekleniyor",
+    "title": "{{role}} başvurusu incelenirken",
+    "body": "Hesabınız tekne sahibi olarak aktif. THALVO operasyon başvurunuzu doğruladıktan sonra usta veya bayi masanız açılır — otomatik onay yok.",
+    "point_review": "Başvuru ve belgeler THALVO tarafından incelenir.",
+    "point_wait": "Onaya kadar harita ve kaptan araçlarını kullanabilirsiniz.",
+    "open_chart": "Haritaya dön",
+    "desk_after": "Onay sonrası bayi masası burada açılır.",
+    "banner_title": "{{role}} doğrulaması bekleniyor",
+    "banner_body": "Talep kaydedildi. Onaylanana kadar kaptan kokpitindesiniz."
   }
 }

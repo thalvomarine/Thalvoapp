@@ -29,8 +29,11 @@ Companion docs: `.cursor/skills/thalvo-marineos/SKILL.md`, `.cursor/skills/thalv
 
 ## Checkpoint C — Partner intake
 
-- [ ] Technician signup → pending → admin approve → missions desk
-- [ ] Dealer application → docs → approve → `/app/dealer`
+- [x] Persistent pending state (`requested_role` on Profile + cockpit banner + dealer pending panel)
+- [x] Landing Partner desk links to `/auth?intent=provider|dealer` (lead form kept)
+- [x] Provider `provider_details` upsert errors surface; dealer required docs gated
+- [ ] End-to-end: Technician signup → pending → admin approve → missions desk (manual verify)
+- [ ] End-to-end: Dealer application → docs → approve → `/app/dealer` (manual verify)
 - [ ] Provider can publish at least one service package
 - [ ] Empty states honest (no silent swallow of schema miss)
 

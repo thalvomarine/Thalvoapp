@@ -130,7 +130,8 @@
       "err_mersis": "Το MERSİS πρέπει να έχει 16 ψηφία.",
       "err_kep": "Το KEP πρέπει να είναι name@domain.kep.tr.",
       "err_iban": "Εισαγάγετε έγκυρο TR IBAN.",
-      "err_terms": "Αποδεχτείτε τους όρους για συνέχεια."
+      "err_terms": "Αποδεχτείτε τους όρους για συνέχεια.",
+      "err_docs_required": "Απαιτούνται φορολογική πινακίδα και κυκλική υπογραφής· για ΑΕ/ΕΠΕ και εμπορικό μητρώο."
     },
     "service_type": "Τύπος υπηρεσίας",
     "sm_mechanic": "Ναυτικός μηχανικός",
@@ -1360,7 +1361,8 @@
     "new_order_toast_title": "New order received",
     "new_order_toast_body": "A customer placed a spare-parts order.",
     "badge_new": "New",
-    "field_image_advanced": "Advanced: paste URL"
+    "field_image_advanced": "Advanced: paste URL",
+    "apply_cta": "Αίτηση αντιπροσώπου"
   },
   "mission": {
     "details": "Mission details",
@@ -2152,7 +2154,10 @@
     "partner_point_2": "Μάρκα, μαρίνα, έμπορος ή τεχνικός",
     "partner_point_3": "Απάντηση εντός 24 ωρών",
     "partner_thanks_title": "Ευχαριστούμε",
-    "partner_kind_hint": "Επιλέξτε ρόλο — το lead καταγράφεται ανάλογα."
+    "partner_kind_hint": "Επιλέξτε ρόλο — το lead καταγράφεται ανάλογα.",
+    "partner_account_hint": "Ανοίξτε λογαριασμό απευθείας:",
+    "partner_door_usta": "Εγγραφή τεχνικού",
+    "partner_door_bayi": "Αίτηση αντιπροσώπου"
   },
   "onboarding": {
     "back": "Πίσω",
@@ -2505,5 +2510,16 @@
     "door_owner_kicker": "Ιδιοκτήτης",
     "door_owner_title": "Διαχείρισε στόλο στο MarineOS",
     "door_owner_body": "Σκάφος, φωτογραφίες, ανοιχτές μέρες και αιτήματα. Ανοίγει με είσοδο εταιρείας."
+  },
+  "partner_pending": {
+    "kicker": "Σε αναμονή έγκρισης",
+    "title": "Αίτηση {{role}} υπό εξέταση",
+    "body": "Ο λογαριασμός σας είναι ενεργός ως ιδιοκτήτης σκάφους. Η THALVO πρέπει να εγκρίνει το αίτημα πριν ανοίξει το γραφείο τεχνικού ή αντιπροσώπου.",
+    "point_review": "Η αίτηση και τα έγγραφα εξετάζονται από την THALVO.",
+    "point_wait": "Μέχρι τότε μπορείτε να χρησιμοποιείτε τον χάρτη και τα εργαλεία καπετάνιου.",
+    "open_chart": "Πίσω στον χάρτη",
+    "desk_after": "Το γραφείο αντιπροσώπου ανοίγει εδώ μετά την έγκριση.",
+    "banner_title": "Εκκρεμεί επαλήθευση {{role}}",
+    "banner_body": "Το αίτημα καταγράφηκε. Παραμένετε στο cockpit καπετάνιου μέχρι την έγκριση."
   }
 }

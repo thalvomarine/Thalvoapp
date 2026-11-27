@@ -84,7 +84,18 @@ function AuthPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { next, confirmed, intent } = Route.useSearch();
-  const goNext = () => (next ? navigate({ href: next }) : navigate({ to: "/app" }));
+  const goNext = (signupRole?: "Client" | "Provider" | "Supplier") => {
+    if (next) {
+      navigate({ href: next });
+      return;
+    }
+    // Pending bayi applicants land on the dealer desk (pending panel), not a dead wall.
+    if (signupRole === "Supplier") {
+      navigate({ to: "/app/dealer" });
+      return;
+    }
+    navigate({ to: "/app" });
+  };
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [role, setRole] = useState<"Client" | "Provider" | "Supplier">(() => {
     if (intent === "dealer") return "Supplier";
@@ -216,7 +227,7 @@ function AuthPage() {
         if (role === "Provider" && userId) {
           // No coordinates at signup: a provider position is only ever written
           // from a real device GPS fix (see src/lib/geolocation.ts).
-          await supabase.from("provider_details").upsert({
+          const { error: detailsError } = await supabase.from("provider_details").upsert({
             id: userId,
             service_type: serviceType,
             specialized_brands: serviceType === "Marine Mechanic" ? brands : [],
@@ -224,6 +235,7 @@ function AuthPage() {
             lat: null,
             lng: null,
           });
+          if (detailsError) throw detailsError;
         }
         if (role === "Supplier" && userId) {
           await persistDealerApplication(userId);
@@ -241,7 +253,7 @@ function AuthPage() {
         } else {
           toast.success(t("auth.signup_welcome_toast"), { duration: 7000 });
         }
-        goNext();
+        goNext(role);
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;

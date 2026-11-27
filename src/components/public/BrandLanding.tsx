@@ -315,6 +315,24 @@ export function BrandLanding() {
                   <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/65">
                     {t("boatshow.lead_thanks")}
                   </p>
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    <Link
+                      to="/auth"
+                      search={{ intent: "provider" }}
+                      className="inline-flex h-11 items-center justify-center rounded-md border border-white/15 px-5 text-sm font-semibold text-white/85 hover:bg-white/5"
+                      onClick={closePartner}
+                    >
+                      {t("landing.partner_door_usta")}
+                    </Link>
+                    <Link
+                      to="/auth"
+                      search={{ intent: "dealer" }}
+                      className="inline-flex h-11 items-center justify-center rounded-md bg-[#F5B942] px-5 text-sm font-bold text-[#1A1406] hover:bg-[#ffc857]"
+                      onClick={closePartner}
+                    >
+                      {t("landing.partner_door_bayi")}
+                    </Link>
+                  </div>
                 </div>
               ) : (
                 <form onSubmit={onSubmit} className="grid gap-0 lg:grid-cols-[0.85fr_1.15fr]">
@@ -384,18 +402,39 @@ export function BrandLanding() {
                       />
                     </label>
 
-                    <div className="mt-1 flex flex-col gap-4 border-t border-white/[0.07] pt-5 sm:flex-row sm:items-center sm:justify-between">
-                      <button
-                        type="submit"
-                        disabled={busy}
-                        className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-[#F5B942] px-8 text-sm font-bold text-[#1A1406] transition hover:bg-[#ffc857] disabled:opacity-55 sm:min-w-[14rem]"
-                      >
-                        {busy ? t("common.loading") : t("boatshow.lead_submit")}
-                        <ArrowUpRight className="size-4 opacity-80" aria-hidden />
-                      </button>
-                      <p className="text-[11px] leading-snug text-white/38 sm:max-w-[18rem] sm:text-right">
-                        {t("boatshow.lead_privacy", { email: OPS_CONTACT_EMAIL })}
-                      </p>
+                    <div className="mt-1 flex flex-col gap-4 border-t border-white/[0.07] pt-5">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <button
+                          type="submit"
+                          disabled={busy}
+                          className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-[#F5B942] px-8 text-sm font-bold text-[#1A1406] transition hover:bg-[#ffc857] disabled:opacity-55 sm:min-w-[14rem]"
+                        >
+                          {busy ? t("common.loading") : t("boatshow.lead_submit")}
+                          <ArrowUpRight className="size-4 opacity-80" aria-hidden />
+                        </button>
+                        <p className="text-[11px] leading-snug text-white/38 sm:max-w-[18rem] sm:text-right">
+                          {t("boatshow.lead_privacy", { email: OPS_CONTACT_EMAIL })}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/[0.06] pt-4 text-[12px]">
+                        <span className="text-white/40">{t("landing.partner_account_hint")}</span>
+                        <Link
+                          to="/auth"
+                          search={{ intent: "provider" }}
+                          className="font-semibold text-[#00F0FF] hover:underline"
+                          onClick={closePartner}
+                        >
+                          {t("landing.partner_door_usta")}
+                        </Link>
+                        <Link
+                          to="/auth"
+                          search={{ intent: "dealer" }}
+                          className="font-semibold text-[#F5B942] hover:underline"
+                          onClick={closePartner}
+                        >
+                          {t("landing.partner_door_bayi")}
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </form>
