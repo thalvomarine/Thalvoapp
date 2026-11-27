@@ -547,7 +547,7 @@ function NavTab({
         className={
           "thalvo-fab-latch grid size-9 place-items-center border transition-colors " +
           (active
-            ? "border-[color:color-mix(in_srgb,var(--skin-active,#8BA8A3)_35%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#8BA8A3)_10%,transparent)]"
+            ? "border-[color:color-mix(in_srgb,var(--skin-active,#C9B896)_35%,transparent)] bg-[color:color-mix(in_srgb,var(--skin-active,#C9B896)_10%,transparent)]"
             : "border-transparent bg-transparent")
         }
       >
